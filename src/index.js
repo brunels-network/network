@@ -51,9 +51,46 @@ const graphs = [
   }
 ];
 
+const fast_physics = {
+  enabled: true,
+  barnesHut: {
+    gravitationalConstant: -50,
+    centralGravity: 0.0,
+    springLength: 50,
+    springConstant: 0.02,
+    damping: 0.2,
+    avoidOverlap: 0.5
+  },
+  maxVelocity: 30,
+  minVelocity: 0.2,
+  solver: 'barnesHut',
+  stabilization: {
+    enabled: true,
+    iterations: 100,
+    updateInterval: 10,
+    onlyDynamicEdges: false,
+    fit: true
+  },
+  timestep: 0.5,
+  adaptiveTimestep: true
+};
+
+const slow_physics = {...fast_physics};
+slow_physics.timestep = 0.1;
+
 const options = {
   height: "500px",
   width: "100%",
+  layout:{
+    randomSeed: 42,
+  },
+  manipulation:{
+    enabled: true,
+    initiallyActive: true,
+  },
+  interaction:{
+    navigationButtons: true,
+  },
   edges:{
     shadow: true,
     smooth: {
@@ -63,29 +100,7 @@ const options = {
     },
     width: 0.5,
   },
-  physics:{
-    enabled: true,
-    barnesHut: {
-      gravitationalConstant: -100,
-      centralGravity: 0.0,
-      springLength: 95,
-      springConstant: 0.04,
-      damping: 0.09,
-      avoidOverlap: 0.3
-    },
-    maxVelocity: 50,
-    minVelocity: 0.1,
-    solver: 'barnesHut',
-    stabilization: {
-      enabled: true,
-      iterations: 1000,
-      updateInterval: 100,
-      onlyDynamicEdges: false,
-      fit: true
-    },
-    timestep: 0.5,
-    adaptiveTimestep: true
-  }
+  physics: fast_physics,
 };
 
 const events = {
@@ -114,11 +129,34 @@ class MultiGraph extends Graph {
       current_graph = 0;
     }
 
-    console.log(this.Network.getPositions());
+    const view_position = this.Network.getViewPosition();
+    const view_scale = this.Network.getScale();
+
+    this.Network.setOptions( { physics: false } );
+
+    let positions = this.Network.getPositions();
 
     this.Network.setData(graphs[current_graph]);
+
+    for (const [key, value] of Object.entries(positions))
+    {
+      this.Network.moveNode(key, value.x, value.y);
+    }
+
+    this.Network.moveTo({position:view_position, scale:view_scale});
+
+    setTimeout(function()
+               {
+                   this.Network.setOptions({physics: slow_physics})
+               }.bind(this), 100 );
+
+    setTimeout(function()
+               {
+                 this.Network.setOptions({physics: fast_physics})
+               }.bind(this), 350 );
+
     this.current_graph = current_graph;
-  }
+ }
 
   render(){
     return (<div>
