@@ -44,6 +44,12 @@ function App(props){
   return (
     <Router>
     <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Switch>
+          <Route exact path="/" component={GraphLoader[num_versions-1]}/>
+          {routes}
+        </Switch>
+      </Suspense>
       <ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
         <DropdownToggle caret>
           Choose version...
@@ -53,12 +59,6 @@ function App(props){
           {links}
         </DropdownMenu>
       </ButtonDropdown>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-          <Route exact path="/" component={GraphLoader[num_versions-1]}/>
-          {routes}
-        </Switch>
-      </Suspense>
       </div>
     </Router>
   );
