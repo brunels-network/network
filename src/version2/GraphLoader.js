@@ -113,17 +113,17 @@ const events = {
 function GraphLoader(props){
   return (
     <MultiGraph
-        graph={graphs[0]}
-        graphs={graphs}
-        options={options}
-        events={events}
-        slow_physics={slow_physics}
-        fast_physics={fast_physics}
-        getNetwork={network => {
+      graph={graphs[0]}
+      graphs={graphs}
+      options={options}
+      events={events}
+      slow_physics={slow_physics}
+      fast_physics={fast_physics}
+      getNetwork={network => {
         //  if you want access to vis.js network api you
         //  can set the state in a parent component using
         //  this property
-        }}
+      }}
     />
   );
 }
