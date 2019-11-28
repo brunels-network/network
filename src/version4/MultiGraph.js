@@ -38,27 +38,18 @@ class MultiGraph extends React.Component {
   constructor(props) {
     super(props);
 
-    let events = {click: (params) => {this.handleClick(params)},
-                 };
-
     this.state = {
-      graphs: props.graphs,
       current_graph: 0,
-      slow_physics: slow_physics,
-      fast_physics: fast_physics,
-      options: options,
-      events: events,
-      getClickedData: props.getClickedData,
       network: {},
     };
   }
 
   handleClick(params) {
-    let getClickedData = this.state.getClickedData;
+    let getClickedData = this.props.getClickedData;
 
     if (getClickedData)
     {
-      let graph = this.state.graphs[0];
+      let graph = this.props.graphs[0];
 
       let data = {};
 
@@ -67,12 +58,14 @@ class MultiGraph extends React.Component {
         let node = graph.nodes.get(params.nodes[0]);
         data["title"] = node.title;
         data["text"] = JSON.stringify(node);
+        data["image"] = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
       }
       else if (params.edges.length > 0)
       {
         let edge = graph.edges.get(params.edges[0]);
         data["title"] = "EDGE";
         data["text"] = JSON.stringify(edge);
+        data["image"] = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
       }
 
       getClickedData(data);
@@ -81,10 +74,9 @@ class MultiGraph extends React.Component {
 
   onClick(){
     let current_graph = this.state.current_graph;
-    let graphs = this.state.graphs;
     let network = this.state.network;
-    let fast_physics = this.state.fast_physics;
-    let slow_physics = this.state.slow_physics;
+
+    let graphs = this.props.graphs;
 
     current_graph += 1;
 
@@ -100,7 +92,25 @@ class MultiGraph extends React.Component {
 
     let positions = network.getPositions();
 
-    network.setData(graphs[current_graph]);
+    let new_graph = graphs[current_graph];
+
+    let data = {};
+
+    if (new_graph.nodes.length > 0){
+      data["nodes"] = new_graph.nodes.get();
+    }
+    else{
+      data["nodes"] = [];
+    }
+
+    if (new_graph.edges.length > 0){
+      data["edges"] = new_graph.edges.get();
+    }
+    else {
+      data["edges"] = [];
+    }
+
+    network.setData(data);
 
     for (const [key, value] of Object.entries(positions))
     {
@@ -119,11 +129,12 @@ class MultiGraph extends React.Component {
   }
 
   render(){
-    let graph = this.state.graphs[0];
-    let events = this.state.events;
-    let options = this.state.options;
+    let graph = this.props.graphs[0];
 
-    return (<div>
+    if (graph){
+      let events = {click: (params) => {this.handleClick(params)}};
+
+      return (<div>
               <Graph graph={{nodes:graph.nodes.get(),
                              edges:graph.edges.get()}}
                      options={options}
@@ -135,6 +146,10 @@ class MultiGraph extends React.Component {
                 Click Me!
               </button>
             </div>);
+    }
+    else{
+      return (<div>No data to display!!!</div>);
+    }
   }
 };
 
