@@ -15,6 +15,7 @@ const GraphLoader = [
   lazy(() => import('./version2/GraphLoader')),
   lazy(() => import('./version3/GraphLoader')),
   lazy(() => import('./version4/GraphLoader')),
+  lazy(() => import('./version5/GraphLoader')),
 ];
 
 function App(props){
