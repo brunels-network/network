@@ -54,7 +54,6 @@ class MultiGraph extends React.Component {
   }
 
   handleClick(params) {
-    let network = this.state.network;
     let getClickedData = this.state.getClickedData;
 
     if (getClickedData)
@@ -63,17 +62,15 @@ class MultiGraph extends React.Component {
 
       let data = {};
 
-      console.log(params.nodes);
-
       if (params.nodes.length > 0)
       {
-        let node = graph.nodes[params.nodes[0]];
+        let node = graph.nodes.get(params.nodes[0]);
         data["title"] = node.title;
         data["text"] = JSON.stringify(node);
       }
       else if (params.edges.length > 0)
       {
-        let edge = graph.edges.get(params.edges);
+        let edge = graph.edges.get(params.edges[0]);
         data["title"] = "EDGE";
         data["text"] = JSON.stringify(edge);
       }
@@ -127,7 +124,8 @@ class MultiGraph extends React.Component {
     let options = this.state.options;
 
     return (<div>
-              <Graph graph={graph}
+              <Graph graph={{nodes:graph.nodes.get(),
+                             edges:graph.edges.get()}}
                      options={options}
                      events={events}
                      getNetwork={network =>

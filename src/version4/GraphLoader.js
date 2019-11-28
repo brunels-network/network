@@ -15,13 +15,14 @@ class GraphLoader extends React.Component {
     let image = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Robert_Howlett_-_Isambard_Kingdom_Brunel_and_the_launching_chains_of_the_Great_Eastern_-_Google_Art_Project.jpg/256px-Robert_Howlett_-_Isambard_Kingdom_Brunel_and_the_launching_chains_of_the_Great_Eastern_-_Google_Art_Project.jpg";
     let text = "This is an interactive viewer of Isambard Kingdom Brunel's social network. Please click on the nodes and have fun!";
 
-    var nodes = graph_data.nodes; //new vis.DataSet(graph_data.nodes);
-    var edges = graph_data.edges; //new vis.DataSet(graph_data.edges);
+    var nodes = new vis.DataSet({});
+    nodes.add(graph_data.nodes);
+
+    var edges = new vis.DataSet({});
+    edges.add(graph_data.edges);
 
     let graph = {"nodes": nodes, "edges": edges};
     let graph2 = {"nodes": nodes, "edges": []};
-
-    console.log(graph);
 
     let graphs = [graph, graph2];
 
