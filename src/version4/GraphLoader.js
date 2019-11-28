@@ -8,12 +8,37 @@ import {
 
 import graph_data from './data.json';
 
-const fast_physics = {};
+const fast_physics = {
+  enabled: true,
+  timestep: 0.5,
+};
+
 const slow_physics = {...fast_physics};
+slow_physics.timestep = 0.1;
 
 const options = {
   height: "450px",
   width: "100%",
+  layout:{
+    randomSeed: 42,
+  },
+  manipulation:{
+    enabled: false,
+    initiallyActive: false,
+  },
+  interaction:{
+    navigationButtons: true,
+  },
+  edges:{
+    shadow: false,
+    smooth: {
+      enabled: true,
+      type: "continuous",
+      roundness: 0.3,
+    },
+    width: 0.5,
+  },
+  physics: fast_physics,
 };
 
 const events = {

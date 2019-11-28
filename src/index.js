@@ -7,6 +7,8 @@ import { ButtonDropdown, DropdownToggle,
          DropdownMenu, DropdownItem } from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'vis-network/dist/vis-network.min.css';
+import './index.css';
 
 const GraphLoader = [
   lazy(() => import('./version1/GraphLoader')),
