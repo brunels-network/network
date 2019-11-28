@@ -17,13 +17,6 @@ const GraphLoader = [
   lazy(() => import('./version4/GraphLoader')),
 ];
 
-function renderPage(i) {
-  const path = "/v" + (i+1);
-  return (
-    <Route exact path={path} component={GraphLoader[i]}/>
-  );
-}
-
 function App(props){
   var num_versions = GraphLoader.length;
 

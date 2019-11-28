@@ -1,17 +1,85 @@
 import React from "react";
 import Graph from "react-graph-vis";
 
+const fast_physics = {
+  enabled: true,
+  timestep: 0.5,
+};
+
+const slow_physics = {...fast_physics};
+slow_physics.timestep = 0.1;
+
+const options = {
+  height: "600px",
+  width: "100%",
+  layout:{
+    randomSeed: 42,
+  },
+  manipulation:{
+    enabled: false,
+    initiallyActive: false,
+  },
+  interaction:{
+    navigationButtons: true,
+  },
+  edges:{
+    shadow: false,
+    smooth: {
+      enabled: true,
+      type: "continuous",
+      roundness: 0.3,
+    },
+    width: 0.5,
+  },
+  physics: fast_physics,
+};
+
 class MultiGraph extends React.Component {
   constructor(props) {
     super(props);
+
+    let events = {click: (params) => {this.handleClick(params)},
+                 };
+
     this.state = {
       graphs: props.graphs,
       current_graph: 0,
-      slow_physics: props.slow_physics,
-      fast_physics: props.fast_physics,
-      options: props.options,
+      slow_physics: slow_physics,
+      fast_physics: fast_physics,
+      options: options,
+      events: events,
+      getClickedData: props.getClickedData,
       network: {},
     };
+  }
+
+  handleClick(params) {
+    let network = this.state.network;
+    let getClickedData = this.state.getClickedData;
+
+    if (getClickedData)
+    {
+      let graph = this.state.graphs[0];
+
+      let data = {};
+
+      console.log(params.nodes);
+
+      if (params.nodes.length > 0)
+      {
+        let node = graph.nodes[params.nodes[0]];
+        data["title"] = node.title;
+        data["text"] = JSON.stringify(node);
+      }
+      else if (params.edges.length > 0)
+      {
+        let edge = graph.edges.get(params.edges);
+        data["title"] = "EDGE";
+        data["text"] = JSON.stringify(edge);
+      }
+
+      getClickedData(data);
+    }
   }
 
   onClick(){
@@ -55,18 +123,19 @@ class MultiGraph extends React.Component {
 
   render(){
     let graph = this.state.graphs[0];
-    let events = {};
+    let events = this.state.events;
+    let options = this.state.options;
 
     return (<div>
+              <Graph graph={graph}
+                     options={options}
+                     events={events}
+                     getNetwork={network =>
+                                  this.setState({network:network})} />
               <button className='graph-buttton'
                       onClick={() => {this.onClick()}}>
                 Click Me!
               </button>
-              <Graph graph={graph}
-                     options={this.state.options}
-                     events={events}
-                     getNetwork={network =>
-                                  this.setState({network:network})} />
             </div>);
   }
 };

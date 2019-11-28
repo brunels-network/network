@@ -2,8 +2,8 @@ import React from "react";
 import MultiGraph from "./MultiGraph";
 import {
   Container, Row, Col,
-  Card, CardImg, CardText, CardHeader, CardBody, CardLink,
-  CardTitle, CardSubtitle, CardFooter
+  Card, CardText, CardHeader, CardBody,
+  CardTitle
 } from 'reactstrap';
 
 const people = ["John", "James", "Jane", "Janet", "Jason"];
