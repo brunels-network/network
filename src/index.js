@@ -10,7 +10,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const GraphLoader = [
   lazy(() => import('./version1/GraphLoader')),
-  lazy(() => import('./version2/GraphLoader'))
+  lazy(() => import('./version2/GraphLoader')),
+  lazy(() => import('./version3/GraphLoader')),
 ];
 
 function renderPage(i) {
