@@ -12,6 +12,7 @@ const GraphLoader = [
   lazy(() => import('./version1/GraphLoader')),
   lazy(() => import('./version2/GraphLoader')),
   lazy(() => import('./version3/GraphLoader')),
+  lazy(() => import('./version4/GraphLoader')),
 ];
 
 function renderPage(i) {
