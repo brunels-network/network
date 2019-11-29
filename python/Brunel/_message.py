@@ -1,0 +1,80 @@
+
+__all__ = ["Message"]
+
+
+def _setState(state, val, default=None):
+    try:
+        result = state[val]
+        if result:
+            return result
+        else:
+            return default
+    except:
+        return default
+
+
+class Message:
+    """Holds information about a Message in the network"""
+    def __init__(self, props=None):
+        self._social = None
+
+        self.state = {
+            "name": None,
+            "id": None,
+            "sender": None,
+            "receiver": None,
+            "sources": [],
+            "notes": [],
+        }
+
+        self.setState(props)
+
+    def __str__(self):
+        if not self._social:
+            return "Message()"
+
+        sender = self.getSender()
+        receiver = self.getReceiver()
+
+        return f"Message({sender.getName()} => {receiver.getName()})"
+
+    def getSender(self):
+        sender = self.state["sender"]
+
+        if self._social:
+            sender = self._social.get(sender)
+
+        return sender
+
+    def getReceiver(self):
+        receiver = self.state["receiver"]
+
+        if self._social:
+            receiver = self._social.get(receiver)
+
+        return receiver
+
+    def getID(self):
+        return self.state["id"]
+
+    def setState(self, state):
+        if not state:
+            return
+
+        self.state["name"] = _setState(state, "name")
+        self.state["id"] = _setState(state, "id")
+        self.state["sender"] = _setState(state, "sender")
+        self.state["receiver"] = _setState(state, "receiver")
+        self.state["sources"] = _setState(state, "sources", [])
+        self.state["notes"] = _setState(state, "notes", [])
+
+    def toDry(self):
+        return {"value": self.state}
+
+    @staticmethod
+    def unDry(value):
+        return Message(value)
+
+    @staticmethod
+    def load(data):
+        return Message(data)
