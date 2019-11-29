@@ -23,6 +23,10 @@ class Person {
     this.setState(props);
   }
 
+  getID(){
+    return this.state.id;
+  }
+
   setState(state){
     if (state){
       this.state.name = setState(state.name);
@@ -43,8 +47,7 @@ class Person {
   }
 };
 
-Person.unDry = function unDry(value){
-  console.log(value);
+Person.unDry = function(value){
   return new Person(value);
 }
 

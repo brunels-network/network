@@ -13,7 +13,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "react-strap": "0.0.1",
-    "reactstrap": "^8.1.1"
+    "reactstrap": "^8.1.1",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",

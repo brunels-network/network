@@ -6,6 +6,7 @@ import Dry from "json-dry";
 import SocialGraph from "./SocialGraph";
 import InfoBox from "./InfoBox";
 import Person from "./Person";
+import People from "./People";
 
 import graph_data from './data.json';
 
@@ -31,21 +32,17 @@ class SocialApp extends React.Component {
       graph: graph,
     };
 
-    let person = {"hello": new Person({"name": "Test Person"})};
+    let person = new Person({name:"Test Person"});
 
-    console.log(person);
+    let people = new People();
 
-    let j = Dry.stringify(person);
+    people.add(person);
 
-    console.log(j);
+    console.log(Dry.stringify(people));
 
-    let result = Dry.parse(j);
+    people = Dry.parse(Dry.stringify(people));
 
-    console.log(result);
-
-    result = Dry.clone(person);
-
-    console.log(result);
+    console.log(people.get(person.getID()));
 
   }
 
