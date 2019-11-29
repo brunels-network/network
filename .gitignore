@@ -1,5 +1,7 @@
 build/
+python/input/
 node_modules/
 package-lock.json
 src/version*/data.json
+.vscode
 

@@ -1,14 +1,13 @@
 import React from "react";
 import { Container, Row, Col } from 'reactstrap';
 import vis from "vis-network";
-import Dry from "json-dry";
 
 import SocialGraph from "./SocialGraph";
 import InfoBox from "./InfoBox";
-import Person from "./Person";
 import People from "./People";
 
 import graph_data from './data.json';
+import Messages from "./Messages";
 
 class SocialApp extends React.Component {
   constructor(props){
@@ -26,24 +25,16 @@ class SocialApp extends React.Component {
 
     let graph = {"nodes": nodes, "edges": edges};
 
+    let people = new People(graph_data.nodes);
+    let messages = new Messages(graph_data.edges, people);
+
     this.state = {
       default_data: {"title": title, "image": image, "text": text},
       infobox_data: {"title": title, "image": image, "text": text},
       graph: graph,
+      people: people,
+      messages: messages,
     };
-
-    let person = new Person({name:"Test Person"});
-
-    let people = new People();
-
-    people.add(person);
-
-    console.log(Dry.stringify(people));
-
-    people = Dry.parse(Dry.stringify(people));
-
-    console.log(people.get(person.getID()));
-
   }
 
   setInfoBoxData(data){

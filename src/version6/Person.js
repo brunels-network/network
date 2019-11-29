@@ -14,9 +14,12 @@ class Person {
     this.state = {
       name: null,
       id: null,
-      labels: [],
-      dob: null,    // date of birth
-      dod: null,    // date of death
+      positions: {},     //should be a dictionary of positions...
+      affiliations: {},  //should be a list of dated affiliation IDs
+      projects: {},      //should be a list of dated project IDs
+      sources: [],       //should be a list of source IDs
+      dob: null,         // date of birth
+      dod: null,         // date of death
       gender: null,
     };
 
@@ -31,7 +34,10 @@ class Person {
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.labels = setState(state.labels, []);
+      this.state.positions = setState(state.positions, {});
+      this.state.affiliations = setState(state.affiliations, {});
+      this.state.projects = setState(state.projects, {});
+      this.state.sources = setState(state.sources, []);
       this.state.dob = setState(state.dob);
       this.state.dod = setState(state.dod);
       this.state.gender = setState(state.gender);
@@ -49,6 +55,10 @@ class Person {
 
 Person.unDry = function(value){
   return new Person(value);
+}
+
+Person.load = function(data){
+  return new Person({name: data.name});
 }
 
 Dry.registerClass(Person);

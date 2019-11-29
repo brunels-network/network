@@ -15,6 +15,8 @@ class People {
     this.state = {
       registry: {},
     };
+
+    this.load(props);
   };
 
   add(person){
@@ -27,7 +29,7 @@ class People {
         throw KeyError(`Duplicate Person ID ${person}`);
       }
 
-      this.state.registry[person.id] = person;
+      this.state.registry[id] = person;
     }
     else{
       let uid = _generate_person_uid();
@@ -37,7 +39,7 @@ class People {
       }
 
       person.state.id = uid;
-      this.state.registry[person.state.id] = person;
+      this.state.registry[uid] = person;
     }
   }
 
@@ -51,14 +53,24 @@ class People {
     return person;
   }
 
+  load(data){
+    if (data){
+      if (data.array){ data = data.array; }
+      data.forEach(element => {
+        let person = Person.load(element);
+        this.add(person);
+      });
+    }
+  }
+
   toDry(){
-    return {value: this.state.registry};
+    return {value: this.state};
   }
 };
 
 People.unDry = function(value){
   let people = new People();
-  people.state.registry = value;
+  people.state = value;
   return people;
 }
 

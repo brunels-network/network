@@ -27,7 +27,4 @@ class MissingError extends Error {
     }
 }
 
-export { KeyError as KeyError };
-export { ValueError as ValueError };
-export { DuplicateError as DuplicateError };
-export { MissingError as MissingError };
+export {KeyError, ValueError, DuplicateError, MissingError};
