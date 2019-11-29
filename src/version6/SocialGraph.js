@@ -35,7 +35,7 @@ const options = {
   physics: fast_physics,
 };
 
-class MultiGraph extends React.Component {
+class SocialGraph extends React.Component {
   constructor(props) {
     super(props);
 
@@ -151,7 +151,7 @@ class MultiGraph extends React.Component {
                                   this.setState({network:network})} />
               <button className='graph-buttton'
                       onClick={() => {this.onClick()}}>
-                Click Me!
+                Click Me! Hello
               </button>
             </div>);
     }
@@ -161,4 +161,4 @@ class MultiGraph extends React.Component {
   }
 };
 
-export default MultiGraph;
+export default SocialGraph;
