@@ -5,3 +5,6 @@ package-lock.json
 src/version*/data.json
 .vscode
 
+*.pyc
+python/.ipynb_checkpoints
+
