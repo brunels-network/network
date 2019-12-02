@@ -12,8 +12,8 @@ def _generate_person_uid():
 
 class People:
     """This holds a registry of individual Persons"""
-    def __init__(self, props=None):
-        self._social = None
+    def __init__(self, props=None, getHook=None):
+        self._getHook = getHook
 
         self.state = {
             "registry": {},
@@ -44,7 +44,7 @@ class People:
             person.state["id"] = uid
             self.state["registry"][uid] = person
 
-        person._social = self._social
+        person._getHook = self._getHook
 
     def get(self, id):
         try:

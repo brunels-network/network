@@ -12,8 +12,8 @@ def _generate_message_uid():
 
 class Messages:
     """This holds a registry of individual Messages"""
-    def __init__(self, props=None):
-        self._social = None
+    def __init__(self, props=None, getHook=None):
+        self._getHook = getHook
 
         self.state = {
             "registry": {},
@@ -44,7 +44,7 @@ class Messages:
             message.state["id"] = uid
             self.state["registry"][uid] = message
 
-        message._social = self._social
+        message._getHook = self._getHook
 
     def get(self, id):
         try:

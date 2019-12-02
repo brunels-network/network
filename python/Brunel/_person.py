@@ -98,8 +98,8 @@ def _extractName(state):
 
 class Person:
     """Holds information about a Person in the network"""
-    def __init__(self, props=None):
-        self._social = None
+    def __init__(self, props=None, getHook=None):
+        self._getHook = getHook
 
         self.state = {
             "titles": [],

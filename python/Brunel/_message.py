@@ -15,8 +15,8 @@ def _setState(state, val, default=None):
 
 class Message:
     """Holds information about a Message in the network"""
-    def __init__(self, props=None):
-        self._social = None
+    def __init__(self, props=None, getHook=None):
+        self._getHook = getHook
 
         self.state = {
             "name": None,
@@ -30,9 +30,6 @@ class Message:
         self.setState(props)
 
     def __str__(self):
-        if not self._social:
-            return "Message()"
-
         sender = self.getSender()
         receiver = self.getReceiver()
 
@@ -41,16 +38,16 @@ class Message:
     def getSender(self):
         sender = self.state["sender"]
 
-        if self._social:
-            sender = self._social.get(sender)
+        if self._getHook:
+            sender = self._getHook(sender)
 
         return sender
 
     def getReceiver(self):
         receiver = self.state["receiver"]
 
-        if self._social:
-            receiver = self._social.get(receiver)
+        if self._getHook:
+            receiver = self._getHook(receiver)
 
         return receiver
 
