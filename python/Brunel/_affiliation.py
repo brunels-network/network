@@ -19,7 +19,7 @@ class Affiliation:
         self._getHook = getHook
 
         self.state = {
-            "name": [],
+            "name": None,
             "id": None,
             "sources": [],
             "notes": [],

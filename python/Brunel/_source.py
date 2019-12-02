@@ -19,7 +19,7 @@ class Source:
         self._getHook = getHook
 
         self.state = {
-            "name": [],
+            "name": None,
             "id": None,
             "notes": [],
         }

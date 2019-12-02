@@ -6,6 +6,7 @@ def test_load():
 
     json = Brunel.stringify(social)
 
-    print(json)
+    with open("test.json", "w") as FILE:
+        FILE.write(json)
 
     assert False

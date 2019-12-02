@@ -8,7 +8,10 @@ def _stringify(obj):
         value = _stringify(state)
 
         if value:
-            return {'_class': obj.__class__.__name__, 'value': value}
+            return {'dry_class': obj.__class__.__name__,
+                    'dry': "toDry",
+                    'drypath': [],
+                    'value': value}
         else:
             return None
     elif isinstance(obj, dict):
