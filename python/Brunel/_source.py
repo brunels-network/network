@@ -29,6 +29,9 @@ class Source:
     def __str__(self):
         return f"Source({self.getName()})"
 
+    def __repr__(self):
+        return self.__str__()
+
     def getID(self):
         return self.state["id"]
 
@@ -44,7 +47,7 @@ class Source:
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

@@ -59,7 +59,7 @@ class Messages:
                 self.add(message)
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

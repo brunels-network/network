@@ -61,7 +61,7 @@ class Business:
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

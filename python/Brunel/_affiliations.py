@@ -6,12 +6,14 @@ __all__ = ["Affiliations"]
 
 def _generate_affiliation_uid():
     import uuid as _uuid
-    uid =_uuid.uuid4()
+    uid = _uuid.uuid4()
     return "A" + str(uid)[:7]
 
 
 class Affiliations:
-    """This holds a registry of individual Affiliations"""
+    """This holds a registry of individual
+       Affiliations
+    """
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
@@ -28,11 +30,11 @@ class Affiliations:
             return
 
         if isinstance(affiliation, str):
-            # try to find an existing affiliation with this name
+            # try to find an existing affiliation with this name
             try:
                 return self.getByName(affiliation)
             except:
-                return self.add(_Affiliation({"name":affiliation}))
+                return self.add(_Affiliation({"name": affiliation}))
 
         if not isinstance(affiliation, _Affiliation):
             raise TypeError("Can only add a Affiliation to Affiliations")
@@ -60,6 +62,7 @@ class Affiliations:
 
         affiliation._getHook = self._getHook
         self._names[affiliation.getName()] = affiliation.getID()
+
         return affiliation
 
     def getByName(self, name):
@@ -81,7 +84,7 @@ class Affiliations:
                 self.add(affiliation)
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

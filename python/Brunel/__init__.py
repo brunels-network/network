@@ -15,6 +15,8 @@ from ._note import *
 from ._notes import *
 from ._social import *
 from ._daterange import *
+from ._dry import *
+
 
 try:
     if __IPYTHON__:

@@ -60,7 +60,7 @@ class Notes:
                 self.add(note)
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

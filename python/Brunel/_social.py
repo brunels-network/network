@@ -110,3 +110,6 @@ class Social:
                 messages.add(message)
 
         return social
+
+    def toDry(self):
+        return self.state

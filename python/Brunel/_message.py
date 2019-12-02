@@ -33,7 +33,13 @@ class Message:
         sender = self.getSender()
         receiver = self.getReceiver()
 
-        return f"Message({sender.getName()} => {receiver.getName()})"
+        if sender is None or receiver is None:
+            return "Message::null"
+        else:
+            return f"Message({sender.getName()} => {receiver.getName()})"
+
+    def __repr__(self):
+        return self.__str__()
 
     def getSender(self):
         sender = self.state["sender"]
@@ -66,7 +72,7 @@ class Message:
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

@@ -32,3 +32,17 @@ class DateRange:
     @staticmethod
     def null():
         return DateRange()
+
+    def toDry(self):
+        state = {}
+
+        start = self.getStart()
+        end = self.getEnd()
+
+        if start:
+            state["start"] = start
+
+        if end:
+            state["end"] = end
+
+        return state

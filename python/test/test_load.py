@@ -1,14 +1,11 @@
 
-import Brunel
-
 
 def test_load():
+    import Brunel
     social = Brunel.Social.load_from_csv("input/nodes.csv", "input/edges.csv")
 
-    for person in social.people().values():
-        print(person, person.getPositions(), person.getAffiliations())
+    json = Brunel.stringify(social)
 
-    for business in social.businesses().values():
-        print(business, business.getAffiliations())
+    print(json)
 
-    raise TypeError()
+    assert False

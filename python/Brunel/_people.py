@@ -62,7 +62,7 @@ class People:
                 self.add(person)
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

@@ -28,8 +28,7 @@ class Person:
             "affiliations": {},
             "projects": {},
             "sources": [],
-            "dob": None,
-            "dod": None,
+            "alive": None,
             "gender": None,
             "notes": [],
         }
@@ -101,6 +100,18 @@ class Person:
 
         return result
 
+    def getBorn(self):
+        try:
+            return self.state["alive"].getStart()
+        except:
+            return None
+
+    def getDied(self):
+        try:
+            return self.state["alive"].getEnd()
+        except:
+            return None
+
     def setState(self, state):
         if not state:
             return
@@ -114,14 +125,13 @@ class Person:
         self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["projects"] = _setState(state, "projects", {})
         self.state["sources"] = _setState(state, "sources", [])
-        self.state["dob"] = _setState(state, "dob")
-        self.state["dod"] = _setState(state, "dod")
+        self.state["alive"] = _setState(state, "alive")
         self.state["gender"] = _setState(state, "gender")
         self.state["orig_name"] = _setState(state, "name")
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):

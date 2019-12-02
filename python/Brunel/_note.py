@@ -44,7 +44,7 @@ class Note:
         self.state["sources"] = _setState(state, "sources", [])
 
     def toDry(self):
-        return {"value": self.state}
+        return self.state
 
     @staticmethod
     def unDry(value):
