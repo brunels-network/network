@@ -5,7 +5,16 @@ from ._message import *
 from ._messages import *
 from ._business import *
 from ._businesses import *
+from ._affiliation import *
+from ._affiliations import *
+from ._position import *
+from ._positions import *
+from ._source import *
+from ._sources import *
+from ._note import *
+from ._notes import *
 from ._social import *
+from ._daterange import *
 
 try:
     if __IPYTHON__:

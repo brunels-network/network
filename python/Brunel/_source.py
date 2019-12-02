@@ -1,5 +1,5 @@
 
-__all__ = ["Position"]
+__all__ = ["Source"]
 
 
 def _setState(state, val, default=None):
@@ -13,25 +13,21 @@ def _setState(state, val, default=None):
         return default
 
 
-class Position:
-    """Holds information about a Position in the network"""
+class Source:
+    """Holds information about a Source in the network"""
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
         self.state = {
             "name": [],
             "id": None,
-            "sources": [],
             "notes": [],
         }
 
         self.setState(props)
 
     def __str__(self):
-        return f"Position({self.getName()})"
-
-    def __repr__(self):
-        return self.__str__()
+        return f"Source({self.getName()})"
 
     def getID(self):
         return self.state["id"]
@@ -45,7 +41,6 @@ class Position:
 
         self.state["name"] = _setState(state, "name")
         self.state["id"] = _setState(state, "id")
-        self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):
@@ -53,8 +48,8 @@ class Position:
 
     @staticmethod
     def unDry(value):
-        return Position(value)
+        return Source(value)
 
     @staticmethod
     def load(data):
-        return Position(data)
+        return Source(data)

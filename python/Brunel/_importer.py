@@ -215,17 +215,67 @@ def importMessage(edge, mapping=None, importers=None):
         return None
 
 
+def extractPositionName(position):
+    position = position.lower().lstrip().rstrip()
+    return position
+
+
 def importPositions(node, importers=None):
-    str(node.Position).lower().split(",")
-    return []
+    positions = importers["positions"]
+
+    result = {}
+
+    from ._daterange import DateRange as _DateRange
+
+    for part in str(node.Position).split(","):
+        for position in part.split(";"):
+            position = extractPositionName(position)
+            position = positions.add(position)
+
+            if position:
+                result[position.getID()] = _DateRange.null()
+
+    return result
+
+
+def extractAffiliationName(affiliation):
+    affiliation = affiliation.lstrip().rstrip()
+
+    lower = affiliation.lower()
+
+    if lower == "nan" or affiliation == "_":
+        return None
+
+    return affiliation
 
 
 def importAffiliations(node, importers=None):
-    return []
+    affiliations = importers["affiliations"]
+
+    result = {}
+
+    from ._daterange import DateRange as _DateRange
+
+    for parts in str(node.Affiliations).split(","):
+        for affiliation in parts.split(";"):
+            affiliation = extractAffiliationName(affiliation)
+            affiliation = affiliations.add(affiliation)
+
+            if affiliation:
+                result[affiliation.getID()] = _DateRange.null()
+
+    return result
 
 
 def importSources(node, importers=None, isEdge=False):
-    return []
+    sources = importers["sources"]
+
+    source = sources.add(str(node.Source).lstrip().rstrip())
+
+    if source:
+        return [source.getID()]
+    else:
+        return []
 
 
 def importNotes(node, importers=None, isEdge=False):

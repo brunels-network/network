@@ -38,6 +38,17 @@ class Business:
     def getName(self):
         return self.state["name"]
 
+    def getAffiliations(self):
+        result = []
+
+        affiliations = self.state["affiliations"]
+
+        for affiliation in affiliations.keys():
+            result.append( (self._getHook(affiliation),
+                            affiliations[affiliation]) )
+
+        return result
+
     def setState(self, state):
         if not state:
             return

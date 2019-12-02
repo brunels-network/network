@@ -52,6 +52,9 @@ class Businesses:
         except:
             raise KeyError(f"No Business with ID {id}")
 
+    def values(self):
+        return self.state["registry"].values()
+
     def load(self, data):
         if data:
             for item in data:

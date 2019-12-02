@@ -39,6 +39,9 @@ class Person:
     def __str__(self):
         return f"Person({self.getName()})"
 
+    def __repr__(self):
+        return self.__str__()
+
     def getID(self):
         return self.state["id"]
 
@@ -76,6 +79,27 @@ class Person:
                 parts.append(n)
 
         return " ".join(parts)
+
+    def getPositions(self):
+        result = []
+
+        positions = self.state["positions"]
+
+        for position in positions.keys():
+            result.append( (self._getHook(position), positions[position]) )
+
+        return result
+
+    def getAffiliations(self):
+        result = []
+
+        affiliations = self.state["affiliations"]
+
+        for affiliation in affiliations.keys():
+            result.append( (self._getHook(affiliation),
+                            affiliations[affiliation]) )
+
+        return result
 
     def setState(self, state):
         if not state:

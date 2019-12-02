@@ -1,5 +1,5 @@
 
-__all__ = ["Position"]
+__all__ = ["Affiliation"]
 
 
 def _setState(state, val, default=None):
@@ -13,8 +13,8 @@ def _setState(state, val, default=None):
         return default
 
 
-class Position:
-    """Holds information about a Position in the network"""
+class Affiliation:
+    """Holds information about an Affiliation in the network"""
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
@@ -28,7 +28,7 @@ class Position:
         self.setState(props)
 
     def __str__(self):
-        return f"Position({self.getName()})"
+        return f"Affiliation({self.getName()})"
 
     def __repr__(self):
         return self.__str__()
@@ -53,8 +53,8 @@ class Position:
 
     @staticmethod
     def unDry(value):
-        return Position(value)
+        return Affiliation(value)
 
     @staticmethod
     def load(data):
-        return Position(data)
+        return Affiliation(data)

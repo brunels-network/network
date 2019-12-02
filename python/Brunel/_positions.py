@@ -19,14 +19,28 @@ class Positions:
             "registry": {},
         }
 
+        self._names = {}
+
         self.load(props)
 
     def add(self, position: _Position):
         if position is None:
             return
 
+        if isinstance(position, str):
+            # try to find an existing position with this name
+            try:
+                return self.getByName(position)
+            except:
+                return self.add(_Position({"name":position}))
+
         if not isinstance(position, _Position):
             raise TypeError("Can only add a Position to Positions")
+
+        try:
+            return self.getByName(position.getName())
+        except:
+            pass
 
         id = position.getID()
 
@@ -44,7 +58,15 @@ class Positions:
             position.state["id"] = uid
             self.state["registry"][uid] = position
 
+        self._names[position.getName()] = position.getID()
         position._getHook = self._getHook
+        return position
+
+    def getByName(self, name):
+        try:
+            return self.get(self._names[name])
+        except:
+            raise KeyError(f"No Position with name {name}")
 
     def get(self, id):
         try:
@@ -65,4 +87,10 @@ class Positions:
     def unDry(value):
         positions = Positions()
         positions.state = value
+
+        positions._names = {}
+
+        for position in positions.state["registry"].values():
+            positions._names[position.getName()] = position.getID()
+
         return positions

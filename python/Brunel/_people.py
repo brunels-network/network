@@ -46,6 +46,9 @@ class People:
 
         person._getHook = self._getHook
 
+    def values(self):
+        return self.state["registry"].values()
+
     def get(self, id):
         try:
             return self.state["registry"][id]
