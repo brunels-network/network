@@ -1,5 +1,5 @@
 
-__all__ = ["Business"]
+__all__ = ["Position"]
 
 
 def _setState(state, val, default=None):
@@ -13,24 +13,22 @@ def _setState(state, val, default=None):
         return default
 
 
-class Business:
-    """Holds information about a Business or Institution in the network"""
+class Position:
+    """Holds information about a Position in the network"""
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
         self.state = {
             "name": [],
             "id": None,
-            "projects": {},
             "sources": [],
-            "affiliations": {},
             "notes": [],
         }
 
         self.setState(props)
 
     def __str__(self):
-        return f"Business({self.getName()})"
+        return f"Position({self.getName()})"
 
     def getID(self):
         return self.state["id"]
@@ -44,8 +42,6 @@ class Business:
 
         self.state["name"] = _setState(state, "name")
         self.state["id"] = _setState(state, "id")
-        self.state["projects"] = _setState(state, "projects", {})
-        self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
 
@@ -54,8 +50,8 @@ class Business:
 
     @staticmethod
     def unDry(value):
-        return Business(value)
+        return Position(value)
 
     @staticmethod
     def load(data):
-        return Business(data)
+        return Position(data)

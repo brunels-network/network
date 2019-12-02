@@ -1,13 +1,13 @@
 
-import uuid as _uuid
 from ._business import Business as _Business
 
 __all__ = ["Businesses"]
 
 
 def _generate_business_uid():
-  uid =_uuid.uuid4()
-  return "B" + str(uid)[:7]
+    import uuid as _uuid
+    uid =_uuid.uuid4()
+    return "B" + str(uid)[:7]
 
 
 class Businesses:

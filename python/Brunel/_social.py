@@ -1,72 +1,14 @@
 
-from ._people import People as _People
-from ._person import Person as _Person
-from ._message import Message as _Message
-from ._messages import Messages as _Messages
-from ._business import Business as _Business
-from ._businesses import Businesses as _Businesses
-
 __all__ = ["Social"]
-
-
-def _isPerson(node):
-    return str(node.Label).find("&") == -1
-
-
-def _loadPerson(node):
-    try:
-        name = str(node.Label)
-        positions = str(node.Position).lower().split(",")
-        sources = [str(node.Source)]
-        affiliations = str(node.Affiliations).split(",")
-
-        return _Person({"name": name,
-                        "positions": positions,
-                        "sources": sources,
-                        "affiliations": affiliations})
-    except Exception as e:
-        print(f"Cannot load Person {node}: {e}")
-        return None
-
-
-def _isBusiness(node):
-    return str(node.Label).find("&") != -1
-
-
-def _loadBusiness(node):
-    try:
-        name = str(node.Label)
-        positions = str(node.Position).lower().split(",")
-        sources = [str(node.Source)]
-        affiliations = str(node.Affiliations).split(",")
-
-        return _Business({"name": name,
-                          "positions": positions,
-                          "sources": sources,
-                          "affiliations": affiliations})
-    except Exception as e:
-        print(f"Cannot load Business {node}: {e}")
-        return None
-
-
-def _loadMessage(edge, mapping):
-    try:
-        sender = mapping[int(edge.Source)]
-        receiver = mapping[int(edge.Target)]
-        return _Message({"sender": sender,
-                        "receiver": receiver,
-                        "notes": [str(edge.Link)],
-                        "sources": [str(edge.Archive)],
-                        })
-
-    except Exception as e:
-        print(f"Cannot map {edge}: {e}")
-        return None
 
 
 class Social:
     """This class holds a complete social network"""
     def __init__(self):
+        from ._people import People as _People
+        from ._messages import Messages as _Messages
+        from ._businesses import Businesses as _Businesses
+
         self.state = {
             "people": _People(getHook=self.get),
             "messages": _Messages(getHook=self.get),
@@ -93,13 +35,20 @@ class Social:
             return id
 
     @staticmethod
-    def load_from_csv(nodes, edges,
-                      isPerson=_isPerson, loadPerson=_loadPerson,
-                      isBusiness=_isBusiness, loadBusiness=_loadBusiness,
-                      loadMessage=_loadMessage):
+    def load_from_csv(nodes, edges, importers=None):
         import pandas as _pd
         nodes = _pd.read_csv(nodes)
         edges = _pd.read_csv(edges)
+
+        from ._importer import getDefaultImporters as _getDefaultImporters
+        defaults = _getDefaultImporters()
+
+        if importers is None:
+            importers = defaults
+        else:
+            for key in importers.keys():
+                if key not in importers:
+                    importers[key] = defaults[key]
 
         ids = {}
 
@@ -109,21 +58,22 @@ class Social:
         businesses = social.businesses()
 
         for _, node in nodes.iterrows():
-            if isPerson(node):
-                person = loadPerson(node)
+            if importers["isPerson"](node, importers=importers):
+                person = importers["importPerson"](node, importers=importers)
                 if person:
                     people.add(person)
                     ids[node.ID] = person.getID()
-            elif isBusiness(node):
-                business = loadBusiness(node)
+            elif importers["isBusiness"](node, importers=importers):
+                business = importers["importBusiness"](node,
+                                                       importers=importers)
                 if business:
                     businesses.add(business)
                     ids[node.ID] = business.getID()
 
         for _, edge in edges.iterrows():
-            message = loadMessage(edge, ids)
+            message = importers["importMessage"](edge, mapping=ids,
+                                                 importers=importers)
             if message:
                 messages.add(message)
 
         return social
-

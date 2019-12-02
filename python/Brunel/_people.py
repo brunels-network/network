@@ -1,13 +1,13 @@
 
-import uuid as _uuid
 from ._person import Person as _Person
 
 __all__ = ["People"]
 
 
 def _generate_person_uid():
-  uid =_uuid.uuid4()
-  return "P" + str(uid)[:7]
+    import uuid as _uuid
+    uid =_uuid.uuid4()
+    return "P" + str(uid)[:7]
 
 
 class People:
