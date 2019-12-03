@@ -166,11 +166,24 @@ class Person {
   }
 
   getNode(is_anchor=false){
-    let node = {id: this.getID(), text: this.getName()};
+
+    let node = {id: this.getID(),
+                label: this.getName(),
+                title: this.getName(),
+                shape: "dot",
+               };
+
+    let keys = Object.keys(this.state.positions);
+
+    if (keys){
+      console.log(keys);
+      node["group"] = `${keys}`;
+    }
 
     if (is_anchor){
       node["shape"] = "star";
       node["physics"] = false;
+      node["group"] = "anchor";
     }
 
     return node;

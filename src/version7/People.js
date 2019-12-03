@@ -67,10 +67,7 @@ class People {
   getNodes(anchor=null){
     let nodes = new vis.DataSet();
 
-    console.log(anchor);
-
     for (let person in this.state.registry){
-      console.log(`${person} ${anchor}`);
       if (person === anchor){
         nodes.add(this.state.registry[person].getNode({is_anchor:true}));
       }
@@ -108,7 +105,6 @@ class People {
 };
 
 People.unDry = function(value){
-  console.log("People.unDry");
   let people = new People();
   people.state = value;
   return people;

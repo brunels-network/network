@@ -104,13 +104,11 @@ class Social {
 
     getGraph(){
       let anchor = this.getPeople().find("Brunel");
-      console.log(`Anchor = ${anchor}`);
 
       let nodes = this.getPeople().getNodes(anchor);
       nodes.add(this.getBusinesses().getNodes());
 
       let edges = this.getMessages().getEdges();
-
 
       return {"nodes": nodes, "edges": edges};
     }
