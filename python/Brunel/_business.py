@@ -9,7 +9,7 @@ def _setState(state, val, default=None):
             return result
         else:
             return default
-    except:
+    except KeyError:
         return default
 
 
@@ -23,6 +23,7 @@ class Business:
             "id": None,
             "projects": {},
             "sources": [],
+            "scores": {},
             "affiliations": {},
             "notes": [],
         }
@@ -57,6 +58,7 @@ class Business:
         self.state["id"] = _setState(state, "id")
         self.state["projects"] = _setState(state, "projects", {})
         self.state["affiliations"] = _setState(state, "affiliations", {})
+        self.state["scores"] = _setState(state, "scores", {})
         self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
 

@@ -6,7 +6,7 @@ class DateRange:
     def __init__(self, start=None, end=None):
         self.state = {"start": start,
                       "end": end,
-                     }
+                      }
 
     def getStart(self):
         return self.state["start"]
@@ -38,6 +38,9 @@ class DateRange:
 
         start = self.getStart()
         end = self.getEnd()
+
+        if (start is None) and (end is None):
+            return "null"
 
         if start:
             state["start"] = start

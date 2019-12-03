@@ -7,7 +7,7 @@ import Positions from './Positions';
 import Affiliations from './Affiliations';
 import Sources from './Sources';
 import Notes from './Notes';
-
+import DateRange from './DateRange';
 
 class Social {
     constructor(props){
@@ -106,7 +106,7 @@ class Social {
       let anchor = this.getPeople().find("Brunel");
 
       let nodes = this.getPeople().getNodes(anchor);
-      nodes.add(this.getBusinesses().getNodes());
+      nodes.add(this.getBusinesses().getNodes().get());
 
       let edges = this.getMessages().getEdges();
 

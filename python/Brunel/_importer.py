@@ -2,13 +2,13 @@
 __all__ = ["getDefaultImporters", "extractPersonName",
            "isPerson", "importPerson", "isBusiness", "importBusiness",
            "importMessage", "importPositions", "importAffiliations",
-           "importSources", "importNotes"]
+           "importSources", "importScores", "importNotes"]
 
 
 def isPerson(node, importers=None):
     try:
         return str(node.Label).find("&") == -1
-    except:
+    except Exception:
         return False
 
 
@@ -48,25 +48,25 @@ def extractPersonName(name):
 
         parts = name.split(",")
 
-        possible_titles = {"captain" : "Captain",
-                           "cpt" : "Captain",
-                           "superintendent" : "Superintendent",
-                           "dr" : "Dr.",
-                           "doctor" : "Dr.",
+        possible_titles = {"captain": "Captain",
+                           "cpt": "Captain",
+                           "superintendent": "Superintendent",
+                           "dr": "Dr.",
+                           "doctor": "Dr.",
                            "prof": "Prof.",
-                           "mr" : "Mr.",
-                           "ms" : "Ms.",
-                           "mrs" : "Mrs.",
-                           "miss" : "Miss.",
-                           "rn" : "RN",
-                           "rev" : "Rev."
-                          }
+                           "mr": "Mr.",
+                           "ms": "Ms.",
+                           "mrs": "Mrs.",
+                           "miss": "Miss.",
+                           "rn": "RN",
+                           "rev": "Rev."
+                           }
 
         for part in parts[0].split(" "):
             for surname in part.split("."):
                 try:
                     titles.append(possible_titles[surname.lower()])
-                except:
+                except KeyError:
                     if len(surname) > 0:
                         surnames.append(surname)
 
@@ -75,12 +75,12 @@ def extractPersonName(name):
                 for firstname in part.split("."):
                     try:
                         titles.append(possible_titles[firstname.lower()])
-                    except:
+                    except KeyError:
                         if len(firstname) == 1:
                             firstnames.append(f"{firstname}.")
                         elif len(firstname) > 1:
                             firstnames.append(firstname)
-        except:
+        except Exception:
             pass
 
     state["titles"] = titles
@@ -100,27 +100,32 @@ def extractPersonName(name):
 def importPerson(node, importers=None):
     try:
         extractPersonName = importers["extractPersonName"]
-    except:
+    except KeyError:
         extractPersonName = extractPersonName
 
     try:
         importPositions = importers["importPositions"]
-    except:
+    except KeyError:
         importPositions = importPositions
 
     try:
         importAffiliations = importers["importAffiliations"]
-    except:
+    except KeyError:
         importAffiliations = importAffiliations
 
     try:
+        importScores = importers["importScores"]
+    except KeyError:
+        importScores = importScores
+
+    try:
         importSources = importers["importSources"]
-    except:
+    except KeyError:
         importSources = importSources
 
     try:
         importNotes = importers["importNotes"]
-    except:
+    except KeyError:
         importNotes = importNotes
 
     try:
@@ -130,6 +135,7 @@ def importPerson(node, importers=None):
         state["sources"] = importSources(node, importers=importers)
         state["affiliations"] = importAffiliations(node, importers=importers)
         state["notes"] = importNotes(node, importers=importers)
+        state["scores"] = importScores(node, importers=importers)
 
         from ._person import Person as _Person
         return _Person(state)
@@ -145,22 +151,27 @@ def isBusiness(node, importers=None):
 def importBusiness(node, importers=None):
     try:
         importPositions = importers["importPositions"]
-    except:
+    except KeyError:
         importPositions = importPositions
 
     try:
         importAffiliations = importers["importAffiliations"]
-    except:
+    except KeyError:
         importAffiliations = importAffiliations
 
     try:
         importSources = importers["importSources"]
-    except:
+    except KeyError:
         importSources = importSources
 
     try:
+        importScores = importers["importScores"]
+    except KeyError:
+        importScores = importScores
+
+    try:
         importNotes = importers["importNotes"]
-    except:
+    except KeyError:
         importNotes = importNotes
 
     try:
@@ -169,12 +180,14 @@ def importBusiness(node, importers=None):
         sources = importSources(node, importers=importers)
         affiliations = importAffiliations(node, importers=importers)
         notes = importNotes(node, importers=importers)
+        scores = importScores(node, importers=importers)
 
         from ._business import Business as _Business
         return _Business({"name": name,
                           "positions": positions,
                           "sources": sources,
                           "affiliations": affiliations,
+                          "scores": scores,
                           "notes": notes})
     except Exception as e:
         print(f"Cannot load Business {node}: {e}")
@@ -184,13 +197,18 @@ def importBusiness(node, importers=None):
 def importMessage(edge, mapping=None, importers=None):
     try:
         importSources = importers["importSources"]
-    except:
+    except KeyError:
         importSources = importSources
 
     try:
         importNotes = importers["importNotes"]
-    except:
+    except KeyError:
         importNotes = importNotes
+
+    try:
+        importScores = importers["importScores"]
+    except KeyError:
+        importScores = importScores
 
     try:
         if mapping:
@@ -202,13 +220,15 @@ def importMessage(edge, mapping=None, importers=None):
 
         notes = importNotes(edge, importers=importers, isEdge=True)
         sources = importSources(edge, importers=importers, isEdge=True)
+        scores = importScores(edge, importers=importers, isEdge=True)
 
         from ._message import Message as _Message
         return _Message({"sender": sender,
                          "receiver": receiver,
                          "notes": notes,
                          "sources": sources,
-                        })
+                         "scores": scores,
+                         })
 
     except Exception as e:
         print(f"Cannot map {edge}: {e}")
@@ -282,10 +302,32 @@ def importNotes(node, importers=None, isEdge=False):
     return []
 
 
+def importScores(node, importers=None, isEdge=False):
+    scores = {}
+
+    if isEdge:
+        try:
+            score = str(node.Type).lower()
+            possible = {"direct": 5, "dirct": 5, "cirect": 5,
+                        "strong": 10, "indirect": 3, "weak": 1}
+
+            scores["weight"] = possible[score]
+        except Exception:
+            pass
+    else:
+        try:
+            scores["weight"] = int(node.WEIGHT)
+        except Exception:
+            pass
+
+    return scores
+
+
 def getDefaultImporters():
     return {"isPerson": isPerson, "extractPersonName": extractPersonName,
             "importPerson": importPerson,
             "isBusiness": isBusiness, "importBusiness": importBusiness,
             "importMessage": importMessage, "importPositions": importPositions,
             "importAffiliations": importAffiliations,
-            "importSources": importSources, "importNotes": importNotes}
+            "importSources": importSources, "importNotes": importNotes,
+            "importScores": importScores}

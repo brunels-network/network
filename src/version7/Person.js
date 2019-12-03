@@ -21,6 +21,7 @@ class Person {
       affiliations: {},
       projects: {},
       sources: [],
+      scores: {},
       alive: null,
       gender: null,
       notes: {},
@@ -48,6 +49,7 @@ class Person {
       this.state.sources = setState(state.sources, []);
       this.state.alive = setState(state.alive);
       this.state.gender = setState(state.gender);
+      this.state.scores = setState(state.scores, {});
       this.state.notes = setState(state.notes, {})
     }
   }
@@ -147,6 +149,10 @@ class Person {
     return result;
   }
 
+  getScores(){
+    return this.state.scores;
+  }
+
   getBorn(){
     if (this.state.alive){
       return this.state.alive.getStart();
@@ -166,24 +172,44 @@ class Person {
   }
 
   getNode(is_anchor=false){
-
     let node = {id: this.getID(),
                 label: this.getName(),
                 title: this.getName(),
                 shape: "dot",
                };
 
-    let keys = Object.keys(this.state.positions);
+    let weight = 10.0;
 
-    if (keys){
-      console.log(keys);
-      node["group"] = `${keys}`;
+    if (this.state.scores){
+      weight = this.state.scores.weight;
+      if (!weight){
+        weight = 10.0;
+      }
+    }
+
+    if (weight < 5.0){
+      weight = 5.0;
+    }
+    else if (weight > 20.0){
+      weight = 20.0;
+    }
+
+    node["size"] = weight;
+
+    let keys = Object.keys(this.state.affiliations);
+
+    if (keys.length > 0){
+      node["group"] = keys.sort().join(":");
+    }
+    else{
+      node["group"] = "unknown";
     }
 
     if (is_anchor){
       node["shape"] = "star";
       node["physics"] = false;
       node["group"] = "anchor";
+      node["size"] = 20.0;
     }
 
     return node;

@@ -21,6 +21,8 @@ class SocialApp extends React.Component {
       throw Error("CANNOT CONTINUE!");
     }
 
+    console.log(social);
+
     this.state = {
       default_data: {"title": title, "image": image, "text": text},
       infobox_data: {"title": title, "image": image, "text": text},

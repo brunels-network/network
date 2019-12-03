@@ -9,7 +9,7 @@ def _setState(state, val, default=None):
             return result
         else:
             return default
-    except:
+    except KeyError:
         return default
 
 
@@ -28,6 +28,7 @@ class Person:
             "affiliations": {},
             "projects": {},
             "sources": [],
+            "scores": {},
             "alive": None,
             "gender": None,
             "notes": [],
@@ -47,25 +48,25 @@ class Person:
     def getFirstName(self):
         try:
             return " ".join(self.state["firstnames"])
-        except:
+        except KeyError:
             return None
 
     def getTitle(self):
         try:
             return " ".join(self.state["titles"])
-        except:
+        except KeyError:
             return None
 
     def getSurname(self):
         try:
             return " ".join(self.state["surnames"])
-        except:
+        except KeyError:
             return None
 
     def getSuffix(self):
         try:
             return " ".join(self.state["suffixes"])
-        except:
+        except KeyError:
             return None
 
     def getName(self):
@@ -85,7 +86,7 @@ class Person:
         positions = self.state["positions"]
 
         for position in positions.keys():
-            result.append( (self._getHook(position), positions[position]) )
+            result.append((self._getHook(position), positions[position]))
 
         return result
 
@@ -95,21 +96,21 @@ class Person:
         affiliations = self.state["affiliations"]
 
         for affiliation in affiliations.keys():
-            result.append( (self._getHook(affiliation),
-                            affiliations[affiliation]) )
+            result.append((self._getHook(affiliation),
+                           affiliations[affiliation]))
 
         return result
 
     def getBorn(self):
         try:
             return self.state["alive"].getStart()
-        except:
+        except KeyError:
             return None
 
     def getDied(self):
         try:
             return self.state["alive"].getEnd()
-        except:
+        except KeyError:
             return None
 
     def setState(self, state):
@@ -125,6 +126,7 @@ class Person:
         self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["projects"] = _setState(state, "projects", {})
         self.state["sources"] = _setState(state, "sources", [])
+        self.state["scores"] = _setState(state, "scores", {})
         self.state["alive"] = _setState(state, "alive")
         self.state["gender"] = _setState(state, "gender")
         self.state["orig_name"] = _setState(state, "name")

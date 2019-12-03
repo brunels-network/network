@@ -64,8 +64,7 @@ class Messages {
 
     for (let key in this.state.registry){
       let message = this.state.registry[key];
-      edges.add({id:message.getID(), from:message.state.sender,
-                 to:message.state.receiver});
+      edges.add(message.toEdge());
     }
 
     return edges;

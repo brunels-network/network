@@ -15,8 +15,9 @@ class Message {
       name: null,
       id: null,
       date: null,
-      sender: null,     // should be a Person ID
-      receiver: null,   // should be a Person ID
+      sender: null,
+      receiver: null,
+      scores: {},
     };
 
     this.setState(props);
@@ -33,12 +34,51 @@ class Message {
       this.state.date = setState(state.date);
       this.state.sender = setState(state.sender);
       this.state.receiver = setState(state.receiver);
+      this.state.scores = setState(state.scores, {});
     }
   }
 
   toString(){
     return `Message(name=${this.state.name} ` +
            `${this.state.sender}=>${this.state.receiver})`;
+  }
+
+  toEdge(){
+    let weight = 1.0;
+
+    if (this.state.scores){
+      weight = this.state.scores.weight;
+
+      if (!weight){
+        weight = 1.0;
+      }
+    }
+
+    let color = 'red';
+
+    if (weight > 10.0){
+      weight = 10.0;
+    }
+    else if (weight >= 4){
+      color = 'black';
+    }
+    else if (weight > 1.0){
+      color = 'gray';
+    }
+    else{
+      color = 'gray';
+      weight = 1.0;
+    }
+
+    let edge = {
+      id:this.getID(),
+      from:this.state.sender,
+      to:this.state.receiver,
+      size:weight,
+      color:color,
+    };
+
+    return edge;
   }
 
   toDry(){

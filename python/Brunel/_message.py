@@ -9,7 +9,7 @@ def _setState(state, val, default=None):
             return result
         else:
             return default
-    except:
+    except KeyError:
         return default
 
 
@@ -23,6 +23,7 @@ class Message:
             "id": None,
             "sender": None,
             "receiver": None,
+            "scores": {},
             "sources": [],
             "notes": [],
         }
@@ -69,6 +70,7 @@ class Message:
         self.state["sender"] = _setState(state, "sender")
         self.state["receiver"] = _setState(state, "receiver")
         self.state["sources"] = _setState(state, "sources", [])
+        self.state["scores"] = _setState(state, "scores", {})
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):

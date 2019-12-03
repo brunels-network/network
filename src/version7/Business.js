@@ -16,6 +16,7 @@ class Business {
       id: null,
       projects: {},
       sources: [],
+      scores: {},
       affiliations: {},
       notes: {},
     };
@@ -36,6 +37,7 @@ class Business {
       this.state.affiliations = setState(state.affiliations, {});
       this.state.projects = setState(state.projects, {});
       this.state.sources = setState(state.sources, []);
+      this.state.scores = setState(state.scores, {});
       this.state.notes = setState(state.notes, {})
     }
   }
@@ -62,8 +64,43 @@ class Business {
     return result;
   }
 
+  getScores(){
+    return this.state.scores;
+  }
+
   getNode(){
-    return {id: this.getID(), text: this.getName()};
+    let node = {
+      id: this.getID(),
+      label: this.getName(),
+      title: this.getName(),
+      shape: "dot",
+     };
+
+    let weight = 1.0;
+
+    if (this.state.scores){
+      weight = this.state.scores.weight;
+      if (!weight){
+        weight = 1.0;
+      }
+    }
+
+    if (weight < 5.0){
+      weight = 5.0;
+    }
+    else if (weight > 20.0){
+      weight = 20.0;
+    }
+
+    node["size"] = weight;
+
+    let keys = Object.keys(this.state.affiliations);
+
+    if (keys.length > 0){
+      node["group"] = keys.sort().join(":");
+    }
+
+    return node;
   }
 
   toDry(){
