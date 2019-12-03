@@ -65,7 +65,7 @@ class Positions {
 
 Positions.unDry = function(value){
   let positions = new Positions();
-  positions.state.registry = value;
+  positions.state = value;
   return positions;
 }
 

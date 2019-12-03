@@ -34,7 +34,7 @@ class Source {
     }
   }
 
-  _updateHook(hook){
+  _updateHooks(hook){
     this._getHook = hook;
   }
 

@@ -65,7 +65,7 @@ class Affiliations {
 
 Affiliations.unDry = function(value){
   let affiliations = new Affiliations();
-  affiliations.state.registry = value;
+  affiliations.state = value;
   return affiliations;
 }
 

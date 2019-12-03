@@ -8,6 +8,8 @@ import InfoBox from "./InfoBox";
 import graph_data from './data.json';
 import Social from './Social';
 
+Dry.registerClass(Social);
+
 class SocialApp extends React.Component {
   constructor(props){
     super(props);
@@ -18,7 +20,9 @@ class SocialApp extends React.Component {
 
     let social = Dry.parse(graph_data);
     if (!(social instanceof Social )){
-      throw Error("CANNOT CONTINUE!");
+      console.log("Could not parse!");
+      console.log(social);
+      social = new Social();
     }
 
     console.log(social);

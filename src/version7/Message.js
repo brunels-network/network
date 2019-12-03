@@ -21,6 +21,11 @@ class Message {
     };
 
     this.setState(props);
+    this._getHook = null;
+  }
+
+  _updateHooks(hook){
+    this._getHook = hook;
   }
 
   getID(){

@@ -36,7 +36,7 @@ class Affiliation {
     }
   }
 
-  _updateHook(hook){
+  _updateHooks(hook){
     this._getHook = hook;
   }
 

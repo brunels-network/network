@@ -65,7 +65,7 @@ class Sources {
 
 Sources.unDry = function(value){
   let sources = new Sources();
-  sources.state.registry = value;
+  sources.state = value;
   return sources;
 }
 

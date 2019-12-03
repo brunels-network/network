@@ -148,7 +148,7 @@ class Social {
 Social.unDry = function(value){
     let social = new Social();
     social.state = value;
-    //social._updateHooks();
+    social._updateHooks();
 
     return social;
 }
