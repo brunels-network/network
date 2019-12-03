@@ -8,6 +8,7 @@ import Affiliations from './Affiliations';
 import Sources from './Sources';
 import Notes from './Notes';
 
+
 class Social {
     constructor(props){
         this.state = props;
@@ -94,11 +95,24 @@ class Social {
     }
 
     getSources(){
-        return this.state.sources;
+      return this.state.sources;
     }
 
     getNotes(){
-        return this.state.notes;
+      return this.state.notes;
+    }
+
+    getGraph(){
+      let anchor = this.getPeople().find("Brunel");
+      console.log(`Anchor = ${anchor}`);
+
+      let nodes = this.getPeople().getNodes(anchor);
+      nodes.add(this.getBusinesses().getNodes());
+
+      let edges = this.getMessages().getEdges();
+
+
+      return {"nodes": nodes, "edges": edges};
     }
 
     get(id){

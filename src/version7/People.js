@@ -1,6 +1,7 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
+import vis from "vis-network";
 
 import Person from "./Person";
 import { KeyError, MissingError } from './Errors';
@@ -28,6 +29,17 @@ class People {
     }
   }
 
+  find(name){
+    for (let key in this.state.registry){
+      let person = this.state.registry[key];
+      if (person.getName().search(name) !== -1){
+        return key;
+      }
+    }
+
+    return null;
+  }
+
   add(person){
     if (!(person instanceof Person)){ return;}
 
@@ -50,6 +62,24 @@ class People {
       person.state.id = uid;
       this.state.registry[uid] = person;
     }
+  }
+
+  getNodes(anchor=null){
+    let nodes = new vis.DataSet();
+
+    console.log(anchor);
+
+    for (let person in this.state.registry){
+      console.log(`${person} ${anchor}`);
+      if (person === anchor){
+        nodes.add(this.state.registry[person].getNode({is_anchor:true}));
+      }
+      else{
+        nodes.add(this.state.registry[person].getNode());
+      }
+    }
+
+    return nodes;
   }
 
   get(id){

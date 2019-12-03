@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Row, Col } from 'reactstrap';
-import vis from "vis-network";
 
 import Dry from 'json-dry';
 import SocialGraph from "./SocialGraph";
@@ -8,8 +7,6 @@ import InfoBox from "./InfoBox";
 
 import graph_data from './data.json';
 import Social from './Social';
-import Person from "./Person";
-import People from "./People";
 
 class SocialApp extends React.Component {
   constructor(props){
@@ -24,22 +21,11 @@ class SocialApp extends React.Component {
       throw Error("CANNOT CONTINUE!");
     }
 
-    console.log(social);
-
-    var nodes = new vis.DataSet({});
-    var edges = new vis.DataSet({});
-
-    let graph = {"nodes": nodes, "edges": edges};
-
-    let people = social.getPeople();
-    let messages = social.getMessages();
-
     this.state = {
       default_data: {"title": title, "image": image, "text": text},
       infobox_data: {"title": title, "image": image, "text": text},
-      graph: graph,
-      people: people,
-      messages: messages,
+      social: social,
+      graph: social.getGraph(),
     };
   }
 

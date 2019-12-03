@@ -1,5 +1,6 @@
 
 import Dry from 'json-dry';
+import vis from 'vis-network';
 import uuidv4 from 'uuid';
 
 import Business from "./Business";
@@ -58,6 +59,16 @@ class Businesses {
     return business;
   }
 
+  getNodes(){
+    let nodes = new vis.DataSet();
+
+    for (let business in this.state.registry){
+      nodes.add(this.state.registry[business].getNode());
+    }
+
+    return nodes;
+  }
+
   toDry(){
     return {value: this.state.registry};
   }
@@ -65,7 +76,7 @@ class Businesses {
 
 Businesses.unDry = function(value){
   let businesses = new Businesses();
-  businesses.state.registry = value;
+  businesses.state = value;
   return businesses;
 }
 

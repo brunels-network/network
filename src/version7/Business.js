@@ -56,10 +56,14 @@ class Business {
     let result = [];
 
     for (let [key, value] in Object.entries(this.state.affiliations)){
-      result.append( [this._getHook(key), value] );
+      result.push( [this._getHook(key), value] );
     }
 
     return result;
+  }
+
+  getNode(){
+    return {id: this.getID(), text: this.getName()};
   }
 
   toDry(){

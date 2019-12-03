@@ -1,6 +1,7 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
+import vis from "vis-network";
 
 import Message from "./Message";
 import { KeyError, MissingError } from './Errors';
@@ -58,6 +59,18 @@ class Messages {
     return message;
   }
 
+  getEdges(){
+    let edges = new vis.DataSet();
+
+    for (let key in this.state.registry){
+      let message = this.state.registry[key];
+      edges.add({id:message.getID(), from:message.state.sender,
+                 to:message.state.receiver});
+    }
+
+    return edges;
+  }
+
   toDry(){
     return {value: this.state.registry};
   }
@@ -65,7 +78,7 @@ class Messages {
 
 Messages.unDry = function(value){
   let messages = new Messages();
-  messages.state.registry = value;
+  messages.state = value;
   return messages;
 }
 

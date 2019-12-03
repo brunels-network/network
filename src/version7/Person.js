@@ -97,26 +97,41 @@ class Person {
   }
 
   getName(){
-    let parts = [];
+    var parts = [];
 
-    [this.getTitle, this.getFirstName,
-     this.getSurname, this.getSuffix].map((part)=>{
-      let p = part();
-      if (p){
-        parts.append(p);
-      }
+    let part = this.getTitle();
+    if (part){
+      parts.push(part);
+    }
 
-      return null;
-     });
+    part = this.getFirstName();
+    if (part){
+      parts.push(part);
+    }
 
-     return parts.join(" ");
+    part = this.getSurname();
+    if (part){
+      parts.push(part);
+    }
+
+    part = this.getSuffix();
+    if (part){
+      parts.push(part);
+    }
+
+    if (parts.length > 0){
+       return parts.join(" ");
+    }
+    else{
+      return "null";
+    }
   }
 
   getPositions(){
     let result = [];
 
     for (let [key, value] in Object.entries(this.state.positions)){
-      result.append( [this._getHook(key), value] );
+      result.push( [this._getHook(key), value] );
     }
 
     return result;
@@ -126,7 +141,7 @@ class Person {
     let result = [];
 
     for (let [key, value] in Object.entries(this.state.affiliations)){
-      result.append( [this._getHook(key), value] );
+      result.push( [this._getHook(key), value] );
     }
 
     return result;
@@ -150,18 +165,24 @@ class Person {
     }
   }
 
+  getNode(is_anchor=false){
+    let node = {id: this.getID(), text: this.getName()};
+
+    if (is_anchor){
+      node["shape"] = "star";
+      node["physics"] = false;
+    }
+
+    return node;
+  }
+
   toDry(){
     return {value: this.state};
   }
 };
 
 Person.unDry = function(value){
-  console.log("Person.unDry");
   return new Person(value);
-}
-
-Person.load = function(data){
-  return new Person({name: data.name});
 }
 
 Dry.registerClass(Person);
