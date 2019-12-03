@@ -10,7 +10,7 @@ import Notes from './Notes';
 
 class Social {
     constructor(props){
-        this.state = {};
+        this.state = props;
     }
 
     _updateHooks(){
@@ -136,7 +136,7 @@ class Social {
 Social.unDry = function(value){
     let social = new Social();
     social.state = value;
-    social._updateHooks();
+    //social._updateHooks();
 
     return social;
 }

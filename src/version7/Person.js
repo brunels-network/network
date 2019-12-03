@@ -156,6 +156,7 @@ class Person {
 };
 
 Person.unDry = function(value){
+  console.log("Person.unDry");
   return new Person(value);
 }
 

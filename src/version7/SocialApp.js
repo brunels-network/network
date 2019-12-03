@@ -8,6 +8,8 @@ import InfoBox from "./InfoBox";
 
 import graph_data from './data.json';
 import Social from './Social';
+import Person from "./Person";
+import People from "./People";
 
 class SocialApp extends React.Component {
   constructor(props){

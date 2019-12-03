@@ -78,6 +78,7 @@ class People {
 };
 
 People.unDry = function(value){
+  console.log("People.unDry");
   let people = new People();
   people.state = value;
   return people;
