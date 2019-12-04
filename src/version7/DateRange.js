@@ -36,6 +36,6 @@ DateRange.unDry = function(value){
   return new DateRange(value);
 }
 
-Dry.registerClass(DateRange);
+Dry.registerClass("DateRange", DateRange);
 
 export default DateRange;

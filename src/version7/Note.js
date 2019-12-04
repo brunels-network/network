@@ -55,6 +55,6 @@ Note.unDry = function(value){
   return new Note(value);
 }
 
-Dry.registerClass(Note);
+Dry.registerClass("Note", Note);
 
 export default Note;

@@ -69,6 +69,6 @@ Sources.unDry = function(value){
   return sources;
 }
 
-Dry.registerClass(Sources);
+Dry.registerClass("Sources", Sources);
 
 export default Sources;

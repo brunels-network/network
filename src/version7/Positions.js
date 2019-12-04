@@ -69,6 +69,6 @@ Positions.unDry = function(value){
   return positions;
 }
 
-Dry.registerClass(Positions);
+Dry.registerClass("Positions", Positions);
 
 export default Positions;

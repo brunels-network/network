@@ -81,6 +81,6 @@ Messages.unDry = function(value){
   return messages;
 }
 
-Dry.registerClass(Messages);
+Dry.registerClass("Messages", Messages);
 
 export default Messages;

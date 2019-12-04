@@ -110,6 +110,6 @@ People.unDry = function(value){
   return people;
 }
 
-Dry.registerClass(People);
+Dry.registerClass("People", People);
 
 export default People;

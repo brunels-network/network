@@ -112,6 +112,6 @@ Business.unDry = function(value){
   return new Business(value);
 }
 
-Dry.registerClass(Business);
+Dry.registerClass("Business", Business);
 
 export default Business;

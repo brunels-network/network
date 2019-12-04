@@ -153,6 +153,6 @@ Social.unDry = function(value){
     return social;
 }
 
-Dry.registerClass(Social);
+Dry.registerClass("Social", Social);
 
 export default Social;

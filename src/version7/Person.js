@@ -224,6 +224,6 @@ Person.unDry = function(value){
   return new Person(value);
 }
 
-Dry.registerClass(Person);
+Dry.registerClass("Person", Person);
 
 export default Person;

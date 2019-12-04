@@ -80,6 +80,6 @@ Businesses.unDry = function(value){
   return businesses;
 }
 
-Dry.registerClass(Businesses);
+Dry.registerClass("Businesses", Businesses);
 
 export default Businesses;

@@ -61,6 +61,6 @@ Person.load = function(data){
   return new Person({name: data.name});
 }
 
-Dry.registerClass(Person);
+Dry.registerClass("Person", Person);
 
 export default Person;

@@ -57,6 +57,6 @@ Affiliation.unDry = function(value){
   return new Affiliation(value);
 }
 
-Dry.registerClass(Affiliation);
+Dry.registerClass("Affiliation", Affiliation);
 
 export default Affiliation;

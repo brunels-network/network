@@ -99,6 +99,6 @@ Message.load = function(data, people=null){
   return new Message({name: data.name});
 }
 
-Dry.registerClass(Message);
+Dry.registerClass("Message", Message);
 
 export default Message;

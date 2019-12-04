@@ -8,8 +8,6 @@ import InfoBox from "./InfoBox";
 import graph_data from './data.json';
 import Social from './Social';
 
-Dry.registerClass(Social);
-
 class SocialApp extends React.Component {
   constructor(props){
     super(props);
