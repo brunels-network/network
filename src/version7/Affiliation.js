@@ -23,6 +23,10 @@ class Affiliation {
     this._getHook = null;
   }
 
+  getName(){
+    return this.state.name;
+  }
+
   getID(){
     return this.state.id;
   }
@@ -42,10 +46,6 @@ class Affiliation {
 
   toString(){
     return `Affiliation(${this.getName()})`;
-  }
-
-  getName(){
-    return this.state.name;
   }
 
   toDry(){

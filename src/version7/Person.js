@@ -129,11 +129,21 @@ class Person {
     }
   }
 
+  inGroup(group){
+    return (group in this.state.positions || group in this.state.affiliations);
+  }
+
   getPositions(){
     let result = [];
 
-    for (let [key, value] in Object.entries(this.state.positions)){
-      result.push( [this._getHook(key), value] );
+    for (let key in this.state.positions){
+      let value = this.state.positions[key];
+      if (this._getHook){
+        result.push( [this._getHook(key), value] );
+      }
+      else{
+        result.push( [key, value] );
+      }
     }
 
     return result;
@@ -142,8 +152,14 @@ class Person {
   getAffiliations(){
     let result = [];
 
-    for (let [key, value] in Object.entries(this.state.affiliations)){
-      result.push( [this._getHook(key), value] );
+    for (let key in this.state.affiliations){
+      let value = this.state.affiliations[key];
+      if (this._getHook){
+        result.push( [this._getHook(key), value] );
+      }
+      else{
+        result.push( [key, value] );
+      }
     }
 
     return result;

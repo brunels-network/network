@@ -59,11 +59,27 @@ class Businesses {
     return business;
   }
 
-  getNodes(){
+
+  getNodes({anchor=null, filter=null} = {}){
     let nodes = new vis.DataSet();
 
+    if (filter){
+      filter = filter.getID();
+    }
+
     for (let business in this.state.registry){
-      nodes.add(this.state.registry[business].getNode());
+      let b = this.state.registry[business];
+      if (business === anchor){
+        nodes.add(b.getNode({is_anchor:true}));
+      }
+      else if (filter){
+        if (b.inGroup(filter)){
+          nodes.add(b.getNode());
+        }
+      }
+      else{
+        nodes.add(b.getNode());
+      }
     }
 
     return nodes;

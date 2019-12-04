@@ -83,15 +83,15 @@ class Social {
     }
 
     getMessages(){
-        return this.state.messages;
+      return this.state.messages;
     }
 
     getAffiliations(){
-        return this.state.affiliations;
+      return this.state.affiliations;
     }
 
     getPositions(){
-        return this.state.positions;
+      return this.state.positions;
     }
 
     getSources(){
@@ -102,11 +102,13 @@ class Social {
       return this.state.notes;
     }
 
-    getGraph(){
-      let anchor = this.getPeople().find("Brunel");
+    getGraph({anchor=null, filter=null} = {}){
+      if (anchor){
+        anchor = this.getPeople().find(anchor);
+      }
 
-      let nodes = this.getPeople().getNodes(anchor);
-      nodes.add(this.getBusinesses().getNodes().get());
+      let nodes = this.getPeople().getNodes({anchor:anchor, filter:filter});
+      nodes.add(this.getBusinesses().getNodes({filter:filter}).get());
 
       let edges = this.getMessages().getEdges();
 

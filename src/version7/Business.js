@@ -54,11 +54,21 @@ class Business {
     return this.state.name;
   }
 
+  inGroup(group){
+    return group in this.state.affiliations;
+  }
+
   getAffiliations(){
     let result = [];
 
-    for (let [key, value] in Object.entries(this.state.affiliations)){
-      result.push( [this._getHook(key), value] );
+    for (let key in this.state.affiliations){
+      let value = this.state.affiliations[key];
+      if (this._getHook){
+        result.push( [this._getHook(key), value] );
+      }
+      else{
+        result.push( [key, value] );
+      }
     }
 
     return result;
@@ -68,7 +78,7 @@ class Business {
     return this.state.scores;
   }
 
-  getNode(){
+  getNode(is_anchor=false){
     let node = {
       id: this.getID(),
       label: this.getName(),
@@ -98,6 +108,13 @@ class Business {
 
     if (keys.length > 0){
       node["group"] = keys.sort().join(":");
+    }
+
+    if (is_anchor){
+      node["shape"] = "star";
+      node["physics"] = false;
+      node["group"] = "anchor";
+      node["size"] = 20.0;
     }
 
     return node;

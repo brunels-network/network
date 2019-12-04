@@ -64,15 +64,25 @@ class People {
     }
   }
 
-  getNodes(anchor=null){
+  getNodes({anchor=null, filter=null} = {}){
     let nodes = new vis.DataSet();
 
+    if (filter){
+      filter = filter.getID();
+    }
+
     for (let person in this.state.registry){
+      let p = this.state.registry[person];
       if (person === anchor){
-        nodes.add(this.state.registry[person].getNode({is_anchor:true}));
+        nodes.add(p.getNode({is_anchor:true}));
+      }
+      else if (filter){
+        if (p.inGroup(filter)){
+          nodes.add(p.getNode());
+        }
       }
       else{
-        nodes.add(this.state.registry[person].getNode());
+        nodes.add(p.getNode());
       }
     }
 

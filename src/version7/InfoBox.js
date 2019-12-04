@@ -7,9 +7,7 @@ function InfoBox(props) {
         <CardHeader align="center">{props.title}</CardHeader>
         <CardImg top width="100%" src={props.image} />
         <CardBody>
-        <CardText>
-            {props.text}
-        </CardText>
+        {props.text}
         </CardBody>
     </Card>
   );
