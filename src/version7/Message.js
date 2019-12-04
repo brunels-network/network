@@ -32,6 +32,24 @@ class Message {
     return this.state.id;
   }
 
+  getSender(){
+    if (this._getHook){
+      return this._getHook(this.state.sender);
+    }
+    else {
+      return this.state.sender;
+    }
+  }
+
+  getReceiver(){
+    if (this._getHook){
+      return this._getHook(this.state.receiver);
+    }
+    else {
+      return this.state.receiver;
+    }
+  }
+
   setState(state){
     if (state){
       this.state.name = setState(state.name);

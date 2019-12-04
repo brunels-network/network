@@ -7,6 +7,9 @@ import InfoBox from "./InfoBox";
 
 import graph_data from './data.json';
 import Social from './Social';
+import Person from './Person';
+import Business from './Business';
+import Message from './Message';
 
 class SocialApp extends React.Component {
   constructor(props){
@@ -23,35 +26,65 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
-    console.log(social);
-
     this.state = {
       default_data: {"title": title, "image": image, "text": text},
       infobox_data: {"title": title, "image": image, "text": text},
       social: social,
       graph: social.getGraph(),
     };
+
+    this.slotClicked = this.slotClicked.bind(this);
   }
 
-  setInfoBoxData(data){
-    let newdata = {...this.state.default_data};
+  showInfo(item){
+    let newdata = {...this.state.infobox_data};
 
-    if (data.text)
-    {
-      newdata.text = data.text;
+    if (item instanceof Person){
+      newdata.title = "Person";
+      newdata.text = item.getName();
+      newdata.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
     }
-
-    if (data.image)
-    {
-      newdata.image = data.image;
+    else if (item instanceof Business){
+      newdata.title = "Business";
+      newdata.text = item.getName();
+      newdata.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
     }
+    else if (item instanceof Message){
+      newdata.title = "Message";
 
-    if (data.title)
-    {
-      newdata.title = data.title;
+      let sender = item.getSender();
+      if (sender.getName){
+        let node = sender;
+        sender = <button href="#" onClick={()=>this.showInfo(node)}>
+                    {sender.getName()}
+                 </button>;
+      }
+
+      let receiver = item.getReceiver();
+      if (receiver.getName){
+        let node = receiver;
+        receiver = <button href="#" onClick={()=>this.showInfo(node)}>
+                     {receiver.getName()}
+                   </button>;
+      }
+
+      newdata.text = <span>Message from {sender} to {receiver}</span>;
+      newdata.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
     }
 
     this.setState({infobox_data:newdata});
+  }
+
+  slotClicked(id){
+    if (!id){
+      return;
+    }
+
+    const social = this.state.social;
+
+    const item = social.get(id);
+
+    this.showInfo(item);
   }
 
   render(){
@@ -63,7 +96,7 @@ class SocialApp extends React.Component {
           <Row>
             <Col>
               <SocialGraph graph={this.state.graph}
-                           getClickedData={(data)=>this.setInfoBoxData(data)} />
+                           emitClicked={(id)=>this.slotClicked(id)} />
             </Col>
             <Col xs="4">
               <InfoBox title={data.title}

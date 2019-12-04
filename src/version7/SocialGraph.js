@@ -45,30 +45,26 @@ class SocialGraph extends React.Component {
   }
 
   handleClick(params) {
-    let getClickedData = this.props.getClickedData;
+    let emitClicked = this.props.emitClicked;
 
-    if (getClickedData)
+    if (emitClicked)
     {
       let graph = this.props.graph;
 
-      let data = {};
+      let id = null;
 
       if (params.nodes.length > 0)
       {
         let node = graph.nodes.get(params.nodes[0]);
-        data["title"] = node.title;
-        data["text"] = JSON.stringify(node);
-        data["image"] = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
+        id = node.id;
       }
       else if (params.edges.length > 0)
       {
         let edge = graph.edges.get(params.edges[0]);
-        data["title"] = "EDGE";
-        data["text"] = JSON.stringify(edge);
-        data["image"] = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
+        id = edge.id;
       }
 
-      getClickedData(data);
+      emitClicked(id);
     }
   }
 
