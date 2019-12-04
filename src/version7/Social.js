@@ -102,13 +102,31 @@ class Social {
       return this.state.notes;
     }
 
-    getGraph({anchor=null, filter=null} = {}){
+    getConnectionsTo(item){
+      return this.getMessages().getConnectionsTo(item);
+    }
+
+    getGraph({anchor=null, node_filter=null, group_filter=null} = {}){
       if (anchor){
         anchor = this.getPeople().find(anchor);
       }
 
-      let nodes = this.getPeople().getNodes({anchor:anchor, filter:filter});
-      nodes.add(this.getBusinesses().getNodes({filter:filter}).get());
+      if (node_filter){
+          let id = node_filter.getID();
+          let connections = this.getConnectionsTo(node_filter);
+          node_filter = {};
+          node_filter[id] = 1;
+          for (let connection in connections){
+              let node = connections[connection];
+              node_filter[node.getID()] = 1;
+          }
+      }
+
+      let nodes = this.getPeople().getNodes({anchor:anchor,
+                                             node_filter:node_filter,
+                                             group_filter:group_filter});
+      nodes.add(this.getBusinesses().getNodes({group_filter:group_filter,
+                                               node_filter:node_filter}).get());
 
       let edges = this.getMessages().getEdges();
 

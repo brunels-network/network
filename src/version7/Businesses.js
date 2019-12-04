@@ -60,11 +60,11 @@ class Businesses {
   }
 
 
-  getNodes({anchor=null, filter=null} = {}){
+  getNodes({anchor=null, group_filter=null, node_filter=null} = {}){
     let nodes = new vis.DataSet();
 
-    if (filter){
-      filter = filter.getID();
+    if (group_filter){
+      group_filter = group_filter.getID();
     }
 
     for (let business in this.state.registry){
@@ -72,8 +72,20 @@ class Businesses {
       if (business === anchor){
         nodes.add(b.getNode({is_anchor:true}));
       }
-      else if (filter){
-        if (b.inGroup(filter)){
+      else if (node_filter){
+        if (b.getID() in node_filter){
+          if (group_filter){
+            if (b.inGroup(group_filter)){
+              nodes.add(b.getNode());
+            }
+          }
+          else{
+            nodes.add(b.getNode());
+          }
+        }
+      }
+      else if (group_filter){
+        if (b.inGroup(group_filter)){
           nodes.add(b.getNode());
         }
       }

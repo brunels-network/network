@@ -59,6 +59,35 @@ class Messages {
     return message;
   }
 
+  getConnectionsTo(item){
+    let id = item.getID();
+
+    let connections = [];
+    let seen = {};
+
+    for (let key in this.state.registry){
+      let message = this.state.registry[key];
+      let n = null;
+
+      if (message.state.sender === id){
+        n = this._getHook(message.state.receiver);
+      }
+      else if (message.state.receiver === id){
+        n = this._getHook(message.state.sender);
+      }
+
+      if (n){
+        let n_id = n.getID();
+        if (!(n_id in seen)){
+          connections.push(n);
+          seen[n_id] = 1;
+        }
+      }
+    }
+
+    return connections;
+  }
+
   getEdges(){
     let edges = new vis.DataSet();
 

@@ -64,11 +64,11 @@ class People {
     }
   }
 
-  getNodes({anchor=null, filter=null} = {}){
+  getNodes({anchor=null, group_filter=null, node_filter=null} = {}){
     let nodes = new vis.DataSet();
 
-    if (filter){
-      filter = filter.getID();
+    if (group_filter){
+      group_filter = group_filter.getID();
     }
 
     for (let person in this.state.registry){
@@ -76,8 +76,20 @@ class People {
       if (person === anchor){
         nodes.add(p.getNode({is_anchor:true}));
       }
-      else if (filter){
-        if (p.inGroup(filter)){
+      else if (node_filter){
+        if (p.getID() in node_filter){
+          if (group_filter){
+            if (p.inGroup(group_filter)){
+              nodes.add(p.getNode());
+            }
+          }
+          else{
+            nodes.add(p.getNode());
+          }
+        }
+      }
+      else if (group_filter){
+        if (p.inGroup(group_filter)){
           nodes.add(p.getNode());
         }
       }

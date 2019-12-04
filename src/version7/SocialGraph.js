@@ -145,10 +145,6 @@ class SocialGraph extends React.Component {
                      events={events}
                      getNetwork={network =>
                                   this.setState({network:network})} />
-              <button className='graph-buttton'
-                      onClick={() => {this.onClick()}}>
-                Click Me! Hello
-              </button>
             </div>);
     }
     else{

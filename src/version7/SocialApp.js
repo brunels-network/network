@@ -11,6 +11,31 @@ import Person from './Person';
 import Business from './Business';
 import Message from './Message';
 
+function ConnectionList(props){
+  const connections = props.connections;
+  const title = props.title;
+  const emitClicked = props.emitClicked;
+  if (!connections || connections.length === 0){
+    return null;
+  }
+
+  const listitems = connections.map((item) =>{
+    let i = item;
+    let name = item.getName();
+
+    if (emitClicked){
+      return (<li key={name}>
+                <button href="#" onClick={()=>{emitClicked(i);}}>
+                  {name}</button></li>);
+    }
+    else{
+      return (<li key={name}>{name}</li>);
+    }
+  });
+
+  return (<div>{title}<br/><ul>{listitems}</ul></div>);
+}
+
 function GroupsList(props){
   const groups = props.groups;
   const title = props.title;
@@ -49,7 +74,10 @@ class SocialApp extends React.Component {
 
     let title = "Isambard's Social Network";
     let image = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Robert_Howlett_-_Isambard_Kingdom_Brunel_and_the_launching_chains_of_the_Great_Eastern_-_Google_Art_Project.jpg/256px-Robert_Howlett_-_Isambard_Kingdom_Brunel_and_the_launching_chains_of_the_Great_Eastern_-_Google_Art_Project.jpg";
-    let text = "This is an interactive viewer of Isambard Kingdom Brunel's social network. Please click on the nodes and have fun!";
+    let text = (<div><div>This is an interactive viewer of Isambard Kingdom Brunel's
+                     social network. Please click in the nodes and have fun!</div>
+                     <button href="#" onClick={()=>{this.resetFilters()}}>Reset Filters</button>
+                </div>);
 
     let social = Dry.parse(graph_data);
     if (!(social instanceof Social )){
@@ -60,43 +88,86 @@ class SocialApp extends React.Component {
 
     console.log(social);
 
-    let filter = null;
+    let group_filter = null;
+    let person_filter = null;
     let anchor = "Brunel";
 
     this.state = {
       default_data: {"title": title, "image": image, "text": text},
       infobox_data: {"title": title, "image": image, "text": text},
       social: social,
-      graph: social.getGraph({anchor:anchor, filter:filter}),
-      filter: filter,
+      graph: social.getGraph({anchor:anchor, group_filter:group_filter,
+                              person_filter: person_filter}),
+      group_filter: group_filter,
+      person_filter: person_filter,
       anchor: anchor,
     };
   }
 
-  selectGroup(group){
-    let filter = this.state.filter;
+  resetFilters(node){
+    let node_filter = null;
+    let group_filter = null;
     let anchor = this.state.anchor;
     let social = this.state.social;
 
-    if (group === filter){
+    let graph = social.getGraph({anchor:anchor, node_filter:node_filter,
+                                 group_filter:group_filter});
+
+    this.setState({graph:graph, node_filter:node_filter,
+                   group_filter:group_filter});
+  }
+
+  selectNode(node){
+    let group_filter = this.state.group_filter;
+    let node_filter = this.state.node_filter;
+    let anchor = this.state.anchor;
+    let social = this.state.social;
+
+    if (node === node_filter){
       // switch off the current filter
-      filter = null;
+      node_filter = null;
     }
     else{
-      filter = group;
+      node_filter = node;
     }
 
     //create a new graph with this filter
-    let graph = social.getGraph({anchor:anchor, filter:filter});
+    let graph = social.getGraph({anchor:anchor,
+                                 group_filter:group_filter,
+                                 node_filter: node_filter});
 
-    this.setState({filter: filter, graph: graph});
+    this.setState({node_filter: node_filter, graph: graph});
+  }
+
+  selectGroup(group){
+    let group_filter = this.state.group_filter;
+    let node_filter = this.state.node_filter;
+    let anchor = this.state.anchor;
+    let social = this.state.social;
+
+    if (group === group_filter){
+      // switch off the current filter
+      group_filter = null;
+    }
+    else{
+      group_filter = group;
+    }
+
+    //create a new graph with this filter
+    let graph = social.getGraph({anchor:anchor,
+                                 group_filter:group_filter,
+                                 node_filter: node_filter});
+
+    this.setState({group_filter: group_filter, graph: graph});
   }
 
   getBiography(item){
     let name = "unknown";
     let affiliations = [];
     let positions = [];
-    let connections = [];
+
+    let social = this.state.social;
+    let connections = social.getConnectionsTo(item);
 
     if (item.getAffiliations){
       let a = item.getAffiliations();
@@ -118,19 +189,26 @@ class SocialApp extends React.Component {
 
     return (
       <div>
-        <strong>{name}</strong>
+        <button href="#" onClick={()=>{this.selectNode(item);}}>
+          {name}
+        </button>
         <GroupsList title="Affiliations"
                     groups={affiliations}
                     emitClicked={(item)=>{this.selectGroup(item);}}/>
         <GroupsList title="Positions"
                     groups={positions}
                     emitClicked={(item)=>{this.selectGroup(item);}}/>
+        <ConnectionList title="Connections"
+                  connections={connections}
+                  emitClicked={(item)=>{this.showInfo(item);}}/>
       </div>
     );
   }
 
   showInfo(item){
-    let newdata = {...this.state.infobox_data};
+    console.log("showInfo");
+    console.log(item);
+    let newdata = {...this.state.default_data};
 
     if (item instanceof Person){
       newdata.title = "Person";
@@ -170,6 +248,7 @@ class SocialApp extends React.Component {
 
   slotClicked(id){
     if (!id){
+      this.setState({infobox_data:this.state.default_data});
       return;
     }
 
@@ -182,6 +261,28 @@ class SocialApp extends React.Component {
 
   render(){
     let data = this.state.infobox_data;
+    let node_filter = this.state.node_filter;
+    let group_filter = this.state.group_filter;
+
+    let filter_text = null;
+
+    if (node_filter){
+      filter_text = `${node_filter}`;
+    }
+
+    if (group_filter){
+      let text = `${group_filter}`;
+      if (filter_text){
+        filter_text = `${filter_text} and ${text}`;
+      }
+      else{
+        filter_text = text;
+      }
+    }
+
+    if (filter_text){
+      filter_text = `Filtered by ${filter_text}.`;
+    }
 
     return (
       <div>
@@ -200,7 +301,7 @@ class SocialApp extends React.Component {
           <Row>
             <Col>
               <p align="center">
-                See the source <a href="https://github.com/chryswoods/brunel">on GitHub</a>
+                {filter_text} See the source <a href="https://github.com/chryswoods/brunel">on GitHub</a>
               </p>
             </Col>
           </Row>
