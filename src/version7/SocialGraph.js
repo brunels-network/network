@@ -11,8 +11,8 @@ const slow_physics = {...fast_physics};
 slow_physics.timestep = 0.1;
 
 const options = {
-  height: "600px",
-  width: "100%",
+  height: "200px",
+  width: "200px",
   layout:{
     randomSeed: 42,
   },
@@ -41,7 +41,24 @@ class SocialGraph extends React.Component {
 
     this.state = {
       network: {},
+      width: 0,
+      height: 0,
     };
+
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
   handleClick(params) {
@@ -68,84 +85,33 @@ class SocialGraph extends React.Component {
     }
   }
 
-  onClick(){
+  handleResize(params){
+    // need to do this or else the network is rendered off-screen!
     let network = this.state.network;
-    let graph = this.props.graph;
-
-    const view_position = network.getViewPosition();
-    const view_scale = network.getScale();
-
-    network.setOptions( { physics: false } );
-
-    let positions = network.getPositions();
-
-    let data = {};
-
-    let filters = ["director", "investor", "unknown", null];
-
-    var filter = filters[Math.floor(Math.random() * filters.length)];
-
-    const nodesFilter = node => {
-      if (node.group === "brunel"){ return true;}
-      if (filter){
-        return node.group === filter;
-      }
-      else{
-        return true;
-      }
-    };
-
-    const edgesFilter = edge => {
-      return true;
-    };
-
-    const nodesView = new vis.DataView(graph.nodes, { filter:nodesFilter} );
-    const edgesView = new vis.DataView(graph.edges, { filter:edgesFilter} );
-
-    if (nodesView.length > 0){
-      data["nodes"] = nodesView.get();
-    }
-    else{
-      data["nodes"] = [];
-    }
-
-    if (edgesView.length > 0){
-      data["edges"] = edgesView.get();
-    }
-    else {
-      data["edges"] = [];
-    }
-
-    network.setData(data);
-
-    for (const [key, value] of Object.entries(positions))
-    {
-      network.moveNode(key, value.x, value.y);
-    }
-
-    network.moveTo({position:view_position, scale:view_scale});
-
-    setTimeout(function()
-               {network.setOptions({physics: slow_physics})}, 100 );
-
-    setTimeout(function()
-               {network.setOptions({physics: fast_physics})}, 350 );
+    network.fit();
   }
 
   render(){
     let graph = this.props.graph;
+    let my_options = {...options};
+
+    // seem to need to do this so that the network will auto-scale
+    // as the screen is redrawn
+    my_options["height"] = `${0.9*this.state.height}px`;
+    my_options["width"] = `${0.95*this.state.width}px`;
 
     if (graph){
-      let events = {click: (params) => {this.handleClick(params)}};
+      let events = {click: (params) => {this.handleClick(params)},
+                    resize: (params) => {this.handleResize(params)}};
 
       return (<div>
               <Graph graph={{nodes:graph.nodes.get(),
                              edges:graph.edges.get()}}
-                     options={options}
+                     options={my_options}
                      events={events}
                      getNetwork={network =>
                                   this.setState({network:network})} />
-            </div>);
+             </div>);
     }
     else{
       return (<div>No data to display!!!</div>);

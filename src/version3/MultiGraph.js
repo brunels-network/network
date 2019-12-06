@@ -65,6 +65,7 @@ class MultiGraph extends React.Component {
               <Graph graph={graph}
                      options={this.state.options}
                      events={events}
+                     focus={this.props.anchor}
                      getNetwork={network =>
                                   this.setState({network:network})} />
             </div>);

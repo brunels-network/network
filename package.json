@@ -12,9 +12,13 @@
     "react-graph-vis": "^1.0.5",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
+    "react-sliding-pane": "^3.1.0",
     "react-strap": "0.0.1",
+    "react-visjs-timeline": "^1.6.0",
     "reactstrap": "^8.1.1",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "vis": "^4.21.0-EOL",
+    "vis-timeline": "^6.2.9"
   },
   "scripts": {
     "start": "react-scripts start",

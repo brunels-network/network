@@ -42,7 +42,7 @@ function App(props){
   const toggle = () => setOpen(!dropdownOpen);
 
   return (
-    <Router>
+    <Router style={{height:"100%", width:"100%"}}>
     <div>
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>

@@ -1,9 +1,12 @@
-import React from "react";
+import React from 'react';
+import Modal from 'react-modal';
 import { Container, Row, Col } from 'reactstrap';
+import SlidingPane from 'react-sliding-pane';
 
 import Dry from 'json-dry';
 import SocialGraph from "./SocialGraph";
 import InfoBox from "./InfoBox";
+import TimeLineBox from './TimeLineBox';
 
 import graph_data from './data.json';
 import Social from './Social';
@@ -80,13 +83,12 @@ class SocialApp extends React.Component {
                 </div>);
 
     let social = Dry.parse(graph_data);
+    console.log(social);
+
     if (!(social instanceof Social )){
       console.log("Could not parse!");
-      console.log(social);
       social = new Social();
     }
-
-    console.log(social);
 
     let group_filter = null;
     let person_filter = null;
@@ -101,7 +103,14 @@ class SocialApp extends React.Component {
       group_filter: group_filter,
       person_filter: person_filter,
       anchor: anchor,
+      isInfoPaneOpen: false,
+      isTimeLinePaneOpen: false,
+      timeline: new TimeLineBox(),
     };
+  }
+
+  componentDidMount(){
+    Modal.setAppElement(this.el);
   }
 
   resetFilters(node){
@@ -243,7 +252,8 @@ class SocialApp extends React.Component {
       newdata.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
     }
 
-    this.setState({infobox_data:newdata});
+    this.setState({infobox_data:newdata,
+                   isInfoPaneOpen:true});
   }
 
   slotClicked(id){
@@ -285,24 +295,49 @@ class SocialApp extends React.Component {
     }
 
     return (
-      <div>
+      <div ref={ref => this.el = ref}
+           style={{position:"absolute", "left": 0, "bottom": 0}}>
+        <SlidingPane
+          isOpen={ this.state.isInfoPaneOpen }
+          from="right"
+          title='Information'
+          width="300px"
+          onRequestClose={()=>{this.setState({ isInfoPaneOpen: false });} }>
+          <InfoBox title={data.title} text={data.text}
+                   image={data.image} />
+        </SlidingPane>
+        <SlidingPane
+          isOpen={ this.state.isTimeLinePaneOpen }
+          title='Timeline'
+          from='bottom'
+          width="100%"
+          onRequestClose={() => this.setState({isTimeLinePaneOpen: false})}>
+          {this.state.timeline.render()}
+        </SlidingPane>
         <Container>
           <Row>
             <Col>
-              <SocialGraph graph={this.state.graph}
-                           emitClicked={(id)=>this.slotClicked(id)} />
-            </Col>
-            <Col xs="4">
-              <InfoBox title={data.title}
-                       image={data.image}
-                       text={data.text} />
+              <span>
+                <button onClick={() => this.setState({ isInfoPaneOpen: true })}>
+                  Info
+                </button> | <button onClick={ () => this.setState({ isTimeLinePaneOpen: true }) }>
+                  Timeline
+                </button> | <button onClick={ () => this.resetFilters() }>
+                  Reset Filters
+                </button>
+              </span>
+              <span style={{position:"absolute", "right": 0}}>
+                {filter_text} See the
+                source <a href="https://github.com/chryswoods/brunel">
+                on GitHub</a>
+              </span>
             </Col>
           </Row>
           <Row>
             <Col>
-              <p align="center">
-                {filter_text} See the source <a href="https://github.com/chryswoods/brunel">on GitHub</a>
-              </p>
+              <SocialGraph graph={this.state.graph}
+                           emitClicked={(id)=>this.slotClicked(id)}
+                           anchor={this.state.anchor} />
             </Col>
           </Row>
         </Container>
