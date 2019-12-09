@@ -31,10 +31,10 @@ function App(props){
   {
     const path = "/v" + (i+1);
     links.push(
-      <DropdownItem tag={Link} to={path}>Version {i+1}</DropdownItem>
+      <DropdownItem key={i} tag={Link} to={path}>Version {i+1}</DropdownItem>
     );
     routes.push(
-      <Route exact path={path} component={GraphLoader[i]}/>
+      <Route key={i} exact path={path} component={GraphLoader[i]}/>
     );
   }
 

@@ -1,75 +1,28 @@
+
+// package imports
 import React from 'react';
-import Modal from 'react-modal';
-import { Container, Row, Col } from 'reactstrap';
-import SlidingPane from 'react-sliding-pane';
-
 import Dry from 'json-dry';
-import SocialGraph from "./SocialGraph";
-import InfoBox from "./InfoBox";
-import TimeLineBox from './TimeLineBox';
 
+// Brunel components
+import SocialGraph from "./components/SocialGraph";
+import InfoBox from "./components/InfoBox";
+import TimeLineBox from './components/TimeLineBox';
+import SlidingPanel from './components/SlidingPanel';
+import ConnectionList from './components/ConnectionList';
+import GroupsList from './components/GroupsList';
+
+// Brunel model
+import Social from './model/Social';
+import Person from './model/Person';
+import Business from './model/Business';
+import Message from './model/Message';
+
+// Data for import
 import graph_data from './data.json';
-import Social from './Social';
-import Person from './Person';
-import Business from './Business';
-import Message from './Message';
 
-function ConnectionList(props){
-  const connections = props.connections;
-  const title = props.title;
-  const emitClicked = props.emitClicked;
-  if (!connections || connections.length === 0){
-    return null;
-  }
+// Styling for the app
+import styles from './SocialApp.module.css'
 
-  const listitems = connections.map((item) =>{
-    let i = item;
-    let name = item.getName();
-
-    if (emitClicked){
-      return (<li key={name}>
-                <button href="#" onClick={()=>{emitClicked(i);}}>
-                  {name}</button></li>);
-    }
-    else{
-      return (<li key={name}>{name}</li>);
-    }
-  });
-
-  return (<div>{title}<br/><ul>{listitems}</ul></div>);
-}
-
-function GroupsList(props){
-  const groups = props.groups;
-  const title = props.title;
-  const emitClicked = props.emitClicked;
-  if (!groups || groups.length === 0){
-    return null;
-  }
-
-  const listitems = groups.map((item) => {
-    let i = item;
-    let name = item;
-
-    if (item.getName){
-      name = item.getName();
-    }
-    else if (item.getID){
-      name = item.getID();
-    }
-
-    if (emitClicked){
-      return (<li key={name}>
-                <button href="#" onClick={()=>{emitClicked(i);}}>
-                  {name}</button></li>);
-    }
-    else{
-      return (<li key={name}>{name}</li>);
-    }
-  });
-
-  return (<div>{title}<br/><ul>{listitems}</ul></div>);
-}
 
 class SocialApp extends React.Component {
   constructor(props){
@@ -79,7 +32,8 @@ class SocialApp extends React.Component {
     let image = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Robert_Howlett_-_Isambard_Kingdom_Brunel_and_the_launching_chains_of_the_Great_Eastern_-_Google_Art_Project.jpg/256px-Robert_Howlett_-_Isambard_Kingdom_Brunel_and_the_launching_chains_of_the_Great_Eastern_-_Google_Art_Project.jpg";
     let text = (<div><div>This is an interactive viewer of Isambard Kingdom Brunel's
                      social network. Please click in the nodes and have fun!</div>
-                     <button href="#" onClick={()=>{this.resetFilters()}}>Reset Filters</button>
+                     <button href="#" className={styles.controlButton}
+                     onClick={()=>{this.resetFilters()}}>Reset Filters</button>
                 </div>);
 
     let social = Dry.parse(graph_data);
@@ -103,14 +57,10 @@ class SocialApp extends React.Component {
       group_filter: group_filter,
       person_filter: person_filter,
       anchor: anchor,
-      isInfoPaneOpen: false,
-      isTimeLinePaneOpen: false,
+      isInfoPanelOpen: false,
+      isTimeLinePanelOpen: false,
       timeline: new TimeLineBox(),
     };
-  }
-
-  componentDidMount(){
-    Modal.setAppElement(this.el);
   }
 
   resetFilters(node){
@@ -198,7 +148,8 @@ class SocialApp extends React.Component {
 
     return (
       <div>
-        <button href="#" onClick={()=>{this.selectNode(item);}}>
+        <button href="#" className={styles.controlButton}
+                onClick={()=>{this.selectNode(item);}}>
           {name}
         </button>
         <GroupsList title="Affiliations"
@@ -235,7 +186,8 @@ class SocialApp extends React.Component {
       let sender = item.getSender();
       if (sender.getName){
         let node = sender;
-        sender = <button href="#" onClick={()=>this.showInfo(node)}>
+        sender = <button href="#" onClick={()=>this.showInfo(node)}
+                    className={styles.controlButton}>
                     {sender.getName()}
                  </button>;
       }
@@ -243,7 +195,8 @@ class SocialApp extends React.Component {
       let receiver = item.getReceiver();
       if (receiver.getName){
         let node = receiver;
-        receiver = <button href="#" onClick={()=>this.showInfo(node)}>
+        receiver = <button href="#" onClick={()=>this.showInfo(node)}
+                     className={styles.controlButton}>
                      {receiver.getName()}
                    </button>;
       }
@@ -253,7 +206,7 @@ class SocialApp extends React.Component {
     }
 
     this.setState({infobox_data:newdata,
-                   isInfoPaneOpen:true});
+                   isInfoPanelOpen:true});
   }
 
   slotClicked(id){
@@ -295,55 +248,51 @@ class SocialApp extends React.Component {
     }
 
     return (
-      <div ref={ref => this.el = ref}
-           style={{position:"absolute", "left": 0, "bottom": 0}}>
-        <SlidingPane
-          isOpen={ this.state.isInfoPaneOpen }
+      <div>
+        <SlidingPanel
+          isOpen={ this.state.isInfoPanelOpen }
           from="right"
           title='Information'
           width="300px"
-          onRequestClose={()=>{this.setState({ isInfoPaneOpen: false });} }>
+          onRequestClose={()=>{this.setState({ isInfoPanelOpen: false });} }>
           <InfoBox title={data.title} text={data.text}
                    image={data.image} />
-        </SlidingPane>
-        <SlidingPane
-          isOpen={ this.state.isTimeLinePaneOpen }
-          title='Timeline'
-          from='bottom'
-          width="100%"
-          onRequestClose={() => this.setState({isTimeLinePaneOpen: false})}>
-          {this.state.timeline.render()}
-        </SlidingPane>
-        <Container>
-          <Row>
-            <Col>
-              <span>
-                <button onClick={() => this.setState({ isInfoPaneOpen: true })}>
-                  Info
-                </button> | <button onClick={ () => this.setState({ isTimeLinePaneOpen: true }) }>
-                  Timeline
-                </button> | <button onClick={ () => this.resetFilters() }>
-                  Reset Filters
-                </button>
-              </span>
-              <span style={{position:"absolute", "right": 0}}>
-                {filter_text} See the
-                source <a href="https://github.com/chryswoods/brunel">
-                on GitHub</a>
-              </span>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <SocialGraph graph={this.state.graph}
-                           emitClicked={(id)=>this.slotClicked(id)}
-                           anchor={this.state.anchor} />
-            </Col>
-          </Row>
-        </Container>
+        </SlidingPanel>
+        <div>
+          <span>
+            <button onClick={() => this.setState({ isInfoPanelOpen: true })}
+                    className={styles.controlButton}>
+              Info
+            </button> | <button onClick={ () => this.setState({ isTimeLinePaneOpen: true }) }
+                                className={styles.controlButton}>
+              Timeline
+            </button> | <button onClick={ () => this.resetFilters() }
+                                className={styles.controlButton}>
+              Reset Filters
+            </button>
+          </span>
+          <span style={{position:"absolute", "right": 0}}>
+            {filter_text} See the
+            source <a href="https://github.com/chryswoods/brunel">
+            on GitHub</a>
+          </span>
+        </div>
+        <SocialGraph graph={this.state.graph}
+                     emitClicked={(id)=>this.slotClicked(id)}
+                     anchor={this.state.anchor} />
       </div>
     );
   }
 };
+
+/*        <SlidingPanel
+          isOpen={ this.state.isTimeLinePanelOpen }
+          title='Timeline'
+          from='bottom'
+          width="100%"
+          onRequestClose={() => this.setState({isTimeLinePanelOpen: false})}>
+          {this.state.timeline.render()}
+        </SlidingPanel>
+*/
 
 export default SocialApp;

@@ -1,7 +1,7 @@
 {
   "name": "brunel",
   "version": "0.1.0",
-  "homepage": "http://chryswoods.github.io/brunel",
+  "homepage": "http://chryswoods.github.io/brunel/",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.4.0",
@@ -44,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "css-loader": "^3.3.0",
     "gh-pages": "^2.1.1"
   }
 }
