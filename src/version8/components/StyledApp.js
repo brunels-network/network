@@ -17,7 +17,7 @@ class Menu extends Component {
     const { isOpen } = this.state;
 
     return (
-      <div className={styles.container}>
+      <div>
         <button
           type="button"
           className={styles.button}
@@ -33,13 +33,8 @@ class Menu extends Component {
           unmountOnExit
         >
           {state => (
-            <div className={styles.dropdown}>
-              <ul className={styles.list}>
-                <li>Option 1</li>
-                <li>Option 2</li>
-                <li>Option 3</li>
-                <li>Option 4</li>
-              </ul>
+            <div className={styles.container}>
+              This is some random text in a div....
             </div>
           )}
         </CSSTransition>
