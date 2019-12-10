@@ -1,72 +1,51 @@
-import React, { Component } from 'react';
-import { CSSTransition } from 'react-transition-group';
-import styles from './StyledApp.styles';
-import injectSheet from 'react-jss';
+import React, { Component } from "react";
+import { CSSTransition } from "react-transition-group";
+import styles from "./StyledApp.module.css";
+import fadeTransition from "./transitions/fade.module.css";
+import slideTransition from './transitions/slide.module.css';
 
-class App extends Component {
+class Menu extends Component {
   state = {
-    showList: true,
-    highlightedHobby: false,
+    isOpen: false
   };
 
-  switch = () => {
-    this.setState(prevState => ({
-      showList: !prevState.showList,
-    }));
-  };
-
-  listSwitch = () => {
-    this.setState(state => ({
-      highlightedHobby: !state.highlightedHobby,
-    }));
+  toggleDropdown = () => {
+    this.setState(state => ({ isOpen: !state.isOpen }));
   };
 
   render() {
-    const { classes } = this.props;
+    const { isOpen } = this.state;
+
     return (
-      <div className={classes.container}>
+      <div className={styles.container}>
         <button
-          className={classes.display}
-          onClick={this.switch}
+          type="button"
+          className={styles.button}
+          onClick={this.toggleDropdown}
         >
-          Obinna
+          &#9776;
         </button>
+
         <CSSTransition
-          in={this.state.showList}
-          timeout={400}
-          classNames="list-transition"
+          in={isOpen}
+          timeout={200}
+          classNames={slideTransition}
           unmountOnExit
-          classNames={{
-            enter: classes.listTransitionEnter,
-            enterActive:
-              classes.listTransitionEnterActive,
-            exit: classes.listTransitionExit,
-            exitActive:
-              classes.listTransitionExitActive,
-          }}
         >
-          <div className={classes.listBody}>
-            <ul className={classes.list}>
-              <li className={classes.listItem}>
-                Writing JavaScript
-              </li>
-              <li className={classes.listItem}>
-                Running
-              </li>
-              <li className={classes.listItem}>
-                Technical Writing
-              </li>
-              <li className={classes.listItem}>
-                Writing Clean code
-              </li>
-            </ul>
-          </div>
+          {state => (
+            <div className={styles.dropdown}>
+              <ul className={styles.list}>
+                <li>Option 1</li>
+                <li>Option 2</li>
+                <li>Option 3</li>
+                <li>Option 4</li>
+              </ul>
+            </div>
+          )}
         </CSSTransition>
       </div>
     );
   }
 }
 
-const StyledApp = injectSheet(styles)(App);
-
-export default StyledApp;
+export default Menu;
