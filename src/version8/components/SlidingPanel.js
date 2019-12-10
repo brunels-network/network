@@ -1,5 +1,6 @@
 
 import React from 'react';
+import CSSTransition from 'react-transition-group';
 
 import styles from './SlidingPanel.module.css'
 
@@ -7,11 +8,10 @@ function SlidingPanel({children, isOpen, title, from, width,
                        onRequestClose, }){
 
   let classname = styles.panel;
-  let dirclass = styles.panelRight;
+  let dirclass = styles.closePanel;
 
-  if (!isOpen){
-    classname = styles.closePanel;
-    dirclass = null;
+  if (isOpen){
+    dirclass = styles.panelView;
   }
 
   return (<div className={`${classname} ${dirclass}`}
