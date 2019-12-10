@@ -10,7 +10,6 @@ import TimeLineBox from './components/TimeLineBox';
 import SlidingPanel from './components/SlidingPanel';
 import ConnectionList from './components/ConnectionList';
 import GroupsList from './components/GroupsList';
-import StyledApp from './components/StyledApp';
 
 // Brunel model
 import Social from './model/Social';
@@ -153,7 +152,6 @@ class SocialApp extends React.Component {
                 onClick={()=>{this.selectNode(item);}}>
           {name}
         </button>
-        <StyledApp />
         <GroupsList title="Affiliations"
                     groups={affiliations}
                     emitClicked={(item)=>{this.selectGroup(item);}}/>
@@ -225,13 +223,6 @@ class SocialApp extends React.Component {
   }
 
   render(){
-    return (<div>
-              <div>
-                <StyledApp />
-              </div>
-              <div>Hello</div>
-            </div> );
-
     let data = this.state.infobox_data;
     let node_filter = this.state.node_filter;
     let group_filter = this.state.group_filter;
