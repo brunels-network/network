@@ -2,3 +2,64 @@
 .module {
   all: unset;
 }
+
+.controlButton {
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  border: 2px solid #008CBA;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  opacity: 0.8;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+}
+
+.controlButton:hover {
+  background-color: #008CBA;
+  opacity: 1.0;
+  color: white;
+}
+
+.controlButton:active {
+  box-shadow: 0 2px rgba(0,0,0,0.2);
+  transform: translateY(2px);
+}
+
+.graphContainer {
+  background-color: white;
+  position: fixed;
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bottomContainer {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.peopleButton {
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  border: 2px solid rgb(3, 99, 32);
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  opacity: 0.8;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+}
+
+.peopleButton:hover {
+  background-color: rgb(3, 99, 32);
+  opacity: 1.0;
+  color: white;
+}
+
+.peopleButton:active {
+  box-shadow: 0 2px rgba(0,0,0,0.2);
+  transform: translateY(2px);
+}

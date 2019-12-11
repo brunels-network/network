@@ -1,4 +1,22 @@
 
 .button {
-  background-color: "red";
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  border: 2px solid rgb(3, 99, 32);
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  opacity: 0.8;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+}
+
+.button:hover {
+  background-color: rgb(3, 99, 32);
+  opacity: 1.0;
+  color: white;
+}
+
+.button:active {
+  box-shadow: 0 2px rgba(0,0,0,0.2);
+  transform: translateY(2px);
 }

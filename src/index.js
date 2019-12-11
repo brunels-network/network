@@ -42,25 +42,25 @@ const [dropdownOpen, setOpen] = useState(false);
 const toggle = () => setOpen(!dropdownOpen);
 
 return (
-<Router>
-<div>
-<Suspense fallback={<div>Loading...</div>}>
- <Switch>
-   <Route exact path="/" component={GraphLoader[num_versions-1]}/>
-   {routes}
- </Switch>
-</Suspense>
-<ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
- <DropdownToggle caret>
-   Choose version...
- </DropdownToggle>
- <DropdownMenu>
-   <DropdownItem tag={Link} to="/">Latest</DropdownItem>
-   {links}
- </DropdownMenu>
-</ButtonDropdown>
-</div>
-</Router>
+  <Router>
+  <div>
+  <ButtonDropdown isOpen={dropdownOpen} toggle={toggle}>
+  <DropdownToggle caret>
+    Choose version...
+  </DropdownToggle>
+  <DropdownMenu>
+    <DropdownItem tag={Link} to="/">Latest</DropdownItem>
+    {links}
+  </DropdownMenu>
+  </ButtonDropdown>
+  <Suspense fallback={<div>Loading...</div>}>
+  <Switch>
+    <Route exact path="/" component={GraphLoader[num_versions-1]}/>
+    {routes}
+  </Switch>
+  </Suspense>
+  </div>
+  </Router>
 );
 }
 

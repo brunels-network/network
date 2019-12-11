@@ -41,24 +41,33 @@ class SocialGraph extends React.Component {
 
     this.state = {
       network: {},
-      width: 0,
-      height: 0,
+      dimensions: {height:300, width:600},
     };
 
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.updateSize = this.updateSize.bind(this);
   }
 
   componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
+    this.setState({
+      dimensions: {
+        width: this.container.offsetWidth,
+        height: this.container.offsetHeight,
+      },
+    });
+    window.addEventListener('resize', this.updateSize);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
+    window.removeEventListener('resize', this.updateSize);
   }
 
-  updateWindowDimensions() {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  updateSize() {
+    this.setState({
+      dimensions: {
+        width: this.container.offsetWidth,
+        height: this.container.offsetHeight,
+      }
+    });
   }
 
   handleClick(params) {
@@ -87,6 +96,7 @@ class SocialGraph extends React.Component {
 
   handleResize(params){
     // need to do this or else the network is rendered off-screen!
+    console.log(`RESIZE ${params}`);
     let network = this.state.network;
     network.fit();
   }
@@ -97,24 +107,32 @@ class SocialGraph extends React.Component {
 
     // seem to need to do this so that the network will auto-scale
     // as the screen is redrawn
-    my_options["height"] = `${0.9*this.state.height}px`;
-    my_options["width"] = `${0.95*this.state.width}px`;
+    my_options["height"] = `${this.state.dimensions.height}px`;
+    my_options["width"] = `${this.state.dimensions.width}px`;
 
     if (graph){
       let events = {click: (params) => {this.handleClick(params)},
                     resize: (params) => {this.handleResize(params)}};
 
-      return (<div>
-              <Graph graph={{nodes:graph.nodes.get(),
+      // need to enclose in a div that is set to take up 100% of the parent
+      // space and that holds a reference so that we can resize the
+      // graph as the parent resizes
+      return (<div ref={el => (this.container = el)}
+                   style={{width:"100%", height:"100%"}}>
+                <Graph
+                     graph={{nodes:graph.nodes.get(),
                              edges:graph.edges.get()}}
                      options={my_options}
                      events={events}
                      getNetwork={network =>
                                   this.setState({network:network})} />
-             </div>);
+              </div>
+             );
     }
     else{
-      return (<div>No data to display!!!</div>);
+      return (<div ref={el => (this.container = el)}>
+                No data to display!!!
+              </div>);
     }
   }
 };

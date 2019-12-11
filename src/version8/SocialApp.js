@@ -148,7 +148,7 @@ class SocialApp extends React.Component {
 
     return (
       <div>
-        <button href="#" className={styles.controlButton}
+        <button href="#" className={styles.peopleButton}
                 onClick={()=>{this.selectNode(item);}}>
           {name}
         </button>
@@ -235,6 +235,7 @@ class SocialApp extends React.Component {
     let group_filter = this.state.group_filter;
 
     let filter_text = null;
+    let reset_button = null;
 
     if (node_filter){
       filter_text = `${node_filter}`;
@@ -251,7 +252,13 @@ class SocialApp extends React.Component {
     }
 
     if (filter_text){
-      filter_text = `Filtered by ${filter_text}.`;
+      filter_text = <div className={styles.filterText}>
+                      Filtered by {filter_text}.
+                    </div>;
+      reset_button = <button onClick={() => {this.resetFilters()}}
+                             className={styles.controlButton}>
+                       Reset Filters
+                     </button>;
     }
 
     return (
@@ -265,28 +272,24 @@ class SocialApp extends React.Component {
           <InfoBox title={data.title} text={data.text}
                    image={data.image} />
         </SlidingPanel>
-        <div>
-          <span>
-            <button onClick={() => this.toggleInfoPanel()}
-                    className={styles.controlButton}>
-              Info
-            </button> | <button onClick={() => this.toggleTimeLinePanel()}
-                                className={styles.controlButton}>
-              Timeline
-            </button> | <button onClick={() => this.resetFilters()}
-                                className={styles.controlButton}>
-              Reset Filters
-            </button>
-          </span>
-          <span style={{position:"absolute", "right": 0}}>
-            {filter_text} See the
+        <div className={styles.graphContainer}>
+          <SocialGraph graph={this.state.graph}
+                       emitClicked={(id)=>this.slotClicked(id)}
+                       anchor={this.state.anchor} />
+        </div>
+        <div className={styles.bottomContainer}>
+          <button onClick={() => this.toggleTimeLinePanel()}
+                  className={styles.controlButton}>
+            Show timeline
+          </button>
+          {filter_text}
+          {reset_button}
+          <div className={styles.citationText}>
+            See the
             source <a href="https://github.com/chryswoods/brunel">
             on GitHub</a>
-          </span>
+          </div>
         </div>
-        <SocialGraph graph={this.state.graph}
-                     emitClicked={(id)=>this.slotClicked(id)}
-                     anchor={this.state.anchor} />
       </div>
     );
   }
