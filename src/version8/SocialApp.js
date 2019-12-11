@@ -211,15 +211,22 @@ class SocialApp extends React.Component {
 
   slotClicked(id){
     if (!id){
-      this.setState({infobox_data:this.state.default_data});
+      this.setState({isInfoPanelOpen:false,
+                     isTimeLinePanelOpen:false});
       return;
     }
 
     const social = this.state.social;
-
     const item = social.get(id);
-
     this.showInfo(item);
+  }
+
+  toggleInfoPanel(){
+    this.setState({isInfoPanelOpen: !(this.state.isInfoPanelOpen)});
+  }
+
+  toggleTimeLinePanel(){
+    this.setState({isTimeLinePanelOpen: !(this.state.isTimeLinePanelOpen)});
   }
 
   render(){
@@ -249,24 +256,24 @@ class SocialApp extends React.Component {
 
     return (
       <div>
-        <SlidingPanel
-          isOpen={ this.state.isInfoPanelOpen }
-          from="right"
-          title='Information'
-          width="300px"
-          onRequestClose={()=>{this.setState({ isInfoPanelOpen: false });} }>
+        <SlidingPanel isOpen={this.state.isInfoPanelOpen}
+                      position='right'>
           <InfoBox title={data.title} text={data.text}
                    image={data.image} />
         </SlidingPanel>
+        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
+                      position='bottom'>
+          {this.state.timeline.render()}
+        </SlidingPanel>
         <div>
           <span>
-            <button onClick={() => this.setState({ isInfoPanelOpen: true })}
+            <button onClick={() => this.toggleInfoPanel()}
                     className={styles.controlButton}>
               Info
-            </button> | <button onClick={ () => this.setState({ isTimeLinePaneOpen: true }) }
+            </button> | <button onClick={() => this.toggleTimeLinePanel()}
                                 className={styles.controlButton}>
               Timeline
-            </button> | <button onClick={ () => this.resetFilters() }
+            </button> | <button onClick={() => this.resetFilters()}
                                 className={styles.controlButton}>
               Reset Filters
             </button>

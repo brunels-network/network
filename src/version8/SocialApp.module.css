@@ -2,11 +2,3 @@
 .module {
   all: unset;
 }
-
-.controlButton {
-  background-color: orange;
-}
-
-div * {
-    background-color: yellow;
-}

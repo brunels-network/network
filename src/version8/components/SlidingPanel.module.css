@@ -1,40 +1,39 @@
-
-.panel {
+.leftContainer {
   position: fixed;
-  right:0;
+  left: 0;
   top: 0;
+  z-index: 100;
   min-width: 300px;
   width: 30%;
   height: 100%;
-  background-color: #333;
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
+}
+
+.rightContainer {
+  position: fixed;
+  right: 0;
+  top: 0;
   z-index: 100;
-  box-shadow: 0 8px 8px rgba(0,0,0,0.5);
-}
-
-.panelRight {
-  right: 0%;
+  min-width: 300px;
+  width: 30%;
   height: 100%;
-  width: 300px;
-  min-width: 100px;
-  transform: translateX(-100%);
-  -webkit-transform: translateX(-100%);
-  transition: transform 3s ease-in-out;
 }
 
-.panelView {
-  transform: translateX(0);
+.topContainer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  min-height: 300px;
+  height: 30%;
 }
 
-.closePanel {
-  display: none;
-}
-
-.panelTitle{
-  background-color: purple;
-}
-
-.panelChild {
-  background-color: black;
+.bottomContainer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  width: 100%;
+  min-height: 300px;
+  height: 30%;
 }

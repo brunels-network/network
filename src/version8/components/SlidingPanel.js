@@ -1,31 +1,42 @@
 
-import React from 'react';
-import CSSTransition from 'react-transition-group';
+import React from "react";
+import {CSSTransition} from "react-transition-group";
 
 import styles from './SlidingPanel.module.css'
+import SlideFromLeft from './transitions/SlideFromLeft.module.css';
+import SlideFromRight from './transitions/SlideFromRight.module.css';
+import SlideFromBottom from './transitions/SlideFromBottom.module.css';
+import SlideFromTop from './transitions/SlideFromTop.module.css';
 
-function SlidingPanel({children, isOpen, title, from, width,
-                       onRequestClose, }){
+function SlidingPanel({children, isOpen=false, position="right", }){
+  let container = styles.rightContainer;
+  let transition = SlideFromRight;
 
-  let classname = styles.panel;
-  let dirclass = styles.closePanel;
-
-  if (isOpen){
-    dirclass = styles.panelView;
+  if (position === "right"){
+    container = styles.rightContainer;
+    transition = SlideFromRight;
+  }
+  else if (position === "bottom"){
+    container = styles.bottomContainer;
+    transition = SlideFromBottom;
+  }
+  else if (position === "top"){
+    container = styles.topContainer;
+    transition = SlideFromTop;
+  }
+  else if (position === "left"){
+    container = styles.leftContainer;
+    transition = SlideFromLeft;
   }
 
-  return (<div className={`${classname} ${dirclass}`}
-          >
-            <div className={styles.panelTitle}>
-              <button className={styles.closeButton}
-                      onClick={onRequestClose}>
-               X
-              </button> | This is panel {title}
+  return (<CSSTransition in={isOpen}
+                         timeout={200}
+                         classNames={transition}
+                         unmountOnExit>
+            <div className={container}>
+              {children}
             </div>
-              <div className={styles.panelChild}>
-                {children}
-              </div>
-            </div>);
-}
+          </CSSTransition>);
+};
 
 export default SlidingPanel;
