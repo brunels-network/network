@@ -17,7 +17,7 @@ function ConnectionList(props) {
 
     if (emitClicked) {
       return (<li key={name}>
-        <button href="#" class={styles.button}
+        <button href="#" className={styles.button}
           onClick={() => { emitClicked(i); }}>
           {name}</button></li>);
     }

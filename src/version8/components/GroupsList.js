@@ -25,7 +25,7 @@ function GroupsList(props) {
     if (emitClicked) {
       return (<li key={name}>
         <button href="#" onClick={() => { emitClicked(i); }}
-          class={styles.button}>
+          className={styles.button}>
           {name}</button></li>);
     }
     else {
