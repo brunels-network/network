@@ -29,6 +29,8 @@ function SlidingPanel({children, isOpen=false, position="right", }){
     transition = SlideFromLeft;
   }
 
+  container = `${container} ${styles.container}`;
+
   return (<CSSTransition in={isOpen}
                          timeout={200}
                          classNames={transition}

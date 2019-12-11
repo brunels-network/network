@@ -256,14 +256,14 @@ class SocialApp extends React.Component {
 
     return (
       <div>
+        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
+                      position='bottom'>
+          {this.state.timeline.render()}
+        </SlidingPanel>
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}
                       position='right'>
           <InfoBox title={data.title} text={data.text}
                    image={data.image} />
-        </SlidingPanel>
-        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
-                      position='bottom'>
-          {this.state.timeline.render()}
         </SlidingPanel>
         <div>
           <span>
