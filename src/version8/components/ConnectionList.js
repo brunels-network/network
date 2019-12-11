@@ -3,10 +3,9 @@ import React from 'react';
 
 import styles from './ConnectionList.module.css';
 
-function ConnectionList(props) {
-  const connections = props.connections;
-  const title = props.title;
-  const emitClicked = props.emitClicked;
+function null_function(item){}
+
+function ConnectionList({connections, title, emitClicked=null_function}) {
   if (!connections || connections.length === 0) {
     return null;
   }
@@ -15,15 +14,10 @@ function ConnectionList(props) {
     let i = item;
     let name = item.getName();
 
-    if (emitClicked) {
-      return (<li key={name}>
-        <button href="#" className={styles.button}
-          onClick={() => { emitClicked(i); }}>
-          {name}</button></li>);
-    }
-    else {
-      return (<li key={name}>{name}</li>);
-    }
+    return (<li key={name}>
+      <button href="#" className={styles.button}
+        onClick={() => { emitClicked(i); }}>
+        {name}</button></li>);
   });
 
   return (<div>{title}<br /><ul>{listitems}</ul></div>);

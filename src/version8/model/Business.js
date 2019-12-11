@@ -26,6 +26,10 @@ class Business {
     this._getHook = null;
   }
 
+  isNode(){
+    return true;
+  }
+
   getID(){
     return this.state.id;
   }

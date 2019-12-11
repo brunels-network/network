@@ -36,6 +36,10 @@ class Person {
     return this.state.id;
   }
 
+  isNode(){
+    return true;
+  }
+
   setState(state){
     if (state){
       this.state.titles = setState(state.titles);
