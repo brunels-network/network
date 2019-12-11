@@ -1,6 +1,5 @@
 import React from "react";
 import Graph from "react-graph-vis";
-import vis from "vis-network";
 
 const fast_physics = {
   enabled: true,
@@ -40,11 +39,8 @@ class SocialGraph extends React.Component {
     super(props);
 
     this.state = {
-      network: {},
       dimensions: {height:300, width:600},
     };
-
-    this.updateSize = this.updateSize.bind(this);
   }
 
   componentDidMount() {
@@ -54,11 +50,11 @@ class SocialGraph extends React.Component {
         height: this.container.offsetHeight,
       },
     });
-    window.addEventListener('resize', this.updateSize);
+    window.addEventListener('resize', ()=>{this.updateSize()});
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateSize);
+    window.removeEventListener('resize', ()=>{this.updateSize()});
   }
 
   updateSize() {
@@ -70,12 +66,42 @@ class SocialGraph extends React.Component {
     });
   }
 
+  getGraph(){
+    const social = this.props.social;
+
+    if (social){
+      return social.getGraph();
+    }
+    else{
+      return null;
+    }
+  }
+
+  getNetwork(){
+    const social = this.props.social;
+
+    if (social){
+      return social.getNetwork();
+    }
+    else{
+      return null;
+    }
+  }
+
+  setNetwork(network){
+    let social = this.props.social;
+
+    if (social){
+      social.setNetwork(network);
+    }
+  }
+
   handleClick(params) {
     let emitClicked = this.props.emitClicked;
 
     if (emitClicked)
     {
-      let graph = this.props.graph;
+      let graph = this.props.social.getGraph();
 
       let id = null;
 
@@ -96,13 +122,14 @@ class SocialGraph extends React.Component {
 
   handleResize(params){
     // need to do this or else the network is rendered off-screen!
-    console.log(`RESIZE ${params}`);
-    let network = this.state.network;
-    network.fit();
+    let network = this.getNetwork();
+    if (network){
+      network.fit();
+    }
   }
 
   render(){
-    let graph = this.props.graph;
+    let graph = this.getGraph();
     let my_options = {...options};
 
     // seem to need to do this so that the network will auto-scale
@@ -124,8 +151,8 @@ class SocialGraph extends React.Component {
                              edges:graph.edges.get()}}
                      options={my_options}
                      events={events}
-                     getNetwork={network =>
-                                  this.setState({network:network})} />
+                     getNetwork={(network)=>{
+                                  this.setNetwork(network)}}/>
               </div>
              );
     }

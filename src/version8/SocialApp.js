@@ -23,88 +23,40 @@ class SocialApp extends React.Component {
     super(props);
 
     let social = Dry.parse(graph_data);
+    console.log(social);
 
     if (!(social instanceof Social )){
       console.log("Could not parse!");
       social = new Social();
     }
 
-    let group_filter = null;
-    let person_filter = null;
-    let anchor = "Brunel";
+    social.setAnchor("Brunel");
 
     this.state = {
       social: social,
       selected_item: null,
-      graph: social.getGraph({anchor:anchor, group_filter:group_filter,
-                              person_filter: person_filter}),
-      group_filter: group_filter,
-      person_filter: person_filter,
-      anchor: anchor,
       isInfoPanelOpen: false,
       isTimeLinePanelOpen: false,
       timeline: new TimeLineBox(),
     };
   }
 
-  resetFilters(node){
-    let node_filter = null;
-    let group_filter = null;
-    let anchor = this.state.anchor;
+  resetFilters(){
     let social = this.state.social;
-
-    let graph = social.getGraph({anchor:anchor, node_filter:node_filter,
-                                 group_filter:group_filter});
-
-    this.setState({graph:graph,
-                   node_filter:node_filter,
-                   group_filter:group_filter,
-                  });
+    social.resetFilters();
+    this.setState({social:social});
   }
 
   selectNode(node){
-    let group_filter = this.state.group_filter;
-    let node_filter = this.state.node_filter;
-    let anchor = this.state.anchor;
     let social = this.state.social;
-
-    if (node === node_filter){
-      // switch off the current filter
-      node_filter = null;
-    }
-    else{
-      node_filter = node;
-    }
-
-    //create a new graph with this filter
-    let graph = social.getGraph({anchor:anchor,
-                                 group_filter:group_filter,
-                                 node_filter: node_filter});
-
-    this.setState({node_filter: node_filter, graph: graph});
+    social.toggleNodeFilter(node);
+    this.setState({social:social});
   }
 
   selectGroup(group){
-    let group_filter = this.state.group_filter;
-    let node_filter = this.state.node_filter;
-    let anchor = this.state.anchor;
     let social = this.state.social;
-
-    if (group === group_filter){
-      // switch off the current filter
-      group_filter = null;
-    }
-    else{
-      group_filter = group;
-    }
-
-    //create a new graph with this filter
-    let graph = social.getGraph({anchor:anchor,
-                                 group_filter:group_filter,
-                                 node_filter: node_filter});
-
-    this.setState({group_filter: group_filter,
-                   graph: graph});
+    social.toggleGroupFilter(group);
+    this.setState({social:social});
   }
 
   showInfo(item){
@@ -155,10 +107,10 @@ class SocialApp extends React.Component {
 
   render(){
     const item = this.state.selected_item;
-    const social = this.state.social;
+    let social = this.state.social;
 
-    const node_filter = this.state.node_filter;
-    const group_filter = this.state.group_filter;
+    const node_filter = social.getNodeFilter();
+    const group_filter = social.getGroupFilter();
 
     let filter_text = null;
     let reset_button = null;
@@ -201,9 +153,8 @@ class SocialApp extends React.Component {
                    emitSelected={(item)=>{this.slotSelected(item)}}/>
         </SlidingPanel>
         <div className={styles.graphContainer}>
-          <SocialGraph graph={this.state.graph}
-                       emitClicked={(id)=>this.slotClicked(id)}
-                       anchor={this.state.anchor} />
+          <SocialGraph social={this.state.social}
+                       emitClicked={(id)=>this.slotClicked(id)} />
         </div>
         <div className={styles.bottomContainer}>
           <button onClick={() => this.toggleTimeLinePanel()}

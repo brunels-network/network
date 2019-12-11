@@ -1,6 +1,5 @@
 import React from "react";
 import Graph from "react-graph-vis";
-import vis from "vis-network";
 
 const fast_physics = {
   enabled: true,
