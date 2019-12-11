@@ -253,10 +253,11 @@ class SocialApp extends React.Component {
 
     if (filter_text){
       filter_text = <div className={styles.filterText}>
-                      Filtered by {filter_text}.
+                      {filter_text}
                     </div>;
       reset_button = <button onClick={() => {this.resetFilters()}}
-                             className={styles.controlButton}>
+                             className={styles.controlButton}
+                             style={{fontSize:"small"}}>
                        Reset Filters
                      </button>;
     }
@@ -279,15 +280,15 @@ class SocialApp extends React.Component {
         </div>
         <div className={styles.bottomContainer}>
           <button onClick={() => this.toggleTimeLinePanel()}
-                  className={styles.controlButton}>
+                  className={styles.controlButton}
+                  style={{fontSize:"small"}}>
             Show timeline
           </button>
           {filter_text}
           {reset_button}
           <div className={styles.citationText}>
-            See the
-            source <a href="https://github.com/chryswoods/brunel">
-            on GitHub</a>
+           <a href="https://github.com/chryswoods/brunel">
+            View source</a>
           </div>
         </div>
       </div>

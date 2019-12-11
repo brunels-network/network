@@ -38,7 +38,9 @@
 .bottomContainer {
   position: fixed;
   bottom: 10px;
-  width: 100%;
+  width: 30%;
+  left: 50%;
+  margin-left: -15%;
   text-align: center;
 }
 
@@ -62,4 +64,14 @@
 .peopleButton:active {
   box-shadow: 0 2px rgba(0,0,0,0.2);
   transform: translateY(2px);
+}
+
+.filterText {
+  color: darkgreen;
+  font-size: small;
+}
+
+.citationText {
+  color: darkred;
+  font-size: smaller;
 }
