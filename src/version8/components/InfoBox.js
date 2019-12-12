@@ -1,5 +1,6 @@
 import React from "react";
-import { Card, CardHeader, CardBody, CardImg } from 'reactstrap';
+
+import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
 import GroupsList from './GroupsList';
 import ConnectionList from './ConnectionList';
@@ -22,7 +23,7 @@ function null_function(item){}
 
 function getBiography({item, social, emitClicked=null_function,
                        emitSelected=null_function}){
-  let name = "unknown";
+  let pages = [];
   let affiliations = [];
   let positions = [];
   let connections = social.getConnectionsTo(item);
@@ -41,49 +42,54 @@ function getBiography({item, social, emitClicked=null_function,
     }
   }
 
-  if (item.getName){
-    name = item.getName();
+  if (connections.length > 0){
+    pages.push(["Connections", <ConnectionList title="Connections"
+                                               connections={connections}
+                                               emitClicked={emitClicked}/>]);
   }
 
-  return (
-    <div>
-      <button href="#" className={styles.button}
-              onClick={()=>{emitSelected(item);}}>
-        {name}
-      </button>
-      <GroupsList title="Affiliations"
-                  groups={affiliations}
-                  emitClicked={emitSelected}/>
-      <GroupsList title="Positions"
-                  groups={positions}
-                  emitClicked={emitSelected}/>
-      <ConnectionList title="Connections"
-                connections={connections}
-                emitClicked={emitClicked}/>
-    </div>
-  );
+  if (positions.length > 0){
+    pages.push(["Positions", <GroupsList title="Positions"
+                                         groups={positions}
+                                         emitClicked={emitSelected}/>]);
+  }
+
+  if (affiliations.length > 0){
+    pages.push(["Affiliations", <GroupsList title="Affiliations"
+                                            groups={affiliations}
+                                            emitClicked={emitSelected}/>]);
+  }
+
+  return pages;
 }
 
 function extractData({item, social, emitClicked=null_function,
                       emitSelected=null_function}){
-  let data = {title:default_title, text:default_text, image:default_image};
+  let data = {title:default_title, image:default_image,
+              pages:[["Title", default_text]]};
 
   if (!(social instanceof Social)){
     return data;
   }
 
   if (item instanceof Person){
-    data.title = "Person";
-    data.text = getBiography({item:item, social:social,
-                              emitClicked:emitClicked,
-                              emitSelected:emitSelected});
+    data.title = <button href="#" className={styles.button}
+                         onClick={()=>{emitSelected(item);}}>
+                  {item.getName()}
+                 </button>
+    data.pages = getBiography({item:item, social:social,
+                               emitClicked:emitClicked,
+                               emitSelected:emitSelected});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
   }
   else if (item instanceof Business){
-    data.title = "Business";
-    data.text = getBiography({item:item, social:social,
-                              emitClicked:emitClicked,
-                              emitSelected:emitSelected});
+    data.title = <button href="#" className={styles.button}
+                         onClick={()=>{emitSelected(item);}}>
+                  {item.getName()}
+                 </button>
+    data.pages = getBiography({item:item, social:social,
+                               emitClicked:emitClicked,
+                               emitSelected:emitSelected});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
   }
   else if (item instanceof Message){
@@ -92,7 +98,7 @@ function extractData({item, social, emitClicked=null_function,
     let sender = item.getSender();
     if (sender.getName){
       let node = sender;
-      sender = <button href="#" onClick={emitClicked(node)}
+      sender = <button href="#" onClick={()=>{emitClicked(node)}}
                   className={styles.controlButton}>
                   {sender.getName()}
                </button>;
@@ -101,13 +107,14 @@ function extractData({item, social, emitClicked=null_function,
     let receiver = item.getReceiver();
     if (receiver.getName){
       let node = receiver;
-      receiver = <button href="#" onClick={emitClicked(node)}
+      receiver = <button href="#" onClick={()=>{emitClicked(node)}}
                    className={styles.controlButton}>
                    {receiver.getName()}
                  </button>;
     }
 
-    data.text = <span>Message from {sender} to {receiver}</span>;
+    data.pages = [["Default",
+                   <span>Message from {sender} to {receiver}</span>]];
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
   }
 
@@ -115,17 +122,47 @@ function extractData({item, social, emitClicked=null_function,
 }
 
 function InfoBox(props) {
-  let data = extractData(props);
+  const data = extractData(props);
 
-  return (
-    <Card body outline color="secondary" style={{height:"100%", overflowY:"scroll"}}>
-        <CardHeader align="center">{data.title}</CardHeader>
-        <CardImg top width="100%" src={data.image} />
-        <CardBody>
-        {data.text}
-        </CardBody>
-    </Card>
-  );
+  const pages = data.pages;
+
+  if (pages.length > 1){
+    let tabs = [];
+    let panes = [];
+
+    for (let i=0; i<pages.length; ++i){
+      panes.push(<TabPanel tabId={pages[i][0]} className={styles.tabPanel}>
+                   {pages[i][1]}
+                 </TabPanel>);
+      tabs.push(<Tab className={styles.tab} tabFor={pages[i][0]}>{pages[i][0]}</Tab>);
+    }
+
+    return (
+      <div className={styles.container}>
+        <img className={styles.heroImage} alt="" src={data.image}/>
+        <div>{data.title}</div>
+        <Tabs
+          vertical
+          onChange={(tabId) => { console.log(tabId) }}
+          className={styles.tabs}
+        >
+          <TabList className={styles.tablist}>
+            {tabs}
+          </TabList>
+          {panes}
+        </Tabs>
+      </div>
+    );
+  }
+  else{
+    return (
+      <div className={styles.container}>
+        <img className={styles.heroImage} alt="" src={data.image}/>
+        <div>{data.title}</div>
+        {pages[0][1]}
+      </div>
+    );
+  }
 };
 
 export default InfoBox;

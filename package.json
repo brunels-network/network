@@ -17,6 +17,7 @@
     "react-strap": "0.0.1",
     "react-transition-group": "^4.3.0",
     "react-visjs-timeline": "^1.6.0",
+    "react-web-tabs": "^1.0.1",
     "reactstrap": "^8.1.1",
     "uuid": "^3.3.3",
     "vis": "^4.21.0-EOL",
