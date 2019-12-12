@@ -7,7 +7,16 @@
 
 .heroImage {
   width: 80%;
-  align-self: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+}
+
+.title {
+  text-align: center;
+  font-size: large;
+  padding: 10px;
 }
 
 .button {

@@ -28,7 +28,12 @@ function GroupsList({groups, title, emitClicked=null_function}) {
         {name}</button></li>);
   });
 
-  return (<div>{title}<br /><ul>{listitems}</ul></div>);
+  if (title){
+    return (<div>{title}<br /><ul className={styles.list}>{listitems}</ul></div>);
+  }
+  else{
+    return (<ul className={styles.list}>{listitems}</ul>);
+  }
 }
 
 export default GroupsList;

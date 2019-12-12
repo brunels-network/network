@@ -42,23 +42,35 @@ function getBiography({item, social, emitClicked=null_function,
     }
   }
 
+  pages.push(["Biography",
+              <div>This is space for a biography of {item.getName()}</div>]);
+
   if (connections.length > 0){
-    pages.push(["Connections", <ConnectionList title="Connections"
-                                               connections={connections}
+    pages.push(["Connections", <ConnectionList connections={connections}
                                                emitClicked={emitClicked}/>]);
+  }
+  else{
+    pages.push(["Connections", "None"]);
   }
 
   if (positions.length > 0){
-    pages.push(["Positions", <GroupsList title="Positions"
-                                         groups={positions}
+    pages.push(["Positions", <GroupsList groups={positions}
                                          emitClicked={emitSelected}/>]);
+  }
+  else{
+    pages.push(["Positions", "None"]);
   }
 
   if (affiliations.length > 0){
-    pages.push(["Affiliations", <GroupsList title="Affiliations"
-                                            groups={affiliations}
+    pages.push(["Affiliations", <GroupsList groups={affiliations}
                                             emitClicked={emitSelected}/>]);
   }
+  else{
+    pages.push(["Affiliations", "None"]);
+  }
+
+  pages.push(["Analysis",
+              <div>Here is space for graphs and analysis of {item.getName()}</div>]);
 
   return pages;
 }
@@ -93,13 +105,13 @@ function extractData({item, social, emitClicked=null_function,
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
   }
   else if (item instanceof Message){
-    data.title = "Message";
+    data.title = null;
 
     let sender = item.getSender();
     if (sender.getName){
       let node = sender;
       sender = <button href="#" onClick={()=>{emitClicked(node)}}
-                  className={styles.controlButton}>
+                  className={styles.button}>
                   {sender.getName()}
                </button>;
     }
@@ -108,14 +120,20 @@ function extractData({item, social, emitClicked=null_function,
     if (receiver.getName){
       let node = receiver;
       receiver = <button href="#" onClick={()=>{emitClicked(node)}}
-                   className={styles.controlButton}>
+                   className={styles.button}>
                    {receiver.getName()}
                  </button>;
     }
 
-    data.pages = [["Default",
-                   <span>Message from {sender} to {receiver}</span>]];
+    let pages = [];
+    pages.push(["Message",
+               <div style={{textAlign:"center"}}><div>From</div>{sender}<div>to</div>{receiver}</div>]);
+    pages.push(["Source", "Space to see the original source for this message"]);
+    pages.push(["Analysis", "Space for analysis of this message"]);
+
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
+
+    data.pages = pages;
   }
 
   return data;
@@ -140,8 +158,9 @@ function InfoBox(props) {
     return (
       <div className={styles.container}>
         <img className={styles.heroImage} alt="" src={data.image}/>
-        <div>{data.title}</div>
+        <div className={styles.title}>{data.title}</div>
         <Tabs
+          key={panes.length}
           vertical
           onChange={(tabId) => { console.log(tabId) }}
           className={styles.tabs}
@@ -158,7 +177,7 @@ function InfoBox(props) {
     return (
       <div className={styles.container}>
         <img className={styles.heroImage} alt="" src={data.image}/>
-        <div>{data.title}</div>
+        <div className={styles.title}>{data.title}</div>
         {pages[0][1]}
       </div>
     );
