@@ -149,10 +149,10 @@ function InfoBox(props) {
     let panes = [];
 
     for (let i=0; i<pages.length; ++i){
-      panes.push(<TabPanel tabId={pages[i][0]} className={styles.tabPanel}>
+      panes.push(<TabPanel key={pages[i][0]} tabId={pages[i][0]} className={styles.tabPanel}>
                    {pages[i][1]}
                  </TabPanel>);
-      tabs.push(<Tab className={styles.tab} tabFor={pages[i][0]}>{pages[i][0]}</Tab>);
+      tabs.push(<Tab key={pages[i][0]} className={styles.tab} tabFor={pages[i][0]}>{pages[i][0]}</Tab>);
     }
 
     return (

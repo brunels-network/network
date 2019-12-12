@@ -144,14 +144,16 @@ class SocialApp extends React.Component {
       <div>
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
-          {this.state.timeline.render()}
+          <TimeLineBox />
         </SlidingPanel>
+
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}
                       position='right'>
           <InfoBox item={item} social={social}
                    emitClicked={(item)=>{this.slotClicked(item)}}
                    emitSelected={(item)=>{this.slotSelected(item)}}/>
         </SlidingPanel>
+
         <div className={styles.graphContainer}>
           <SocialGraph social={this.state.social}
                        emitClicked={(id)=>this.slotClicked(id)} />
