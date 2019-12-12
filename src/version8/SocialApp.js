@@ -142,6 +142,7 @@ class SocialApp extends React.Component {
 
     return (
       <div>
+        <div className={styles.container}></div>
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
           <TimeLineBox />
