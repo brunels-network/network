@@ -37,10 +37,27 @@ class Message:
         if sender is None or receiver is None:
             return "Message::null"
         else:
-            return f"Message({sender.getName()} => {receiver.getName()})"
+            return f"Message({self.getSenderName()} " \
+                   f"=> {self.getReceiverName()})"
 
     def __repr__(self):
         return self.__str__()
+
+    def getSenderName(self):
+        sender = self.getSender()
+
+        try:
+            return sender.getName()
+        except Exception:
+            return sender
+
+    def getReceiverName(self):
+        receiver = self.getReceiver()
+
+        try:
+            return receiver.getName()
+        except Exception:
+            return receiver
 
     def getSender(self):
         sender = self.state["sender"]

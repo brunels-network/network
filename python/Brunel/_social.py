@@ -63,7 +63,7 @@ class Social:
             return id
 
     @staticmethod
-    def load_from_csv(nodes, edges, importers=None):
+    def load_from_csv(nodes, edges, importers=None, modifiers=None):
         import pandas as _pd
         nodes = _pd.read_csv(nodes)
         edges = _pd.read_csv(edges)
@@ -77,6 +77,13 @@ class Social:
             for key in importers.keys():
                 if key not in importers:
                     importers[key] = defaults[key]
+
+        if modifiers is None:
+            modifiers = {}
+
+        for key in ["person", "business", "message"]:
+            if key not in modifiers:
+                modifiers[key] = lambda item: item
 
         ids = {}
 
@@ -94,12 +101,14 @@ class Social:
             if importers["isPerson"](node, importers=importers):
                 person = importers["importPerson"](node, importers=importers)
                 if person:
+                    person = modifiers["person"](person)
                     people.add(person)
                     ids[node.ID] = person.getID()
             elif importers["isBusiness"](node, importers=importers):
                 business = importers["importBusiness"](node,
                                                        importers=importers)
                 if business:
+                    business = modifiers["business"](business)
                     businesses.add(business)
                     ids[node.ID] = business.getID()
 
@@ -107,6 +116,7 @@ class Social:
             message = importers["importMessage"](edge, mapping=ids,
                                                  importers=importers)
             if message:
+                message = modifiers["message"](message)
                 messages.add(message)
 
         return social
