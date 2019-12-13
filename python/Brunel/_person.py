@@ -113,6 +113,12 @@ class Person:
         except KeyError:
             return None
 
+    def getLifeTime(self):
+        try:
+            return self.state["alive"]
+        except KeyError:
+            return None
+
     def setState(self, state):
         if not state:
             return

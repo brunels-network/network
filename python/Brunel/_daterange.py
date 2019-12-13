@@ -22,9 +22,11 @@ class DateRange:
             if end is None:
                 return "DateRange:unknown"
             else:
-                return f"DateRange(from={start} to=?)"
+                return f"DateRange(from=? to={end.isoformat()})"
+        elif end is None:
+            return f"DateRange(from={start.isoformat()} to=?)"
         else:
-            return f"DateRange(from=? to={end})"
+            return f"DateRange(from={start.isoformat()} to={end.isoformat()})"
 
     def __repr__(self):
         return self.__str__()
@@ -42,10 +44,13 @@ class DateRange:
         if (start is None) and (end is None):
             return "null"
 
-        if start:
-            state["start"] = start
+        if start == end:
+            state["both"] = start.isoformat()
+        else:
+            if start:
+                state["start"] = start.isoformat()
 
-        if end:
-            state["end"] = end
+            if end:
+                state["end"] = end.isoformat()
 
         return state

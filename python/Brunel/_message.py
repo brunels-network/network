@@ -23,6 +23,7 @@ class Message:
             "id": None,
             "sender": None,
             "receiver": None,
+            "sent": None,
             "scores": {},
             "sources": [],
             "notes": [],
@@ -74,6 +75,9 @@ class Message:
             receiver = self._getHook(receiver)
 
         return receiver
+
+    def getSent(self):
+        return self.state["sent"]
 
     def getID(self):
         return self.state["id"]

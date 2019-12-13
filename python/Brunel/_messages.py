@@ -49,8 +49,11 @@ class Messages:
     def get(self, id):
         try:
             return self.state["registry"][id]
-        except:
+        except KeyError:
             raise KeyError(f"No Message with ID {id}")
+
+    def values(self):
+        return self.state["registry"].values()
 
     def load(self, data):
         if data:
