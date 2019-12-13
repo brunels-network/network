@@ -7,6 +7,9 @@ import Positions from './Positions';
 import Affiliations from './Affiliations';
 import Sources from './Sources';
 import Notes from './Notes';
+
+// need to import DateRange so that it is registered with JSON.dry
+// eslint-disable-next-line
 import DateRange from './DateRange';
 
 class Social {

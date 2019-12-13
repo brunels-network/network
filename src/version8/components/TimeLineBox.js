@@ -59,7 +59,7 @@ class TimeLineBox extends Component {
             <Timeline className={styles.timeline}
                       ref="timeline"
                       options={timeline_options}
-                      items={timeline_items}/>;
+                      items={timeline_items}/>
           </TabPanel>
 
           <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
