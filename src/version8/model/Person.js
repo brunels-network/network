@@ -66,6 +66,10 @@ class Person {
     return `Person(${this.getName()})`;
   }
 
+  getAlive(){
+    return this.state.alive;
+  }
+
   getFirstName(){
     if (this.state.firstnames){
       return this.state.firstnames.join(" ");

@@ -19,11 +19,44 @@ class DateRange{
     this.setState(value);
   }
 
+  getStart(){
+    return this.state.start;
+  }
+
+  getEnd(){
+    return this.state.end;
+  }
+
+  getStartString(){
+    if (this.state.start){
+      return this.state.start.toDateString();
+    }
+    else{
+      return "unknown";
+    }
+  }
+
+  getEndString(){
+    if (this.state.end){
+      return this.state.end.toDateString();
+    }
+    else{
+      return "unknown";
+    }
+  }
+
   setState(state){
     if (state){
       if (state === "null"){ return; }
-      this.state.start = setState(state.start);
-      this.state.end = setState(state.end);
+
+      if (state.both){
+        this.state.start = new Date(state.both);
+        this.state.end = this.state.start;
+      }
+      else{
+        this.state.start = setState(new Date(state.start));
+        this.state.end = setState(new Date(state.end));
+      }
     }
   }
 

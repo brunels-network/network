@@ -14,6 +14,14 @@ function GroupsList({groups, title, emitClicked=null_function}) {
   const listitems = groups.map((item) => {
     let i = item;
     let name = item;
+    let daterange = null;
+
+    if (item.length){
+      i = item[0];
+      name = item[0];
+      daterange = item[1];
+      item = item[0]
+    }
 
     if (item.getName) {
       name = item.getName();
@@ -22,10 +30,20 @@ function GroupsList({groups, title, emitClicked=null_function}) {
       name = item.getID();
     }
 
-    return (<li key={name}>
-      <button href="#" onClick={() => { emitClicked(i);}}
-        className={styles.button}>
-        {name}</button></li>);
+    if (daterange){
+      return (<li key={name}>
+        <button href="#" onClick={() => { emitClicked(i);}}
+          className={styles.button}>
+          {name}</button> :&nbsp;
+          from {daterange.getStartString()} to&nbsp;
+               {daterange.getEndString()}</li>);
+    }
+    else{
+      return (<li key={name}>
+        <button href="#" onClick={() => { emitClicked(i);}}
+          className={styles.button}>
+          {name}</button></li>);
+    }
   });
 
   if (title){

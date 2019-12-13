@@ -29,21 +29,31 @@ function getBiography({item, social, emitClicked=null_function,
   let connections = social.getConnectionsTo(item);
 
   if (item.getAffiliations){
-    let a = item.getAffiliations();
-    for (let val in a){
-      affiliations.push(a[val][0]);
-    }
+    affiliations = item.getAffiliations();
   }
 
   if (item.getPositions){
-    let p = item.getPositions();
-    for (let val in p){
-      positions.push(p[val][0]);
-    }
+    positions = item.getPositions();
+  }
+
+  let alive = null;
+
+  if (item.getAlive){
+    alive = <p>
+              They were alive from&nbsp;
+              {item.getAlive().getStartString()}&nbsp;
+              until {item.getAlive().getEndString()}.
+            </p>;
   }
 
   pages.push(["Biography",
-              <div>This is space for a biography of {item.getName()}</div>]);
+              (<div>
+                 <p>This is space for a biography of {item.getName()}</p>
+                 {alive}
+                 <p>
+                   (note that all dates are random for testing purposes!)
+                 </p>
+               </div>)]);
 
   if (connections.length > 0){
     pages.push(["Connections", <ConnectionList connections={connections}
@@ -54,17 +64,31 @@ function getBiography({item, social, emitClicked=null_function,
   }
 
   if (positions.length > 0){
-    pages.push(["Positions", <GroupsList groups={positions}
-                                         emitClicked={emitSelected}/>]);
+    pages.push(["Positions",
+                <div>
+                  <GroupsList groups={positions}
+                                      emitClicked={emitSelected}/>
+                  <p>
+                    Note that all times are made up for testing
+                    purposes!
+                  </p>
+                </div>]);
   }
   else{
     pages.push(["Positions", "None"]);
   }
 
   if (affiliations.length > 0){
-    pages.push(["Affiliations", <GroupsList groups={affiliations}
-                                            emitClicked={emitSelected}/>]);
-  }
+    pages.push(["Affiliations",
+                <div>
+                  <GroupsList groups={affiliations}
+                                      emitClicked={emitSelected}/>
+                  <p>
+                    Note that all times are made up for testing
+                    purposes!
+                  </p>
+                </div>]);
+}
   else{
     pages.push(["Affiliations", "None"]);
   }
@@ -127,7 +151,13 @@ function extractData({item, social, emitClicked=null_function,
 
     let pages = [];
     pages.push(["Message",
-               <div style={{textAlign:"center"}}><div>From</div>{sender}<div>to</div>{receiver}</div>]);
+               <div style={{textAlign:"center"}}>
+                 <div>From</div>
+                 {sender}
+                 <div>to</div>
+                 {receiver}
+                 <div>on {item.getSent().getStartString()}</div>
+               </div>]);
     pages.push(["Source", "Space to see the original source for this message"]);
     pages.push(["Analysis", "Space for analysis of this message"]);
 

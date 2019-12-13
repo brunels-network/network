@@ -14,7 +14,7 @@ class Message {
     this.state = {
       name: null,
       id: null,
-      date: null,
+      sent: null,
       sender: null,
       receiver: null,
       scores: {},
@@ -30,6 +30,10 @@ class Message {
 
   getID(){
     return this.state.id;
+  }
+
+  getSent(){
+    return this.state.sent;
   }
 
   getSender(){
@@ -54,7 +58,7 @@ class Message {
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.date = setState(state.date);
+      this.state.sent = setState(state.sent);
       this.state.sender = setState(state.sender);
       this.state.receiver = setState(state.receiver);
       this.state.scores = setState(state.scores, {});
