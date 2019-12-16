@@ -1,13 +1,8 @@
 .container {
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-}
-
-.timeline {
-  position:absolute;
-  top: 0;
-  height: 200px;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .centerContainer {
@@ -89,6 +84,6 @@
 .tabPanel {
   background-color: inherit;
   width: 100%;
-  height: 100%;
+  height: 200px;
   margin: 5px;
 }

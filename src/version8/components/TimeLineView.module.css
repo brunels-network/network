@@ -1,0 +1,43 @@
+
+.buttonGroup button {
+  align-items: center;
+  color: white;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.buttonGroup button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
+
+/* Clear floats (clearfix hack) */
+.buttonGroup:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.datePicker {
+  font-size: small;
+  height: 28px;
+  width: 120px;
+  text-align: center;
+}
+
+.datePicker:hover {
+  background-color: rgb(3, 99, 32);
+  opacity: 1.0;
+  color: white;
+}
+
+.zoomButton {
+  font-size: medium;
+  height: 28px;
+  background-color: rgb(3, 99, 32);
+}
+
+.scrollButton {
+  font-size: medium;
+  height: 28px;
+  background-color: rgb(3, 99, 32);
+}
