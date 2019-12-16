@@ -7,7 +7,15 @@ import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 import styles from './TimeLineBox.module.css';
 
 const timeline_options = {
-  height: "200px",
+  autoResize: false,
+  horizontalScroll: true,
+  max: "2020-01-01",
+  min: "1800-01-01",
+  showCurrentTime: false,
+  showTooltips: false,
+  verticalScroll: true,
+  zoomable: false,
+  zoomKey: "shiftKey",
 }
 
 var timeline_items =  [
@@ -25,14 +33,86 @@ class TimeLineBox extends Component {
 
     this.state = {
       selectedIds: [],
+      dimensions: {height:300, width:600},
     }
   }
 
+  componentDidMount() {
+    this.setState({
+      dimensions: {
+        width: this.container.offsetWidth,
+        height: this.container.offsetHeight,
+      },
+    });
+    window.addEventListener('resize', ()=>{this.updateSize()});
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', ()=>{this.updateSize()});
+  }
+
+  updateSize() {
+    if (!(this.container)){
+      console.log("Resize with no contianer?");
+      return;
+    }
+
+    this.setState({
+      dimensions: {
+        width: this.container.offsetWidth - 10,
+        height: this.container.offsetHeight - 60,
+      }
+    });
+    console.log(`Timeline resize ${this.state.dimensions.width}x${this.state.dimensions.height}`);
+  }
+
+  getTimeLine(){
+    try {
+      return this.timeline.$el;
+    }
+    catch(error){
+      console.log(`No timeline ${error}`);
+    }
+  }
+
+  selectHandler(props){
+    console.log("Selected");
+    console.log(props);
+  }
+
+  changeHandler(props){
+    console.log("Changed");
+    console.log(props);
+  }
+
+  rangeChangeHandler(props){
+    console.log("Range change");
+    console.log(props);
+  }
+
+  rangeChangedHandler(props){
+    console.log("Range changed");
+    console.log(props);
+  }
+
+  clickHandler(props){
+    console.log("Clicked");
+    console.log(props);
+  }
+
   render() {
+    console.log(this.getTimeLine());
+
+    let my_options = {...timeline_options};
+    my_options["height"] = `${this.state.dimensions.height}px`;
+    my_options["width"] = `${this.state.dimensions.width}px`;
+    console.log(`RENDER ${this.state.dimensions.width}x${this.state.dimensions.height}`);
+
     return (
-      <div className={styles.container}>
+      <div ref={el => (this.container = el)}
+           className={styles.container}>
         <Tabs key="timeline-tabs"
-              onChange={(tabId) => { console.log(tabId) }}
+              onChange={(tabId) => { console.log(tabId); this.updateSize(); }}
               className={styles.tabs}>
           <TabList className={styles.tabList}>
             <Tab className={styles.tab}
@@ -56,10 +136,17 @@ class TimeLineBox extends Component {
           </TabPanel>
 
           <TabPanel key="timeline" tabId="timeline" className={styles.tabPanel}>
-            <Timeline className={styles.timeline}
-                      ref="timeline"
-                      options={timeline_options}
-                      items={timeline_items}/>
+            <div style={{width:"99%", height:"99%"}}>
+              <Timeline className={styles.timeline}
+                        ref={el => (this.timeline = el)}
+                        clickHandler={(props)=>{this.clickHandler(props)}}
+                        rangeChangeHandler={(props)=>{this.rangeChangeHandler(props)}}
+                        rangeChangedHandler={(props)=>{this.rangeChangedHandler(props)}}
+                        selectHandler={(props)=>{this.selectHandler(props)}}
+                        changeHandler={(props)=>{this.changeHandler(props)}}
+                        options={my_options}
+                        items={timeline_items}/>
+            </div>
           </TabPanel>
 
           <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
