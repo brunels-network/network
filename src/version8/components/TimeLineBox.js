@@ -1,12 +1,16 @@
-
-import React, { Component } from 'react'
-import Timeline from 'react-visjs-timeline'
+import React, { Component } from 'react';
+import Timeline from 'react-visjs-timeline';
+import DatePicker from 'react-datepicker';
 
 import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
+
+import "react-datepicker/dist/react-datepicker.css";
 
 import styles from './TimeLineBox.module.css';
 
 const timeline_options = {
+  width: "100%",
+  height: "100%",
   autoResize: false,
   horizontalScroll: true,
   max: "2020-01-01",
@@ -34,6 +38,7 @@ class TimeLineBox extends Component {
     this.state = {
       selectedIds: [],
       dimensions: {height:300, width:600},
+      timeRange: {start:null, end:null},
     }
   }
 
@@ -60,7 +65,7 @@ class TimeLineBox extends Component {
     this.setState({
       dimensions: {
         width: this.container.offsetWidth - 10,
-        height: this.container.offsetHeight - 60,
+        height: this.container.offsetHeight - 100,
       }
     });
     console.log(`Timeline resize ${this.state.dimensions.width}x${this.state.dimensions.height}`);
@@ -80,27 +85,39 @@ class TimeLineBox extends Component {
     console.log(props);
   }
 
-  changeHandler(props){
-    console.log("Changed");
-    console.log(props);
-  }
-
-  rangeChangeHandler(props){
-    console.log("Range change");
-    console.log(props);
-  }
-
   rangeChangedHandler(props){
     console.log("Range changed");
     console.log(props);
+    this.setState({
+      timeRange: {
+        start: props.start,
+        end: props.end,
+      }
+    });
   }
 
-  clickHandler(props){
-    console.log("Clicked");
-    console.log(props);
+  zoomIn(){
+    this.getTimeLine().zoomIn(1.0);
+  }
+
+  zoomOut(){
+    this.getTimeLine().zoomOut(1.0);
+  }
+
+  setStartDate(date){
+    console.log(`SET START ${date}`);
+    this.getTimeLine().setWindow(date, this.state.timeRange.end,
+                                 {animation:true});
+  }
+
+  setEndDate(date){
+    console.log(`SET END ${date}`);
+    this.getTimeLine().setWindow(this.state.timeRange.start, date,
+                                 {animation:true});
   }
 
   render() {
+    console.log("RENDER TIMELINE");
     console.log(this.getTimeLine());
 
     let my_options = {...timeline_options};
@@ -139,13 +156,30 @@ class TimeLineBox extends Component {
             <div style={{width:"99%", height:"99%"}}>
               <Timeline className={styles.timeline}
                         ref={el => (this.timeline = el)}
-                        clickHandler={(props)=>{this.clickHandler(props)}}
-                        rangeChangeHandler={(props)=>{this.rangeChangeHandler(props)}}
-                        rangeChangedHandler={(props)=>{this.rangeChangedHandler(props)}}
+                        rangechangedHandler={(props)=>{this.rangeChangedHandler(props)}}
                         selectHandler={(props)=>{this.selectHandler(props)}}
-                        changeHandler={(props)=>{this.changeHandler(props)}}
                         options={my_options}
                         items={timeline_items}/>
+            </div>
+            <div>
+              <button onClick={()=>{this.zoomIn()}}>Zoom in</button>&nbsp;
+              <button onClick={()=>{this.zoomOut()}}>Zoom out</button>&nbsp;
+              <DatePicker selected={this.state.timeRange.start}
+                          openToDate={this.state.timeRange.start}
+                          selectsStart
+                          startDate={this.state.timeRange.start}
+                          endDate={this.state.timeRange.end}
+                          dateFormat="d MMMM yyyy"
+                          showMonthYearPicker
+                          onChange={(date)=>{this.setStartDate(date)}}/>&nbsp;
+              <DatePicker selected={this.state.timeRange.end}
+                          openToDate={this.state.timeRange.end}
+                          selectsEnd
+                          startDate={this.state.timeRange.start}
+                          endDate={this.state.timeRange.end}
+                          dateFormat="d MMMM yyyy"
+                          showMonthYearPicker
+                          onChange={(date)=>{this.setEndDate(date)}}/>&nbsp;
             </div>
           </TabPanel>
 
