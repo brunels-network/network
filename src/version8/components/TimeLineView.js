@@ -159,7 +159,12 @@ class TimeLineView extends Component {
     let my_options = {...timeline_options};
     my_options["height"] = `${this.state.dimensions.height}px`;
     my_options["width"] = `${this.state.dimensions.width}px`;
-    console.log(`RENDER ${this.state.dimensions.width}x${this.state.dimensions.height}`);
+
+    const DateInput = ({ value, onClick }) => (
+      <button className={styles.zoomButton} onClick={onClick}>
+        {value}
+      </button>
+    );
 
     return (
       <div ref={el => (this.container = el)}
@@ -173,7 +178,7 @@ class TimeLineView extends Component {
                   items={timeline_items}/>
         <div className={styles.buttonGroup}>
           <button className={styles.scrollButton}
-                  onClick={()=>{this.scrollLeft()}}>&lt;-</button>
+                  onClick={()=>{this.scrollLeft()}}>&larr;</button>
           <button className={styles.zoomButton}
                   onClick={()=>{this.zoomOut()}}>-</button>
           <DatePicker className={styles.datePicker}
@@ -184,8 +189,12 @@ class TimeLineView extends Component {
                       endDate={this.state.timeRange.end}
                       dateFormat="d MMMM yyyy"
                       showMonthYearPicker
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<DateInput />}
                       onChange={(date)=>{this.setStartDate(date)}}/>
-          <span>=></span>
+          <button className={styles.scrollButton}
+                  onClick={()=>{console.log("RESET")}}>&harr;</button>
           <DatePicker className={styles.datePicker}
                       selected={this.state.timeRange.end}
                       openToDate={this.state.timeRange.end}
@@ -194,11 +203,14 @@ class TimeLineView extends Component {
                       endDate={this.state.timeRange.end}
                       dateFormat="d MMMM yyyy"
                       showMonthYearPicker
-                      onChange={(date)=>{this.setEndDate(date)}}/>&nbsp;
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<DateInput />}
+                      onChange={(date)=>{this.setEndDate(date)}}/>
           <button className={styles.zoomButton}
-                  onClick={()=>{this.zoomIn()}}>+</button>&nbsp;
+                  onClick={()=>{this.zoomIn()}}>+</button>
           <button className={styles.scrollButton}
-                  onClick={()=>{this.scrollRight()}}>-&gt;</button>
+                  onClick={()=>{this.scrollRight()}}>&rarr;</button>
         </div>
       </div>
     );

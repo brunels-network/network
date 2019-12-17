@@ -1,16 +1,11 @@
 
-.buttonGroup button {
+.buttonGroup {
   align-items: center;
   color: white;
   padding: 2px 10px;
   cursor: pointer;
 }
 
-.buttonGroup button:not(:last-child) {
-  border-right: none; /* Prevent double borders */
-}
-
-/* Clear floats (clearfix hack) */
 .buttonGroup:after {
   content: "";
   clear: both;
@@ -31,13 +26,31 @@
 }
 
 .zoomButton {
-  font-size: medium;
+  font-size: small;
+  text-align: center;
   height: 28px;
   background-color: rgb(3, 99, 32);
+  color: white;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+}
+
+.zoomButton:hover {
+  color: black;
+  background-color: white;
 }
 
 .scrollButton {
-  font-size: medium;
+  font-size: small;
+  text-align: center;
   height: 28px;
   background-color: rgb(3, 99, 32);
+  color: white;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+}
+
+.scrollButton:hover {
+  color: black;
+  background-color: white;
 }
