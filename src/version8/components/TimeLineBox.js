@@ -6,9 +6,6 @@ import TimeLineView from './TimeLineView';
 import styles from './TimeLineBox.module.css';
 
 class TimeLineBox extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   updateSize(){
     console.log("UPDATE SIZE");
@@ -42,7 +39,11 @@ class TimeLineBox extends Component {
           </TabPanel>
 
           <TabPanel key="timeline" tabId="timeline" className={styles.tabPanel}>
-            <TimeLineView/>
+            <TimeLineView social={this.props.social}
+                          item={this.props.item}
+                          emitWindowChanged={this.props.emitWindowChanged}
+                          emitSelected={this.props.emitSelected}
+                          emitClicked={this.props.emitClicked}/>
           </TabPanel>
 
           <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>

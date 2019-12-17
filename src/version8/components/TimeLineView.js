@@ -90,7 +90,6 @@ class TimeLineView extends Component {
         height: this.container.offsetHeight - 100,
       }
     });
-    console.log(`Timeline resize ${this.state.dimensions.width}x${this.state.dimensions.height}`);
   }
 
   getTimeLine(){
@@ -108,14 +107,16 @@ class TimeLineView extends Component {
   }
 
   rangeChangedHandler(props){
-    console.log("Range changed");
-    console.log(props);
     this.setState({
       timeRange: {
         start: props.start,
         end: props.end,
       }
     });
+
+    if (this.props.emitWindowChanged){
+      this.props.emitWindowChanged(props.start, props.end);
+    }
   }
 
   zoomIn(){
@@ -127,13 +128,11 @@ class TimeLineView extends Component {
   }
 
   setStartDate(date){
-    console.log(`SET START ${date}`);
     this.getTimeLine().setWindow(date, this.state.timeRange.end,
                                   {animation:true});
   }
 
   setEndDate(date){
-    console.log(`SET END ${date}`);
     this.getTimeLine().setWindow(this.state.timeRange.start, date,
                                   {animation:true});
   }
@@ -153,12 +152,21 @@ class TimeLineView extends Component {
   }
 
   render() {
-    console.log("RENDER TIMELINE");
-    console.log(this.getTimeLine());
-
     let my_options = {...timeline_options};
     my_options["height"] = `${this.state.dimensions.height}px`;
     my_options["width"] = `${this.state.dimensions.width}px`;
+
+    if (this.props.social){
+      let window = this.props.social.getWindow();
+
+      if (window.start){
+        my_options["start"] = window.start;
+      }
+
+      if (window.end){
+        my_options["end"] = window.end;
+      }
+    }
 
     const DateInput = ({ value, onClick }) => (
       <button className={styles.zoomButton} onClick={onClick}>
@@ -187,7 +195,7 @@ class TimeLineView extends Component {
                       selectsStart
                       startDate={this.state.timeRange.start}
                       endDate={this.state.timeRange.end}
-                      dateFormat="d MMMM yyyy"
+                      dateFormat="d MMM yyyy"
                       showMonthYearPicker
                       showYearDropdown
                       dropdownMode="select"
@@ -201,7 +209,7 @@ class TimeLineView extends Component {
                       selectsEnd
                       startDate={this.state.timeRange.start}
                       endDate={this.state.timeRange.end}
-                      dateFormat="d MMMM yyyy"
+                      dateFormat="d MMM yyyy"
                       showMonthYearPicker
                       showYearDropdown
                       dropdownMode="select"

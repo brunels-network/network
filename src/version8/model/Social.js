@@ -25,6 +25,7 @@ class Social {
     this.state.filter = {"node": null, "group": null};
     this.state.cache = null;
     this.state.network = null;
+    this.state.window = {"start": null, "end": null};
   }
 
   _updateHooks() {
@@ -87,6 +88,43 @@ class Social {
         this.state[key]._updateHooks(getHook);
       }
       catch(error){}
+    }
+  }
+
+  clearCache(){
+    this.state.cache = null;
+  }
+
+  getWindow(){
+    return this.state.window;
+  }
+
+  setWindow(start, end){
+    if (start !== this.state.window.start || end !== this.state.window.end){
+      if (start > end){
+        let tmp = end;
+        end = start;
+        start = tmp;
+      }
+
+      if (!start){
+        start = null;
+      }
+      else if (!(start instanceof Date)){
+        throw TypeError("The start date must be a Date");
+      }
+
+      if (!end){
+        end = null;
+      }
+      else if (!(end instanceof Date)){
+        throw TypeError("The end date must be a Date");
+      }
+
+      console.log(`SET TO ${start} => ${end}`);
+
+      this.state.window = {"start": start, "end": end};
+      this.clearCache();
     }
   }
 
