@@ -76,11 +76,7 @@ class Person {
       window = new DateRange(window);
     }
 
-    console.log(`INTERSECT ${window} ${this.getAlive()}`);
-
     window = window.intersect(this.getAlive());
-
-    console.log(window);
 
     if (!window){
       return null;

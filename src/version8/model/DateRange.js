@@ -167,13 +167,13 @@ class DateRange{
       return this;
     }
 
-    const start = _minDate(this.getEnd(), other.getStart());
+    const start = _maxDate(this.getStart(), other.getStart());
 
     if (!this.contains(start)){
       return null;
     }
 
-    const end = _maxDate(this.getStart(), other.getEnd());
+    const end = _minDate(this.getEnd(), other.getEnd());
 
     if (!this.contains(end)){
       return null;

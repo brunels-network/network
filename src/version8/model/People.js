@@ -74,9 +74,6 @@ class People {
       window = new DateRange(window);
     }
 
-    console.log(`filterWindow ${window}`);
-    console.log(window.hasBounds());
-
     if (!window.hasBounds()){
       return this;
     }
