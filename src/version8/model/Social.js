@@ -7,9 +7,6 @@ import Positions from './Positions';
 import Affiliations from './Affiliations';
 import Sources from './Sources';
 import Notes from './Notes';
-
-// need to import DateRange so that it is registered with JSON.dry
-// eslint-disable-next-line
 import DateRange from './DateRange';
 
 class Social {
@@ -25,7 +22,7 @@ class Social {
     this.state.filter = {"node": null, "group": null};
     this.state.cache = null;
     this.state.network = null;
-    this.state.window = {"start": null, "end": null};
+    this.state.window = new DateRange();
   }
 
   _updateHooks() {
@@ -99,37 +96,28 @@ class Social {
     return this.state.window;
   }
 
-  setWindow(start, end){
-    if (start !== this.state.window.start || end !== this.state.window.end){
-      if (start > end){
-        let tmp = end;
-        end = start;
-        start = tmp;
-      }
+  setWindow(window){
+    console.log(`setWindow ${window}`);
 
-      if (!start){
-        start = null;
-      }
-      else if (!(start instanceof Date)){
-        throw TypeError("The start date must be a Date");
-      }
-
-      if (!end){
-        end = null;
-      }
-      else if (!(end instanceof Date)){
-        throw TypeError("The end date must be a Date");
-      }
-
-      console.log(`SET TO ${start} => ${end}`);
-
-      this.state.window = {"start": start, "end": end};
-      this.clearCache();
+    if (!window._isADateRangeObject){
+      window = new DateRange(window);
     }
+
+    console.log(`setWindow ${window}`);
+    console.log(this.state.window);
+
+    if (window === this.state.window){
+      console.log("SAME!");
+      return;
+    }
+
+    this.state.window = window;
+    this.clearCache();
   }
 
   getPeople() {
-    return this.state.people;
+    console.log(`getPeople ${this.getWindow()}`);
+    return this.state.people.filterWindow(this.getWindow());
   }
 
   getBusinesses() {
@@ -258,25 +246,25 @@ class Social {
 
   get(id) {
     if (id[0] === "M") {
-      return this.getMessages().get(id);
+      return this.state.messages.get(id);
     }
     else if (id[0] === "P") {
-      return this.getPeople().get(id);
+      return this.state.people.get(id);
     }
     else if (id[0] === "B") {
-      return this.getBusinesses().get(id);
+      return this.state.businesses.get(id);
     }
     else if (id[0] === "Q") {
-      return this.getPositions().get(id);
+      return this.state.positions.get(id);
     }
     else if (id[0] === "A") {
-      return this.getAffiliations().get(id);
+      return this.state.affiliations.get(id);
     }
     else if (id[0] === "S") {
-      return this.getSources().get(id);
+      return this.state.sources.get(id);
     }
     else if (id[0] === "N") {
-      return this.getNotes().get(id);
+      return this.state.notes.get(id);
     }
     else {
       return id;

@@ -1,9 +1,11 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
-import vis from "vis-network";
+import vis from 'vis-network';
 
-import Person from "./Person";
+import Person from './Person';
+import DateRange from './DateRange';
+
 import { KeyError, MissingError } from './Errors';
 
 function _generate_person_uid(){
@@ -62,6 +64,42 @@ class People {
       person.state.id = uid;
       this.state.registry[uid] = person;
     }
+  }
+
+  filterWindow(window){
+    if (!window){
+      return this;
+    }
+    else if (!(window._isADateRange)){
+      window = new DateRange(window);
+    }
+
+    console.log(`filterWindow ${window}`);
+    console.log(window.hasBounds());
+
+    if (!window.hasBounds()){
+      return this;
+    }
+
+    let registry = {};
+
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let person = this.state.registry[key];
+
+      if (person){
+        person = person.filterWindow(window);
+
+        if (person){
+          registry[key] = person;
+        }
+      }
+    });
+
+    let people = new People();
+    people.state.registry = registry;
+    people._updateHooks(this._getHook);
+
+    return people;
   }
 
   getNodes({anchor=null, group_filter=null, node_filter=null} = {}){

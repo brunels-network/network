@@ -97,9 +97,10 @@ class SocialApp extends React.Component {
     this.showInfo(item);
   }
 
-  slowWindowChanged(start, end){
+  slotWindowChanged(window){
     let social = this.state.social;
-    social.setWindow(start, end);
+    social.setWindow(window);
+    console.log(`SET ${social.getWindow()}`);
     this.setState({social:social});
   }
 
@@ -154,8 +155,8 @@ class SocialApp extends React.Component {
           <TimeLineBox item={item} social={social}
                        emitClicked={(item)=>{this.slotClicked(item)}}
                        emitSelected={(item)=>{this.slotSelected(item)}}
-                       emitWindowChanged={(start, end)=>{
-                                    this.slowWindowChanged(start, end)}}/>
+                       emitWindowChanged={(window)=>{
+                                    this.slotWindowChanged(window)}}/>
         </SlidingPanel>
 
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}

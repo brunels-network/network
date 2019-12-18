@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Timeline from 'react-visjs-timeline';
 import DatePicker from 'react-datepicker';
 
+import DateRange from '../model/DateRange';
+
 import "react-datepicker/dist/react-datepicker.css";
 
 import styles from './TimeLineView.module.css';
@@ -29,29 +31,15 @@ var timeline_items =  [
   { id: 6, content: "item 6", start: "1814-04-27", type: "point" }
 ];
 
-function dateAdd(date, interval, units) {
-  //copied from 'https://stackoverflow.com/questions/1197928/
-  //                    how-to-add-30-minutes-to-a-javascript-date-object'
-  if(!(date instanceof Date)){
-    console.log("NOT A DATE!");
-    console.log(date);
-    return undefined;
-  }
-  var ret = new Date(date); //don't change original date
-  var checkRollover = function() { if(ret.getDate() !== date.getDate()) ret.setDate(0);};
-  switch(String(interval).toLowerCase()) {
-    case 'year'   :  ret.setFullYear(ret.getFullYear() + units); checkRollover();  break;
-    case 'quarter':  ret.setMonth(ret.getMonth() + 3*units); checkRollover();  break;
-    case 'month'  :  ret.setMonth(ret.getMonth() + units); checkRollover();  break;
-    case 'week'   :  ret.setDate(ret.getDate() + 7*units);  break;
-    case 'day'    :  ret.setDate(ret.getDate() + units);  break;
-    case 'hour'   :  ret.setTime(ret.getTime() + units*3600000);  break;
-    case 'minute' :  ret.setTime(ret.getTime() + units*60000);  break;
-    case 'second' :  ret.setTime(ret.getTime() + units*1000);  break;
-    default       :  ret = undefined;  break;
-  }
-  return ret;
-}
+class DateInput extends Component {
+   render(){
+     let {value, onClick} = this.props;
+
+     return (<button className={styles.zoomButton} onClick={onClick}>
+              {value}
+             </button>);
+   }
+};
 
 class TimeLineView extends Component {
   constructor(props) {
@@ -60,7 +48,7 @@ class TimeLineView extends Component {
     this.state = {
       selectedIds: [],
       dimensions: {height:300, width:600},
-      timeRange: {start:null, end:null},
+      window: new DateRange(),
     }
   }
 
@@ -107,15 +95,12 @@ class TimeLineView extends Component {
   }
 
   rangeChangedHandler(props){
-    this.setState({
-      timeRange: {
-        start: props.start,
-        end: props.end,
-      }
-    });
+    let window = new DateRange({start:props.start, end:props.end});
+
+    this.setState({window: window});
 
     if (this.props.emitWindowChanged){
-      this.props.emitWindowChanged(props.start, props.end);
+      this.props.emitWindowChanged(window);
     }
   }
 
@@ -128,27 +113,25 @@ class TimeLineView extends Component {
   }
 
   setStartDate(date){
-    this.getTimeLine().setWindow(date, this.state.timeRange.end,
+    this.getTimeLine().setWindow(date, this.state.window.getEndDate(),
                                   {animation:true});
   }
 
   setEndDate(date){
-    this.getTimeLine().setWindow(this.state.timeRange.start, date,
+    this.getTimeLine().setWindow(this.state.window.getStartDate(), date,
                                   {animation:true});
   }
 
   scrollLeft(){
-    let delta = this.state.timeRange.end - this.state.timeRange.start;
-    let start = dateAdd(this.state.timeRange.start, "second", -delta/1000);
-    let end = dateAdd(this.state.timeRange.end, "second", -delta/1000);
-    this.getTimeLine().setWindow(start, end, {animation:true});
+    let window = this.state.window.shiftEarlier();
+    this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
+                                 {animation:true});
   }
 
   scrollRight(){
-    let delta = this.state.timeRange.end - this.state.timeRange.start;
-    let start = dateAdd(this.state.timeRange.start, "second", delta/1000);
-    let end = dateAdd(this.state.timeRange.end, "second", delta/1000);
-    this.getTimeLine().setWindow(start, end, {animation:true});
+    let window = this.state.window.shiftLater();
+    this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
+                                 {animation:true});
   }
 
   render() {
@@ -156,23 +139,28 @@ class TimeLineView extends Component {
     my_options["height"] = `${this.state.dimensions.height}px`;
     my_options["width"] = `${this.state.dimensions.width}px`;
 
+    let start = this.state.window.getStartDate();
+    let end = this.state.window.getEndDate();
+
     if (this.props.social){
       let window = this.props.social.getWindow();
 
-      if (window.start){
-        my_options["start"] = window.start;
+      if (window.hasStart()){
+        start = window.getStartDate();
       }
 
-      if (window.end){
-        my_options["end"] = window.end;
+      if (window.hasEnd()){
+        end = window.getEndDate();
       }
     }
 
-    const DateInput = ({ value, onClick }) => (
-      <button className={styles.zoomButton} onClick={onClick}>
-        {value}
-      </button>
-    );
+    if (start){
+      my_options["start"] = start;
+    }
+
+    if (end){
+      my_options["end"] = end;
+    }
 
     return (
       <div ref={el => (this.container = el)}
@@ -190,11 +178,11 @@ class TimeLineView extends Component {
           <button className={styles.zoomButton}
                   onClick={()=>{this.zoomOut()}}>-</button>
           <DatePicker className={styles.datePicker}
-                      selected={this.state.timeRange.start}
-                      openToDate={this.state.timeRange.start}
+                      selected={start}
+                      openToDate={start}
                       selectsStart
-                      startDate={this.state.timeRange.start}
-                      endDate={this.state.timeRange.end}
+                      startDate={start}
+                      endDate={end}
                       dateFormat="d MMM yyyy"
                       showMonthYearPicker
                       showYearDropdown
@@ -204,11 +192,11 @@ class TimeLineView extends Component {
           <button className={styles.scrollButton}
                   onClick={()=>{console.log("RESET")}}>&harr;</button>
           <DatePicker className={styles.datePicker}
-                      selected={this.state.timeRange.end}
-                      openToDate={this.state.timeRange.end}
+                      selected={end}
+                      openToDate={end}
                       selectsEnd
-                      startDate={this.state.timeRange.start}
-                      endDate={this.state.timeRange.end}
+                      startDate={start}
+                      endDate={end}
                       dateFormat="d MMM yyyy"
                       showMonthYearPicker
                       showYearDropdown

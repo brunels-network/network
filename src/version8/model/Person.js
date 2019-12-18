@@ -1,6 +1,8 @@
 
 import Dry from "json-dry";
 
+import DateRange from './DateRange';
+
 function setState(val, def=null){
   if (val){
     return val;
@@ -64,6 +66,27 @@ class Person {
 
   toString(){
     return `Person(${this.getName()})`;
+  }
+
+  filterWindow(window){
+    if (!window){
+      return this;
+    }
+    else if (!(window._isADateRangeObject)){
+      window = new DateRange(window);
+    }
+
+    console.log(`INTERSECT ${window} ${this.getAlive()}`);
+
+    window = window.intersect(this.getAlive());
+
+    console.log(window);
+
+    if (!window){
+      return null;
+    }
+
+    return this;
   }
 
   getAlive(){
