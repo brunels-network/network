@@ -1,5 +1,7 @@
 
-import Dry from "json-dry";
+import Dry from 'json-dry';
+
+import DateRange from './DateRange';
 
 function setState(val, def=null){
   if (val){
@@ -54,11 +56,28 @@ class Message {
     }
   }
 
+  filterWindow(window){
+    if (!window || !this.state.sent){
+      return this;
+    }
+    else if (!(window._isADateRangeObject)){
+      window = new DateRange(window);
+    }
+
+    window = window.intersect(this.getSent());
+
+    if (!window){
+      return null;
+    }
+
+    return this;
+  }
+
   setState(state){
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.sent = setState(state.sent);
+      this.state.sent = new DateRange(state.sent);
       this.state.sender = setState(state.sender);
       this.state.receiver = setState(state.receiver);
       this.state.scores = setState(state.scores, {});

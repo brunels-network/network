@@ -1,9 +1,11 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
-import vis from "vis-network";
+import vis from 'vis-network';
 
-import Message from "./Message";
+import Message from './Message';
+import DateRange from './DateRange';
+
 import { KeyError, MissingError } from './Errors';
 
 function _generate_message_uid(){
@@ -57,6 +59,39 @@ class Messages {
     }
 
     return message;
+  }
+
+  filterWindow(window){
+    if (!window){
+      return this;
+    }
+    else if (!(window._isADateRange)){
+      window = new DateRange(window);
+    }
+
+    if (!window.hasBounds()){
+      return this;
+    }
+
+    let registry = {};
+
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let message = this.state.registry[key];
+
+      if (message){
+        message = message.filterWindow(window);
+
+        if (message){
+          registry[key] = message;
+        }
+      }
+    });
+
+    let messages = new Messages();
+    messages.state.registry = registry;
+    messages._updateHooks(this._getHook);
+
+    return messages;
   }
 
   getConnectionsTo(item){

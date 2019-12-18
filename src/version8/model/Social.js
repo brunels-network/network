@@ -97,17 +97,11 @@ class Social {
   }
 
   setWindow(window){
-    console.log(`setWindow ${window}`);
-
     if (!window._isADateRangeObject){
       window = new DateRange(window);
     }
 
-    console.log(`setWindow ${window}`);
-    console.log(this.state.window);
-
     if (window === this.state.window){
-      console.log("SAME!");
       return;
     }
 
@@ -116,16 +110,15 @@ class Social {
   }
 
   getPeople() {
-    console.log(`getPeople ${this.getWindow()}`);
     return this.state.people.filterWindow(this.getWindow());
   }
 
   getBusinesses() {
-    return this.state.businesses;
+    return this.state.businesses.filterWindow(this.getWindow());
   }
 
   getMessages() {
-    return this.state.messages;
+    return this.state.messages.filterWindow(this.getWindow());
   }
 
   getAffiliations() {

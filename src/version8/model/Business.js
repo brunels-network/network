@@ -1,5 +1,7 @@
 
-import Dry from "json-dry";
+import Dry from 'json-dry';
+
+import DateRange from './DateRange';
 
 function setState(val, def=null){
   if (val){
@@ -32,6 +34,17 @@ class Business {
 
   getID(){
     return this.state.id;
+  }
+
+  filterWindow(window){
+    if (!window){
+      return this;
+    }
+    else if (!(window._isADateRangeObject)){
+      window = new DateRange(window);
+    }
+
+    return this;
   }
 
   setState(state){

@@ -3,7 +3,9 @@ import Dry from 'json-dry';
 import vis from 'vis-network';
 import uuidv4 from 'uuid';
 
-import Business from "./Business";
+import Business from './Business';
+import DateRange from './DateRange';
+
 import { KeyError, MissingError } from './Errors';
 
 function _generate_business_uid(){
@@ -95,6 +97,39 @@ class Businesses {
     }
 
     return nodes;
+  }
+
+  filterWindow(window){
+    if (!window){
+      return this;
+    }
+    else if (!(window._isADateRange)){
+      window = new DateRange(window);
+    }
+
+    if (!window.hasBounds()){
+      return this;
+    }
+
+    let registry = {};
+
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let business = this.state.registry[key];
+
+      if (business){
+        business = business.filterWindow(window);
+
+        if (business){
+          registry[key] = business;
+        }
+      }
+    });
+
+    let businesses = new Businesses();
+    businesses.state.registry = registry;
+    businesses._updateHooks(this._getHook);
+
+    return businesses;
   }
 
   toDry(){
