@@ -239,25 +239,25 @@ class Social {
 
   get(id) {
     if (id[0] === "M") {
-      return this.state.messages.get(id);
+      return this.getMessages().get(id);
     }
     else if (id[0] === "P") {
-      return this.state.people.get(id);
+      return this.getPeople().get(id);
     }
     else if (id[0] === "B") {
-      return this.state.businesses.get(id);
+      return this.getBusinesses().get(id);
     }
     else if (id[0] === "Q") {
-      return this.state.positions.get(id);
+      return this.getPositions().get(id);
     }
     else if (id[0] === "A") {
-      return this.state.affiliations.get(id);
+      return this.getAffiliations().get(id);
     }
     else if (id[0] === "S") {
-      return this.state.sources.get(id);
+      return this.getSources().get(id);
     }
     else if (id[0] === "N") {
-      return this.state.notes.get(id);
+      return this.getNotes().get(id);
     }
     else {
       return id;

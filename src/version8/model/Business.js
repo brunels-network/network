@@ -11,6 +11,32 @@ function setState(val, def=null){
   }
 }
 
+function _filterWindow(values, window){
+  if (!values){
+    return values;
+  }
+
+  let ret = null;
+
+  Object.keys(values).forEach((key, index)=>{
+    let dates = values[key];
+
+    let intersect = window.intersect(dates);
+
+    if (!intersect){
+      if (!ret){ ret = {...values}}
+      delete ret[key];
+    }
+  });
+
+  if (ret){
+    return ret;
+  }
+  else{
+    return values;
+  }
+}
+
 class Business {
   constructor(props){
     this.state = {
@@ -44,7 +70,18 @@ class Business {
       window = new DateRange(window);
     }
 
-    return this;
+    let affiliations = _filterWindow(this.state.affiliations, window);
+
+    if (affiliations !== this.state.affiliations){
+      let business = new Business();
+      business.state = {...this.state};
+      business.state.affiliations = affiliations;
+      business._getHook = this._getHook;
+      return business;
+    }
+    else{
+      return this;
+    }
   }
 
   setState(state){

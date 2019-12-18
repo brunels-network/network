@@ -11,6 +11,32 @@ function setState(val, def=null){
   }
 }
 
+function _filterWindow(values, window){
+  if (!values){
+    return values;
+  }
+
+  let ret = null;
+
+  Object.keys(values).forEach((key, index)=>{
+    let dates = values[key];
+
+    let intersect = window.intersect(dates);
+
+    if (!intersect){
+      if (!ret){ ret = {...values}}
+      delete ret[key];
+    }
+  });
+
+  if (ret){
+    return ret;
+  }
+  else{
+    return values;
+  }
+}
+
 class Person {
   constructor(props){
     this.state = {
@@ -82,7 +108,21 @@ class Person {
       return null;
     }
 
-    return this;
+    let affiliations = _filterWindow(this.state.affiliations, window);
+    let positions = _filterWindow(this.state.positions, window);
+
+    if (affiliations !== this.state.affiliations ||
+        positions !== this.state.positions ){
+      let person = new Person();
+      person.state = {...this.state};
+      person.state.positions = positions;
+      person.state.affiliations = affiliations;
+      person._getHook = this._getHook;
+      return person;
+    }
+    else{
+      return this;
+    }
   }
 
   getAlive(){
