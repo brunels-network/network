@@ -1,5 +1,7 @@
 
 import Dry from 'json-dry';
+import vis from 'vis-network';
+
 import People from './People';
 import Businesses from './Businesses';
 import Messages from './Messages';
@@ -19,8 +21,10 @@ class Social {
     }
 
     this.state.anchor = null;
-    this.state.filter = {"node": null, "group": null};
-    this.state.cache = null;
+    this.state.filter = {node:null, group:null};
+    this.state.cache = {graph:null,
+                        projectTimeLine:null,
+                        itemTimeLine:null};
     this.state.network = null;
     this.state.window = new DateRange();
   }
@@ -89,7 +93,9 @@ class Social {
   }
 
   clearCache(){
-    this.state.cache = null;
+    this.state.cache = {graph:null,
+                        projectTimeLine:null,
+                        itemTimeLine:null};
   }
 
   getWindow(){
@@ -159,7 +165,7 @@ class Social {
 
   resetFilters(){
     this.state.filter = {node:null, group:null};
-    this.state.cache = null;
+    this.clearCache();
   }
 
   setAnchor(anchor) {
@@ -168,7 +174,7 @@ class Social {
     }
 
     this.state.anchor = anchor;
-    this.state.cache = null;
+    this.clearCache();
   }
 
   toggleNodeFilter(item) {
@@ -179,7 +185,7 @@ class Social {
       this.state.filter.node = item;
     }
 
-    this.state.cache = null;
+    this.clearCache();
   }
 
   toggleGroupFilter(item){
@@ -190,12 +196,42 @@ class Social {
       this.state.filter.group = item;
     }
 
-    this.state.cache = null;
+    this.clearCache();
+  }
+
+  getProjectTimeLine(){
+    if (this.state.cache.projectTimeLine !== null){
+      return this.state.cache.projectTimeLine;
+    }
+
+    let window = this.getWindow();
+    let anchor = this.getAnchor();
+
+    let items = new vis.DataSet();
+
+    this.state.cache.projectTimeLine = {window:window, items:items};
+
+    return this.state.cache.projectTimeLine;
+  }
+
+  getItemTimeLine(){
+    if (this.state.cache.itemTimeLine !== null){
+      return this.state.cache.itemTimeLine;
+    }
+
+    let window = this.getWindow();
+    let anchor = this.getAnchor();
+
+    let items = new vis.DataSet();
+
+    this.state.cache.itemTimeLine = {window:window, items:items};
+
+    return this.state.cache.itemTimeLine;
   }
 
   getGraph() {
-    if (this.state.cache !== null){
-      return this.state.cache;
+    if (this.state.cache.graph !== null){
+      return this.state.cache.graph;
     }
 
     const anchor = this.state.anchor;
@@ -225,8 +261,8 @@ class Social {
 
     let edges = this.getMessages().getEdges();
 
-    this.state.cache = {"nodes": nodes, "edges": edges};
-    return this.state.cache;
+    this.state.cache.graph = {"nodes": nodes, "edges": edges};
+    return this.state.cache.graph;
   }
 
   setNetwork(network){

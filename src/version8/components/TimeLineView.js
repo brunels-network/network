@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Timeline from 'react-visjs-timeline';
+
 import DatePicker from 'react-datepicker';
 
 import DateRange from '../model/DateRange';
@@ -22,15 +23,6 @@ const timeline_options = {
   zoomKey: "shiftKey",
 }
 
-var timeline_items =  [
-  { id: 1, content: "item 1", start: "1814-04-20" },
-  { id: 2, content: "item 2", start: "1814-04-14" },
-  { id: 3, content: "item 3", start: "1814-04-18" },
-  { id: 4, content: "item 4", start: "1814-04-16", end: "1814-04-19" },
-  { id: 5, content: "item 5", start: "1814-04-25" },
-  { id: 6, content: "item 6", start: "1814-04-27", type: "point" }
-];
-
 class DateInput extends Component {
    render(){
      let {value, onClick} = this.props;
@@ -46,13 +38,29 @@ class TimeLineView extends Component {
     super(props)
 
     this.state = {
-      selectedIds: [],
+      activated: false,
       dimensions: {height:300, width:600},
-      window: new DateRange(),
+      window: new DateRange({start:"2000-01-01", end:"2020-12-31"}),
     }
   }
 
+  activate(){
+    this.setState({activated:true});
+  }
+
+  deactivate(){
+    this.setState({activated:false});
+  }
+
+  isActive(){
+    return this.state.activated;
+  }
+
   updateSize(dimensions) {
+    if (!this.isActive()){
+      return;
+    }
+
     this.setState({
       dimensions: {
         width: dimensions.width - 10,
@@ -79,11 +87,19 @@ class TimeLineView extends Component {
   }
 
   selectHandler(props){
+    if (!this.isActive()){
+      return;
+    }
+
     console.log("Selected");
     console.log(props);
   }
 
   rangeChangedHandler(props){
+    if (!this.isActive()){
+      return;
+    }
+
     let window = new DateRange({start:props.start, end:props.end});
 
     this.setState({window: window});
@@ -127,6 +143,13 @@ class TimeLineView extends Component {
     let height = `${this.state.dimensions.height}px`;
     let width = `${this.state.dimensions.width}px`;
 
+    if (!this.isActive()){
+      return (<div className={styles.container}
+                   style={{width:width, height:height}}>
+                No activated!
+              </div>);
+    }
+
     let my_options = {...timeline_options};
     my_options["height"] = height;
     my_options["width"] = width;
@@ -134,16 +157,33 @@ class TimeLineView extends Component {
     let start = this.state.window.getStartDate();
     let end = this.state.window.getEndDate();
 
-    if (this.props.social){
-      let window = this.props.social.getWindow();
+    let timeline_items = null;
 
-      if (window.hasStart()){
-        start = window.getStartDate();
+    if (this.props.getContents){
+      let contents = this.props.getContents();
+
+      console.log(contents);
+
+      if (contents){
+        timeline_items = contents.items;
+
+        let window = contents.window;
+
+        if (window.hasStart()){
+          start = window.getStartDate();
+        }
+
+        if (window.hasEnd()){
+          end = window.getEndDate();
+        }
       }
 
-      if (window.hasEnd()){
-        end = window.getEndDate();
-      }
+      console.log(start);
+      console.log(end);
+    }
+
+    if (timeline_items === null){
+      timeline_items = [];
     }
 
     if (start){

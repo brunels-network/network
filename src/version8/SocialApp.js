@@ -103,6 +103,16 @@ class SocialApp extends React.Component {
     this.setState({social:social});
   }
 
+  getItemTimeLine(){
+    let social = this.state.social;
+    return social.getItemTimeLine();
+  }
+
+  getProjectTimeLine(){
+    let social = this.state.social;
+    return social.getProjectTimeLine();
+  }
+
   toggleInfoPanel(){
     this.setState({isInfoPanelOpen: !(this.state.isInfoPanelOpen)});
   }
@@ -151,7 +161,9 @@ class SocialApp extends React.Component {
         <div className={styles.container}></div>
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
-          <TimeLineBox item={item} social={social}
+          <TimeLineBox item={item}
+                       getProjectTimeLine={()=>{return this.getProjectTimeLine()}}
+                       getItemTimeLine={()=>{return this.getItemTimeLine()}}
                        emitClicked={(item)=>{this.slotClicked(item)}}
                        emitSelected={(item)=>{this.slotSelected(item)}}
                        emitWindowChanged={(window)=>{
