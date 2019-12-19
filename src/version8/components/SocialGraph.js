@@ -44,6 +44,10 @@ class SocialGraph extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.container){
+      console.log("resize without container?");
+    }
+
     this.setState({
       dimensions: {
         width: this.container.offsetWidth,

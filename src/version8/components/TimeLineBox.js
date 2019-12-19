@@ -50,10 +50,11 @@ class TimeLineBox extends Component {
       });
     }
 
-    console.log(`UPDATE SIZE ${this.state.dimensions.width} ${this.state.dimensions.height}`);
-
     Object.keys(this.tabs).forEach((key, index) =>{
-      this.tabs[key].updateSize(this.state.dimensions);
+      let tab = this.tabs[key];
+      if (tab){
+        tab.updateSize(this.state.dimensions);
+      }
     });
   }
 
@@ -88,7 +89,6 @@ class TimeLineBox extends Component {
           <TabPanel key="projects" tabId="projects"
                     className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.projects = el)}
-                          social={this.props.social}
                           item={this.props.item}
                           getContents={this.props.getProjectTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}
@@ -98,7 +98,6 @@ class TimeLineBox extends Component {
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.items = el)}
-                          social={this.props.social}
                           item={this.props.item}
                           getContents={this.props.getItemTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}

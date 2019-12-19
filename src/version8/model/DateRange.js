@@ -1,6 +1,7 @@
 
 import Dry from 'json-dry';
 import moment from 'moment';
+import lodash from 'lodash';
 
 import {ValueError} from './Errors';
 
@@ -208,7 +209,7 @@ class DateRange{
   }
 
   shiftEarlier(delta=null){
-    let state = {...this.state};
+    let state = lodash.cloneDeep(this.state);
 
     if (delta === null){
       if (state.start !== null && state.end !== null){
@@ -231,7 +232,7 @@ class DateRange{
   }
 
   shiftLater(delta=null){
-    let state = {...this.state};
+    let state = lodash.cloneDeep(this.state);
 
     if (delta === null){
       if (state.start !== null && state.end !== null){

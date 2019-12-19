@@ -10,17 +10,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from './TimeLineView.module.css';
 
 const timeline_options = {
-  width: "100%",
-  height: "100%",
-  autoResize: false,
+  autoResize: true,
   horizontalScroll: true,
-  max: "2020-01-01",
-  min: "1800-01-01",
   showCurrentTime: false,
   showTooltips: false,
   verticalScroll: true,
   zoomable: false,
-  zoomKey: "shiftKey",
 }
 
 class DateInput extends Component {
@@ -40,8 +35,10 @@ class TimeLineView extends Component {
     this.state = {
       activated: false,
       dimensions: {height:300, width:600},
-      window: new DateRange({start:"2000-01-01", end:"2020-12-31"}),
+      max_window: new DateRange({start:"1800-01-01", end:"2020-12-31"}),
     }
+
+    this.window = new DateRange({start:"2000-01-01", end:"2020-12-31"});
   }
 
   activate(){
@@ -57,10 +54,6 @@ class TimeLineView extends Component {
   }
 
   updateSize(dimensions) {
-    if (!this.isActive()){
-      return;
-    }
-
     this.setState({
       dimensions: {
         width: dimensions.width - 10,
@@ -95,16 +88,23 @@ class TimeLineView extends Component {
     console.log(props);
   }
 
-  rangeChangedHandler(props){
+  rangeChangedHandler(new_window){
     if (!this.isActive()){
       return;
     }
 
-    let window = new DateRange({start:props.start, end:props.end});
+    let window = new DateRange({start:new_window.start, end:new_window.end});
 
-    this.setState({window: window});
+    if (window === this.window){
+      console.log("No change in window");
+      return;
+    }
+
+    console.log(`Setting window state to ${window.toString()}`);
+    this.window = window;
 
     if (this.props.emitWindowChanged){
+      console.log(`emitWindowChanged(${window.toString()}`);
       this.props.emitWindowChanged(window);
     }
   }
@@ -117,69 +117,115 @@ class TimeLineView extends Component {
     this.getTimeLine().zoomOut(1.0);
   }
 
+  setWindow(window){
+    if (!this.isActive()){
+      return;
+    }
+
+    if (!window){
+      return;
+    }
+
+    if (this.window === window){
+      return;
+    }
+
+    const max_window = this.state.max_window;
+
+    if (max_window){
+      if (!max_window.contains(window)){
+        return;
+      }
+    }
+
+    console.log(`Set window to ${window.toString()}`);
+
+    this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
+                                 {animation:true});
+  }
+
   setStartDate(date){
-    this.getTimeLine().setWindow(date, this.state.window.getEndDate(),
-                                  {animation:true});
+    if (!date){
+      return;
+    }
+
+    const window = this.window;
+
+    if (!window){
+      return;
+    }
+
+    this.setWindow(new DateRange({start:date, end:window.getEndDate()}));
   }
 
   setEndDate(date){
-    this.getTimeLine().setWindow(this.state.window.getStartDate(), date,
-                                  {animation:true});
+    if (!date){
+      return;
+    }
+
+    const window = this.window;
+
+    if (!window){
+      return;
+    }
+
+    this.setWindow(new DateRange({start:date, end:window.getEndDate()}));
   }
 
   scrollLeft(){
-    let window = this.state.window.shiftEarlier();
-    this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
-                                 {animation:true});
+    const window = this.window;
+
+    if (window){
+      this.setWindow(window.shiftEarlier());
+    }
   }
 
   scrollRight(){
-    let window = this.state.window.shiftLater();
-    this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
-                                 {animation:true});
+    const window = this.window;
+
+    if (window){
+      this.setWindow(window.shiftLater());
+    }
   }
 
   render() {
     let height = `${this.state.dimensions.height}px`;
     let width = `${this.state.dimensions.width}px`;
 
-    if (!this.isActive()){
-      return (<div className={styles.container}
-                   style={{width:width, height:height}}>
-                No activated!
-              </div>);
-    }
-
     let my_options = {...timeline_options};
     my_options["height"] = height;
     my_options["width"] = width;
 
-    let start = this.state.window.getStartDate();
-    let end = this.state.window.getEndDate();
+    let max_window = this.state.max_window;
+
+    if (max_window){
+      my_options["max"] = max_window.getEndDate();
+      my_options["min"] = max_window.getStartDate();
+    }
+
+    let start = this.window.getStartDate();
+    let end = this.window.getEndDate();
 
     let timeline_items = null;
 
-    if (this.props.getContents){
-      let contents = this.props.getContents();
+    if (this.isActive()){
+      if (this.props.getContents){
+        let contents = this.props.getContents();
 
-      console.log(contents);
+        if (contents){
+          timeline_items = contents.items;
 
-      if (contents){
-        timeline_items = contents.items;
+          let window = contents.window;
 
-        let window = contents.window;
+          if (window.hasStart()){
+            start = window.getStartDate();
+          }
 
-        if (window.hasStart()){
-          start = window.getStartDate();
-        }
-
-        if (window.hasEnd()){
-          end = window.getEndDate();
+          if (window.hasEnd()){
+            end = window.getEndDate();
+          }
         }
       }
-
-      console.log(start);
-      console.log(end);
     }
 
     if (timeline_items === null){
@@ -192,6 +238,14 @@ class TimeLineView extends Component {
 
     if (end){
       my_options["end"] = end;
+    }
+
+    let timeline = this.getTimeLine();
+
+    if (timeline){
+      //need to set the window here to prevent animation when
+      //changing tabs
+      timeline.setWindow(start, end, {animation:false});
     }
 
     return (
