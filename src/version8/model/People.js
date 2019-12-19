@@ -4,7 +4,6 @@ import uuidv4 from 'uuid';
 import vis from 'vis-network';
 
 import Person from './Person';
-import DateRange from './DateRange';
 
 import { KeyError, MissingError } from './Errors';
 
@@ -66,15 +65,8 @@ class People {
     }
   }
 
-  filterWindow(window){
-    if (!window){
-      return this;
-    }
-    else if (!(window._isADateRange)){
-      window = new DateRange(window);
-    }
-
-    if (!window.hasBounds()){
+  filter(funcs = []){
+    if (funcs.length === 0){
       return this;
     }
 
@@ -84,7 +76,12 @@ class People {
       let person = this.state.registry[key];
 
       if (person){
-        person = person.filterWindow(window);
+        for (let i=0; i<funcs.length; ++i){
+          person = funcs[i](person);
+          if (!person){
+            break;
+          }
+        }
 
         if (person){
           registry[key] = person;
@@ -104,54 +101,37 @@ class People {
 
     Object.keys(this.state.registry).forEach((key, index)=>{
       let person = this.state.registry[key];
-
-      let alive = person.getAlive();
-
-      if (alive.hasBounds()){
-        items.push({start: alive.getStart(),
-                    end: alive.getEnd(),
-                    id: person.getID(),
-                    content: person.getName(),
-                  });
+      if (person){
+        let timeline = person.getTimeLine();
+        if (timeline){
+          items.push(timeline);
+        }
       }
     });
 
     return items;
   }
 
-  getNodes({anchor=null, group_filter=null, node_filter=null} = {}){
+  getNodes({anchor=null} = {}){
     let nodes = new vis.DataSet();
 
-    if (group_filter){
-      group_filter = group_filter.getID();
-    }
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let person = this.state.registry[key];
 
-    for (let person in this.state.registry){
-      let p = this.state.registry[person];
-      if (person === anchor){
-        nodes.add(p.getNode({is_anchor:true}));
-      }
-      else if (node_filter){
-        if (p.getID() in node_filter){
-          if (group_filter){
-            if (p.inGroup(group_filter)){
-              nodes.add(p.getNode());
-            }
-          }
-          else{
-            nodes.add(p.getNode());
-          }
+      if (person){
+        let node = null;
+        if (key === anchor){
+          node = person.getNode({is_anchor:true});
+        }
+        else{
+          node = person.getNode();
+        }
+
+        if (node){
+          nodes.add(node);
         }
       }
-      else if (group_filter){
-        if (p.inGroup(group_filter)){
-          nodes.add(p.getNode());
-        }
-      }
-      else{
-        nodes.add(p.getNode());
-      }
-    }
+    });
 
     return nodes;
   }

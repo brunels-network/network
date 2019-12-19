@@ -4,7 +4,6 @@ import uuidv4 from 'uuid';
 import vis from 'vis-network';
 
 import Message from './Message';
-import DateRange from './DateRange';
 
 import { KeyError, MissingError } from './Errors';
 
@@ -61,15 +60,8 @@ class Messages {
     return message;
   }
 
-  filterWindow(window){
-    if (!window){
-      return this;
-    }
-    else if (!(window._isADateRange)){
-      window = new DateRange(window);
-    }
-
-    if (!window.hasBounds()){
+  filter(funcs = []){
+    if (funcs.length === 0){
       return this;
     }
 
@@ -79,7 +71,12 @@ class Messages {
       let message = this.state.registry[key];
 
       if (message){
-        message = message.filterWindow(window);
+        for (let i=0; i<funcs.length; ++i){
+          message = funcs[i](message);
+          if (!message){
+            break;
+          }
+        }
 
         if (message){
           registry[key] = message;
@@ -126,10 +123,10 @@ class Messages {
   getEdges(){
     let edges = new vis.DataSet();
 
-    for (let key in this.state.registry){
+    Object.keys(this.state.registry).forEach((key, index)=>{
       let message = this.state.registry[key];
       edges.add(message.toEdge());
-    }
+    });
 
     return edges;
   }

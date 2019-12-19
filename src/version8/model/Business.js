@@ -52,6 +52,7 @@ class Business {
     this.setState(props);
 
     this._getHook = null;
+    this._isABusinessObject = true;
   }
 
   isNode(){

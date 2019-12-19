@@ -4,7 +4,6 @@ import vis from 'vis-network';
 import uuidv4 from 'uuid';
 
 import Business from './Business';
-import DateRange from './DateRange';
 
 import { KeyError, MissingError } from './Errors';
 
@@ -61,53 +60,38 @@ class Businesses {
     return business;
   }
 
+  getTimeLine(){
+    let items = [];
 
-  getNodes({anchor=null, group_filter=null, node_filter=null} = {}){
+    return items;
+  }
+
+  getNodes({anchor=null} = {}){
     let nodes = new vis.DataSet();
 
-    if (group_filter){
-      group_filter = group_filter.getID();
-    }
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let business = this.state.registry[key];
 
-    for (let business in this.state.registry){
-      let b = this.state.registry[business];
-      if (business === anchor){
-        nodes.add(b.getNode({is_anchor:true}));
-      }
-      else if (node_filter){
-        if (b.getID() in node_filter){
-          if (group_filter){
-            if (b.inGroup(group_filter)){
-              nodes.add(b.getNode());
-            }
-          }
-          else{
-            nodes.add(b.getNode());
-          }
+      if (business){
+        let node = null;
+        if (key === anchor){
+          node = business.getNode({is_anchor:true});
+        }
+        else{
+          node = business.getNode();
+        }
+
+        if (node){
+          nodes.add(node);
         }
       }
-      else if (group_filter){
-        if (b.inGroup(group_filter)){
-          nodes.add(b.getNode());
-        }
-      }
-      else{
-        nodes.add(b.getNode());
-      }
-    }
+    });
 
     return nodes;
   }
 
-  filterWindow(window){
-    if (!window){
-      return this;
-    }
-    else if (!(window._isADateRange)){
-      window = new DateRange(window);
-    }
-
-    if (!window.hasBounds()){
+  filter(funcs = []){
+    if (funcs.length === 0){
       return this;
     }
 
@@ -117,7 +101,12 @@ class Businesses {
       let business = this.state.registry[key];
 
       if (business){
-        business = business.filterWindow(window);
+        for (let i=0; i<funcs.length; ++i){
+          business = funcs[i](business);
+          if (!business){
+            break;
+          }
+        }
 
         if (business){
           registry[key] = business;

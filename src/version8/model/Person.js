@@ -58,6 +58,7 @@ class Person {
     this.setState(props);
 
     this._getHook = null;
+    this._isAPersonObject = true;
   }
 
   getID(){
@@ -251,6 +252,21 @@ class Person {
     }
     else{
       return null;
+    }
+  }
+
+  getTimeLine(){
+    const alive = this.getAlive();
+
+    if (!alive){
+      return null;
+    }
+    else{
+      return {start: alive.getStart(),
+              end: alive.getEnd(),
+              id: this.getID(),
+              content: this.getName(),
+             };
     }
   }
 

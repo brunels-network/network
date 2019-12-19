@@ -23,7 +23,11 @@ class Social {
     this.state.filter = {node:null, group:null};
     this.state.cache = {graph:null,
                         projectTimeLine:null,
-                        itemTimeLine:null};
+                        itemTimeLine:null,
+                        filters:null,
+                        people:null,
+                        businesses:null,
+                        messages:null};
     this.state.network = null;
     this.state.window = new DateRange();
   }
@@ -94,7 +98,72 @@ class Social {
   clearCache(){
     this.state.cache = {graph:null,
                         projectTimeLine:null,
-                        itemTimeLine:null};
+                        itemTimeLine:null,
+                        filters:null,
+                        people:null,
+                        businesses: null,
+                        messages:null};
+  }
+
+  getFilters(){
+    if (!this.state.cache.filters){
+      this.state.cache.filters = [];
+
+      let node_filter = this.state.filter.node;
+
+      if (node_filter) {
+        let id = node_filter.getID();
+        let connections = this.getConnectionsTo(node_filter);
+        node_filter = {};
+        node_filter[id] = 1;
+        for (let connection in connections) {
+          let node = connections[connection];
+          node_filter[node.getID()] = 1;
+        }
+
+        this.state.cache.filters.push((item)=>{
+          if (item.getID() in node_filter){
+            return item;
+          }
+          else{
+            return null;
+          }
+        });
+      }
+
+      let group_filter = this.state.filter.group;
+
+      if (group_filter){
+        this.state.cache.filters.push((item)=>{
+          try{
+            if (item.inGroup(group_filter)){
+              return item;
+            }
+            else{
+              return null;
+            }
+          }
+          catch(error){
+            return item;
+          }
+        });
+      }
+
+      let window = this.getWindow();
+
+      if (window.hasStart() || window.hasEnd()){
+        this.state.cache.filters.push((item)=>{
+          try{
+            return item.filterWindow(window);
+          }
+          catch(error){
+            return item;
+          }
+        });
+      }
+    }
+
+    return this.state.cache.filters;
   }
 
   getWindow(){
@@ -117,15 +186,27 @@ class Social {
   }
 
   getPeople() {
-    return this.state.people.filterWindow(this.getWindow());
+    if (!this.state.cache.people){
+      this.state.cache.people = this.state.people.filter(this.getFilters());
+    }
+
+    return this.state.cache.people;
   }
 
   getBusinesses() {
-    return this.state.businesses.filterWindow(this.getWindow());
+    if (!this.state.cache.businesses){
+      this.state.cache.businesses = this.state.businesses.filter(this.getFilters());
+    }
+
+    return this.state.cache.businesses;
   }
 
   getMessages() {
-    return this.state.messages.filterWindow(this.getWindow());
+    if (!this.state.cache.messages){
+      this.state.cache.messages = this.state.messages.filter(this.getFilters());
+    }
+
+    return this.state.cache.messages;
   }
 
   getAffiliations() {
@@ -205,8 +286,6 @@ class Social {
       return this.state.cache.projectTimeLine;
     }
 
-    let anchor = this.getAnchor();
-
     let items = [];
 
     this.state.cache.projectTimeLine = items;
@@ -234,30 +313,8 @@ class Social {
     }
 
     const anchor = this.state.anchor;
-    let node_filter = this.state.filter.node;
-    let group_filter = this.state.filter.group;
-
-    if (node_filter) {
-      let id = node_filter.getID();
-      let connections = this.getConnectionsTo(node_filter);
-      node_filter = {};
-      node_filter[id] = 1;
-      for (let connection in connections) {
-        let node = connections[connection];
-        node_filter[node.getID()] = 1;
-      }
-    }
-
-    let nodes = this.getPeople().getNodes({
-      anchor: anchor,
-      node_filter: node_filter,
-      group_filter: group_filter
-    });
-    nodes.add(this.getBusinesses().getNodes({
-      group_filter: group_filter,
-      node_filter: node_filter
-    }).get());
-
+    let nodes = this.getPeople().getNodes({anchor: anchor});
+    nodes.add(this.getBusinesses().getNodes().get());
     let edges = this.getMessages().getEdges();
 
     this.state.cache.graph = {"nodes": nodes, "edges": edges};
