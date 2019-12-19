@@ -112,12 +112,17 @@ class SocialApp extends React.Component {
 
     let network = this.getNetwork();
     if (network){
-      console.log(network);
-      if (id.getID){
-        network.selectNodes([id.getID()]);
+      let selection = network.getSelection();
+      try{
+        if (id.getID){
+          network.selectNodes([id.getID()]);
+        }
+        else{
+          network.selectNodes([id]);
+        }
       }
-      else{
-        network.selectNodes([id]);
+      catch(error){
+        network.setSelection(selection);
       }
     }
 

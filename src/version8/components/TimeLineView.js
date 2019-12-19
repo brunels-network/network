@@ -105,17 +105,14 @@ class TimeLineView extends Component {
 
   setWindow(window){
     if (!this.isActive()){
-      console.log(`${this.props.name}: setWindow when inactive`);
       return;
     }
 
     if (!window){
-      console.log(`${this.props.name}: setWindow with no window`);
       return;
     }
 
     if (this._window === window){
-      console.log(`${this.props.name}: setWindow with no change in window`);
       return;
     }
 

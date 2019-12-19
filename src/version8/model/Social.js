@@ -210,7 +210,6 @@ class Social {
       return false;
     }
 
-    console.log(`social.setWindow(${window})`);
     this.state.window = window;
     this.clearCache();
     return true;
