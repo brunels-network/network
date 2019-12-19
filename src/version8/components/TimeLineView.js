@@ -52,32 +52,21 @@ class TimeLineView extends Component {
     }
   }
 
-  componentDidMount() {
+  updateSize(dimensions) {
     this.setState({
       dimensions: {
-        width: this.container.offsetWidth,
-        height: this.container.offsetHeight,
-      },
-    });
-    window.addEventListener('resize', ()=>{this.updateSize()});
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', ()=>{this.updateSize()});
-  }
-
-  updateSize() {
-    if (!(this.container)){
-      console.log("Resize with no contianer?");
-      return;
-    }
-
-    this.setState({
-      dimensions: {
-        width: this.container.offsetWidth - 10,
-        height: this.container.offsetHeight - 100,
+        width: dimensions.width - 10,
+        height: dimensions.height - 100,
       }
     });
+
+    let timeline = this.getTimeLine();
+    if (timeline){
+      timeline.redraw();
+    }
+    else{
+      console.log("No timeline to redraw?");
+    }
   }
 
   getTimeLine(){
@@ -135,9 +124,12 @@ class TimeLineView extends Component {
   }
 
   render() {
+    let height = `${this.state.dimensions.height}px`;
+    let width = `${this.state.dimensions.width}px`;
+
     let my_options = {...timeline_options};
-    my_options["height"] = `${this.state.dimensions.height}px`;
-    my_options["width"] = `${this.state.dimensions.width}px`;
+    my_options["height"] = height;
+    my_options["width"] = width;
 
     let start = this.state.window.getStartDate();
     let end = this.state.window.getEndDate();
@@ -163,9 +155,8 @@ class TimeLineView extends Component {
     }
 
     return (
-      <div ref={el => (this.container = el)}
-           className={styles.container}
-           style={{width:"100%", height:"100%"}}>
+      <div className={styles.container}
+           style={{width:width, height:height}}>
         <Timeline className={styles.timeline}
                   ref={el => (this.timeline = el)}
                   rangechangedHandler={(props)=>{this.rangeChangedHandler(props)}}
