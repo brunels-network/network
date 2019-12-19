@@ -59,6 +59,14 @@ class Business {
     return true;
   }
 
+  inGroup(group){
+    if (group.getID){
+      group = group.getID();
+    }
+
+    return (group in this.state.affiliations);
+  }
+
   getID(){
     return this.state.id;
   }

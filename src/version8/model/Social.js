@@ -24,7 +24,8 @@ class Social {
     this.state.cache = {graph:null,
                         projectTimeLine:null,
                         itemTimeLine:null,
-                        filters:null,
+                        node_filters:null,
+                        edge_filters:null,
                         people:null,
                         businesses:null,
                         messages:null};
@@ -99,21 +100,37 @@ class Social {
     this.state.cache = {graph:null,
                         projectTimeLine:null,
                         itemTimeLine:null,
-                        filters:null,
+                        node_filters:null,
+                        edge_filters:null,
                         people:null,
                         businesses: null,
                         messages:null};
   }
 
-  getFilters(){
-    if (!this.state.cache.filters){
-      this.state.cache.filters = [];
+  getNodeFilters(){
+    if (!this.state.cache.node_filters){
+      this.state.cache.node_filters = [];
+
+      // must do time first, as this can affect all of the other filters!
+      let window = this.getWindow();
+
+      if (window.hasStart() || window.hasEnd()){
+        this.state.cache.node_filters.push((item)=>{
+          try{
+            return item.filterWindow(window);
+          }
+          catch(error){
+            console.log(`ERROR ${error}: ${item}`);
+            return item;
+          }
+        });
+      }
 
       let node_filter = this.state.filter.node;
 
       if (node_filter) {
         let id = node_filter.getID();
-        let connections = this.state.messages.getConnectionsTo(node_filter);
+        let connections = this.getMessages().getConnectionsTo(node_filter);
         node_filter = {};
         node_filter[id] = 1;
         for (let connection in connections) {
@@ -121,15 +138,11 @@ class Social {
           node_filter[node.getID()] = 1;
         }
 
-        this.state.cache.filters.push((item)=>{
-          console.log(`NODE ${item.getID()}`);
-          console.log(node_filter);
+        this.state.cache.node_filters.push((item)=>{
           if (item.getID() in node_filter){
-            console.log("FOUND");
             return item;
           }
           else{
-            console.log("NOT FOUND");
             return null;
           }
         });
@@ -138,7 +151,11 @@ class Social {
       let group_filter = this.state.filter.group;
 
       if (group_filter){
-        this.state.cache.filters.push((item)=>{
+        if (group_filter.getID){
+          group_filter = group_filter.getID();
+        }
+
+        this.state.cache.node_filters.push((item)=>{
           try{
             if (item.inGroup(group_filter)){
               return item;
@@ -152,22 +169,17 @@ class Social {
           }
         });
       }
-
-      let window = this.getWindow();
-
-      if (window.hasStart() || window.hasEnd()){
-        this.state.cache.filters.push((item)=>{
-          try{
-            return item.filterWindow(window);
-          }
-          catch(error){
-            return item;
-          }
-        });
-      }
     }
 
-    return this.state.cache.filters;
+    return this.state.cache.node_filters;
+  }
+
+  getEdgeFilters(){
+    if (!this.state.cache.edge_filters){
+      this.state.cache.edge_filters = [];
+    }
+
+    return this.state.cache.edge_filters;
   }
 
   getWindow(){
@@ -191,7 +203,8 @@ class Social {
 
   getPeople() {
     if (!this.state.cache.people){
-      this.state.cache.people = this.state.people.filter(this.getFilters());
+      this.state.cache.people =
+            this.state.people.filter(this.getNodeFilters());
     }
 
     return this.state.cache.people;
@@ -199,7 +212,8 @@ class Social {
 
   getBusinesses() {
     if (!this.state.cache.businesses){
-      this.state.cache.businesses = this.state.businesses.filter(this.getFilters());
+      this.state.cache.businesses =
+            this.state.businesses.filter(this.getNodeFilters());
     }
 
     return this.state.cache.businesses;
@@ -207,7 +221,8 @@ class Social {
 
   getMessages() {
     if (!this.state.cache.messages){
-      this.state.cache.messages = this.state.messages.filter(this.getFilters());
+      this.state.cache.messages =
+            this.state.messages.filter(this.getEdgeFilters());
     }
 
     return this.state.cache.messages;

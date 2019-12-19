@@ -78,7 +78,6 @@ class People {
       if (person){
         for (let i=0; i<funcs.length; ++i){
           person = funcs[i](person);
-          console.log(`${i} : ${person.getID()}`);
           if (!person){
             break;
           }

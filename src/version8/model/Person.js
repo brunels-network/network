@@ -95,6 +95,14 @@ class Person {
     return `Person(${this.getName()})`;
   }
 
+  inGroup(group){
+    if (group.getID){
+      group = group.getID();
+    }
+
+    return (group in this.state.positions) || (group in this.state.affiliations);
+  }
+
   filterWindow(window){
     if (!window){
       return this;
