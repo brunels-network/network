@@ -67,14 +67,14 @@ class TimeLineBox extends Component {
               className={styles.tabs}>
           <TabList className={styles.tabList}>
             <Tab className={styles.tab}
-                 key="analysis"
-                 tabFor="analysis">Analysis</Tab>
-            <Tab className={styles.tab}
                  key="items"
                  tabFor="items">Timeline</Tab>
             <Tab className={styles.tab}
                  key="projects"
                  tabFor="projects">Projects</Tab>
+            <Tab className={styles.tab}
+                 key="analysis"
+                 tabFor="analysis">Analysis</Tab>
           </TabList>
 
           <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
@@ -89,7 +89,8 @@ class TimeLineBox extends Component {
           <TabPanel key="projects" tabId="projects"
                     className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.projects = el)}
-                          item={this.props.item}
+                          selected={this.props.selected}
+                          startWindow={this.props.startWindow}
                           getContents={this.props.getProjectTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}
                           emitSelected={this.props.emitSelected}
@@ -98,7 +99,8 @@ class TimeLineBox extends Component {
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.items = el)}
-                          item={this.props.item}
+                          selected={this.props.selected}
+                          startWindow={this.props.startWindow}
                           getContents={this.props.getItemTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}
                           emitSelected={this.props.emitSelected}

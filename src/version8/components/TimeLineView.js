@@ -38,7 +38,12 @@ class TimeLineView extends Component {
       max_window: new DateRange({start:"1800-01-01", end:"2020-12-31"}),
     }
 
-    this.window = new DateRange({start:"2000-01-01", end:"2020-12-31"});
+    if (props.startWindow){
+      this.window = props.startWindow;
+    }
+    else{
+      this.window = new DateRange({start:"2000-01-01", end:"2020-12-31"});
+    }
   }
 
   activate(){
@@ -89,7 +94,7 @@ class TimeLineView extends Component {
   }
 
   rangeChangedHandler(new_window){
-    if (!this.isActive()){
+    if (!this.isActive() || this._is_setup){
       return;
     }
 
@@ -245,7 +250,9 @@ class TimeLineView extends Component {
     if (timeline){
       //need to set the window here to prevent animation when
       //changing tabs
+      this._is_setup = true;
       timeline.setWindow(start, end, {animation:false});
+      this._is_setup = false;
     }
 
     return (

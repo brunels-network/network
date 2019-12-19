@@ -122,7 +122,7 @@ class SocialApp extends React.Component {
   }
 
   render(){
-    const item = this.state.selected_item;
+    const selected = this.state.selected_item;
     let social = this.state.social;
 
     const node_filter = social.getNodeFilter();
@@ -161,7 +161,8 @@ class SocialApp extends React.Component {
         <div className={styles.container}></div>
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
-          <TimeLineBox item={item}
+          <TimeLineBox selected={selected}
+                       startWindow={social.getWindow()}
                        getProjectTimeLine={()=>{return this.getProjectTimeLine()}}
                        getItemTimeLine={()=>{return this.getItemTimeLine()}}
                        emitClicked={(item)=>{this.slotClicked(item)}}
@@ -172,7 +173,7 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}
                       position='right'>
-          <InfoBox item={item} social={social}
+          <InfoBox item={selected} social={social}
                    emitClicked={(item)=>{this.slotClicked(item)}}
                    emitSelected={(item)=>{this.slotSelected(item)}}/>
         </SlidingPanel>
