@@ -205,10 +205,6 @@ class Person {
     }
   }
 
-  inGroup(group){
-    return (group in this.state.positions || group in this.state.affiliations);
-  }
-
   getPositions(){
     let result = [];
 

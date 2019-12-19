@@ -117,10 +117,6 @@ class Business {
     return this.state.name;
   }
 
-  inGroup(group){
-    return group in this.state.affiliations;
-  }
-
   getAffiliations(){
     let result = [];
 
