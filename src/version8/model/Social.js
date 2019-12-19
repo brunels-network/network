@@ -177,6 +177,21 @@ class Social {
   getEdgeFilters(){
     if (!this.state.cache.edge_filters){
       this.state.cache.edge_filters = [];
+
+      // must do time first, as this can affect all of the other filters!
+      let window = this.getWindow();
+
+      if (window.hasStart() || window.hasEnd()){
+        this.state.cache.edge_filters.push((item)=>{
+          try{
+            return item.filterWindow(window);
+          }
+          catch(error){
+            console.log(`ERROR ${error}: ${item}`);
+            return item;
+          }
+        });
+      }
     }
 
     return this.state.cache.edge_filters;
