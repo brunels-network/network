@@ -69,6 +69,11 @@ class SocialApp extends React.Component {
       return;
     }
 
+    if (item){
+      const social = this.state.social;
+      item = social.get(item);
+    }
+
     let is_node = false;
 
     try{

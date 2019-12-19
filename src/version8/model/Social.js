@@ -1,6 +1,5 @@
 
 import Dry from 'json-dry';
-import vis from 'vis-network';
 
 import People from './People';
 import Businesses from './Businesses';
@@ -206,12 +205,11 @@ class Social {
       return this.state.cache.projectTimeLine;
     }
 
-    let window = this.getWindow();
     let anchor = this.getAnchor();
 
-    let items = new vis.DataSet();
+    let items = [];
 
-    this.state.cache.projectTimeLine = {window:window, items:items};
+    this.state.cache.projectTimeLine = items;
 
     return this.state.cache.projectTimeLine;
   }
@@ -221,12 +219,11 @@ class Social {
       return this.state.cache.itemTimeLine;
     }
 
-    let window = this.getWindow();
-    let anchor = this.getAnchor();
+    let people = this.getPeople();
 
-    let items = new vis.DataSet();
+    let items = people.getTimeLine();
 
-    this.state.cache.itemTimeLine = {window:window, items:items};
+    this.state.cache.itemTimeLine = items;
 
     return this.state.cache.itemTimeLine;
   }

@@ -67,15 +67,15 @@ class TimeLineBox extends Component {
               onChange={(tabId) => { this.activate(tabId); this.updateSize(); }}
               className={styles.tabs}>
           <TabList className={styles.tabList}>
+          <Tab className={styles.tab}
+                 key="analysis"
+                 tabFor="analysis">Analysis</Tab>
             <Tab className={styles.tab}
                  key="items"
                  tabFor="items">Timeline</Tab>
             <Tab className={styles.tab}
                  key="projects"
                  tabFor="projects">Projects</Tab>
-            <Tab className={styles.tab}
-                 key="analysis"
-                 tabFor="analysis">Analysis</Tab>
           </TabList>
 
           <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
@@ -102,7 +102,6 @@ class TimeLineBox extends Component {
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.items = el)}
                           name="items"
-                          is_active={true}
                           selected={this.props.selected}
                           getWindow={this.props.getItemWindow}
                           getItems={this.props.getItemTimeLine}

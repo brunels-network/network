@@ -81,8 +81,9 @@ class TimeLineView extends Component {
       return;
     }
 
-    console.log(`${this.props.name}: Selected`);
-    console.log(props);
+    if (this.props.emitSelected){
+      this.props.emitSelected(props.items[0]);
+    }
   }
 
   rangeChangedHandler(props){

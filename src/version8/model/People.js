@@ -99,6 +99,26 @@ class People {
     return people;
   }
 
+  getTimeLine(){
+    let items = [];
+
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let person = this.state.registry[key];
+
+      let alive = person.getAlive();
+
+      if (alive.hasBounds()){
+        items.push({start: alive.getStart(),
+                    end: alive.getEnd(),
+                    id: person.getID(),
+                    content: person.getName(),
+                  });
+      }
+    });
+
+    return items;
+  }
+
   getNodes({anchor=null, group_filter=null, node_filter=null} = {}){
     let nodes = new vis.DataSet();
 
