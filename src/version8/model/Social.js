@@ -113,7 +113,7 @@ class Social {
 
       if (node_filter) {
         let id = node_filter.getID();
-        let connections = this.getConnectionsTo(node_filter);
+        let connections = this.state.messages.getConnectionsTo(node_filter);
         node_filter = {};
         node_filter[id] = 1;
         for (let connection in connections) {
@@ -122,10 +122,14 @@ class Social {
         }
 
         this.state.cache.filters.push((item)=>{
+          console.log(`NODE ${item.getID()}`);
+          console.log(node_filter);
           if (item.getID() in node_filter){
+            console.log("FOUND");
             return item;
           }
           else{
+            console.log("NOT FOUND");
             return null;
           }
         });
