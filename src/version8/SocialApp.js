@@ -39,6 +39,8 @@ class SocialApp extends React.Component {
       isTimeLinePanelOpen: false,
       timeline: new TimeLineBox(),
     };
+
+    this.socialGraph = null;
   }
 
   resetFilters(){
@@ -90,11 +92,33 @@ class SocialApp extends React.Component {
     }
   }
 
+  getNetwork(){
+    const social = this.state.social;
+
+    if (social){
+      return social.getNetwork();
+    }
+    else{
+      return null;
+    }
+  }
+
   slotClicked(id){
     if (!id){
       this.setState({isInfoPanelOpen:false,
                      isTimeLinePanelOpen:false});
       return;
+    }
+
+    let network = this.getNetwork();
+    if (network){
+      console.log(network);
+      if (id.getID){
+        network.selectNodes([id.getID()]);
+      }
+      else{
+        network.selectNodes([id]);
+      }
     }
 
     const social = this.state.social;
