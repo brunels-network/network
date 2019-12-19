@@ -27,11 +27,12 @@ class TimeLineBox extends Component {
   }
 
   activate(tabId){
-    console.log(`Activate ${tabId}`);
-
     Object.keys(this.tabs).forEach((key, index) =>{
       if (key !== tabId){
-        this.tabs[key].deactivate();
+        let tab = this.tabs[key];
+        if (tab){
+          tab.deactivate();
+        }
       }
     });
 
@@ -89,9 +90,10 @@ class TimeLineBox extends Component {
           <TabPanel key="projects" tabId="projects"
                     className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.projects = el)}
+                          name="projects"
                           selected={this.props.selected}
-                          startWindow={this.props.startWindow}
-                          getContents={this.props.getProjectTimeLine}
+                          getWindow={this.props.getProjectWindow}
+                          getItems={this.props.getProjectTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}
                           emitSelected={this.props.emitSelected}
                           emitClicked={this.props.emitClicked}/>
@@ -99,9 +101,11 @@ class TimeLineBox extends Component {
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
             <TimeLineView ref={el => (this.tabs.items = el)}
+                          name="items"
+                          is_active={true}
                           selected={this.props.selected}
-                          startWindow={this.props.startWindow}
-                          getContents={this.props.getItemTimeLine}
+                          getWindow={this.props.getItemWindow}
+                          getItems={this.props.getItemTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}
                           emitSelected={this.props.emitSelected}
                           emitClicked={this.props.emitClicked}/>

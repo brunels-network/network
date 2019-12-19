@@ -99,18 +99,10 @@ class SocialApp extends React.Component {
 
   slotWindowChanged(window){
     let social = this.state.social;
-    social.setWindow(window);
-    this.setState({social:social});
-  }
 
-  getItemTimeLine(){
-    let social = this.state.social;
-    return social.getItemTimeLine();
-  }
-
-  getProjectTimeLine(){
-    let social = this.state.social;
-    return social.getProjectTimeLine();
+    if (social.setWindow(window)){
+      this.setState({social:social});
+    }
   }
 
   toggleInfoPanel(){
@@ -123,7 +115,7 @@ class SocialApp extends React.Component {
 
   render(){
     const selected = this.state.selected_item;
-    let social = this.state.social;
+    const social = this.state.social;
 
     const node_filter = social.getNodeFilter();
     const group_filter = social.getGroupFilter();
@@ -162,9 +154,10 @@ class SocialApp extends React.Component {
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
           <TimeLineBox selected={selected}
-                       startWindow={social.getWindow()}
-                       getProjectTimeLine={()=>{return this.getProjectTimeLine()}}
-                       getItemTimeLine={()=>{return this.getItemTimeLine()}}
+                       getProjectWindow={()=>{return this.state.social.getWindow()}}
+                       getItemWindow={()=>{return this.state.social.getWindow()}}
+                       getProjectTimeLine={()=>{return this.state.social.getProjectTimeLine()}}
+                       getItemTimeLine={()=>{return this.state.social.getItemTimeLine()}}
                        emitClicked={(item)=>{this.slotClicked(item)}}
                        emitSelected={(item)=>{this.slotSelected(item)}}
                        emitWindowChanged={(window)=>{

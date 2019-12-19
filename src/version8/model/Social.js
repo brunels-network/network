@@ -108,11 +108,13 @@ class Social {
     }
 
     if (window === this.state.window){
-      return;
+      return false;
     }
 
+    console.log(`social.setWindow(${window})`);
     this.state.window = window;
     this.clearCache();
+    return true;
   }
 
   getPeople() {

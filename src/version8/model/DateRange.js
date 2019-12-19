@@ -208,6 +208,61 @@ class DateRange{
     }
   }
 
+  getDelta(){
+    if (this.hasStart() && this.hasEnd()){
+      return this.getEnd() - this.getStart();
+    }
+    else{
+      return null;
+    }
+  }
+
+  zoomIn(scale=1){
+    let state = lodash.cloneDeep(this.state);
+
+    let delta = null;
+
+    if (state.start !== null && state.end !== null){
+      delta = (state.end - state.start) / (2.0+scale);
+    }
+    else{
+      delta = 3600000;
+    }
+
+    if (state.start){
+      state.start.add(delta, "ms");
+    }
+
+    if (state.end){
+      state.end.add(-delta, "ms");
+    }
+
+    return new DateRange(state);
+  }
+
+  zoomOut(scale=1){
+    let state = lodash.cloneDeep(this.state);
+
+    let delta = null;
+
+    if (state.start !== null && state.end !== null){
+      delta = (state.end - state.start) * scale;
+    }
+    else{
+      delta = 3600000;
+    }
+
+    if (state.start){
+      state.start.add(-delta, "ms");
+    }
+
+    if (state.end){
+      state.end.add(delta, "ms");
+    }
+
+    return new DateRange(state);
+  }
+
   shiftEarlier(delta=null){
     let state = lodash.cloneDeep(this.state);
 

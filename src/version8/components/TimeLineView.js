@@ -33,29 +33,24 @@ class TimeLineView extends Component {
     super(props)
 
     this.state = {
-      activated: false,
       dimensions: {height:300, width:600},
       max_window: new DateRange({start:"1800-01-01", end:"2020-12-31"}),
     }
 
-    if (props.startWindow){
-      this.window = props.startWindow;
-    }
-    else{
-      this.window = new DateRange({start:"2000-01-01", end:"2020-12-31"});
-    }
+    this._is_activated = this.props.is_active;
+    this._window = null;
   }
 
   activate(){
-    this.setState({activated:true});
+    this._is_activated = true;
   }
 
   deactivate(){
-    this.setState({activated:false});
+    this._is_activated = false;
   }
 
   isActive(){
-    return this.state.activated;
+    return this._is_activated;
   }
 
   updateSize(dimensions) {
@@ -70,17 +65,14 @@ class TimeLineView extends Component {
     if (timeline){
       timeline.redraw();
     }
-    else{
-      console.log("No timeline to redraw?");
-    }
   }
 
   getTimeLine(){
-    try {
+    if (this.timeline){
       return this.timeline.$el;
     }
-    catch(error){
-      console.log(`No timeline ${error}`);
+    else{
+      return null;
     }
   }
 
@@ -89,62 +81,80 @@ class TimeLineView extends Component {
       return;
     }
 
-    console.log("Selected");
+    console.log(`${this.props.name}: Selected`);
     console.log(props);
   }
 
-  rangeChangedHandler(new_window){
-    if (!this.isActive() || this._is_setup){
-      return;
+  rangeChangedHandler(props){
+    if (props.byUser){
+      let window = new DateRange({start:new Date(props.start),
+                                  end:new Date(props.end)});
+      this._window = window;
     }
 
-    let window = new DateRange({start:new_window.start, end:new_window.end});
+    //we emit the set window, not what the TimeLine thinks, as otherwise
+    //we get weird behaviour on setup as we get initial rangeChanged fires
+    //for pre-rendered views
+    const window = this._window;
 
-    if (window === this.window){
-      console.log("No change in window");
-      return;
-    }
-
-    console.log(`Setting window state to ${window.toString()}`);
-    this.window = window;
-
-    if (this.props.emitWindowChanged){
-      console.log(`emitWindowChanged(${window.toString()}`);
+    if (window && this.isActive() && this.props.emitWindowChanged){
       this.props.emitWindowChanged(window);
     }
   }
 
-  zoomIn(){
-    this.getTimeLine().zoomIn(1.0);
-  }
-
-  zoomOut(){
-    this.getTimeLine().zoomOut(1.0);
-  }
-
   setWindow(window){
     if (!this.isActive()){
+      console.log(`${this.props.name}: setWindow when inactive`);
       return;
     }
 
     if (!window){
+      console.log(`${this.props.name}: setWindow with no window`);
       return;
     }
 
-    if (this.window === window){
+    if (this._window === window){
+      console.log(`${this.props.name}: setWindow with no change in window`);
       return;
     }
 
     const max_window = this.state.max_window;
 
     if (max_window){
-      if (!max_window.contains(window)){
-        return;
+      let new_window = max_window.intersect(window);
+
+      if (new_window.getDelta() !== window.getDelta()){
+        if (window.getStart() < max_window.getStart()){
+          new_window = new DateRange({start:max_window.getStart(),
+                                      end:max_window.getStart()+window.getDelta()});
+        }
+        else if (window.getEnd() > max_window.getEnd()){
+          new_window = new DateRange({start:max_window.getEnd()-window.getDelta(),
+                                      end:max_window.getEnd()});
+        }
+
+        if (new_window.getStart() < max_window.getStart()){
+          new_window = new DateRange({start:max_window.getStart(),
+                                      end:new_window.end()});
+        }
+
+        if (new_window.getEnd() > max_window.getEnd()){
+          new_window = new DateRange({start:new_window.getStart(),
+                                      end:max_window.getEnd()});
+        }
+
+        window = new_window;
+      }
+
+      const min_delta = 24*60*60*1000;
+
+      if (window.getDelta() < min_delta){
+        window = new DateRange({start:window.getStart(),
+                                end:window.getStart()+min_delta});
       }
     }
 
-    console.log(`Set window to ${window.toString()}`);
-
+    this._window = window;
     this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
                                  {animation:true});
   }
@@ -154,13 +164,11 @@ class TimeLineView extends Component {
       return;
     }
 
-    const window = this.window;
+    const window = this._window;
 
-    if (!window){
-      return;
+    if (window){
+      this.setWindow(new DateRange({start:date, end:window.getEndDate()}));
     }
-
-    this.setWindow(new DateRange({start:date, end:window.getEndDate()}));
   }
 
   setEndDate(date){
@@ -168,17 +176,15 @@ class TimeLineView extends Component {
       return;
     }
 
-    const window = this.window;
+    const window = this._window;
 
-    if (!window){
-      return;
+    if (window){
+      this.setWindow(new DateRange({start:window.getStartDate(), end:date}));
     }
-
-    this.setWindow(new DateRange({start:date, end:window.getEndDate()}));
   }
 
   scrollLeft(){
-    const window = this.window;
+    const window = this._window;
 
     if (window){
       this.setWindow(window.shiftEarlier());
@@ -186,10 +192,26 @@ class TimeLineView extends Component {
   }
 
   scrollRight(){
-    const window = this.window;
+    const window = this._window;
 
     if (window){
       this.setWindow(window.shiftLater());
+    }
+  }
+
+  zoomIn(){
+    const window = this._window;
+
+    if (window){
+      this.setWindow(window.zoomIn());
+    }
+  }
+
+  zoomOut(){
+    const window = this._window;
+
+    if (window){
+      this.setWindow(window.zoomOut());
     }
   }
 
@@ -208,33 +230,36 @@ class TimeLineView extends Component {
       my_options["min"] = max_window.getStartDate();
     }
 
-    let start = this.window.getStartDate();
-    let end = this.window.getEndDate();
+    let window = this._window;
 
-    let timeline_items = null;
+    if (this.props.getWindow){
+      window = this.props.getWindow();
+    }
 
-    if (this.isActive()){
-      if (this.props.getContents){
-        let contents = this.props.getContents();
-
-        if (contents){
-          timeline_items = contents.items;
-
-          let window = contents.window;
-
-          if (window.hasStart()){
-            start = window.getStartDate();
-          }
-
-          if (window.hasEnd()){
-            end = window.getEndDate();
-          }
-        }
+    if (!(window && window.hasBounds())){
+      if (max_window && max_window.hasBounds()){
+        window = max_window;
+      }
+      else{
+        window = new DateRange({start:"2000-01-31", end:"2020-12-31"});
       }
     }
 
-    if (timeline_items === null){
-      timeline_items = [];
+    this._window = window;
+
+    let start = this._window.getStartDate();
+    let end = this._window.getEndDate();
+
+    let items = null;
+
+    if (this.isActive()){
+      if (this.props.getItems){
+        items = this.props.getItems();
+      }
+    }
+
+    if (items === null || items.length === 0){
+      items = [];
     }
 
     if (start){
@@ -250,9 +275,9 @@ class TimeLineView extends Component {
     if (timeline){
       //need to set the window here to prevent animation when
       //changing tabs
-      this._is_setup = true;
+      let activated = this._is_activated;
       timeline.setWindow(start, end, {animation:false});
-      this._is_setup = false;
+      this._is_activated = activated;
     }
 
     return (
@@ -263,7 +288,7 @@ class TimeLineView extends Component {
                   rangechangedHandler={(props)=>{this.rangeChangedHandler(props)}}
                   selectHandler={(props)=>{this.selectHandler(props)}}
                   options={my_options}
-                  items={timeline_items}/>
+                  items={items}/>
         <div className={styles.buttonGroup}>
           <button className={styles.scrollButton}
                   onClick={()=>{this.scrollLeft()}}>&larr;</button>
@@ -282,7 +307,7 @@ class TimeLineView extends Component {
                       customInput={<DateInput />}
                       onChange={(date)=>{this.setStartDate(date)}}/>
           <button className={styles.scrollButton}
-                  onClick={()=>{console.log("RESET")}}>&harr;</button>
+                  onClick={()=>{this.setWindow(max_window)}}>&harr;</button>
           <DatePicker className={styles.datePicker}
                       selected={end}
                       openToDate={end}
