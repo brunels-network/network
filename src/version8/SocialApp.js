@@ -164,7 +164,7 @@ class SocialApp extends React.Component {
                        getProjectTimeLine={()=>{return this.state.social.getProjectTimeLine()}}
                        getItemTimeLine={()=>{return this.state.social.getItemTimeLine()}}
                        emitClicked={(item)=>{this.slotClicked(item)}}
-                       emitSelected={(item)=>{this.slotSelected(item)}}
+                       emitSelected={(item)=>{this.slotClicked(item)}}
                        emitWindowChanged={(window)=>{
                                     this.slotWindowChanged(window)}}/>
         </SlidingPanel>

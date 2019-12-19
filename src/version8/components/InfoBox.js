@@ -108,6 +108,17 @@ function extractData({item, social, emitClicked=null_function,
     return data;
   }
 
+  //refresh the item in case of updates...
+  if (item.getID){
+    item = item.getID();
+  }
+
+  item = social.get(item);
+
+  if (!item){
+    return data;
+  }
+
   if (item instanceof Person){
     data.title = <button href="#" className={styles.button}
                          onClick={()=>{emitSelected(item);}}>

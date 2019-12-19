@@ -6,7 +6,6 @@ import styles from './GroupsList.module.css';
 function null_function(item){}
 
 function GroupsList({groups, title, emitClicked=null_function}) {
-
   if (!groups || groups.length === 0) {
     return null;
   }
