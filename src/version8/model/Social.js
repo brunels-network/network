@@ -10,6 +10,42 @@ import Sources from './Sources';
 import Notes from './Notes';
 import DateRange from './DateRange';
 
+/*const fast_physics = {
+  enabled: true,
+  barnesHut: {
+    gravitationalConstant: -50,
+    centralGravity: 0.0,
+    springLength: 50,
+    springConstant: 0.02,
+    damping: 0.2,
+    avoidOverlap: 0.5
+  },
+  maxVelocity: 30,
+  minVelocity: 0.2,
+  solver: 'barnesHut',
+  stabilization: {
+    enabled: true,
+    iterations: 100,
+    updateInterval: 10,
+    onlyDynamicEdges: false,
+    fit: true
+  },
+  timestep: 0.5,
+  adaptiveTimestep: true
+};
+
+const slow_physics = {...fast_physics};
+slow_physics.timestep = 0.1;*/
+
+const fast_physics = {
+  enabled: true,
+  timestep: 0.5,
+};
+
+const slow_physics = {...fast_physics};
+slow_physics.timestep = 0.1;
+
+
 class Social {
   constructor(props) {
     if (props){
@@ -349,6 +385,16 @@ class Social {
     let nodes = this.getPeople().getNodes({anchor: anchor});
     nodes.add(this.getBusinesses().getNodes().get());
     let edges = this.getMessages().getEdges();
+
+    let network = this.getNetwork();
+
+    if (network){
+      //make sure that the screen updates gracefully
+      network.setOptions({physics: false});
+
+      setTimeout(()=>{network.setOptions({physics: slow_physics})}, 250);
+      setTimeout(()=>{network.setOptions({physics: fast_physics})}, 500);
+    }
 
     this.state.cache.graph = {"nodes": nodes, "edges": edges};
     return this.state.cache.graph;

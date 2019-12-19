@@ -172,6 +172,9 @@ class Business {
     if (keys.length > 0){
       node["group"] = keys.sort().join(":");
     }
+    else{
+      node["group"] = "unknown";
+    }
 
     if (is_anchor){
       node["shape"] = "star";
