@@ -1,6 +1,7 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
+import lodash from 'lodash';
 
 import Note from "./Note";
 import { KeyError, MissingError } from './Errors';
@@ -15,6 +16,8 @@ class Notes {
     this.state = {
       registry: {},
     };
+
+    this._isANotesObject = true;
   };
 
   _updateHooks(hook){
@@ -24,8 +27,21 @@ class Notes {
     }
   }
 
+  static clone(item){
+    let c = new Notes();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Note) || item._isANoteObject;
+  }
+
   add(note){
-    if (!(note instanceof Note)){ return;}
+    if (!this.canAdd(note)){ return;}
+
+    note = Note.clone(note);
 
     let id = note.getID();
 
@@ -34,6 +50,7 @@ class Notes {
         throw KeyError(`Duplicate Note ID ${note}`);
       }
 
+      note._updateHooks(this._getHook);
       this.state.registry[id] = note;
     }
     else{
@@ -44,6 +61,7 @@ class Notes {
       }
 
       note.state.id = uid;
+      note._updateHooks(this._getHook);
       this.state.registry[uid] = note;
     }
   }

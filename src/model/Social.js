@@ -1,5 +1,6 @@
 
 import Dry from 'json-dry';
+import lodash from 'lodash';
 
 import People from './People';
 import Businesses from './Businesses';
@@ -8,7 +9,10 @@ import Positions from './Positions';
 import Affiliations from './Affiliations';
 import Sources from './Sources';
 import Notes from './Notes';
+import Projects from './Projects';
 import DateRange from './DateRange';
+
+import { ValueError } from './Errors';
 
 /*const fast_physics = {
   enabled: true,
@@ -67,6 +71,14 @@ class Social {
                         messages:null};
     this.state.network = null;
     this.state.window = new DateRange();
+
+    this._isASocialObject = true;
+  }
+
+  static clone(item){
+    let c = new Social();
+    c.state = lodash.cloneDeep(item.state);
+    return c;
   }
 
   _updateHooks() {
@@ -120,6 +132,13 @@ class Social {
     }
     else {
       state.notes = this.state.notes;
+    }
+
+    if (!(this.state.projects instanceof Projects)){
+      state.projects = new Projects();
+    }
+    else {
+      state.projects = this.state.projects;
     }
 
     this.state = state;
@@ -294,6 +313,10 @@ class Social {
     return this.state.notes;
   }
 
+  getProjects() {
+    return this.state.projects;
+  }
+
   getConnectionsTo(item) {
     return this.getMessages().getConnectionsTo(item);
   }
@@ -408,6 +431,20 @@ class Social {
     return this.state.network;
   }
 
+  add(item){
+    Object.keys(this.state).forEach((key, index)=>{
+      let group = this.state[key];
+      if (group.canAdd){
+        if (group.canAdd(item)){
+          group.add(item);
+          return;
+        }
+      }
+    });
+
+    throw ValueError(`Do not know how to add ${item} to this Social group`);
+  }
+
   get(id) {
     if (id[0] === "M") {
       return this.getMessages().get(id);
@@ -429,6 +466,9 @@ class Social {
     }
     else if (id[0] === "N") {
       return this.getNotes().get(id);
+    }
+    else if (id[0] === "J") {
+      return this.getProjects().get(id);
     }
     else {
       return id;

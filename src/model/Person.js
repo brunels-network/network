@@ -1,5 +1,6 @@
 
 import Dry from "json-dry";
+import lodash from 'lodash';
 
 import DateRange from './DateRange';
 
@@ -59,6 +60,12 @@ class Person {
 
     this._getHook = null;
     this._isAPersonObject = true;
+  }
+
+  static clone(item){
+    let c = new Person();
+    c._getHook = item._getHook;
+    c.state = lodash.cloneDeep(item.state);
   }
 
   getID(){

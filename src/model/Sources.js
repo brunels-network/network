@@ -1,8 +1,10 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
+import lodash from 'lodash';
 
-import Source from "./Source";
+import Source from './Source';
+
 import { KeyError, MissingError } from './Errors';
 
 function _generate_source_uid(){
@@ -15,6 +17,8 @@ class Sources {
     this.state = {
       registry: {},
     };
+
+    this._isASourcesObject = true;
   };
 
   _updateHooks(hook){
@@ -24,8 +28,21 @@ class Sources {
     }
   }
 
+  static clone(item){
+    let c = new Sources();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Source) || item._isASourceObject;
+  }
+
   add(source){
-    if (!(source instanceof Source)){ return;}
+    if (!this.canAdd(source)){ return;}
+
+    source = Source.clone(source);
 
     let id = source.getID();
 
@@ -34,6 +51,7 @@ class Sources {
         throw KeyError(`Duplicate Source ID ${source}`);
       }
 
+      source._updateHooks(this._getHook);
       this.state.registry[id] = source;
     }
     else{
@@ -44,6 +62,7 @@ class Sources {
       }
 
       source.state.id = uid;
+      source._updateHooks(this._getHook);
       this.state.registry[uid] = source;
     }
   }

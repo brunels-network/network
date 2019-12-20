@@ -1,5 +1,6 @@
 
 import Dry from 'json-dry';
+import lodash from 'lodash';
 
 import DateRange from './DateRange';
 
@@ -24,6 +25,13 @@ class Message {
 
     this.setState(props);
     this._getHook = null;
+    this._isAMessageObject = true;
+  }
+
+  static clone(item){
+    let c = new Message();
+    c._getHook = item._getHook;
+    c.state = lodash.cloneDeep(item.state);
   }
 
   _updateHooks(hook){

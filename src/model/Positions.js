@@ -1,6 +1,7 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
+import lodash from 'lodash';
 
 import Position from "./Position";
 import { KeyError, MissingError } from './Errors';
@@ -15,6 +16,8 @@ class Positions {
     this.state = {
       registry: {},
     };
+
+    this._isAPositionsObject = true;
   };
 
   _updateHooks(hook){
@@ -24,8 +27,21 @@ class Positions {
     }
   }
 
+  static clone(item){
+    let c = new Positions();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Position) || item._isAPositionObject;
+  }
+
   add(position){
-    if (!(position instanceof Position)){ return;}
+    if (!this.canAdd(position)){ return;}
+
+    position = Position.clone(position);
 
     let id = position.getID();
 
@@ -34,6 +50,7 @@ class Positions {
         throw KeyError(`Duplicate Position ID ${position}`);
       }
 
+      position._updateHooks(this._getHook);
       this.state.registry[id] = position;
     }
     else{
@@ -44,6 +61,7 @@ class Positions {
       }
 
       position.state.id = uid;
+      position._updateHooks(this._getHook);
       this.state.registry[uid] = position;
     }
   }

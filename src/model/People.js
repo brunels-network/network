@@ -2,6 +2,7 @@
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
 import vis from 'vis-network';
+import lodash from 'lodash';
 
 import Person from './Person';
 
@@ -19,6 +20,7 @@ class People {
     };
 
     this._getHook = null;
+    this._isAPeopleObject = true;
 
     this.load(props);
   };
@@ -28,6 +30,17 @@ class People {
     for (let key in this.state.registry){
       this.state.registry[key]._updateHooks(hook);
     }
+  }
+
+  static clone(item){
+    let c = new People();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Person) || item._isAPersonObject;
   }
 
   find(name){
@@ -42,7 +55,9 @@ class People {
   }
 
   add(person){
-    if (!(person instanceof Person)){ return;}
+    if (!this.canAdd(person)){ return;}
+
+    person = Person.clone(person);
 
     let id = person.getID();
 
@@ -51,6 +66,7 @@ class People {
         throw KeyError(`Duplicate Person ID ${person}`);
       }
 
+      person._updateHooks(this._getHook);
       this.state.registry[id] = person;
     }
     else{
@@ -61,6 +77,7 @@ class People {
       }
 
       person.state.id = uid;
+      person._updateHooks(this._getHook);
       this.state.registry[uid] = person;
     }
   }

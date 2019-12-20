@@ -2,6 +2,7 @@
 import Dry from 'json-dry';
 import vis from 'vis-network';
 import uuidv4 from 'uuid';
+import lodash from 'lodash';
 
 import Business from './Business';
 
@@ -17,6 +18,8 @@ class Businesses {
     this.state = {
       registry: {},
     };
+
+    this.isABusinessesObject = true;
   };
 
   _updateHooks(hook){
@@ -26,8 +29,21 @@ class Businesses {
     }
   }
 
+  static clone(item){
+    let c = new Businesses();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Business) || item._isABusinessObject;
+  }
+
   add(business){
-    if (!(business instanceof Business)){ return;}
+    if (!this.canAdd(business)){ return;}
+
+    business = Business.clone(business);
 
     let id = business.getID();
 
@@ -36,6 +52,7 @@ class Businesses {
         throw KeyError(`Duplicate Business ID ${Business}`);
       }
 
+      business._updateHooks(this._getHook);
       this.state.registry[id] = business;
     }
     else{
@@ -46,6 +63,7 @@ class Businesses {
       }
 
       business.state.id = uid;
+      business._updateHooks(this._getHook);
       this.state.registry[uid] = business;
     }
   }

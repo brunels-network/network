@@ -1,8 +1,10 @@
 
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
+import lodash from 'lodash';
 
-import Affiliation from "./Affiliation";
+import Affiliation from './Affiliation';
+
 import { KeyError, MissingError } from './Errors';
 
 function _generate_affiliation_uid(){
@@ -15,6 +17,8 @@ class Affiliations {
     this.state = {
       registry: {},
     };
+
+    this._isAAffiliationsObject = true;
   };
 
   _updateHooks(hook){
@@ -24,8 +28,21 @@ class Affiliations {
     }
   }
 
+  static clone(item){
+    let c = new Affiliations();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Affiliations) || item._isAAffiliationObject;
+  }
+
   add(affiliation){
-    if (!(affiliation instanceof Affiliation)){ return;}
+    if (!this.canAdd(affiliation)){ return;}
+
+    affiliation = Affiliation.clone(affiliation);
 
     let id = affiliation.getID();
 
@@ -34,6 +51,7 @@ class Affiliations {
         throw KeyError(`Duplicate Affiliation ID ${affiliation}`);
       }
 
+      affiliation._updateHooks(this._getHook);
       this.state.registry[id] = affiliation;
     }
     else{
@@ -44,6 +62,7 @@ class Affiliations {
       }
 
       affiliation.state.id = uid;
+      affiliation._updateHooks(this._getHook);
       this.state.registry[uid] = affiliation;
     }
   }

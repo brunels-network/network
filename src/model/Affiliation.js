@@ -1,5 +1,6 @@
 
 import Dry from "json-dry";
+import lodash from 'lodash';
 
 function setState(val, def=null){
   if (val){
@@ -21,6 +22,13 @@ class Affiliation {
     this.setState(props);
 
     this._getHook = null;
+    this._isAAffiliationObject = true;
+  }
+
+  static clone(item){
+    let c = new Affiliation();
+    c._getHook = item._getHook;
+    c.state = lodash.cloneDeep(item.state);
   }
 
   getName(){

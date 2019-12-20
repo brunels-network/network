@@ -2,6 +2,8 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
+import DateRange from './DateRange';
+
 function setState(val, def=null){
   if (val){
     return val;
@@ -10,23 +12,24 @@ function setState(val, def=null){
   }
 }
 
-class Position {
+class Project {
   constructor(props){
     this.state = {
       name: null,
       id: null,
-      sources: [],
+      url: null,
+      duration: new DateRange(),
       notes: {},
     };
 
     this.setState(props);
 
     this._getHook = null;
-    this._isAPositionObject = true;
+    this._isAProjectObject = true;
   }
 
   static clone(item){
-    let c = new Position();
+    let c = new Project();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
   }
@@ -39,8 +42,9 @@ class Position {
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.sources = setState(state.sources, []);
-      this.state.notes = setState(state.notes, {})
+      this.state.notes = setState(state.notes, {});
+      this.state.url = setState(state.url, null);
+      this.state.duration = new DateRange({value:state.duration});
     }
   }
 
@@ -49,11 +53,15 @@ class Position {
   }
 
   toString(){
-    return `Position(${this.getName()})`;
+    return `Project(${this.getName()})`;
   }
 
   getName(){
     return this.state.name;
+  }
+
+  getURL(){
+      return this.state.url;
   }
 
   toDry(){
@@ -61,10 +69,10 @@ class Position {
   }
 };
 
-Position.unDry = function(value){
-  return new Position(value);
+Project.unDry = function(value){
+  return new Project(value);
 }
 
-Dry.registerClass("Position", Position);
+Dry.registerClass("Project", Project);
 
-export default Position;
+export default Project;

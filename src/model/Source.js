@@ -1,5 +1,6 @@
 
 import Dry from "json-dry";
+import lodash from 'lodash';
 
 function setState(val, def=null){
   if (val){
@@ -20,6 +21,13 @@ class Source {
     this.setState(props);
 
     this._getHook = null;
+    this._isASourceObject = true;
+  }
+
+  static clone(item){
+    let c = new Source();
+    c._getHook = item._getHook;
+    c.state = lodash.cloneDeep(item.state);
   }
 
   getID(){

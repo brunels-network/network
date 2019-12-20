@@ -2,6 +2,7 @@
 import Dry from 'json-dry';
 import uuidv4 from 'uuid';
 import vis from 'vis-network';
+import lodash from 'lodash';
 
 import Message from './Message';
 
@@ -17,6 +18,8 @@ class Messages {
     this.state = {
       registry: {},
     };
+
+    this._isAMessagesObject = true;
   };
 
   _updateHooks(hook){
@@ -26,8 +29,21 @@ class Messages {
     }
   }
 
+  static clone(item){
+    let c = new Messages();
+    c.state = lodash.cloneDeep(item.state);
+    c._getHook = item._getHook;
+    return c;
+  }
+
+  canAdd(item){
+    return (item instanceof Message) || item._isAMessageObject;
+  }
+
   add(message){
-    if (!(message instanceof Message)){ return;}
+    if (!this.canAdd(message)){ return;}
+
+    message = Message.clone(message);
 
     let id = message.getID();
 
@@ -36,6 +52,7 @@ class Messages {
         throw KeyError(`Duplicate Message ID ${message}`);
       }
 
+      message._updateHooks(this._getHook);
       this.state.registry[id] = message;
     }
     else{
@@ -46,6 +63,7 @@ class Messages {
       }
 
       message.state.id = uid;
+      message._updateHooks(this._getHook);
       this.state.registry[uid] = message;
     }
   }
