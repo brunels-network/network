@@ -1,0 +1,117 @@
+
+.container {
+  position: fixed;
+  top: 10px;
+  left: 5px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+
+.resultContainer {
+  background-color: white;
+  width: 80%;
+  border: 2px;
+  border-color: green;
+  display: flex;
+  flex-direction: row;
+}
+
+.searchPending {
+  width: 100%;
+  text-align: center;
+}
+
+.searchResult {
+  width: 100%;
+}
+
+.hamburgerButton {
+  height: 35px;
+  width: 1.5em;
+  font-size: x-large;
+  padding: 0;
+  border: 0;
+  color: black;
+  vertical-align: middle;
+  background: transparent;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+}
+
+.hamburgerButton:hover {
+  background-color: green;
+  color: white;
+}
+
+.hamburgerButton:active {
+  background-color: rgba(0,0,0,0);
+  color: black;
+  transform: rotate(90deg);
+}
+
+.searchBox {
+  width: 80%;
+  background-color: white;
+  color: black;
+  font-size: medium;
+}
+
+.disabledButton {
+  background-color: green;
+  color: white;
+  height: 35px;
+  width: 35px;
+  opacity: 0.5;
+}
+
+.searchButton {
+  background-color: green;
+  color: white;
+  height: 35px;
+  width: 35px;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+}
+
+.searchButton:hover {
+  background-color: blue;
+}
+
+.searchButton:active {
+  transform: rotate(90deg);
+  background-color: green;
+}
+
+.magnifier {
+  background: transparent;
+  transform: rotate(45deg);
+  text-align: center;
+  font-size: x-large;
+  margin: auto;
+  height: 25px;
+  width: 40px;
+}
+
+.closeResultButton {
+  width: 10px;
+  background: green;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  padding: 2px 5px;
+}
+
+.closeResultButton:hover {
+  background: red;
+  color: white;
+}

@@ -18,6 +18,7 @@
     "react-jss": "^10.0.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
+    "react-search-field": "^1.0.0",
     "react-sliding-pane": "^3.1.0",
     "react-spinkit": "^3.0.0",
     "react-strap": "0.0.1",

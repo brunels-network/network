@@ -10,6 +10,7 @@ import InfoBox from "./components/InfoBox";
 import TimeLineBox from './components/TimeLineBox';
 import SlidingPanel from './components/SlidingPanel';
 import OverlayBox from './components/OverlayBox';
+import SearchBar from './components/SearchBar';
 
 // Brunel model
 import Social from './model/Social';
@@ -63,6 +64,7 @@ class SocialApp extends React.Component {
       overlay_item: null,
       isInfoPanelOpen: false,
       isTimeLinePanelOpen: false,
+      isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false
     };
@@ -79,6 +81,7 @@ class SocialApp extends React.Component {
   closePanels(){
     this.setState({isInfoPanelOpen:false,
                    isTimeLinePanelOpen:false,
+                   isHamburgerMenuOpen:false,
                   });
   }
 
@@ -149,8 +152,7 @@ class SocialApp extends React.Component {
 
   slotClicked(id){
     if (!id){
-      this.setState({isInfoPanelOpen:false,
-                     isTimeLinePanelOpen:false});
+      this.closePanels();
       return;
     }
 
@@ -246,6 +248,12 @@ class SocialApp extends React.Component {
                       emitClose={()=>{this.closeOverlay()}}/>
         </ReactModal>
 
+        <SearchBar social={social}
+                   emitHamburgerClicked={()=>{this.setState({isHamburgerMenuOpen:true})}}
+                   emitSelected={(item)=>{this.slotSelected(item)}}
+                   emitClicked={(item)=>{this.slotClicked(item)}}/>
+
+
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
           <span className={styles.closePanelButton}
@@ -268,6 +276,15 @@ class SocialApp extends React.Component {
           <InfoBox item={selected} social={social}
                    emitClicked={(item)=>{this.slotClicked(item)}}
                    emitSelected={(item)=>{this.slotSelected(item)}}/>
+        </SlidingPanel>
+
+        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen}
+                      position='left'>
+          <span className={styles.closePanelButton}
+                onClick={()=>{this.setState({isHamburgerMenuOpen:false})}}>X</span>
+          <div>
+            This is a hamburger menu
+          </div>
         </SlidingPanel>
 
         <div className={styles.graphContainer}>
