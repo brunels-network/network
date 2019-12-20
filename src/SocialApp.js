@@ -11,6 +11,7 @@ import TimeLineBox from './components/TimeLineBox';
 import SlidingPanel from './components/SlidingPanel';
 import OverlayBox from './components/OverlayBox';
 import SearchBar from './components/SearchBar';
+import BrunelMenu from './components/BrunelMenu';
 
 // Brunel model
 import Social from './model/Social';
@@ -193,6 +194,18 @@ class SocialApp extends React.Component {
     this.setState({isTimeLinePanelOpen: !(this.state.isTimeLinePanelOpen)});
   }
 
+  viewAbout(){
+    console.log("View about");
+  }
+
+  viewSource(){
+    console.log("View source");
+  }
+
+  resetAll(){
+    console.log("Reset all");
+  }
+
   render(){
     const selected = this.state.selected_item;
     const overlay_item = this.state.overlay_item;
@@ -228,6 +241,12 @@ class SocialApp extends React.Component {
                        Reset Filters
                      </button>;
     }
+
+    let menu = [];
+
+    menu.push(["About", ()=>{this.viewAbout()}]);
+    menu.push(["View Source", ()=>{this.viewSource()}]);
+    menu.push(["Reset", ()=>{this.resetAll()}]);
 
     return (
       <div>
@@ -281,11 +300,8 @@ class SocialApp extends React.Component {
         <SlidingPanel isOpen={this.state.isHamburgerMenuOpen}
                       position='left'
                       size="100px" minSize="100px">
-          <span className={styles.closePanelButton}
-                onClick={()=>{this.setState({isHamburgerMenuOpen:false})}}>X</span>
-          <div>
-            This is a hamburger menu
-          </div>
+          <BrunelMenu emitClose={()=>{this.setState({isHamburgerMenuOpen:false})}}
+                      items={menu} />
         </SlidingPanel>
 
         <div className={styles.graphContainer}>
