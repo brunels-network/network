@@ -65,6 +65,25 @@ class Project {
       return this.state.url;
   }
 
+  getDuration(){
+    return this.state.duration;
+  }
+
+  getTimeLine(){
+    const duration = this.getDuration();
+
+    if (!duration){
+      return null;
+    }
+    else{
+      return {start: duration.getStart(),
+              end: duration.getEnd(),
+              id: this.getID(),
+              content: this.getName(),
+             };
+    }
+  }
+
   toDry(){
     return {value: this.state};
   }

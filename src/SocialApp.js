@@ -53,6 +53,8 @@ class SocialApp extends React.Component {
                             url:"https://en.wikipedia.org/wiki/SS_Great_Eastern",
                           }));
 
+    social.setWindow(new DateRange({start:"1835-01-01", end:"1860-12-31"}));
+
     this.state = {
       social: social,
       selected_item: null,

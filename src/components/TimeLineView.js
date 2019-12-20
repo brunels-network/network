@@ -9,6 +9,11 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import styles from './TimeLineView.module.css';
 
+function _customOrder(a, b) {
+  // order by id
+  return a.id - b.id;
+}
+
 const timeline_options = {
   autoResize: true,
   horizontalScroll: true,
@@ -16,6 +21,7 @@ const timeline_options = {
   showTooltips: false,
   verticalScroll: true,
   zoomable: false,
+  order: _customOrder,
 }
 
 class DateInput extends Component {

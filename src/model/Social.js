@@ -378,7 +378,7 @@ class Social {
       return this.state.cache.projectTimeLine;
     }
 
-    let items = [];
+    let items = this.getProjects().getTimeLine();
 
     this.state.cache.projectTimeLine = items;
 
@@ -390,9 +390,14 @@ class Social {
       return this.state.cache.itemTimeLine;
     }
 
-    let people = this.getPeople();
+    let items = this.getPeople().getTimeLine();
 
-    let items = people.getTimeLine();
+    let projects = this.getProjects().getTimeLine();
+
+    projects.forEach((item)=>{
+      item.type = "background";
+      items.push(item);
+    });
 
     this.state.cache.itemTimeLine = items;
 

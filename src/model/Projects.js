@@ -76,6 +76,22 @@ class Projects {
     return project;
   }
 
+  getTimeLine(){
+    let items = [];
+
+    Object.keys(this.state.registry).forEach((key, index)=>{
+      let project = this.state.registry[key];
+      if (project){
+        let timeline = project.getTimeLine();
+        if (timeline){
+          items.push(timeline);
+        }
+      }
+    });
+
+    return items;
+  }
+
   toDry(){
     return {value: this.state.registry};
   }
