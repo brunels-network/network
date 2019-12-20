@@ -1,4 +1,8 @@
 
+.module {
+  all: unset;
+}
+
 .container {
   position: fixed;
   z-index: -2;
@@ -17,11 +21,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-
-.module {
-  all: unset;
 }
 
 .controlButton {
@@ -63,4 +62,47 @@
 .citationText {
   color: darkred;
   font-size: smaller;
+}
+
+.modal {
+  position: absolute;
+  z-index: 201;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  background-color: white;
+}
+
+.closeButton {
+  float: right;
+  padding: 2px 5px;
+  background: #ccc;
+}
+
+.closeButton:hover {
+  float: right;
+  padding: 2px 5px;
+  background: #ccc;
+  color: #fff;
+}
+
+.modalOverlay {
+  position: fixed;
+  z-index: 200;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.8);
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+.modalOverlayAfterOpen{
+  opacity: 1;
+}
+
+.modalOverlayBeforeClose{
+  opacity: 0;
 }

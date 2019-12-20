@@ -2,12 +2,14 @@
 // package imports
 import React from 'react';
 import Dry from 'json-dry';
+import ReactModal from 'react-modal';
 
 // Brunel components
 import SocialGraph from "./components/SocialGraph";
 import InfoBox from "./components/InfoBox";
 import TimeLineBox from './components/TimeLineBox';
 import SlidingPanel from './components/SlidingPanel';
+import OverlayBox from './components/OverlayBox';
 
 // Brunel model
 import Social from './model/Social';
@@ -61,6 +63,7 @@ class SocialApp extends React.Component {
       isInfoPanelOpen: false,
       isTimeLinePanelOpen: false,
       timeline: new TimeLineBox(),
+      isOverlayOpen: false
     };
 
     this.socialGraph = null;
@@ -70,6 +73,16 @@ class SocialApp extends React.Component {
     let social = this.state.social;
     social.resetFilters();
     this.setState({social:social});
+  }
+
+  closePanels(){
+    this.setState({isInfoPanelOpen:false,
+                   isTimeLinePanelOpen:false,
+                  });
+  }
+
+  closeOverlay(){
+    this.setState({isOverlayOpen:false});
   }
 
   selectNode(node){
@@ -85,8 +98,14 @@ class SocialApp extends React.Component {
   }
 
   showInfo(item){
-    this.setState({selected_item:item,
-                   isInfoPanelOpen:true});
+    if (item._isAProjectObject){
+      this.setState({overlay_item:item,
+                     isOverlayOpen:true});
+    }
+    else{
+      this.setState({selected_item:item,
+                     isInfoPanelOpen:true});
+    }
   }
 
   slotSelected(item){
@@ -101,16 +120,14 @@ class SocialApp extends React.Component {
 
     let is_node = false;
 
-    try{
+    if (item.isNode){
       is_node = item.isNode();
     }
-    catch(error)
-    {}
 
     if (is_node){
       this.selectNode(item);
     }
-    else{
+    else {
       this.selectGroup(item);
     }
   }
@@ -208,8 +225,25 @@ class SocialApp extends React.Component {
     return (
       <div>
         <div className={styles.container}></div>
+        <ReactModal isOpen={this.state.isOverlayOpen}
+                    onRequestClose={()=>{this.closeOverlay()}}
+                    contentLabel='Information overlay'
+                    className={styles.modal}
+                    overlayClassName={{base:styles.modalOverlay,
+                                       afterOpen:styles.modalOverlayAfterOpen,
+                                       beforeClose:styles.modalOverlayBeforeClose}}
+                    closeTimeoutMS={200}
+                    appElement={document.getElementById('root')}
+                    >
+          <span className={styles.closeButton}
+                onClick={()=>{this.closeOverlay()}}>Close</span>
+          <OverlayBox />
+        </ReactModal>
+
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
+          <span className={styles.closeButton}
+                onClick={()=>{this.setState({isTimeLinePanelOpen:false})}}>Close</span>
           <TimeLineBox selected={selected}
                        getProjectWindow={()=>{return this.state.social.getWindow()}}
                        getItemWindow={()=>{return this.state.social.getWindow()}}
@@ -223,6 +257,8 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}
                       position='right'>
+          <span className={styles.closeButton}
+                onClick={()=>{this.setState({isInfoPanelOpen:false})}}>Close</span>
           <InfoBox item={selected} social={social}
                    emitClicked={(item)=>{this.slotClicked(item)}}
                    emitSelected={(item)=>{this.slotSelected(item)}}/>
