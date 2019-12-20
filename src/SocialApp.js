@@ -60,6 +60,7 @@ class SocialApp extends React.Component {
     this.state = {
       social: social,
       selected_item: null,
+      overlay_item: null,
       isInfoPanelOpen: false,
       isTimeLinePanelOpen: false,
       timeline: new TimeLineBox(),
@@ -82,7 +83,8 @@ class SocialApp extends React.Component {
   }
 
   closeOverlay(){
-    this.setState({isOverlayOpen:false});
+    this.setState({isOverlayOpen:false,
+                   overlay_item:null});
   }
 
   selectNode(node){
@@ -98,6 +100,8 @@ class SocialApp extends React.Component {
   }
 
   showInfo(item){
+    console.log("showInfo");
+    console.log(item);
     if (item._isAProjectObject){
       this.setState({overlay_item:item,
                      isOverlayOpen:true});
@@ -189,6 +193,7 @@ class SocialApp extends React.Component {
 
   render(){
     const selected = this.state.selected_item;
+    const overlay_item = this.state.overlay_item;
     const social = this.state.social;
 
     const node_filter = social.getNodeFilter();
@@ -235,9 +240,10 @@ class SocialApp extends React.Component {
                     closeTimeoutMS={200}
                     appElement={document.getElementById('root')}
                     >
-          <span className={styles.closeButton}
-                onClick={()=>{this.closeOverlay()}}>Close</span>
-          <OverlayBox />
+          <div className={styles.closeButton}
+                onClick={()=>{this.closeOverlay()}}>Close</div>
+          <OverlayBox item={overlay_item}
+                      emitClose={()=>{this.closeOverlay()}}/>
         </ReactModal>
 
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}

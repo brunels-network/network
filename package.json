@@ -14,6 +14,7 @@
     "react-datepicker": "^2.10.1",
     "react-dom": "^16.12.0",
     "react-graph-vis": "^1.0.5",
+    "react-iframe": "^1.8.0",
     "react-jss": "^10.0.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
@@ -25,7 +26,7 @@
     "reactstrap": "^8.1.1",
     "uuid": "^3.3.3",
     "vis": "^4.21.0-EOL",
-    "vis-timeline": "^6.2.9"
+    "vis-timeline": "^6.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -64,16 +64,6 @@
   font-size: smaller;
 }
 
-.modal {
-  position: absolute;
-  z-index: 201;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  background-color: white;
-}
-
 .closeButton {
   float: right;
   padding: 2px 5px;
@@ -85,6 +75,16 @@
   padding: 2px 5px;
   background: #ccc;
   color: #fff;
+}
+
+.modal {
+  position: absolute;
+  z-index: 201;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  background-color: white;
 }
 
 .modalOverlay {
