@@ -29,6 +29,7 @@ class Affiliation {
     let c = new Affiliation();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
+    return c;
   }
 
   getName(){

@@ -47,7 +47,7 @@ class Projects {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Project ID ${project}`);
+        throw new KeyError(`Duplicate Project ID ${project}`);
       }
 
       project._updateHooks(this._getHook);
@@ -70,7 +70,7 @@ class Projects {
     let project = this.state.registry[id];
 
     if (project === null){
-      throw MissingError(`No Project with ID ${id}`);
+      throw new MissingError(`No Project with ID ${id}`);
     }
 
     return project;

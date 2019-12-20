@@ -11,12 +11,14 @@ import SlidingPanel from './components/SlidingPanel';
 
 // Brunel model
 import Social from './model/Social';
+import Project from './model/Project';
 
 // Data for import
 import graph_data from './data.json';
 
 // Styling for the app
 import styles from './SocialApp.module.css'
+import DateRange from './model/DateRange';
 
 class SocialApp extends React.Component {
   constructor(props){
@@ -30,7 +32,26 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
+    // special cases for Brunel project...
     social.setAnchor("Brunel");
+
+    social.add(new Project({name:"SS Great Western",
+                            duration:new DateRange({start:"1836-06-26",
+                                                    end:"1838-03-31"}),
+                            url:"https://en.wikipedia.org/wiki/SS_Great_Western",
+                          }));
+
+    social.add(new Project({name:"SS Great Britain",
+                            duration:new DateRange({start:"1839-07-01",
+                                                    end:"1843-07-19"}),
+                            url:"https://en.wikipedia.org/wiki/SS_Great_Britain",
+                          }));
+
+    social.add(new Project({name:"SS Great Eastern",
+                            duration:new DateRange({start:"1854-05-01",
+                                                    end:"1858-01-31"}),
+                            url:"https://en.wikipedia.org/wiki/SS_Great_Eastern",
+                          }));
 
     this.state = {
       social: social,

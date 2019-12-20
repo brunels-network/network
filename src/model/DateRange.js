@@ -14,7 +14,7 @@ function _toDate(val, def=null){
     let date = moment(val);
     if (!date.isValid()){
       console.log(`Invalid Date ${val}`);
-      throw ValueError(`Invalid Date ${val}`);
+      throw new ValueError(`Invalid Date ${val}`);
     }
 
     return date;
@@ -150,7 +150,7 @@ class DateRange{
       }
     }
     else {
-      throw ValueError(`Invalid Date ${date}`);
+      throw new ValueError(`Invalid Date ${date}`);
     }
   }
 

@@ -49,7 +49,7 @@ class Businesses {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Business ID ${Business}`);
+        throw new KeyError(`Duplicate Business ID ${Business}`);
       }
 
       business._updateHooks(this._getHook);
@@ -72,7 +72,7 @@ class Businesses {
     let business = this.state.registry[id];
 
     if (business === null){
-      throw MissingError(`No Business with ID ${id}`);
+      throw new MissingError(`No Business with ID ${id}`);
     }
 
     return business;

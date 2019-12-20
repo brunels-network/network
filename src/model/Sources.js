@@ -48,7 +48,7 @@ class Sources {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Source ID ${source}`);
+        throw new KeyError(`Duplicate Source ID ${source}`);
       }
 
       source._updateHooks(this._getHook);
@@ -71,7 +71,7 @@ class Sources {
     let source = this.state.registry[id];
 
     if (source === null){
-      throw MissingError(`No Source with ID ${id}`);
+      throw new MissingError(`No Source with ID ${id}`);
     }
 
     return source;

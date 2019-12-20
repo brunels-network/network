@@ -28,6 +28,7 @@ class Note {
     let c = new Note();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
+    return c;
   }
 
   getID(){

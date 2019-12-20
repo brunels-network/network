@@ -32,6 +32,7 @@ class Project {
     let c = new Project();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
+    return c;
   }
 
   getID(){

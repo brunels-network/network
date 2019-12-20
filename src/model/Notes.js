@@ -47,7 +47,7 @@ class Notes {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Note ID ${note}`);
+        throw new KeyError(`Duplicate Note ID ${note}`);
       }
 
       note._updateHooks(this._getHook);
@@ -70,7 +70,7 @@ class Notes {
     let note = this.state.registry[id];
 
     if (note === null){
-      throw MissingError(`No Note with ID ${id}`);
+      throw new MissingError(`No Note with ID ${id}`);
     }
 
     return note;

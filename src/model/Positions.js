@@ -47,7 +47,7 @@ class Positions {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Position ID ${position}`);
+        throw new KeyError(`Duplicate Position ID ${position}`);
       }
 
       position._updateHooks(this._getHook);
@@ -70,7 +70,7 @@ class Positions {
     let position = this.state.registry[id];
 
     if (position === null){
-      throw MissingError(`No Position with ID ${id}`);
+      throw new MissingError(`No Position with ID ${id}`);
     }
 
     return position;

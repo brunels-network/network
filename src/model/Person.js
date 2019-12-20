@@ -66,6 +66,7 @@ class Person {
     let c = new Person();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
+    return c;
   }
 
   getID(){

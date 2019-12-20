@@ -49,7 +49,7 @@ class Messages {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Message ID ${message}`);
+        throw new KeyError(`Duplicate Message ID ${message}`);
       }
 
       message._updateHooks(this._getHook);
@@ -72,7 +72,7 @@ class Messages {
     let message = this.state.registry[id];
 
     if (message === null){
-      throw MissingError(`No Message with ID ${id}`);
+      throw new MissingError(`No Message with ID ${id}`);
     }
 
     return message;

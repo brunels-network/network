@@ -63,7 +63,7 @@ class People {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Person ID ${person}`);
+        throw new KeyError(`Duplicate Person ID ${person}`);
       }
 
       person._updateHooks(this._getHook);
@@ -157,7 +157,7 @@ class People {
     let person = this.state.registry[id];
 
     if (person === null){
-      throw MissingError(`No Person with ID ${id}`);
+      throw new MissingError(`No Person with ID ${id}`);
     }
 
     return person;

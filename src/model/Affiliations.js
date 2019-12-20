@@ -48,7 +48,7 @@ class Affiliations {
 
     if (id){
       if (id in this.state.registry){
-        throw KeyError(`Duplicate Affiliation ID ${affiliation}`);
+        throw new KeyError(`Duplicate Affiliation ID ${affiliation}`);
       }
 
       affiliation._updateHooks(this._getHook);
@@ -71,7 +71,7 @@ class Affiliations {
     let affiliation = this.state.registry[id];
 
     if (affiliation === null){
-      throw MissingError(`No Affiliation with ID ${id}`);
+      throw new MissingError(`No Affiliation with ID ${id}`);
     }
 
     return affiliation;

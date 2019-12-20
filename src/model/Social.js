@@ -432,17 +432,28 @@ class Social {
   }
 
   add(item){
+    if (!item){
+      return;
+    }
+
+    let added = false;
+
     Object.keys(this.state).forEach((key, index)=>{
-      let group = this.state[key];
-      if (group.canAdd){
-        if (group.canAdd(item)){
-          group.add(item);
-          return;
+      if (!added){
+        let group = this.state[key];
+        if (group && group.canAdd){
+          if (group.canAdd(item)){
+            group.add(item);
+            added = true;
+          }
         }
       }
     });
 
-    throw ValueError(`Do not know how to add ${item} to this Social group`);
+    if (!added){
+      throw new ValueError(
+          `Do not know how to add ${item} to this Social group`);
+    }
   }
 
   get(id) {

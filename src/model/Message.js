@@ -32,6 +32,7 @@ class Message {
     let c = new Message();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
+    return c;
   }
 
   _updateHooks(hook){
