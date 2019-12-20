@@ -1,42 +1,76 @@
 
 import React from 'react';
-import Iframe from 'react-iframe';
+import Spinner from 'react-spinkit';
 
 import styles from './OverlayBox.module.css';
 
-function OverlayBox(props){
-  let item = props.item;
-
-  let url = null;
-
-  if (item && item.getURL){
-    url = item.getURL();
+class OverlayBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true
+    };
   }
 
-  if (!url){
-    return (<div className={styles.container}>
-              <div className={styles.centerContainer}>
-                There is nothing to display!
-                {item}
-                <div>
-                  <button className={styles.button}
-                          onClick={props.emitClose}>Close</button>
+  hideSpinner() {
+    this.setState({
+      loading: false
+    });
+  }
+
+  render() {
+    let item = this.props.item;
+
+    let url = null;
+
+    if (item && item.getURL){
+      url = item.getURL();
+    }
+
+    if (!url){
+      return (<div className={styles.container}>
+                <div className={styles.centerContainer}>
+                  There is nothing to display!
+                  {item}
+                  <div>
+                    <button className={styles.button}
+                            onClick={this.props.emitClose}>Close</button>
+                  </div>
                 </div>
-              </div>
-            </div>);
-  }
+              </div>);
+    }
 
-  return (<div className={styles.container}>
-            <div className={styles.url}>{url}</div>
+    return (
+      <div className={styles.container}>
+        <div className={styles.url}>{url}</div>
+        {this.state.loading ? (
+          <div className={styles.centerContainer}>
+            <div>Loading page...</div>
             <div>
-              <Iframe url={url}
-                      height="95%"
-                      width="100%"
-                      position="absolute"
-                      sandbox="allow-scripts" />
+              <Spinner
+                name="ball-grid-pulse"
+                color="green"
+                fadeIn="none"
+              />
             </div>
           </div>
-         );
+        ) : null}
+        <iframe
+          src={url}
+          title={url}
+          width="100%"
+          height="95%"
+          onLoad={()=>{this.hideSpinner()}}
+          frameBorder="0"
+          marginHeight="0"
+          marginWidth="0"
+          sandbox="allow-scripts"
+          position="absolute"
+        />
+      </div>
+    );
+  }
 }
+
 
 export default OverlayBox;

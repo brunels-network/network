@@ -240,16 +240,16 @@ class SocialApp extends React.Component {
                     closeTimeoutMS={200}
                     appElement={document.getElementById('root')}
                     >
-          <div className={styles.closeButton}
-                onClick={()=>{this.closeOverlay()}}>Close</div>
+          <div className={styles.closeOverlayButton}
+                onClick={()=>{this.closeOverlay()}}>X</div>
           <OverlayBox item={overlay_item}
                       emitClose={()=>{this.closeOverlay()}}/>
         </ReactModal>
 
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
-          <span className={styles.closeButton}
-                onClick={()=>{this.setState({isTimeLinePanelOpen:false})}}>Close</span>
+          <span className={styles.closePanelButton}
+                onClick={()=>{this.setState({isTimeLinePanelOpen:false})}}>X</span>
           <TimeLineBox selected={selected}
                        getProjectWindow={()=>{return this.state.social.getWindow()}}
                        getItemWindow={()=>{return this.state.social.getWindow()}}
@@ -263,8 +263,8 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}
                       position='right'>
-          <span className={styles.closeButton}
-                onClick={()=>{this.setState({isInfoPanelOpen:false})}}>Close</span>
+          <span className={styles.closePanelButton}
+                onClick={()=>{this.setState({isInfoPanelOpen:false})}}>X</span>
           <InfoBox item={selected} social={social}
                    emitClicked={(item)=>{this.slotClicked(item)}}
                    emitSelected={(item)=>{this.slotSelected(item)}}/>
