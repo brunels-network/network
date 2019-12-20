@@ -279,7 +279,8 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         <SlidingPanel isOpen={this.state.isHamburgerMenuOpen}
-                      position='left'>
+                      position='left'
+                      size="100px" minSize="100px">
           <span className={styles.closePanelButton}
                 onClick={()=>{this.setState({isHamburgerMenuOpen:false})}}>X</span>
           <div>
