@@ -66,7 +66,7 @@
 
 .closePanelButton {
   position: absolute;
-  background: green;
+  background-color: green;
   color: white;
   text-align: center;
   text-decoration: none;
@@ -79,13 +79,13 @@
 
 .closePanelButton:hover {
   padding: 2px 5px;
-  background: red;
+  background-color: red;
   color: white;
 }
 
 .closeOverlayButton {
   position: absolute;
-  background: white;
+  background-color: white;
   color: black;
   text-align: center;
   text-decoration: none;
@@ -98,7 +98,7 @@
 
 .closeOverlayButton:hover {
   padding: 2px 5px;
-  background: red;
+  background-color: red;
   color: white;
 }
 
