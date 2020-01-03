@@ -13,6 +13,19 @@ def _setState(state, val, default=None):
         return default
 
 
+def _mergeProjects(old, new, key):
+    old = old[key]
+    new = new[key]
+
+    for project, values in new.items():
+        if project in old:
+            for value in values:
+                if value not in old[project]:
+                    old[project].append(value)
+        else:
+            old[project] = values
+
+
 class Person:
     """Holds information about a Person in the network"""
     def __init__(self, props=None, getHook=None):
@@ -27,13 +40,29 @@ class Person:
             "positions": {},
             "affiliations": {},
             "projects": {},
-            "sources": [],
+            "sources": {},
             "alive": None,
             "gender": None,
             "notes": [],
         }
 
         self.setState(props)
+
+    def merge(self, other):
+        import copy as _copy
+        state = _copy.copy(self.state)
+
+        _mergeProjects(state, other.state, "positions")
+        _mergeProjects(state, other.state, "affiliations")
+        _mergeProjects(state, other.state, "sources")
+
+        for project, dates in other.state["projects"].items():
+            state["projects"][project] = dates
+
+        p = Person()
+        p.state = state
+        p._getHook = self._getHook
+        return p
 
     def __str__(self):
         return f"Person({self.getName()})"
@@ -169,7 +198,7 @@ class Person:
         self.state["positions"] = _setState(state, "positions", {})
         self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["projects"] = _setState(state, "projects", {})
-        self.state["sources"] = _setState(state, "sources", [])
+        self.state["sources"] = _setState(state, "sources", {})
         self.state["alive"] = _setState(state, "alive")
         self.state["gender"] = _setState(state, "gender")
         self.state["orig_name"] = _setState(state, "orig_name")

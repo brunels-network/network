@@ -37,10 +37,17 @@ class People:
         if not isinstance(person, _Person):
             raise TypeError("Can only add a Person to People")
 
+        existing = None
+
         try:
-            return self.getByName(person.getName())
+            existing = self.getByName(person.getName())
         except Exception:
             pass
+
+        if existing:
+            existing = existing.merge(person)
+            self.state["registry"][existing.getID()] = existing
+            return existing
 
         id = person.getID()
 
