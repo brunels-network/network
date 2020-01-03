@@ -13,6 +13,8 @@ from ._source import *
 from ._sources import *
 from ._note import *
 from ._notes import *
+from ._project import *
+from ._projects import *
 from ._social import *
 from ._daterange import *
 from ._dry import *
@@ -35,5 +37,5 @@ try:
 
         for _clsmember in _clsmembers:
             _set_printer(_clsmember[1])
-except:
+except Exception:
     pass

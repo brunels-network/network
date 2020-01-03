@@ -2,7 +2,41 @@
 __all__ = ["getDefaultImporters", "extractPersonName",
            "isPerson", "importPerson", "isBusiness", "importBusiness",
            "importMessage", "importPositions", "importAffiliations",
-           "importSources", "importScores", "importNotes"]
+           "importSources", "importScores", "importNotes",
+           "importProject", "importSource", "importBiography"]
+
+
+def _clean_string(s):
+    return str(s).lstrip().rstrip()
+
+
+def _get_url(s):
+    return _clean_string(s)
+
+
+def _get_date(s):
+    from ._daterange import Date as _Date
+    return _Date(s)
+
+
+def _get_daterange(s):
+    parts = s.split(":")
+
+    dates = []
+
+    for part in parts:
+        dates.append(_get_date(part))
+
+    from ._daterange import DateRange as _DateRange
+
+    if len(dates) == 0:
+        return DateRange.null()
+    elif len(dates) == 1:
+        return DateRange(both=dates[0])
+    elif len(dates) > 2:
+        raise ValueError(f"Invalid number of dates? {dates}")
+    else:
+        return _DateRange(start=dates[0], end=dates[1])
 
 
 def isPerson(node, importers=None):
@@ -323,6 +357,24 @@ def importScores(node, importers=None, isEdge=False):
     return scores
 
 
+def importSource(data, importers=None):
+    return None
+
+
+def importProject(data, importers=None):
+    props = {"name": _clean_string(data.Name),
+             "duration": _get_daterange(data.Duration),
+             "url": _get_url(data.URL)}
+
+    from ._project import Project as _Project
+
+    return _Project(props)
+
+
+def importBiography(data, importers=None):
+    return None
+
+
 def getDefaultImporters():
     return {"isPerson": isPerson, "extractPersonName": extractPersonName,
             "importPerson": importPerson,
@@ -330,4 +382,6 @@ def getDefaultImporters():
             "importMessage": importMessage, "importPositions": importPositions,
             "importAffiliations": importAffiliations,
             "importSources": importSources, "importNotes": importNotes,
-            "importScores": importScores}
+            "importScores": importScores,
+            "importSource": importSource, "importProject": importProject,
+            "importBiography": importBiography}
