@@ -4,7 +4,8 @@ __all__ = ["getDefaultImporters", "extractPersonName",
            "importConnection", "importPositions", "importAffiliations",
            "importSources", "importType", "importNotes",
            "importProject", "importSource", "importBiography",
-           "importEdgeSources", "importSharedLinks"]
+           "importEdgeSources", "importSharedLinks",
+           "importProjectDates"]
 
 
 def _clean_string(s):
@@ -134,6 +135,29 @@ def extractPersonName(name):
     return state
 
 
+def importProjectDates(node, importers=None):
+    from ._daterange import DateRange as _DateRange
+    from ._daterange import Date as _Date
+
+    try:
+        dates = str(node["Date (joined project: left project)"])
+    except Exception:
+        return _DateRange.null()
+
+    import re as _re
+
+    pattern = _re.compile(r":")
+    dates = pattern.split(dates)
+
+    if len(dates) == 1:
+        return _DateRange(both=_Date(dates[0]))
+    elif len(dates) == 2:
+        return _DateRange(start=_Date(dates[0]), end=_Date(dates[1]))
+    else:
+        print(f"Could not interpret project dates from {dates}")
+        return _DateRange.null()
+
+
 def importPerson(node, project, importers=None):
     try:
         extractPersonName = importers["extractPersonName"]
@@ -160,21 +184,34 @@ def importPerson(node, project, importers=None):
     except KeyError:
         importNotes = importNotes
 
-    from ._daterange import DateRange as _DateRange
+    try:
+        importProjectDates = importers["importProjectDates"]
+    except KeyError:
+        importProjectDates = importProjectDates
+
+    pid = project.getID()
 
     try:
         name = str(node.Label)
         state = extractPersonName(name)
-        state["positions"] = importPositions(node, importers=importers)
-        state["sources"] = importSources(node, importers=importers)
-        state["affiliations"] = importAffiliations(node, importers=importers)
-        state["notes"] = importNotes(node, importers=importers)
-        state["projects"] = {project.getID(): _DateRange.null()}
+        state["positions"] = {}
+        state["sources"] = {}
+        state["affiliations"] = {}
+        state["notes"] = {}
+
+        state["positions"][pid] = importPositions(node, importers=importers)
+        state["sources"][pid] = importSources(node, importers=importers)
+        state["affiliations"][pid] = importAffiliations(node,
+                                                        importers=importers)
+        state["notes"][pid] = importNotes(node, importers=importers)
+        state["projects"] = {pid: importProjectDates(node,
+                                                     importers=importers)}
 
         from ._person import Person as _Person
         return _Person(state)
     except Exception as e:
-        print(f"Cannot load Person {node}: {e}")
+        print(f"Cannot load Person\n{node}\nError = {e}\n")
+        raise
         return None
 
 
@@ -397,9 +434,8 @@ def extractPositionName(position):
 def importPositions(node, importers=None):
     positions = importers["positions"]
 
-    result = {}
+    result = []
 
-    from ._daterange import DateRange as _DateRange
     import re as _re
 
     pattern = _re.compile(r":")
@@ -409,7 +445,7 @@ def importPositions(node, importers=None):
         position = positions.add(position)
 
         if position:
-            result[position.getID()] = _DateRange.null()
+            result.append(position.getID())
 
     return result
 
@@ -431,9 +467,8 @@ def extractAffiliationName(affiliation):
 def importAffiliations(node, importers=None):
     affiliations = importers["affiliations"]
 
-    result = {}
+    result = []
 
-    from ._daterange import DateRange as _DateRange
     import re as _re
 
     pattern = _re.compile(r":")
@@ -443,7 +478,7 @@ def importAffiliations(node, importers=None):
         affiliation = affiliations.add(affiliation)
 
         if affiliation:
-            result[affiliation.getID()] = _DateRange.null()
+            result.append(affiliation.getID())
 
     return result
 
@@ -516,7 +551,61 @@ def importProject(data, importers=None):
 
 
 def importBiography(data, importers=None):
-    return None
+    name = str(data.Node).lstrip().rstrip()
+    bio = str(data.Biography).lstrip().rstrip()
+
+    if importers is None:
+        return
+
+    social = importers["social"]
+
+    try:
+        extractPersonName = importers["extractPersonName"]
+    except Exception:
+        extractPersonName = extractPersonName
+
+    from ._person import Person as _Person
+    person = None
+
+    try:
+        person_name = extractPersonName(name)
+        person = _Person(person_name)
+        node = social.people().find(person.getName(), best_match=True)
+        return (node, bio)
+    except Exception:
+        pass
+
+    try:
+        node = social.businesses().find(name)
+        return (node, bio)
+    except Exception:
+        pass
+
+    # let's try to find a person with the same surname...
+    nodes = None
+
+    try:
+        nodes = social.people().find(person.getSurname())
+
+        if isinstance(nodes, _Person):
+            nodes = [nodes]
+
+        for node in nodes:
+            if node.couldBe(person):
+                return (node, bio)
+    except Exception:
+        pass
+
+    if nodes:
+        print(f"Nearest matches are {nodes}")
+
+    if name == "Humphries, Francis":
+        data.Node = "Humphrys, Francis"
+        return importBiography(data, importers)
+
+    print(f"There is nothing called {name} for which to give a biography!")
+
+    return (None, None)
 
 
 def getDefaultImporters():
@@ -531,4 +620,5 @@ def getDefaultImporters():
             "importSource": importSource, "importProject": importProject,
             "importBiography": importBiography,
             "importEdgeSources": importEdgeSources,
-            "importSharedLinks": importSharedLinks}
+            "importSharedLinks": importSharedLinks,
+            "importProjectDates": importProjectDates}

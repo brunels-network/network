@@ -77,22 +77,34 @@ class People:
         except Exception:
             raise KeyError(f"No Person with name {name}")
 
-    def find(self, value):
+    def find(self, value, best_match=False):
         if isinstance(value, _Person):
             return self.get(value.getID())
 
         value = value.lstrip().rstrip().lower()
 
         results = []
+        shortest = None
+        shortest_length = None
 
         for name in self._names.keys():
             if name.lower().find(value) != -1:
+                if shortest is None:
+                    shortest = name
+                    shortest_length = len(name)
+                elif len(name) < shortest_length:
+                    shortest_length = len(name)
+                    shortest = name
+
                 results.append(self.get(self._names[name]))
 
         if len(results) == 1:
             return results[0]
         elif len(results) > 1:
-            return results
+            if best_match:
+                return self.get(self._names[shortest])
+            else:
+                return results
 
         keys = "', '".join(self._names.keys())
 

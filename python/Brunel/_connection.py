@@ -61,6 +61,10 @@ class Connection:
         self.state["notes"] = _setState(state, "notes", [])
         self.state["projects"] = _setState(state, "projects", {})
 
+        if self.state["n0"] is None or self.state["n1"] is None:
+            raise ValueError(f"Invalid connection! {self.state['n0']}<=>"
+                             f"{self.state['n1']} : {self.state}")
+
         if self.state["n0"] > self.state["n1"]:
             tmp = self.state["n0"]
             self.state["n0"] = self.state["n1"]

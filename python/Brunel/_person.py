@@ -28,7 +28,6 @@ class Person:
             "affiliations": {},
             "projects": {},
             "sources": [],
-            "scores": {},
             "alive": None,
             "gender": None,
             "notes": [],
@@ -45,11 +44,43 @@ class Person:
     def getID(self):
         return self.state["id"]
 
+    def couldBe(self, other):
+        if self.getSurname() != other.getSurname():
+            return False
+
+        if self.getInitials() == other.getInitials():
+            return True
+
+        if self.firstInitial() == other.firstInitial():
+            return True
+
+        return False
+
     def getFirstName(self):
         try:
             return " ".join(self.state["firstnames"])
         except KeyError:
             return None
+
+    def firstInitial(self):
+        try:
+            for name in self.state["firstnames"]:
+                return name[0].upper()
+        except Exception:
+            pass
+
+        return None
+
+    def getInitials(self):
+        initials = []
+
+        try:
+            for name in self.state["firstnames"]:
+                initials.append(name[0].upper())
+        except Exception:
+            pass
+
+        return f"{'.'.join(initials)}."
 
     def getTitle(self):
         try:
@@ -81,23 +112,30 @@ class Person:
         return " ".join(parts)
 
     def getPositions(self):
-        result = []
+        result = {}
 
         positions = self.state["positions"]
 
-        for position in positions.keys():
-            result.append((self._getHook(position), positions[position]))
+        for project in positions.keys():
+            if project not in result:
+                result[project] = []
+
+            for position in positions[project]:
+                result[project].append(self._getHook(position))
 
         return result
 
     def getAffiliations(self):
-        result = []
+        result = {}
 
         affiliations = self.state["affiliations"]
 
-        for affiliation in affiliations.keys():
-            result.append((self._getHook(affiliation),
-                           affiliations[affiliation]))
+        for project in affiliations.keys():
+            if project not in result:
+                result[project] = []
+
+            for affiliation in affiliations[project]:
+                result[project].append(self._getHook(affiliation))
 
         return result
 
@@ -132,7 +170,6 @@ class Person:
         self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["projects"] = _setState(state, "projects", {})
         self.state["sources"] = _setState(state, "sources", [])
-        self.state["scores"] = _setState(state, "scores", {})
         self.state["alive"] = _setState(state, "alive")
         self.state["gender"] = _setState(state, "gender")
         self.state["orig_name"] = _setState(state, "orig_name")

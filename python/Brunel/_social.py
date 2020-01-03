@@ -52,6 +52,7 @@ class Social:
         from ._sources import Sources as _Sources
         from ._projects import Projects as _Projects
         from ._notes import Notes as _Notes
+        from ._biographies import Biographies as _Biographies
 
         self.state = {
             "people": _People(getHook=self.get),
@@ -62,6 +63,7 @@ class Social:
             "sources": _Sources(getHook=self.get),
             "projects": _Projects(getHook=self.get),
             "notes": _Notes(getHook=self.get),
+            "biographies": _Biographies(getHook=self.get),
         }
 
     def people(self):
@@ -87,6 +89,9 @@ class Social:
 
     def notes(self):
         return self.state["notes"]
+
+    def biographies(self):
+        return self.state["biographies"]
 
     def get(self, id):
         if id.startswith("C"):
@@ -138,14 +143,18 @@ class Social:
         bios = _read_data(bios)
 
         importers = _get_importers(importers)
+        importers["social"] = self
         modifiers = _get_modifiers(modifiers, "biography")
 
-        people = self.getPeople()
-        businesses = self.getBusinesses()
+        biographies = self.biographies()
 
         for _, bio in bios.iterrows():
-            importers["importBiography"](bio, people, businesses,
-                                         importers=importers)
+            node, biography = importers["importBiography"](bio,
+                                                           importers=importers)
+
+            if biography:
+                biography = modifiers["biography"](biography)
+                biographies.add(node, biography)
 
     def load_graph(self, project, nodes, edges,
                    importers=None, modifiers=None):
@@ -189,6 +198,7 @@ class Social:
                                                        mapping=ids,
                                                        importers=importers)
             if connection:
+                print(connection)
                 connection = modifiers["connection"](connection)
                 connections.add(connection)
 
