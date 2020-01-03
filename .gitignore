@@ -7,4 +7,4 @@ src/version*/data.json
 
 *.pyc
 python/.ipynb_checkpoints
-
+rawdata/*
