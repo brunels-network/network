@@ -9,7 +9,7 @@ def _setState(state, val, default=None):
             return result
         else:
             return default
-    except:
+    except Exception:
         return default
 
 
@@ -21,6 +21,7 @@ class Source:
         self.state = {
             "name": None,
             "id": None,
+            "description": None,
             "notes": [],
         }
 
@@ -44,6 +45,7 @@ class Source:
 
         self.state["name"] = _setState(state, "name")
         self.state["id"] = _setState(state, "id")
+        self.state["description"] = _setState(state, "description")
         self.state["notes"] = _setState(state, "notes", [])
 
     def toDry(self):

@@ -6,7 +6,7 @@ __all__ = ["Positions"]
 
 def _generate_position_uid():
     import uuid as _uuid
-    uid =_uuid.uuid4()
+    uid = _uuid.uuid4()
     return "Q" + str(uid)[:7]
 
 
@@ -28,18 +28,18 @@ class Positions:
             return
 
         if isinstance(position, str):
-            # try to find an existing position with this name
+            # try to find an existing position with this name
             try:
                 return self.getByName(position)
-            except:
-                return self.add(_Position({"name":position}))
+            except Exception:
+                return self.add(_Position({"name": position}))
 
         if not isinstance(position, _Position):
             raise TypeError("Can only add a Position to Positions")
 
         try:
             return self.getByName(position.getName())
-        except:
+        except Exception:
             pass
 
         id = position.getID()
@@ -65,13 +65,29 @@ class Positions:
     def getByName(self, name):
         try:
             return self.get(self._names[name])
-        except:
+        except Exception:
             raise KeyError(f"No Position with name {name}")
+
+    def find(self, value):
+        value = value.lstrip().rstrip().lower()
+
+        results = []
+
+        for name in self._names.keys():
+            if name.lower().find(value) != -1:
+                results.append(self.get(self._names[name]))
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            return None
+        else:
+            return results
 
     def get(self, id):
         try:
             return self.state["registry"][id]
-        except:
+        except Exception:
             raise KeyError(f"No Position with ID {id}")
 
     def load(self, data):

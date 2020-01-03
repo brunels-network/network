@@ -68,6 +68,22 @@ class Projects:
         except Exception:
             raise KeyError(f"No Source with name {name}")
 
+    def find(self, value):
+        value = value.lstrip().rstrip().lower()
+
+        results = []
+
+        for name in self._names.keys():
+            if name.lower().find(value) != -1:
+                results.append(self.get(self._names[name]))
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            return None
+        else:
+            return results
+
     def get(self, id):
         try:
             return self.state["registry"][id]

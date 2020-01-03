@@ -30,9 +30,9 @@ def _get_daterange(s):
     from ._daterange import DateRange as _DateRange
 
     if len(dates) == 0:
-        return DateRange.null()
+        return _DateRange.null()
     elif len(dates) == 1:
-        return DateRange(both=dates[0])
+        return _DateRange(both=dates[0])
     elif len(dates) > 2:
         raise ValueError(f"Invalid number of dates? {dates}")
     else:
@@ -358,7 +358,11 @@ def importScores(node, importers=None, isEdge=False):
 
 
 def importSource(data, importers=None):
-    return None
+    props = {"name": _clean_string(data.Source),
+             "description": _clean_string(data.Description)}
+
+    from ._source import Source as _Source
+    return _Source(props)
 
 
 def importProject(data, importers=None):

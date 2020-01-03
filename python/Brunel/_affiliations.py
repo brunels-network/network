@@ -33,7 +33,7 @@ class Affiliations:
             # try to find an existing affiliation with this name
             try:
                 return self.getByName(affiliation)
-            except:
+            except Exception:
                 return self.add(_Affiliation({"name": affiliation}))
 
         if not isinstance(affiliation, _Affiliation):
@@ -41,7 +41,7 @@ class Affiliations:
 
         try:
             return self.getByName(affiliation.getName())
-        except:
+        except Exception:
             pass
 
         id = affiliation.getID()
@@ -68,13 +68,29 @@ class Affiliations:
     def getByName(self, name):
         try:
             return self.get(self._names[name])
-        except:
+        except Exception:
             raise KeyError(f"No Affiliation with name {name}")
+
+    def find(self, value):
+        value = value.lstrip().rstrip().lower()
+
+        results = []
+
+        for name in self._names.keys():
+            if name.lower().find(value) != -1:
+                results.append(self.get(self._names[name]))
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            return None
+        else:
+            return results
 
     def get(self, id):
         try:
             return self.state["registry"][id]
-        except:
+        except Exception:
             raise KeyError(f"No Affiliation with ID {id}")
 
     def load(self, data):

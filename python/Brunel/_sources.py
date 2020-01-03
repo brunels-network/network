@@ -6,7 +6,7 @@ __all__ = ["Sources"]
 
 def _generate_source_uid():
     import uuid as _uuid
-    uid =_uuid.uuid4()
+    uid = _uuid.uuid4()
     return "S" + str(uid)[:7]
 
 
@@ -28,18 +28,18 @@ class Sources:
             return
 
         if isinstance(source, str):
-            # try to find an existing source with this name
+            # try to find an existing source with this name
             try:
                 return self.getByName(source)
-            except:
-                return self.add(_Source({"name":source}))
+            except Exception:
+                return self.add(_Source({"name": source}))
 
         if not isinstance(source, _Source):
             raise TypeError("Can only add a Source to Sources")
 
         try:
             return self.getByName(source.getName())
-        except:
+        except Exception:
             pass
 
         id = source.getID()
@@ -65,13 +65,29 @@ class Sources:
     def getByName(self, name):
         try:
             return self.get(self._names[name])
-        except:
+        except Exception:
             raise KeyError(f"No Source with name {name}")
+
+    def find(self, value):
+        value = value.lstrip().rstrip().lower()
+
+        results = []
+
+        for name in self._names.keys():
+            if name.lower().find(value) != -1:
+                results.append(self.get(self._names[name]))
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            return None
+        else:
+            return results
 
     def get(self, id):
         try:
             return self.state["registry"][id]
-        except:
+        except Exception:
             raise KeyError(f"No Note with ID {id}")
 
     def load(self, data):
@@ -86,6 +102,6 @@ class Sources:
     @staticmethod
     def unDry(value):
         sources = Sources()
-        source.state = value
+        sources.state = value
 
         return sources

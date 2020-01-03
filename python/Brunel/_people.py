@@ -6,7 +6,7 @@ __all__ = ["People"]
 
 def _generate_person_uid():
     import uuid as _uuid
-    uid =_uuid.uuid4()
+    uid = _uuid.uuid4()
     return "P" + str(uid)[:7]
 
 
@@ -19,14 +19,28 @@ class People:
             "registry": {},
         }
 
+        self._names = {}
+
         self.load(props)
 
     def add(self, person: _Person):
         if person is None:
             return
 
+        if isinstance(person, str):
+            # try to find an existing person with this name
+            try:
+                return self.getByName(person)
+            except Exception:
+                return self.add(_Person({"name": person}))
+
         if not isinstance(person, _Person):
             raise TypeError("Can only add a Person to People")
+
+        try:
+            return self.getByName(person.getName())
+        except Exception:
+            pass
 
         id = person.getID()
 
@@ -45,6 +59,8 @@ class People:
             self.state["registry"][uid] = person
 
         person._getHook = self._getHook
+        self._names[person.getName()] = person.getID()
+        return person
 
     def values(self):
         return self.state["registry"].values()
@@ -52,8 +68,30 @@ class People:
     def get(self, id):
         try:
             return self.state["registry"][id]
-        except:
+        except Exception:
             raise KeyError(f"No Person with ID {id}")
+
+    def getByName(self, name):
+        try:
+            return self.get(self._names[name])
+        except Exception:
+            raise KeyError(f"No Person with name {name}")
+
+    def find(self, value):
+        value = value.lstrip().rstrip().lower()
+
+        results = []
+
+        for name in self._names.keys():
+            if name.lower().find(value) != -1:
+                results.append(self.get(self._names[name]))
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            return None
+        else:
+            return results
 
     def load(self, data):
         if data:

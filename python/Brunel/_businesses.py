@@ -6,7 +6,7 @@ __all__ = ["Businesses"]
 
 def _generate_business_uid():
     import uuid as _uuid
-    uid =_uuid.uuid4()
+    uid = _uuid.uuid4()
     return "B" + str(uid)[:7]
 
 
@@ -19,14 +19,28 @@ class Businesses:
             "registry": {},
         }
 
+        self._names = {}
+
         self.load(props)
 
     def add(self, business: _Business):
         if business is None:
             return
 
+        if isinstance(business, str):
+            # try to find an existing business with this name
+            try:
+                return self.getByName(business)
+            except Exception:
+                return self.add(_Business({"name": business}))
+
         if not isinstance(business, _Business):
             raise TypeError("Can only add a Business to Businesses")
+
+        try:
+            return self.getByName(business.getName())
+        except Exception:
+            pass
 
         id = business.getID()
 
@@ -45,11 +59,35 @@ class Businesses:
             self.state["registry"][uid] = business
 
         business._getHook = self._getHook
+        self._names[business.getName()] = business.getID()
+        return business
+
+    def getByName(self, name):
+        try:
+            return self.get(self._names[name])
+        except Exception:
+            raise KeyError(f"No Business with name {name}")
+
+    def find(self, value):
+        value = value.lstrip().rstrip().lower()
+
+        results = []
+
+        for name in self._names.keys():
+            if name.lower().find(value) != -1:
+                results.append(self.get(self._names[name]))
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            return None
+        else:
+            return results
 
     def get(self, id):
         try:
             return self.state["registry"][id]
-        except:
+        except Exception:
             raise KeyError(f"No Business with ID {id}")
 
     def values(self):
