@@ -135,8 +135,12 @@ class Person:
         self.state["scores"] = _setState(state, "scores", {})
         self.state["alive"] = _setState(state, "alive")
         self.state["gender"] = _setState(state, "gender")
-        self.state["orig_name"] = _setState(state, "name")
+        self.state["orig_name"] = _setState(state, "orig_name")
         self.state["notes"] = _setState(state, "notes", [])
+
+        if self.state["orig_name"] == "None" or \
+           self.state["orig_name"] is None:
+            raise ValueError(f"No name for {self}?")
 
     def toDry(self):
         return self.state

@@ -1,9 +1,10 @@
 
 __all__ = ["getDefaultImporters", "extractPersonName",
            "isPerson", "importPerson", "isBusiness", "importBusiness",
-           "importMessage", "importPositions", "importAffiliations",
-           "importSources", "importScores", "importNotes",
-           "importProject", "importSource", "importBiography"]
+           "importConnection", "importPositions", "importAffiliations",
+           "importSources", "importType", "importNotes",
+           "importProject", "importSource", "importBiography",
+           "importEdgeSources", "importSharedLinks"]
 
 
 def _clean_string(s):
@@ -48,6 +49,7 @@ def isPerson(node, importers=None):
 
 def extractPersonName(name):
     name = name.lstrip().rstrip()
+    orig_name = name
 
     titles = []
     firstnames = []
@@ -121,6 +123,7 @@ def extractPersonName(name):
     state["firstnames"] = firstnames
     state["surnames"] = surnames
     state["suffixes"] = suffixes
+    state["orig_name"] = orig_name
 
     if "Mr." in state["titles"]:
         state["gender"] = "male"
@@ -131,7 +134,7 @@ def extractPersonName(name):
     return state
 
 
-def importPerson(node, importers=None):
+def importPerson(node, project, importers=None):
     try:
         extractPersonName = importers["extractPersonName"]
     except KeyError:
@@ -148,11 +151,6 @@ def importPerson(node, importers=None):
         importAffiliations = importAffiliations
 
     try:
-        importScores = importers["importScores"]
-    except KeyError:
-        importScores = importScores
-
-    try:
         importSources = importers["importSources"]
     except KeyError:
         importSources = importSources
@@ -162,6 +160,8 @@ def importPerson(node, importers=None):
     except KeyError:
         importNotes = importNotes
 
+    from ._daterange import DateRange as _DateRange
+
     try:
         name = str(node.Label)
         state = extractPersonName(name)
@@ -169,7 +169,7 @@ def importPerson(node, importers=None):
         state["sources"] = importSources(node, importers=importers)
         state["affiliations"] = importAffiliations(node, importers=importers)
         state["notes"] = importNotes(node, importers=importers)
-        state["scores"] = importScores(node, importers=importers)
+        state["projects"] = {project.getID(): _DateRange.null()}
 
         from ._person import Person as _Person
         return _Person(state)
@@ -182,7 +182,7 @@ def isBusiness(node, importers=None):
     return str(node.Label).find("&") != -1
 
 
-def importBusiness(node, importers=None):
+def importBusiness(node, project, importers=None):
     try:
         importPositions = importers["importPositions"]
     except KeyError:
@@ -199,14 +199,11 @@ def importBusiness(node, importers=None):
         importSources = importSources
 
     try:
-        importScores = importers["importScores"]
-    except KeyError:
-        importScores = importScores
-
-    try:
         importNotes = importers["importNotes"]
     except KeyError:
         importNotes = importNotes
+
+    from ._daterange import DateRange as _DateRange
 
     try:
         name = str(node.Label)
@@ -214,25 +211,130 @@ def importBusiness(node, importers=None):
         sources = importSources(node, importers=importers)
         affiliations = importAffiliations(node, importers=importers)
         notes = importNotes(node, importers=importers)
-        scores = importScores(node, importers=importers)
 
         from ._business import Business as _Business
         return _Business({"name": name,
                           "positions": positions,
                           "sources": sources,
                           "affiliations": affiliations,
-                          "scores": scores,
+                          "projects": {project.getID(): _DateRange.null()},
                           "notes": notes})
     except Exception as e:
         print(f"Cannot load Business {node}: {e}")
         return None
 
 
-def importMessage(edge, mapping=None, importers=None):
+def importSharedLinks(edge, importers=None):
+    affiliations = importers["affiliations"]
+
+    result = []
+
+    import re as _re
+
+    pattern = _re.compile(r":")
+
+    for affiliation in pattern.split(str(edge["Shared Links"])):
+        affiliation = extractAffiliationName(affiliation)
+        affiliation = affiliations.add(affiliation)
+
+        if affiliation:
+            result.append(affiliation.getID())
+
+    return result
+
+
+def importEdgeSources(edge, importers=None):
+    sources = importers["sources"]
+
+    asources = {}
+    csources = {}
+
+    import re as _re
+    from ._daterange import Date as _Date
+
+    duration = _Date()
+
+    pattern = _re.compile(r":")
+
+    dates = pattern.split(str(edge["Dates of AS"]))
+
+    adates = []
+
+    for date in dates:
+        date = _Date(date)
+        adates.append(date)
+        duration = duration.merge(date)
+
+    dates = pattern.split(str(edge["Dates of CS"]))
+
+    cdates = []
+
+    for date in dates:
+        date = _Date(date)
+        cdates.append(date)
+        duration = duration.merge(date)
+
+    data = pattern.split(str(edge["Afiliation Sources (AS)"]))
+    dates = adates
+
+    while len(dates) < len(data):
+        dates.append(duration)
+
+    for i in range(0, len(data)):
+        source = extractSourceName(data[i])
+        date = _Date(dates[i])
+        duration = duration.merge(date)
+
+        source = sources.add(source)
+
+        if source:
+            if source.updateDate(date, force=True):
+                sources.update(source)
+
+            id = source.getID()
+
+            if id not in asources:
+                asources[id] = []
+
+            asources[id].append(date)
+
+    data = pattern.split(str(edge["Correspondence Sources (CS)"]))
+    dates = adates
+
+    while len(dates) < len(data):
+        dates.append(duration)
+
+    for i in range(0, len(data)):
+        source = extractSourceName(data[i])
+        date = _Date(dates[i])
+        duration = duration.merge(date)
+
+        source = sources.add(source)
+
+        if source:
+            if source.updateDate(date, force=True):
+                sources.update(source)
+
+            id = source.getID()
+
+            if id not in csources:
+                csources[id] = []
+
+            csources[id].append(date)
+
+    return (duration, asources, csources)
+
+
+def importConnection(edge, project, mapping=None, importers=None):
     try:
-        importSources = importers["importSources"]
+        importEdgeSources = importers["importEdgeSources"]
     except KeyError:
-        importSources = importSources
+        importEdgeSources = importEdgeSources
+
+    try:
+        importSharedLinks = importers["importSharedLinks"]
+    except KeyError:
+        importSharedLinks = importSharedLinks
 
     try:
         importNotes = importers["importNotes"]
@@ -240,32 +342,50 @@ def importMessage(edge, mapping=None, importers=None):
         importNotes = importNotes
 
     try:
-        importScores = importers["importScores"]
+        importType = importers["importType"]
     except KeyError:
-        importScores = importScores
+        importType = importType
+
+    from ._daterange import DateRange as _DateRange
 
     try:
         if mapping:
-            sender = mapping[int(edge.Source)]
-            receiver = mapping[int(edge.Target)]
+            n0 = int(edge.Source)
+            n1 = int(edge.Target)
+
+            if n0 not in mapping:
+                raise KeyError(f"No node0 with ID {n0}")
+
+            if n1 not in mapping:
+                raise KeyError(f"No node1 with ID {n1}")
+
+            n0 = mapping[n0]
+            n1 = mapping[n1]
         else:
-            sender = edge.Source
-            receiver = edge.Target
+            n0 = edge.Source
+            n1 = edge.Target
 
         notes = importNotes(edge, importers=importers, isEdge=True)
-        sources = importSources(edge, importers=importers, isEdge=True)
-        scores = importScores(edge, importers=importers, isEdge=True)
+        (duration, asources, csources) = importEdgeSources(edge,
+                                                           importers=importers)
 
-        from ._message import Message as _Message
-        return _Message({"sender": sender,
-                         "receiver": receiver,
-                         "notes": notes,
-                         "sources": sources,
-                         "scores": scores,
-                         })
+        typ = importType(edge, importers=importers)
+        shared_links = importSharedLinks(edge, importers=importers)
+
+        from ._connection import Connection as _Connection
+        return _Connection({"n0": n0,
+                            "n1": n1,
+                            "notes": notes,
+                            "affiliations": asources,
+                            "correspondances": csources,
+                            "duration": duration,
+                            "shared": shared_links,
+                            "projects": {project.getID(): _DateRange.null()},
+                            "type": typ,
+                            })
 
     except Exception as e:
-        print(f"Cannot map {edge}: {e}")
+        print(f"Fail to add connection!\n{edge}\n{e}\n")
         return None
 
 
@@ -280,19 +400,24 @@ def importPositions(node, importers=None):
     result = {}
 
     from ._daterange import DateRange as _DateRange
+    import re as _re
 
-    for part in str(node.Position).split(","):
-        for position in part.split(";"):
-            position = extractPositionName(position)
-            position = positions.add(position)
+    pattern = _re.compile(r":")
 
-            if position:
-                result[position.getID()] = _DateRange.null()
+    for position in pattern.split(str(node["Position(s)"])):
+        position = extractPositionName(position)
+        position = positions.add(position)
+
+        if position:
+            result[position.getID()] = _DateRange.null()
 
     return result
 
 
 def extractAffiliationName(affiliation):
+    if not affiliation:
+        return None
+
     affiliation = affiliation.lstrip().rstrip()
 
     lower = affiliation.lower()
@@ -309,52 +434,67 @@ def importAffiliations(node, importers=None):
     result = {}
 
     from ._daterange import DateRange as _DateRange
+    import re as _re
 
-    for parts in str(node.Affiliations).split(","):
-        for affiliation in parts.split(";"):
-            affiliation = extractAffiliationName(affiliation)
-            affiliation = affiliations.add(affiliation)
+    pattern = _re.compile(r":")
 
-            if affiliation:
-                result[affiliation.getID()] = _DateRange.null()
+    for affiliation in pattern.split(str(node["Other Affiliations"])):
+        affiliation = extractAffiliationName(affiliation)
+        affiliation = affiliations.add(affiliation)
+
+        if affiliation:
+            result[affiliation.getID()] = _DateRange.null()
 
     return result
 
 
-def importSources(node, importers=None, isEdge=False):
+def extractSourceName(source):
+    source = source.lstrip().rstrip()
+
+    lower = source.lower()
+
+    if lower == "nan" or lower == "_":
+        return None
+
+    return source
+
+
+def importSources(node, importers=None):
     sources = importers["sources"]
 
-    source = sources.add(str(node.Source).lstrip().rstrip())
+    result = []
 
-    if source:
-        return [source.getID()]
-    else:
-        return []
+    import re as _re
+
+    pattern = _re.compile(r":")
+
+    for source in pattern.split(str(node["Source(s)"])):
+        source = extractSourceName(source)
+        source = sources.add(source)
+
+        if source:
+            result.append(source)
+
+    return result
 
 
 def importNotes(node, importers=None, isEdge=False):
     return []
 
 
-def importScores(node, importers=None, isEdge=False):
-    scores = {}
+def importType(edge, importers=None):
+    try:
+        typ = str(edge.Link).lower()
+    except Exception:
+        return None
 
-    if isEdge:
-        try:
-            score = str(node.Type).lower()
-            possible = {"direct": 5, "dirct": 5, "cirect": 5,
-                        "strong": 10, "indirect": 3, "weak": 1}
-
-            scores["weight"] = possible[score]
-        except Exception:
-            pass
+    if typ.find("indirect") != -1:
+        return "indirect"
+    elif typ.find("direct") != -1:
+        return "direct"
     else:
-        try:
-            scores["weight"] = int(node.WEIGHT)
-        except Exception:
-            pass
-
-    return scores
+        print(f"Invalid link type? {typ}")
+        return None
 
 
 def importSource(data, importers=None):
@@ -383,9 +523,12 @@ def getDefaultImporters():
     return {"isPerson": isPerson, "extractPersonName": extractPersonName,
             "importPerson": importPerson,
             "isBusiness": isBusiness, "importBusiness": importBusiness,
-            "importMessage": importMessage, "importPositions": importPositions,
+            "importConnection": importConnection,
+            "importPositions": importPositions,
             "importAffiliations": importAffiliations,
             "importSources": importSources, "importNotes": importNotes,
-            "importScores": importScores,
+            "importType": importType,
             "importSource": importSource, "importProject": importProject,
-            "importBiography": importBiography}
+            "importBiography": importBiography,
+            "importEdgeSources": importEdgeSources,
+            "importSharedLinks": importSharedLinks}

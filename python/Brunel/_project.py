@@ -50,6 +50,9 @@ class Project:
         self.state["duration"] = _setState(state, "duration")
         self.state["notes"] = _setState(state, "notes", [])
 
+        if self.state["name"] == "None" or self.state["name"] is None:
+            raise ValueError(f"No name for {self}?")
+
     def toDry(self):
         return self.state
 

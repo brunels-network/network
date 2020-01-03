@@ -27,9 +27,12 @@ class Affiliations:
 
     def add(self, affiliation: _Affiliation):
         if affiliation is None:
-            return
+            return None
 
         if isinstance(affiliation, str):
+            if len(affiliation) == 0:
+                return None
+
             # try to find an existing affiliation with this name
             try:
                 return self.getByName(affiliation)
@@ -61,17 +64,20 @@ class Affiliations:
             self.state["registry"][uid] = affiliation
 
         affiliation._getHook = self._getHook
-        self._names[affiliation.getName()] = affiliation.getID()
+        self._names[affiliation.getCanonical()] = affiliation.getID()
 
         return affiliation
 
     def getByName(self, name):
         try:
-            return self.get(self._names[name])
+            return self.get(self._names[_Affiliation.makeCanonical(name)])
         except Exception:
             raise KeyError(f"No Affiliation with name {name}")
 
     def find(self, value):
+        if isinstance(value, _Affiliation):
+            return self.get(value.getID())
+
         value = value.lstrip().rstrip().lower()
 
         results = []
@@ -82,10 +88,13 @@ class Affiliations:
 
         if len(results) == 1:
             return results[0]
-        elif len(results) == 0:
-            return None
-        else:
+        elif len(results) > 1:
             return results
+
+        keys = "', '".join(self._names.keys())
+
+        raise KeyError(f"No affiliation matches '{value}'. Available  " +
+                       f"affiliations are '{keys}'")
 
     def get(self, id):
         try:
@@ -110,6 +119,7 @@ class Affiliations:
         affiliations._names = {}
 
         for affiliation in affiliations.state["registry"].values():
-            affiliations._names[affiliation.getName()] = affiliation.getID()
+            affiliations._names[affiliation.getCanonical()] = \
+                                                        affiliation.getID()
 
         return affiliations

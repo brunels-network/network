@@ -1,8 +1,8 @@
 
 from ._person import *
 from ._people import *
-from ._message import *
-from ._messages import *
+from ._connection import *
+from ._connections import *
 from ._business import *
 from ._businesses import *
 from ._affiliation import *

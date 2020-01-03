@@ -69,6 +69,9 @@ class Businesses:
             raise KeyError(f"No Business with name {name}")
 
     def find(self, value):
+        if isinstance(value, _Business):
+            return self.get(value.getID())
+
         value = value.lstrip().rstrip().lower()
 
         results = []
@@ -79,10 +82,13 @@ class Businesses:
 
         if len(results) == 1:
             return results[0]
-        elif len(results) == 0:
-            return None
-        else:
+        elif len(results) > 1:
             return results
+
+        keys = "', '".join(self._names.keys())
+
+        raise KeyError(f"No business matches '{value}'. Available businesses "
+                       f"are '{keys}'")
 
     def get(self, id):
         try:

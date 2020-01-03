@@ -9,7 +9,7 @@ def _setState(state, val, default=None):
             return result
         else:
             return default
-    except:
+    except Exception:
         return default
 
 
@@ -39,6 +39,16 @@ class Affiliation:
     def getName(self):
         return self.state["name"]
 
+    def getCanonical(self):
+        return self.state["canonical"]
+
+    @staticmethod
+    def makeCanonical(name):
+        if not name:
+            return None
+        else:
+            return name.lstrip().rstrip().lower()
+
     def setState(self, state):
         if not state:
             return
@@ -47,6 +57,10 @@ class Affiliation:
         self.state["id"] = _setState(state, "id")
         self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
+        self.state["canonical"] = Affiliation.makeCanonical(self.state["name"])
+
+        if self.state["name"] == "None" or self.state["name"] is None:
+            raise ValueError(f"No name for {self}?")
 
     def toDry(self):
         return self.state

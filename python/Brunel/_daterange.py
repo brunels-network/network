@@ -2,12 +2,66 @@
 __all__ = ["DateRange", "Date"]
 
 
+def _get_min(d1, d2):
+    if d1:
+        if d2:
+            if d1 < d2:
+                return d1
+            else:
+                return d2
+        else:
+            return d1
+    else:
+        return d2
+
+
+def _get_max(d1, d2):
+    if d1:
+        if d2:
+            if d1 > d2:
+                return d1
+            else:
+                return d2
+        else:
+            return d1
+    else:
+        return d2
+
+
+def _merge_raw(s1, s2):
+    if not s1:
+        return s2
+    elif not s2:
+        return s1
+
+    p1 = s1.split(" + ")
+    p2 = s2.split(" + ")
+
+    parts = []
+
+    for p in p1:
+        if p not in parts:
+            parts.append(p)
+
+    for p in p2:
+        if p not in parts:
+            parts.append(p)
+
+    parts.sort()
+
+    return " + ".join(parts)
+
+
 class Date:
     """This is a wrapper around a standard date, which has the additional
        ability to be a vague date, e.g. "March 1840", or "1855". It is used
        as many dates that we need cannot be specified exactly
     """
-    def __init__(self, date):
+    def __init__(self, date=None):
+        if date is None:
+            self.state = {}
+            return
+
         if isinstance(date, Date):
             import copy as _copy
             self.__dict__ = _copy.deepcopy(date.__dict__)
@@ -19,9 +73,9 @@ class Date:
             self.state = {"start": date}
             return
 
-        date = date.lstrip().rstrip()
-        self.state = {"source": date}
-        date = date.lower()
+        raw = date.lstrip().rstrip()
+
+        date = raw.lower()
 
         try:
             date = _datetime.date.fromisoformat(date)
@@ -29,14 +83,35 @@ class Date:
             pass
 
         if isinstance(date, _datetime.date):
-            self.state["start"] = date
-            del self.state["source"]
+            self.state = {"start": date}
+            return
+
+        if date == "nan" or date == "":
+            self.state = {}
             return
 
         parts = date.split(" ")
 
-        print(parts)
-        raise TypeError()
+        start = None
+        end = None
+
+        if len(parts) == 1:
+            # this should be a year...
+            year = int(parts[0])
+
+            start = _datetime.date(year=year, month=1, day=1)
+            end = _datetime.date(year=year, month=12, day=31)
+        else:
+            print(f"Unrecognised date? {parts}")
+            raise TypeError(f"Invalid date {raw}")
+
+        if start is None and end is None:
+            self.state = {}
+            return
+        else:
+            self.state = {"start": start,
+                          "end": end,
+                          "raw": raw}
 
     def __str__(self):
         if self.is_null():
@@ -80,6 +155,10 @@ class Date:
     def __ge__(self, other):
         return not self.__lt__(other)
 
+    @staticmethod
+    def null():
+        return Date()
+
     def is_null(self):
         return "start" not in self.state
 
@@ -97,9 +176,9 @@ class Date:
         else:
             return DateRange(start=self.start(), end=self.end())
 
-    def source(self):
+    def raw(self):
         try:
-            return self.state["source"]
+            return self.state["raw"]
         except KeyError:
             return None
 
@@ -115,18 +194,28 @@ class Date:
         except KeyError:
             return None
 
+    def merge(self, other):
+        state = {"start": _get_min(self.start(), other.start()),
+                 "end": _get_max(self.end(), other.end()),
+                 "raw": _merge_raw(self.raw(), other.raw())}
+
+        d = Date()
+        d.state = state
+
+        return d
+
     def toDry(self):
         if self.is_null():
             return "null"
         elif self.is_fuzzy():
             return {"start": self.state["start"].isoformat(),
                     "end": self.state["end"].isoformat(),
-                    "source": self.state["source"]}
-        elif self.source() is None:
+                    "raw": self.state["raw"]}
+        elif self.raw() is None:
             return {"start": self.state["start"].isoformat()}
         else:
             return {"start": self.state["start"].isoformat(),
-                    "source": self.state["source"]}
+                    "raw": self.state["raw"]}
 
 
 class DateRange:
@@ -172,6 +261,31 @@ class DateRange:
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        return self.getStart() == other.getStart() and \
+               self.getEnd() == other.getEnd()
+
+    def __lt__(self, other):
+        if self.getStart():
+            if other.getStart():
+                return self.getStart() < other.getStart()
+            else:
+                return False
+        else:
+            return False
+
+    def __le__(self, other):
+        return self.__lt__(other) or self.__eq__(other)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __gt__(self, other):
+        return not self.__le__(other)
+
+    def __ge__(self, other):
+        return not self.__lt__(other)
 
     @staticmethod
     def null():

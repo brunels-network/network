@@ -33,7 +33,7 @@ def _get_modifiers(modifiers, name=None):
     elif name is not None:
         modifiers = {name: modifiers}
 
-    for key in ["person", "business", "message", "project",
+    for key in ["person", "business", "connection", "project",
                 "source", "biography"]:
         if key not in modifiers:
             modifiers[key] = lambda item: item
@@ -45,7 +45,7 @@ class Social:
     """This class holds a complete social network"""
     def __init__(self):
         from ._people import People as _People
-        from ._messages import Messages as _Messages
+        from ._connections import Connections as _Connections
         from ._businesses import Businesses as _Businesses
         from ._positions import Positions as _Positions
         from ._affiliations import Affiliations as _Affiliations
@@ -55,7 +55,7 @@ class Social:
 
         self.state = {
             "people": _People(getHook=self.get),
-            "messages": _Messages(getHook=self.get),
+            "connections": _Connections(getHook=self.get),
             "businesses": _Businesses(getHook=self.get),
             "positions": _Positions(getHook=self.get),
             "affiliations": _Affiliations(getHook=self.get),
@@ -67,8 +67,8 @@ class Social:
     def people(self):
         return self.state["people"]
 
-    def messages(self):
-        return self.state["messages"]
+    def connections(self):
+        return self.state["connections"]
 
     def businesses(self):
         return self.state["businesses"]
@@ -89,8 +89,8 @@ class Social:
         return self.state["notes"]
 
     def get(self, id):
-        if id.startswith("M"):
-            return self.messages().get(id)
+        if id.startswith("C"):
+            return self.connections().get(id)
         elif id.startswith("P"):
             return self.people().get(id)
         elif id.startswith("B"):
@@ -160,7 +160,7 @@ class Social:
         ids = {}
 
         people = self.people()
-        messages = self.messages()
+        connections = self.connections()
         businesses = self.businesses()
 
         importers["positions"] = self.positions()
@@ -174,22 +174,23 @@ class Social:
                                                    importers=importers)
                 if person:
                     person = modifiers["person"](person)
-                    people.add(person, project)
+                    people.add(person)
                     ids[node.ID] = person.getID()
             elif importers["isBusiness"](node, importers=importers):
                 business = importers["importBusiness"](node, project,
                                                        importers=importers)
                 if business:
                     business = modifiers["business"](business)
-                    businesses.add(business, project)
+                    businesses.add(business)
                     ids[node.ID] = business.getID()
 
         for _, edge in edges.iterrows():
-            message = importers["importMessage"](edge, project, mapping=ids,
-                                                 importers=importers)
-            if message:
-                message = modifiers["message"](message)
-                messages.add(message, project)
+            connection = importers["importConnection"](edge, project,
+                                                       mapping=ids,
+                                                       importers=importers)
+            if connection:
+                connection = modifiers["connection"](connection)
+                connections.add(connection)
 
     def toDry(self):
         return self.state

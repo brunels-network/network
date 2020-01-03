@@ -62,6 +62,9 @@ class Business:
         self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
 
+        if self.state["name"] == "None" or self.state["name"] is None:
+            raise ValueError(f"No name for {self}?")
+
     def toDry(self):
         return self.state
 

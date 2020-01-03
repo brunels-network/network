@@ -25,9 +25,12 @@ class Sources:
 
     def add(self, source: _Source):
         if source is None:
-            return
+            return None
 
         if isinstance(source, str):
+            if len(source) == 0:
+                return None
+
             # try to find an existing source with this name
             try:
                 return self.getByName(source)
@@ -62,6 +65,17 @@ class Sources:
         self._names[source.getName()] = source.getID()
         return source
 
+    def update(self, new):
+        try:
+            old = self.get(new.getID())
+        except Exception:
+            return self.add(new)
+
+        if old.getName() != new.getName():
+            raise ValueError(f"Cannot change name in update! f{old} vs {new}")
+
+        self.state["registry"][new.getID()] = new
+
     def getByName(self, name):
         try:
             return self.get(self._names[name])
@@ -69,6 +83,9 @@ class Sources:
             raise KeyError(f"No Source with name {name}")
 
     def find(self, value):
+        if isinstance(value, _Source):
+            return self.get(value.getID())
+
         value = value.lstrip().rstrip().lower()
 
         results = []
@@ -79,10 +96,13 @@ class Sources:
 
         if len(results) == 1:
             return results[0]
-        elif len(results) == 0:
-            return None
-        else:
+        elif len(results) > 1:
             return results
+
+        keys = "', '".join(self._names.keys())
+
+        raise KeyError(f"No source matches '{value}'. Available sources " +
+                       f"are '{keys}'")
 
     def get(self, id):
         try:

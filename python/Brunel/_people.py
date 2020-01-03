@@ -78,6 +78,9 @@ class People:
             raise KeyError(f"No Person with name {name}")
 
     def find(self, value):
+        if isinstance(value, _Person):
+            return self.get(value.getID())
+
         value = value.lstrip().rstrip().lower()
 
         results = []
@@ -88,10 +91,13 @@ class People:
 
         if len(results) == 1:
             return results[0]
-        elif len(results) == 0:
-            return None
-        else:
+        elif len(results) > 1:
             return results
+
+        keys = "', '".join(self._names.keys())
+
+        raise KeyError(f"No person matches '{value}'. Available people " +
+                       f"are '{keys}'")
 
     def load(self, data):
         if data:

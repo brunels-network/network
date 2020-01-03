@@ -38,7 +38,7 @@ class Positions:
             raise TypeError("Can only add a Position to Positions")
 
         try:
-            return self.getByName(position.getName())
+            return self.getByName(position.getCanonical())
         except Exception:
             pass
 
@@ -58,17 +58,20 @@ class Positions:
             position.state["id"] = uid
             self.state["registry"][uid] = position
 
-        self._names[position.getName()] = position.getID()
+        self._names[position.getCanonical()] = position.getID()
         position._getHook = self._getHook
         return position
 
     def getByName(self, name):
         try:
-            return self.get(self._names[name])
+            return self.get(self._names[Position.makeCanonical(name)])
         except Exception:
             raise KeyError(f"No Position with name {name}")
 
     def find(self, value):
+        if isinstance(value, _Position):
+            return self.get(value.getID())
+
         value = value.lstrip().rstrip().lower()
 
         results = []
@@ -79,10 +82,13 @@ class Positions:
 
         if len(results) == 1:
             return results[0]
-        elif len(results) == 0:
-            return None
-        else:
+        elif len(results) > 1:
             return results
+
+        keys = "', '".join(self._names.keys())
+
+        raise KeyError(f"No position matches '{value}'. Available positions " +
+                       f"are '{keys}'")
 
     def get(self, id):
         try:
@@ -107,6 +113,6 @@ class Positions:
         positions._names = {}
 
         for position in positions.state["registry"].values():
-            positions._names[position.getName()] = position.getID()
+            positions._names[position.getCanonical()] = position.getID()
 
         return positions

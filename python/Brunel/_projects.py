@@ -25,9 +25,12 @@ class Projects:
 
     def add(self, project: _Project):
         if project is None:
-            return
+            return None
 
         if isinstance(project, str):
+            if len(project) == 0:
+                return None
+
             # try to find an existing project with this name
             try:
                 return self.getByName(project)
@@ -37,10 +40,17 @@ class Projects:
         if not isinstance(project, _Project):
             raise TypeError("Can only add a Project to Projects")
 
+        existing = None
+
         try:
-            return self.getByName(project.getName())
+            existing = self.getByName(project.getName())
         except Exception:
             pass
+
+        if existing:
+            existing = existing.merge(project)
+            self.state["registry"][existing.getID()] = existing
+            return existing
 
         id = project.getID()
 
@@ -69,6 +79,9 @@ class Projects:
             raise KeyError(f"No Source with name {name}")
 
     def find(self, value):
+        if isinstance(value, _Project):
+            return self.get(value.getID())
+
         value = value.lstrip().rstrip().lower()
 
         results = []
@@ -79,10 +92,13 @@ class Projects:
 
         if len(results) == 1:
             return results[0]
-        elif len(results) == 0:
-            return None
-        else:
+        elif len(results) > 1:
             return results
+
+        keys = "', '".join(self._names.keys())
+
+        raise KeyError(f"No project matches '{value}'. Available projects " +
+                       f"are '{keys}'")
 
     def get(self, id):
         try:
