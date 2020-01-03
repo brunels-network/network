@@ -183,14 +183,14 @@ class Social:
                                                    importers=importers)
                 if person:
                     person = modifiers["person"](person)
-                    people.add(person)
+                    person = people.add(person)
                     ids[node.ID] = person.getID()
             elif importers["isBusiness"](node, importers=importers):
                 business = importers["importBusiness"](node, project,
                                                        importers=importers)
                 if business:
                     business = modifiers["business"](business)
-                    businesses.add(business)
+                    business = businesses.add(business)
                     ids[node.ID] = business.getID()
 
         for _, edge in edges.iterrows():
@@ -198,7 +198,6 @@ class Social:
                                                        mapping=ids,
                                                        importers=importers)
             if connection:
-                print(connection)
                 connection = modifiers["connection"](connection)
                 connections.add(connection)
 

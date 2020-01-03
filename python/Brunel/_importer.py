@@ -390,6 +390,12 @@ def importConnection(edge, project, mapping=None, importers=None):
             n0 = int(edge.Source)
             n1 = int(edge.Target)
 
+            if n0 is None:
+                raise KeyError(f"Unspecified n0 {n0} <=> {n1}")
+
+            if n1 is None:
+                raise KeyError(f"Unspecified n1 {n0} <=> {n1}")
+
             if n0 not in mapping:
                 raise KeyError(f"No node0 with ID {n0}")
 
@@ -401,6 +407,12 @@ def importConnection(edge, project, mapping=None, importers=None):
         else:
             n0 = edge.Source
             n1 = edge.Target
+
+        if n0 is None:
+            raise KeyError(f"Unspecified n0 {n0} <=> {n1}")
+
+        if n1 is None:
+            raise KeyError(f"Unspecified n1 {n0} <=> {n1}")
 
         notes = importNotes(edge, importers=importers, isEdge=True)
         (duration, asources, csources) = importEdgeSources(edge,

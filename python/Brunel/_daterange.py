@@ -96,12 +96,20 @@ class Date:
         end = None
 
         if len(parts) == 1:
-            # this should be a year...
-            try:
-                year = int(parts[0])
+            # this should be a year... or a year range
+            year = parts[0]
 
-                start = _datetime.date(year=year, month=1, day=1)
-                end = _datetime.date(year=year, month=12, day=31)
+            try:
+                if year.find("-") != -1:
+                    years = year.split("-")
+                    y0 = int(years[0])
+                    y1 = int(years[1])
+                    start = _datetime.date(year=y0, month=1, day=1)
+                    end = _datetime.date(year=y1, month=12, day=31)
+                else:
+                    year = int(parts[0])
+                    start = _datetime.date(year=year, month=1, day=1)
+                    end = _datetime.date(year=year, month=12, day=31)
             except Exception:
                 print(f"Unrecognised year? {parts} : {raw}")
                 self.state = {}
