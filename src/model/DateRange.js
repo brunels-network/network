@@ -5,20 +5,9 @@ import lodash from 'lodash';
 import Date from './Date';
 import {ValueError} from './Errors';
 
-function _toDate(val){
-  if (!val){
-    return val;
-  }
-  else if (val._isADateObject){
-    return val;
-  }
-  else{
-    return new Date(val);
-  }
-}
-
 function _clean(val){
-  if (!val || val._isADateRangeObject || val._isAMomentObject){
+  if (!val || val._isADateRangeObject || val._isAMomentObject ||
+              val._isADateObject){
     return val;
   }
   else if (val.hasOwnProperty("start") || val.hasOwnProperty("end") ||
@@ -26,31 +15,7 @@ function _clean(val){
     return new DateRange(val);
   }
   else{
-    return _toDate(val);
-  }
-}
-
-function _minDate(date1, date2){
-  if (date1 === null || date2 === null){
-    return null;
-  }
-  else if (date1 <= date2){
-    return date1;
-  }
-  else{
-    return date2;
-  }
-}
-
-function _maxDate(date1, date2){
-  if (date1 === null || date2 === null){
-    return null;
-  }
-  else if (date1 >= date2){
-    return date1;
-  }
-  else{
-    return date2;
+    return new Date(val);
   }
 }
 
@@ -79,6 +44,12 @@ class DateRange{
     }
   }
 
+  static clone(item){
+    let d = new DateRange();
+    d.state = lodash.cloneDeep(item.state);
+    return d;
+  }
+
   hasBounds(){
     return this.state.start !== null || this.state.end !== null;
   }
@@ -95,6 +66,20 @@ class DateRange{
     return this.state.start !== null && this.state.start === this.state.end;
   }
 
+  toDate(){
+    if (this.hasStart()){
+      if (this.hasEnd()){
+        return this.getStart().merge(this.getEnd());
+      }
+      else{
+        return this.getStart();
+      }
+    }
+    else{
+      return this.getEnd();
+    }
+  }
+
   contains(date){
     date = _clean(date);
 
@@ -102,21 +87,21 @@ class DateRange{
       return true;
     }
     else if (date._isADateRangeObject){
-      const my_start = this.getStart();
-      const other_start = date.getStart();
+      const my_start = this.getEarliestStart();
+      const other_start = date.getEarliestStart();
 
       if (my_start && other_start){
-        if (my_start > other_start){ return false;}
+        if (Date.gt(my_start, other_start)){ return false;}
       }
       else if (other_start){
         return false;
       }
 
-      const my_end = this.getEnd();
-      const other_end = date.getEnd();
+      const my_end = this.getLatestEnd();
+      const other_end = date.getLatestEnd();
 
       if (my_end && other_end){
-        if (my_end < other_end){ return false;}
+        if (Date.lt(my_end, other_end)){ return false;}
       }
       else if (my_end){
         return false;
@@ -124,14 +109,22 @@ class DateRange{
 
       return true;
     }
+    else if (date._isADateObject){
+      if (date.isExact()){
+        return this.contains(date.toDate());
+      }
+      else{
+        return this.contains(date.toRange());
+      }
+    }
     else if (date._isAMomentObject){
-      const start = this.getStart();
-      const end = this.getEnd();
+      const start = this.getEarliestStart();
+      const end = this.getLatestEnd();
 
-      if (start && date < start){
+      if (start && date < start.toDate()){
         return false;
       }
-      else if (end && date > end){
+      else if (end && date > end.toDate()){
         return false;
       }
       else{
@@ -157,19 +150,19 @@ class DateRange{
       return this;
     }
 
-    const start = _maxDate(this.getStart(), other.getStart());
+    const start = Date.max(this.getStart(), other.getStart());
 
     if (!this.contains(start)){
       return null;
     }
 
-    const end = _minDate(this.getEnd(), other.getEnd());
+    const end = Date.min(this.getEnd(), other.getEnd());
 
     if (!this.contains(end)){
       return null;
     }
 
-    if (start === end){
+    if (Date.eq(start, end)){
       return new DateRange({both:start});
     }
     else{
@@ -186,10 +179,10 @@ class DateRange{
       other = new DateRange({value:other});
     }
 
-    const start = _minDate(this.getStart(), other.getStart());
-    const end = _maxDate(this.getEnd(), other.getEnd());
+    const start = Date.min(this.getStart(), other.getStart());
+    const end = Date.max(this.getEnd(), other.getEnd());
 
-    if (start === end){
+    if (Date.eq(start, end)){
       return new DateRange({both:start});
     }
     else{
@@ -199,7 +192,7 @@ class DateRange{
 
   getDelta(){
     if (this.hasStart() && this.hasEnd()){
-      return this.getEnd() - this.getStart();
+      return this.getLatestEnd().toDate() - this.getEarliestStart().toDate();
     }
     else{
       return null;
@@ -212,7 +205,7 @@ class DateRange{
     let delta = null;
 
     if (state.start !== null && state.end !== null){
-      delta = (state.end - state.start) / (2.0+scale);
+      delta = this.getDelta() / (2.0+scale);
     }
     else{
       delta = 3600000;
@@ -235,7 +228,7 @@ class DateRange{
     let delta = null;
 
     if (state.start !== null && state.end !== null){
-      delta = (state.end - state.start) * scale;
+      delta = this.getDelta() * scale;
     }
     else{
       delta = 3600000;
@@ -257,7 +250,7 @@ class DateRange{
 
     if (delta === null){
       if (state.start !== null && state.end !== null){
-        delta = -(state.end - state.start);     //milliseconds
+        delta = -(this.delta());     //milliseconds
       }
       else{
         delta = -3600000;     //milliseconds
@@ -280,7 +273,7 @@ class DateRange{
 
     if (delta === null){
       if (state.start !== null && state.end !== null){
-        delta = state.end - state.start;     //milliseconds
+        delta = this.getDelta();     //milliseconds
       }
       else{
         delta = 3600000;     //milliseconds
@@ -306,9 +299,28 @@ class DateRange{
     return this.state.end;
   }
 
+  getEarliestStart(){
+    if (this.hasStart()){
+      return this.getStart().getEarliest();
+    }
+    else{
+      return null;
+    }
+  }
+
+  getLatestEnd(){
+    if (this.hasEnd()){
+      return this.getEnd().getLatest();
+    }
+    else{
+      return null;
+    }
+  }
+
   getStartDate(){
-    if (this.state.start){
-      return this.state.start.toDate();
+    let e = this.getEarliestStart();
+    if (e){
+      return e.toDate();
     }
     else{
       return null;
@@ -316,8 +328,9 @@ class DateRange{
   }
 
   getEndDate(){
-    if (this.state.end){
-      return this.state.end.toDate();
+    let e = this.getLatestEnd();
+    if (e){
+      return e.toDate();
     }
     else{
       return null;
@@ -326,7 +339,7 @@ class DateRange{
 
   getStartString(){
     if (this.state.start){
-      return this.state.start.format("LL");
+      return this.state.start.toString();
     }
     else{
       return "unbounded";
@@ -335,7 +348,7 @@ class DateRange{
 
   getEndString(){
     if (this.state.end){
-      return this.state.end.format("LL");
+      return this.state.end.toString();
     }
     else{
       return "unbounded";
@@ -356,18 +369,37 @@ class DateRange{
         return;
       }
       else if (state.hasOwnProperty("both")){
-        this.state.start = _toDate(state.both);
+        this.state.start = new Date(state.both);
+        this.state.end = this.state.start;
+      }
+      else if (typeof state === "string"){
+        this.state.start = new Date(state);
         this.state.end = this.state.start;
       }
       else {
-        let start = _toDate(state.start);
-        let end = _toDate(state.end);
+        let start = null;
 
-        if (start !== null && end !== null){
-          if (start > end){
+        if (state.start){
+          start = new Date(state.start);
+        }
+
+        let end = null;
+
+        if (state.end){
+          end = new Date(state.end);
+        }
+
+        if (start && end){
+          if (Date.gt(start, end)){
             let tmp = start;
             start = end;
             end = tmp;
+          }
+
+          if (Date.lt(start, end)){
+            let tmp = Date.min(start, end);
+            end = Date.max(start, end);
+            start = tmp;
           }
         }
 
