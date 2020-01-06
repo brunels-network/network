@@ -1,23 +1,30 @@
 import Dry from 'json-dry';
 
-import Businesses from './Businesses';
-import Business from './Business';
+import People from './People';
+import Person from './Person';
 
 test("simple", ()=>{
-  let name1 = "This is a business";
+  let state1 = {orig_name: "John Smith",
+                firstnames: ["John"],
+                surnames: ["Smith"]};
 
-  let p1 = new Business({name:name1});
+  let name1 = "John Smith";
 
-  let name2 = "This is another business";
+  let p1 = new Person(state1);
 
-  let p2 = new Business({name:name2});
+  let state2 = {orig_name: "Brunel, Isambard",
+                firstnames: ["Isambard"],
+                surnames: ["Brunel"]}
+  let name2 = "Isambard Brunel";
+
+  let p2 = new Person(state2);
 
   expect(p1.getName()).toStrictEqual(name1);
   expect(p2.getName()).toStrictEqual(name2);
   expect(p1.getID()).toStrictEqual(null);
   expect(p2.getID()).toStrictEqual(null);
 
-  let p = new Businesses();
+  let p = new People();
 
   p1 = p.add(p1);
   p2 = p.add(p2);
@@ -25,10 +32,10 @@ test("simple", ()=>{
   expect(p1.getID() !== null).toStrictEqual(true);
   expect(p2.getID() !== null).toStrictEqual(true);
 
-  let r = p.find("another");
+  let r = p.find("Brunel");
   expect(r.getID()).toStrictEqual(p2.getID());
 
-  r = p.find("IS A");
+  r = p.find("m");
 
   expect(r.length).toStrictEqual(2);
 
@@ -44,10 +51,10 @@ test("simple", ()=>{
 
   p = Dry.parse(s);
 
-  r = p.find("another");
+  r = p.find("Brunel");
   expect(r.getID()).toStrictEqual(p2.getID());
 
-  r = p.find("IS A");
+  r = p.find("m");
 
   expect(r.length).toStrictEqual(2);
 

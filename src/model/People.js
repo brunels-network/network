@@ -94,7 +94,7 @@ class People {
       return this.get(id);
     }
     else{
-      throw MissingError(`No Person with name ${name}`);
+      throw new MissingError(`No Person with name ${name}`);
     }
   }
 
@@ -122,8 +122,8 @@ class People {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No Person matches '${name}. Available People ` +
-                       `are '${keys}'`);
+    throw new MissingError(`No Person matches '${name}. Available People ` +
+                           `are '${keys}'`);
   }
 
   filter(funcs = []){

@@ -3,7 +3,8 @@ import Dry from "json-dry";
 import lodash from 'lodash';
 
 import DateRange from './DateRange';
-import { ValueError } from "./Errors";
+
+import {ValueError} from './Errors';
 
 function setState(val, def=null){
   if (val){
@@ -42,6 +43,7 @@ function _filterWindow(values, window){
 class Person {
   constructor(props){
     this.state = {
+      name: null,
       titles: [],
       firstnames: [],
       surnames: [],
@@ -70,42 +72,8 @@ class Person {
     return c;
   }
 
-  getID(){
-    return this.state.id;
-  }
-
   isNode(){
     return true;
-  }
-
-  setState(state){
-    if (state){
-      this.state.titles = setState(state.titles, []);
-      this.state.firstnames = setState(state.firstnames, []);
-      this.state.surnames = setState(state.surnames, []);
-      this.state.suffixes = setState(state.suffixes, []);
-      this.state.id = setState(state.id);
-      this.state.positions = setState(state.positions, {});
-      this.state.affiliations = setState(state.affiliations, {});
-      this.state.projects = setState(state.projects, {});
-      this.state.sources = setState(state.sources, {});
-      this.state.alive = setState(state.alive);
-      this.state.gender = setState(state.gender);
-      this.state.orig_name = setState(state.orig_name);
-      this.state.notes = setState(state.notes, [])
-
-      if (!this.state.orig_name || this.state.orig_name === "None"){
-        throw ValueError(`No name for ${this}`);
-      }
-    }
-  }
-
-  _updateHooks(hook){
-    this._getHook = hook;
-  }
-
-  toString(){
-    return `Person(${this.getName()})`;
   }
 
   inGroup(group){
@@ -113,7 +81,17 @@ class Person {
       group = group.getID();
     }
 
-    return (group in this.state.positions) || (group in this.state.affiliations);
+    Object.keys(this.state.affiliations).forEach((key, index) =>{
+      if (group in this.state.affiliations[key]){
+        return true;
+      }
+    });
+
+    return false;
+  }
+
+  getID(){
+    return this.state.id;
   }
 
   filterWindow(window){
@@ -134,17 +112,51 @@ class Person {
     let positions = _filterWindow(this.state.positions, window);
 
     if (affiliations !== this.state.affiliations ||
-        positions !== this.state.positions ){
+        positions !== this.state.positions){
       let person = new Person();
       person.state = {...this.state};
-      person.state.positions = positions;
       person.state.affiliations = affiliations;
+      person.state.positions = positions;
       person._getHook = this._getHook;
       return person;
     }
     else{
       return this;
     }
+  }
+
+  setState(state){
+    if (state){
+      this.state.titles = setState(state.titles, []);
+      this.state.firstnames = setState(state.firstnames, []);
+      this.state.surnames = setState(state.surnames, []);
+      this.state.suffixes = setState(state.suffixes, []);
+      this.state.id = setState(state.id);
+      this.state.positions = setState(state.positions, {});
+      this.state.affiliations = setState(state.affiliations, {});
+      this.state.projects = setState(state.projects, {});
+      this.state.sources = setState(state.sources, {});
+      this.state.alive = setState(state.alive);
+      this.state.gender = setState(state.gender);
+      this.state.orig_name = setState(state.orig_name);
+      this.state.notes = setState(state.notes, [])
+
+      if (!this.state.orig_name || this.state.orig_name === "None"){
+         throw new ValueError(`No name for ${this}`);
+      }
+    }
+  }
+
+  _updateHooks(hook){
+    this._getHook = hook;
+  }
+
+  merge(other){
+    return this;
+  }
+
+  toString(){
+    return `Person(${this.getName()})`;
   }
 
   getAlive(){
@@ -218,32 +230,42 @@ class Person {
     }
   }
 
-  getPositions(){
+  getAffiliations(){
     let result = [];
 
-    for (let key in this.state.positions){
-      let value = this.state.positions[key];
+    for (let key in this.state.affiliations){
+      let items = this.state.affiliations[key];
       if (this._getHook){
-        result.push( [this._getHook(key), value] );
+        let project = this._getHook(key);
+        for (let item in items){
+          result.push([project.getDuration(), this._getHook(item)]);
+        }
       }
       else{
-        result.push( [key, value] );
+        for (let item in items){
+          result.push([key, item]);
+        }
       }
     }
 
     return result;
   }
 
-  getAffiliations(){
+  getPositions(){
     let result = [];
 
-    for (let key in this.state.affiliations){
-      let value = this.state.affiliations[key];
+    for (let key in this.state.positions){
+      let items = this.state.positions[key];
       if (this._getHook){
-        result.push( [this._getHook(key), value] );
+        let project = this._getHook(key);
+        for (let item in items){
+          result.push([project.getDuration(), this._getHook(item)]);
+        }
       }
       else{
-        result.push( [key, value] );
+        for (let item in items){
+          result.push([key, item]);
+        }
       }
     }
 
@@ -312,7 +334,7 @@ class Person {
 
     node["size"] = weight;
 
-    let keys = Object.keys(this.state.affiliations);
+    let keys = [];
 
     if (keys.length > 0){
       node["group"] = keys.sort().join(":");

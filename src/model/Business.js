@@ -145,12 +145,17 @@ class Business {
     let result = [];
 
     for (let key in this.state.affiliations){
-      let value = this.state.affiliations[key];
+      let items = this.state.affiliations[key];
       if (this._getHook){
-        result.push( [this._getHook(key), value] );
+        let project = this._getHook(key);
+        for (let item in items){
+          result.push([project.getDuration(), this._getHook(item)]);
+        }
       }
       else{
-        result.push( [key, value] );
+        for (let item in items){
+          result.push([key, item]);
+        }
       }
     }
 
@@ -187,7 +192,7 @@ class Business {
 
     node["size"] = weight;
 
-    let keys = Object.keys(this.state.affiliations);
+    let keys = [];
 
     if (keys.length > 0){
       node["group"] = keys.sort().join(":");
