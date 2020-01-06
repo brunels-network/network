@@ -39,11 +39,14 @@ function getBiography({item, social, emitClicked=null_function,
   let alive = null;
 
   if (item.getAlive){
-    alive = <p>
-              They were alive from&nbsp;
-              {item.getAlive().getStartString()}&nbsp;
-              until {item.getAlive().getEndString()}.
-            </p>;
+    let a = item.getAlive();
+    if (a){
+      alive = <p>
+                They were alive from&nbsp;
+                {item.getAlive().getStartString()}&nbsp;
+                until {item.getAlive().getEndString()}.
+              </p>;
+    }
   }
 
   pages.push(["Biography",
