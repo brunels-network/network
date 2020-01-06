@@ -2,6 +2,8 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
+import {ValueError} from './Errors';
+
 function setState(val, def=null){
   if (val){
     return val;
@@ -16,7 +18,7 @@ class Affiliation {
       name: null,
       id: null,
       sources: [],
-      notes: {},
+      notes: [],
     };
 
     this.setState(props);
@@ -32,20 +34,31 @@ class Affiliation {
     return c;
   }
 
-  getName(){
-    return this.state.name;
-  }
-
   getID(){
     return this.state.id;
+  }
+
+  static makeCanonical(name){
+    if (!name){
+      return null;
+    }
+    else{
+      return name.trim().toLowerCase();
+    }
   }
 
   setState(state){
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
+      this.state.notes = setState(state.notes, []);
       this.state.sources = setState(state.sources, []);
-      this.state.notes = setState(state.notes, {})
+
+      this.state.canonical = Affiliation.makeCanonical(this.state.name);
+
+      if (!this.state.name){
+        throw ValueError("You cannot have an Affiliation without a name");
+      }
     }
   }
 
@@ -53,8 +66,16 @@ class Affiliation {
     this._getHook = hook;
   }
 
+  merge(other){
+    return this;
+  }
+
   toString(){
     return `Affiliation(${this.getName()})`;
+  }
+
+  getName(){
+    return this.state.name;
   }
 
   toDry(){
