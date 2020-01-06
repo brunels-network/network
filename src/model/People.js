@@ -5,7 +5,6 @@ import vis from 'vis-network';
 import lodash from 'lodash';
 
 import Person from './Person';
-
 import { KeyError, MissingError } from './Errors';
 
 function _generate_person_uid(){
@@ -19,9 +18,8 @@ class People {
       registry: {},
     };
 
-    this._getHook = null;
+    this._names = {};
     this._isAPeopleObject = true;
-
     this.load(props);
   };
 
@@ -35,6 +33,7 @@ class People {
   static clone(item){
     let c = new People();
     c.state = lodash.cloneDeep(item.state);
+    c._names = lodash.cloneDeep(item._names);
     c._getHook = item._getHook;
     return c;
   }
@@ -43,19 +42,21 @@ class People {
     return (item instanceof Person) || item._isAPersonObject;
   }
 
-  find(name){
-    for (let key in this.state.registry){
-      let person = this.state.registry[key];
-      if (person.getName().search(name) !== -1){
-        return key;
-      }
-    }
-
-    return null;
-  }
-
   add(person){
-    if (!this.canAdd(person)){ return;}
+    if (!this.canAdd(person)){ return null;}
+
+    let existing = null;
+
+    try{
+      existing = this.getByName(person.getName());
+    }
+    catch(error){}
+
+    if (existing){
+      existing = existing.merge(person);
+      this.state.registry[existing.getID()] = existing;
+      return existing;
+    }
 
     person = Person.clone(person);
 
@@ -77,9 +78,52 @@ class People {
       }
 
       person.state.id = uid;
-      person._updateHooks(this._getHook);
-      this.state.registry[uid] = person;
     }
+
+    person._updateHooks(this._getHook);
+    this._names[person.getName()] = person.getID();
+    this.state.registry[person.getID()] = person;
+
+    return person;
+  }
+
+  getByName(name){
+    let id = this._names[name];
+
+    if (id){
+      return this.get(id);
+    }
+    else{
+      throw MissingError(`No Person with name ${name}`);
+    }
+  }
+
+  find(name){
+    if (name instanceof Person || name._isAPersonObject){
+      return this.get(name.getID());
+    }
+
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this._names).forEach((key, index) => {
+      if (key.toLowerCase().indexOf(name) !== -1){
+        results.push(this.get(this._names[key]));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+
+    let keys = Object.keys(this._names).join("', '");
+
+    throw MissingError(`No Person matches '${name}. Available People ` +
+                       `are '${keys}'`);
   }
 
   filter(funcs = []){
@@ -88,6 +132,7 @@ class People {
     }
 
     let registry = {};
+    let names = {};
 
     Object.keys(this.state.registry).forEach((key, index)=>{
       let person = this.state.registry[key];
@@ -102,12 +147,14 @@ class People {
 
         if (person){
           registry[key] = person;
+          names[person.getName()] = key;
         }
       }
     });
 
     let people = new People();
     people.state.registry = registry;
+    people._names = names;
     people._updateHooks(this._getHook);
 
     return people;
@@ -156,7 +203,7 @@ class People {
   get(id){
     let person = this.state.registry[id];
 
-    if (person === null){
+    if (!person){
       throw new MissingError(`No Person with ID ${id}`);
     }
 
@@ -181,6 +228,13 @@ class People {
 People.unDry = function(value){
   let people = new People();
   people.state = value;
+  people._names = {}
+
+  Object.keys(value.registry).forEach((key, index) => {
+    let v = value.registry[key];
+    people._names[v.getName()] = key;
+  });
+
   return people;
 }
 

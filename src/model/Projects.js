@@ -31,6 +31,7 @@ class Projects {
   static clone(item){
     let c = new Projects();
     c.state = lodash.cloneDeep(item.state);
+    c._names = lodash.cloneDeep(item._names);
     c._getHook = item._getHook;
     return c;
   }
@@ -91,7 +92,7 @@ class Projects {
       return this.get(id);
     }
     else{
-      throw KeyError(`No project with name ${name}`);
+      throw MissingError(`No project with name ${name}`);
     }
   }
 
@@ -119,8 +120,8 @@ class Projects {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw KeyError(`No project matches '${name}. Available projects ` +
-                   `are '${keys}'`);
+    throw MissingError(`No project matches '${name}. Available projects ` +
+                       `are '${keys}'`);
   }
 
   get(id){

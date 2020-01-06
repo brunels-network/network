@@ -5,12 +5,11 @@ import vis from 'vis-network';
 import lodash from 'lodash';
 
 import Connection from './Connection';
-
 import { KeyError, MissingError } from './Errors';
 
-function _generate_message_uid(){
+function _generate_connection_uid(){
   let uid = uuidv4();
-  return "M" + uid.substring(uid.length-7);
+  return "C" + uid.substring(uid.length-7);
 }
 
 class Connections {
@@ -19,7 +18,8 @@ class Connections {
       registry: {},
     };
 
-    this._isAMessagesObject = true;
+    this._names = {};
+    this._isAConnectionsObject = true;
   };
 
   _updateHooks(hook){
@@ -32,50 +32,107 @@ class Connections {
   static clone(item){
     let c = new Connections();
     c.state = lodash.cloneDeep(item.state);
+    c._names = lodash.cloneDeep(item._names);
     c._getHook = item._getHook;
     return c;
   }
 
   canAdd(item){
-    return (item instanceof Connection) || item._isAMessageObject;
+    return (item instanceof Connection) || item._isAConnectionObject;
   }
 
-  add(message){
-    if (!this.canAdd(message)){ return;}
+  add(connection){
+    if (!this.canAdd(connection)){ return null;}
 
-    message = Connection.clone(message);
+    let existing = null;
 
-    let id = message.getID();
+    try{
+      existing = this.getByName(connection.getName());
+    }
+    catch(error){}
+
+    if (existing){
+      existing = existing.merge(connection);
+      this.state.registry[existing.getID()] = existing;
+      return existing;
+    }
+
+    connection = Connection.clone(connection);
+
+    let id = connection.getID();
 
     if (id){
       if (id in this.state.registry){
-        throw new KeyError(`Duplicate Connection ID ${message}`);
+        throw new KeyError(`Duplicate Connection ID ${connection}`);
       }
 
-      message._updateHooks(this._getHook);
-      this.state.registry[id] = message;
+      connection._updateHooks(this._getHook);
+      this.state.registry[id] = connection;
     }
     else{
-      let uid = _generate_message_uid();
+      let uid = _generate_connection_uid();
 
       while (uid in this.state.registry){
-        uid = _generate_message_uid();
+        uid = _generate_connection_uid();
       }
 
-      message.state.id = uid;
-      message._updateHooks(this._getHook);
-      this.state.registry[uid] = message;
+      connection.state.id = uid;
+    }
+
+    connection._updateHooks(this._getHook);
+    this._names[connection.getName()] = connection.getID();
+    this.state.registry[connection.getID()] = connection;
+
+    return connection;
+  }
+
+  getByName(name){
+    let id = this._names[name];
+
+    if (id){
+      return this.get(id);
+    }
+    else{
+      throw MissingError(`No connection with name ${name}`);
     }
   }
 
-  get(id){
-    let message = this.state.registry[id];
+  find(name){
+    if (name instanceof Connection || name._isAConnectionObject){
+      return this.get(name.getID());
+    }
 
-    if (message === null){
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this._names).forEach((key, index) => {
+      if (key.toLowerCase().indexOf(name) !== -1){
+        results.push(this.get(this._names[key]));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+
+    let keys = Object.keys(this._names).join("', '");
+
+    throw MissingError(`No connection matches '${name}. Available Connections ` +
+                       `are '${keys}'`);
+  }
+
+  get(id){
+    let connection = this.state.registry[id];
+
+    if (!connection){
       throw new MissingError(`No Connection with ID ${id}`);
     }
 
-    return message;
+    return connection;
   }
 
   filter(funcs = []){
@@ -84,29 +141,32 @@ class Connections {
     }
 
     let registry = {};
+    let names = {};
 
     Object.keys(this.state.registry).forEach((key, index)=>{
-      let message = this.state.registry[key];
+      let connection = this.state.registry[key];
 
-      if (message){
+      if (connection){
         for (let i=0; i<funcs.length; ++i){
-          message = funcs[i](message);
-          if (!message){
+          connection = funcs[i](connection);
+          if (!connection){
             break;
           }
         }
 
-        if (message){
-          registry[key] = message;
+        if (connection){
+          registry[key] = connection;
+          registry[connection.getName()] = key;
         }
       }
     });
 
-    let messages = new Connections();
-    messages.state.registry = registry;
-    messages._updateHooks(this._getHook);
+    let connections = new Connections();
+    connections.state.registry = registry;
+    connections._names = names;
+    connections._updateHooks(this._getHook);
 
-    return messages;
+    return connections;
   }
 
   getConnectionsTo(item){
@@ -116,14 +176,14 @@ class Connections {
     let seen = {};
 
     for (let key in this.state.registry){
-      let message = this.state.registry[key];
+      let connection = this.state.registry[key];
       let n = null;
 
-      if (message.state.sender === id){
-        n = this._getHook(message.state.receiver);
+      if (connection.getNode0ID() === id){
+        n = this._getHook(connection.getNode1ID());
       }
-      else if (message.state.receiver === id){
-        n = this._getHook(message.state.sender);
+      else if (connection.getNode1ID() === id){
+        n = this._getHook(connection.getNode0ID());
       }
 
       if (n){
@@ -142,22 +202,29 @@ class Connections {
     let edges = new vis.DataSet();
 
     Object.keys(this.state.registry).forEach((key, index)=>{
-      let message = this.state.registry[key];
-      edges.add(message.toEdge());
+      let connection = this.state.registry[key];
+      edges.add(connection.toEdge());
     });
 
     return edges;
   }
 
   toDry(){
-    return {value: this.state.registry};
+    return {value: this.state};
   }
 };
 
 Connections.unDry = function(value){
-  let messages = new Connections();
-  messages.state = value;
-  return messages;
+  let connections = new Connections();
+  connections.state = value;
+  connections._names = {}
+
+  Object.keys(value.registry).forEach((key, index) => {
+    let v = value.registry[key];
+    connections._names[v.getName()] = key;
+  });
+
+  return connections;
 }
 
 Dry.registerClass("Connections", Connections);

@@ -4,7 +4,6 @@ import uuidv4 from 'uuid';
 import lodash from 'lodash';
 
 import Source from './Source';
-
 import { KeyError, MissingError } from './Errors';
 
 function _generate_source_uid(){
@@ -18,6 +17,7 @@ class Sources {
       registry: {},
     };
 
+    this._names = {};
     this._isASourcesObject = true;
   };
 
@@ -31,6 +31,7 @@ class Sources {
   static clone(item){
     let c = new Sources();
     c.state = lodash.cloneDeep(item.state);
+    c._names = lodash.cloneDeep(item._names);
     c._getHook = item._getHook;
     return c;
   }
@@ -40,7 +41,20 @@ class Sources {
   }
 
   add(source){
-    if (!this.canAdd(source)){ return;}
+    if (!this.canAdd(source)){ return null;}
+
+    let existing = null;
+
+    try{
+      existing = this.getByName(source.getName());
+    }
+    catch(error){}
+
+    if (existing){
+      existing = existing.merge(source);
+      this.state.registry[existing.getID()] = existing;
+      return existing;
+    }
 
     source = Source.clone(source);
 
@@ -62,15 +76,58 @@ class Sources {
       }
 
       source.state.id = uid;
-      source._updateHooks(this._getHook);
-      this.state.registry[uid] = source;
     }
+
+    source._updateHooks(this._getHook);
+    this._names[source.getName()] = source.getID();
+    this.state.registry[source.getID()] = source;
+
+    return source;
+  }
+
+  getByName(name){
+    let id = this._names[name];
+
+    if (id){
+      return this.get(id);
+    }
+    else{
+      throw MissingError(`No source with name ${name}`);
+    }
+  }
+
+  find(name){
+    if (name instanceof Source || name._isASourceObject){
+      return this.get(name.getID());
+    }
+
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this._names).forEach((key, index) => {
+      if (key.toLowerCase().indexOf(name) !== -1){
+        results.push(this.get(this._names[key]));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+
+    let keys = Object.keys(this._names).join("', '");
+
+    throw MissingError(`No source matches '${name}. Available sources ` +
+                       `are '${keys}'`);
   }
 
   get(id){
     let source = this.state.registry[id];
 
-    if (source === null){
+    if (!source){
       throw new MissingError(`No Source with ID ${id}`);
     }
 
@@ -78,13 +135,20 @@ class Sources {
   }
 
   toDry(){
-    return {value: this.state.registry};
+    return {value: this.state};
   }
 };
 
 Sources.unDry = function(value){
   let sources = new Sources();
   sources.state = value;
+  sources._names = {}
+
+  Object.keys(value.registry).forEach((key, index) => {
+    let v = value.registry[key];
+    sources._names[v.getName()] = key;
+  });
+
   return sources;
 }
 

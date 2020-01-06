@@ -3,7 +3,7 @@ import Dry from 'json-dry';
 import uuidv4 from 'uuid';
 import lodash from 'lodash';
 
-import Position from "./Position";
+import Position from './Position';
 import { KeyError, MissingError } from './Errors';
 
 function _generate_position_uid(){
@@ -17,6 +17,7 @@ class Positions {
       registry: {},
     };
 
+    this._names = {};
     this._isAPositionsObject = true;
   };
 
@@ -30,6 +31,7 @@ class Positions {
   static clone(item){
     let c = new Positions();
     c.state = lodash.cloneDeep(item.state);
+    c._names = lodash.cloneDeep(item._names);
     c._getHook = item._getHook;
     return c;
   }
@@ -39,7 +41,20 @@ class Positions {
   }
 
   add(position){
-    if (!this.canAdd(position)){ return;}
+    if (!this.canAdd(position)){ return null;}
+
+    let existing = null;
+
+    try{
+      existing = this.getByName(position.getName());
+    }
+    catch(error){}
+
+    if (existing){
+      existing = existing.merge(position);
+      this.state.registry[existing.getID()] = existing;
+      return existing;
+    }
 
     position = Position.clone(position);
 
@@ -61,15 +76,58 @@ class Positions {
       }
 
       position.state.id = uid;
-      position._updateHooks(this._getHook);
-      this.state.registry[uid] = position;
     }
+
+    position._updateHooks(this._getHook);
+    this._names[position.getName()] = position.getID();
+    this.state.registry[position.getID()] = position;
+
+    return position;
+  }
+
+  getByName(name){
+    let id = this._names[name];
+
+    if (id){
+      return this.get(id);
+    }
+    else{
+      throw MissingError(`No position with name ${name}`);
+    }
+  }
+
+  find(name){
+    if (name instanceof Position || name._isApositionObject){
+      return this.get(name.getID());
+    }
+
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this._names).forEach((key, index) => {
+      if (key.toLowerCase().indexOf(name) !== -1){
+        results.push(this.get(this._names[key]));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+
+    let keys = Object.keys(this._names).join("', '");
+
+    throw MissingError(`No position matches '${name}. Available Positions ` +
+                       `are '${keys}'`);
   }
 
   get(id){
     let position = this.state.registry[id];
 
-    if (position === null){
+    if (!position){
       throw new MissingError(`No Position with ID ${id}`);
     }
 
@@ -77,13 +135,20 @@ class Positions {
   }
 
   toDry(){
-    return {value: this.state.registry};
+    return {value: this.state};
   }
 };
 
 Positions.unDry = function(value){
   let positions = new Positions();
   positions.state = value;
+  positions._names = {}
+
+  Object.keys(value.registry).forEach((key, index) => {
+    let v = value.registry[key];
+    positions._names[v.getName()] = key;
+  });
+
   return positions;
 }
 

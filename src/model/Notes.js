@@ -3,7 +3,7 @@ import Dry from 'json-dry';
 import uuidv4 from 'uuid';
 import lodash from 'lodash';
 
-import Note from "./Note";
+import Note from './Note';
 import { KeyError, MissingError } from './Errors';
 
 function _generate_note_uid(){
@@ -17,6 +17,7 @@ class Notes {
       registry: {},
     };
 
+    this._names = {};
     this._isANotesObject = true;
   };
 
@@ -30,6 +31,7 @@ class Notes {
   static clone(item){
     let c = new Notes();
     c.state = lodash.cloneDeep(item.state);
+    c._names = lodash.cloneDeep(item._names);
     c._getHook = item._getHook;
     return c;
   }
@@ -39,9 +41,22 @@ class Notes {
   }
 
   add(note){
-    if (!this.canAdd(note)){ return;}
+    if (!this.canAdd(note)){ return null;}
 
-    note = Note.clone(note);
+    let existing = null;
+
+    try{
+      existing = this.getByName(note.getName());
+    }
+    catch(error){}
+
+    if (existing){
+      existing = existing.merge(note);
+      this.state.registry[existing.getID()] = existing;
+      return existing;
+    }
+
+    note = note.clone(Note);
 
     let id = note.getID();
 
@@ -51,7 +66,7 @@ class Notes {
       }
 
       note._updateHooks(this._getHook);
-      this.state.registry[id] = note;
+      this.state.registry[id] = Note;
     }
     else{
       let uid = _generate_note_uid();
@@ -61,29 +76,79 @@ class Notes {
       }
 
       note.state.id = uid;
-      note._updateHooks(this._getHook);
-      this.state.registry[uid] = note;
     }
-  }
 
-  get(id){
-    let note = this.state.registry[id];
-
-    if (note === null){
-      throw new MissingError(`No Note with ID ${id}`);
-    }
+    note._updateHooks(this._getHook);
+    this._names[note.getName()] = note.getID();
+    this.state.registry[note.getID()] = note;
 
     return note;
   }
 
+  getByName(name){
+    let id = this._names[name];
+
+    if (id){
+      return this.get(id);
+    }
+    else{
+      throw MissingError(`No Note with name ${name}`);
+    }
+  }
+
+  find(name){
+    if (name instanceof Note || name._isANoteObject){
+      return this.get(name.getID());
+    }
+
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this._names).forEach((key, index) => {
+      if (key.toLowerCase().indexOf(name) !== -1){
+        results.push(this.get(this._names[key]));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+
+    let keys = Object.keys(this._names).join("', '");
+
+    throw MissingError(`No Note matches '${name}. Available Notes ` +
+                       `are '${keys}'`);
+  }
+
+  get(id){
+    let Note = this.state.registry[id];
+
+    if (!Note){
+      throw new MissingError(`No Note with ID ${id}`);
+    }
+
+    return Note;
+  }
+
   toDry(){
-    return {value: this.state.registry};
+    return {value: this.state};
   }
 };
 
 Notes.unDry = function(value){
   let notes = new Notes();
-  notes.state.registry = value;
+  notes.state = value;
+  notes._names = {}
+
+  Object.keys(value.registry).forEach((key, index) => {
+    let v = value.registry[key];
+    notes._names[v.getName()] = key;
+  });
+
   return notes;
 }
 
