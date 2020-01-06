@@ -17,14 +17,16 @@ function BrunelMenu(props){
       func = ()=>{props.emitClose(); item[1]() };
     }
 
-    buttons.push(<button className={styles.menuItem}
+    buttons.push(<button key={index}
+                         className={styles.menuItem}
                          onClick={()=>{func()}}>
                   {item[0]}
                  </button>);
   });
 
   if (props.emitClose){
-    buttons.push(<button className={styles.menuItem}
+    buttons.push(<button key="close"
+                         className={styles.menuItem}
                          onClick={()=>{props.emitClose()}}>
                   Close
                 </button>);
