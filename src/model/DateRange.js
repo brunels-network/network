@@ -1,35 +1,24 @@
 
 import Dry from 'json-dry';
-import moment from 'moment';
 import lodash from 'lodash';
 
+import Date from './Date';
 import {ValueError} from './Errors';
 
-function _toDate(val, def=null){
-  if (val){
-    if (val._isAMomentObject){
-      return val;
-    }
-
-    let date = moment(val);
-    if (!date.isValid()){
-      console.log(`Invalid Date ${val}`);
-      throw new ValueError(`Invalid Date ${val}`);
-    }
-
-    return date;
-  } else {
-    if (!def){
-      return null;
-    }
-    else{
-      return _toDate(def);
-    }
+function _toDate(val){
+  if (!val){
+    return val;
+  }
+  else if (val._isADateObject){
+    return val;
+  }
+  else{
+    return new Date(val);
   }
 }
 
 function _clean(val){
-  if (val === null || val._isADateRangeObject || val._isAMomentObject){
+  if (!val || val._isADateRangeObject || val._isAMomentObject){
     return val;
   }
   else if (val.hasOwnProperty("start") || val.hasOwnProperty("end") ||

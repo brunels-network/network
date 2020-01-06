@@ -44,6 +44,7 @@ class Person:
             "alive": None,
             "gender": None,
             "notes": [],
+            "orig_name": None,
         }
 
         self.setState(props)

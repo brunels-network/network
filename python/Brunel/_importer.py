@@ -520,7 +520,7 @@ def importSources(node, importers=None):
         source = sources.add(source)
 
         if source:
-            result.append(source)
+            result.append(source.getID())
 
     return result
 

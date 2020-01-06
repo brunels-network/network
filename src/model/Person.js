@@ -3,6 +3,7 @@ import Dry from "json-dry";
 import lodash from 'lodash';
 
 import DateRange from './DateRange';
+import { ValueError } from "./Errors";
 
 function setState(val, def=null){
   if (val){
@@ -49,11 +50,11 @@ class Person {
       positions: {},
       affiliations: {},
       projects: {},
-      sources: [],
-      scores: {},
+      sources: {},
       alive: null,
       gender: null,
-      notes: {},
+      notes: [],
+      orig_name: null,
     };
 
     this.setState(props);
@@ -79,19 +80,23 @@ class Person {
 
   setState(state){
     if (state){
-      this.state.titles = setState(state.titles);
-      this.state.firstnames = setState(state.firstnames);
-      this.state.surnames = setState(state.surnames);
-      this.state.suffixes = setState(state.suffixes);
+      this.state.titles = setState(state.titles, []);
+      this.state.firstnames = setState(state.firstnames, []);
+      this.state.surnames = setState(state.surnames, []);
+      this.state.suffixes = setState(state.suffixes, []);
       this.state.id = setState(state.id);
       this.state.positions = setState(state.positions, {});
       this.state.affiliations = setState(state.affiliations, {});
       this.state.projects = setState(state.projects, {});
-      this.state.sources = setState(state.sources, []);
+      this.state.sources = setState(state.sources, {});
       this.state.alive = setState(state.alive);
       this.state.gender = setState(state.gender);
-      this.state.scores = setState(state.scores, {});
-      this.state.notes = setState(state.notes, {})
+      this.state.orig_name = setState(state.orig_name);
+      this.state.notes = setState(state.notes, [])
+
+      if (!this.state.orig_name || this.state.orig_name === "None"){
+        throw ValueError(`No name for ${this}`);
+      }
     }
   }
 

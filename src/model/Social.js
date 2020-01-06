@@ -4,12 +4,13 @@ import lodash from 'lodash';
 
 import People from './People';
 import Businesses from './Businesses';
-import Messages from './Messages';
+import Connections from './Connections';
 import Positions from './Positions';
 import Affiliations from './Affiliations';
 import Sources from './Sources';
 import Notes from './Notes';
 import Projects from './Projects';
+import Biographies from './Biographies';
 import DateRange from './DateRange';
 
 import { ValueError } from './Errors';
@@ -100,8 +101,8 @@ class Social {
       state.businesses = this.state.businesses;
     }
 
-    if (!(this.state.messages instanceof Messages)) {
-      state.messages = new Messages();
+    if (!(this.state.messages instanceof Connections)) {
+      state.messages = new Connections();
     } else {
       state.messages = this.state.messages;
     }

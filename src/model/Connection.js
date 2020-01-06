@@ -12,7 +12,7 @@ function setState(val, def=null){
   }
 }
 
-class Message {
+class Connection {
   constructor(props){
     this.state = {
       name: null,
@@ -29,7 +29,7 @@ class Message {
   }
 
   static clone(item){
-    let c = new Message();
+    let c = new Connection();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
     return c;
@@ -94,7 +94,7 @@ class Message {
   }
 
   toString(){
-    return `Message(name=${this.state.name} ` +
+    return `Connection(name=${this.state.name} ` +
            `${this.state.sender}=>${this.state.receiver})`;
   }
 
@@ -141,14 +141,14 @@ class Message {
   }
 };
 
-Message.unDry = function(value){
-  return new Message(value);
+Connection.unDry = function(value){
+  return new Connection(value);
 }
 
-Message.load = function(data, people=null){
-  return new Message({name: data.name});
+Connection.load = function(data, people=null){
+  return new Connection({name: data.name});
 }
 
-Dry.registerClass("Message", Message);
+Dry.registerClass("Connection", Connection);
 
-export default Message;
+export default Connection;

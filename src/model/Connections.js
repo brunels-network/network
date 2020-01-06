@@ -4,7 +4,7 @@ import uuidv4 from 'uuid';
 import vis from 'vis-network';
 import lodash from 'lodash';
 
-import Message from './Message';
+import Connection from './Connection';
 
 import { KeyError, MissingError } from './Errors';
 
@@ -13,7 +13,7 @@ function _generate_message_uid(){
   return "M" + uid.substring(uid.length-7);
 }
 
-class Messages {
+class Connections {
   constructor(props){
     this.state = {
       registry: {},
@@ -30,26 +30,26 @@ class Messages {
   }
 
   static clone(item){
-    let c = new Messages();
+    let c = new Connections();
     c.state = lodash.cloneDeep(item.state);
     c._getHook = item._getHook;
     return c;
   }
 
   canAdd(item){
-    return (item instanceof Message) || item._isAMessageObject;
+    return (item instanceof Connection) || item._isAMessageObject;
   }
 
   add(message){
     if (!this.canAdd(message)){ return;}
 
-    message = Message.clone(message);
+    message = Connection.clone(message);
 
     let id = message.getID();
 
     if (id){
       if (id in this.state.registry){
-        throw new KeyError(`Duplicate Message ID ${message}`);
+        throw new KeyError(`Duplicate Connection ID ${message}`);
       }
 
       message._updateHooks(this._getHook);
@@ -72,7 +72,7 @@ class Messages {
     let message = this.state.registry[id];
 
     if (message === null){
-      throw new MissingError(`No Message with ID ${id}`);
+      throw new MissingError(`No Connection with ID ${id}`);
     }
 
     return message;
@@ -102,7 +102,7 @@ class Messages {
       }
     });
 
-    let messages = new Messages();
+    let messages = new Connections();
     messages.state.registry = registry;
     messages._updateHooks(this._getHook);
 
@@ -154,12 +154,12 @@ class Messages {
   }
 };
 
-Messages.unDry = function(value){
-  let messages = new Messages();
+Connections.unDry = function(value){
+  let messages = new Connections();
   messages.state = value;
   return messages;
 }
 
-Dry.registerClass("Messages", Messages);
+Dry.registerClass("Connections", Connections);
 
-export default Messages;
+export default Connections;

@@ -8,7 +8,7 @@ import ConnectionList from './ConnectionList';
 import Social from '../model/Social';
 import Person from '../model/Person';
 import Business from '../model/Business';
-import Message from '../model/Message';
+import Connection from '../model/Connection';
 
 import styles from './InfoBox.module.css';
 
@@ -139,7 +139,7 @@ function extractData({item, social, emitClicked=null_function,
                                emitSelected:emitSelected});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
   }
-  else if (item instanceof Message){
+  else if (item instanceof Connection){
     data.title = null;
 
     let sender = item.getSender();
@@ -161,7 +161,7 @@ function extractData({item, social, emitClicked=null_function,
     }
 
     let pages = [];
-    pages.push(["Message",
+    pages.push(["Connection",
                <div style={{textAlign:"center"}}>
                  <div>From</div>
                  {sender}
@@ -169,8 +169,8 @@ function extractData({item, social, emitClicked=null_function,
                  {receiver}
                  <div>on {item.getSent().getStartString()}</div>
                </div>]);
-    pages.push(["Source", "Space to see the original source for this message"]);
-    pages.push(["Analysis", "Space for analysis of this message"]);
+    pages.push(["Source", "Space to see the original source for this Connection"]);
+    pages.push(["Analysis", "Space for analysis of this Connection"]);
 
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
 
