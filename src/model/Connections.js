@@ -65,9 +65,6 @@ class Connections {
       if (id in this.state.registry){
         throw new KeyError(`Duplicate Connection ID ${connection}`);
       }
-
-      connection._updateHooks(this._getHook);
-      this.state.registry[id] = connection;
     }
     else{
       let uid = _generate_connection_uid();
@@ -156,7 +153,7 @@ class Connections {
 
         if (connection){
           registry[key] = connection;
-          registry[connection.getName()] = key;
+          names[connection.getName()] = key;
         }
       }
     });

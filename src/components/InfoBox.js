@@ -26,7 +26,14 @@ function getBiography({item, social, emitClicked=null_function,
   let pages = [];
   let affiliations = [];
   let positions = [];
-  let connections = social.getConnectionsTo(item);
+  let connections = [];
+
+  try{
+    connections = social.getConnectionsTo(item);
+  }
+  catch(error){
+    connections = null;
+  }
 
   if (item.getAffiliations){
     affiliations = item.getAffiliations();
@@ -43,19 +50,25 @@ function getBiography({item, social, emitClicked=null_function,
     if (a){
       alive = <p>
                 They were alive from&nbsp;
-                {item.getAlive().getStartString()}&nbsp;
-                until {item.getAlive().getEndString()}.
+                {a.getStartString()}&nbsp;
+                until {a.getEndString()}.
               </p>;
     }
   }
 
+  let bio = null;
+
+  try{
+    bio = social.getBiographies().get(item);
+  }
+  catch(error){
+    bio = null;
+  }
+
   pages.push(["Biography",
               (<div>
-                 <p>This is space for a biography of {item.getName()}</p>
+                 {bio}
                  {alive}
-                 <p>
-                   (note that all dates are random for testing purposes!)
-                 </p>
                </div>)]);
 
   if (connections.length > 0){
@@ -86,10 +99,6 @@ function getBiography({item, social, emitClicked=null_function,
                 <div>
                   <GroupsList groups={affiliations}
                                       emitClicked={emitSelected}/>
-                  <p>
-                    Note that all times are made up for testing
-                    purposes!
-                  </p>
                 </div>]);
 }
   else{
@@ -116,7 +125,12 @@ function extractData({item, social, emitClicked=null_function,
     item = item.getID();
   }
 
-  item = social.get(item);
+  try{
+    item = social.get(item);
+  }
+  catch(error){
+    item = null;
+  }
 
   if (!item){
     return data;
@@ -145,21 +159,21 @@ function extractData({item, social, emitClicked=null_function,
   else if (item instanceof Connection){
     data.title = null;
 
-    let sender = item.getSender();
-    if (sender.getName){
-      let node = sender;
-      sender = <button href="#" onClick={()=>{emitClicked(node)}}
+    let n0 = item.getNode0();
+    if (n0.getName){
+      let node = n0;
+      n0 = <button href="#" onClick={()=>{emitClicked(node)}}
                   className={styles.button}>
-                  {sender.getName()}
+                  {n0.getName()}
                </button>;
     }
 
-    let receiver = item.getReceiver();
-    if (receiver.getName){
-      let node = receiver;
-      receiver = <button href="#" onClick={()=>{emitClicked(node)}}
+    let n1 = item.getNode1();
+    if (n1.getName){
+      let node = n1;
+      n1 = <button href="#" onClick={()=>{emitClicked(node)}}
                    className={styles.button}>
-                   {receiver.getName()}
+                   {n1.getName()}
                  </button>;
     }
 
@@ -167,11 +181,11 @@ function extractData({item, social, emitClicked=null_function,
     pages.push(["Connection",
                <div style={{textAlign:"center"}}>
                  <div>From</div>
-                 {sender}
+                 {n0}
                  <div>to</div>
-                 {receiver}
-                 <div>on {item.getSent().getStartString()}</div>
+                 {n1}
                </div>]);
+
     pages.push(["Source", "Space to see the original source for this Connection"]);
     pages.push(["Analysis", "Space for analysis of this Connection"]);
 
@@ -184,7 +198,15 @@ function extractData({item, social, emitClicked=null_function,
 }
 
 function InfoBox(props) {
-  const data = extractData(props);
+  let data = {};
+
+  try{
+    data = extractData(props);
+  }
+  catch(error){
+    data = {title:default_title, image:default_image,
+            pages:[["Title", default_text]]};
+  }
 
   const pages = data.pages;
 

@@ -97,6 +97,14 @@ class Connection {
     }
   }
 
+  getNode0ID(){
+    return this.state.n0;
+  }
+
+  getNode1ID(){
+    return this.state.n1;
+  }
+
   getNode0Name(){
     let node0 = this.getNode0();
 

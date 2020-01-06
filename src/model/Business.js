@@ -2,8 +2,6 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
-import DateRange from './DateRange';
-
 import {ValueError} from './Errors';
 
 function setState(val, def=null){
@@ -11,32 +9,6 @@ function setState(val, def=null){
     return val;
   } else {
     return def;
-  }
-}
-
-function _filterWindow(values, window){
-  if (!values){
-    return values;
-  }
-
-  let ret = null;
-
-  Object.keys(values).forEach((key, index)=>{
-    let dates = values[key];
-
-    let intersect = window.intersect(dates);
-
-    if (!intersect){
-      if (!ret){ ret = {...values}}
-      delete ret[key];
-    }
-  });
-
-  if (ret){
-    return ret;
-  }
-  else{
-    return values;
   }
 }
 
@@ -88,25 +60,7 @@ class Business {
   }
 
   filterWindow(window){
-    if (!window){
-      return this;
-    }
-    else if (!(window._isADateRangeObject)){
-      window = new DateRange(window);
-    }
-
-    let affiliations = _filterWindow(this.state.affiliations, window);
-
-    if (affiliations !== this.state.affiliations){
-      let business = new Business();
-      business.state = {...this.state};
-      business.state.affiliations = affiliations;
-      business._getHook = this._getHook;
-      return business;
-    }
-    else{
-      return this;
-    }
+    return this;
   }
 
   setState(state){
@@ -149,12 +103,12 @@ class Business {
       if (this._getHook){
         let project = this._getHook(key);
         for (let item in items){
-          result.push([project.getDuration(), this._getHook(item)]);
+          result.push([project, this._getHook(items[item])]);
         }
       }
       else{
         for (let item in items){
-          result.push([key, item]);
+          result.push([key, items[item]]);
         }
       }
     }

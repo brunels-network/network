@@ -179,6 +179,10 @@ class People {
   getNodes({anchor=null} = {}){
     let nodes = new vis.DataSet();
 
+    if (anchor.getID){
+      anchor = anchor.getID();
+    }
+
     Object.keys(this.state.registry).forEach((key, index)=>{
       let person = this.state.registry[key];
 

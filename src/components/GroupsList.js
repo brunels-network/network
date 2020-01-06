@@ -13,13 +13,13 @@ function GroupsList({groups, title, emitClicked=null_function}) {
   const listitems = groups.map((item) => {
     let i = item;
     let name = item;
-    let daterange = null;
+    let project = null;
 
     if (item.length){
-      i = item[0];
-      name = item[0];
-      daterange = item[1];
-      item = item[0]
+      i = item[1];
+      name = item[1];
+      project = item[0];
+      item = item[1]
     }
 
     if (item.getName) {
@@ -29,16 +29,15 @@ function GroupsList({groups, title, emitClicked=null_function}) {
       name = item.getID();
     }
 
-    if (daterange){
-      return (<li key={name}>
+    if (project){
+      return (<li key={name+project.getName()}>
         <button href="#" onClick={() => { emitClicked(i);}}
           className={styles.button}>
           {name}</button> :&nbsp;
-          from {daterange.getStartString()} to&nbsp;
-               {daterange.getEndString()}</li>);
+          for project {project.getName()}</li>);
     }
     else{
-      return (<li key={name}>
+      return (<li key={name+project.getName()}>
         <button href="#" onClick={() => { emitClicked(i);}}
           className={styles.button}>
           {name}</button></li>);

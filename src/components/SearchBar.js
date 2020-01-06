@@ -32,7 +32,7 @@ class SearchBar extends React.Component {
                   results: null};
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (this.props.searchText !== nextProps.searchText) {
       this.setState({
         value: nextProps.searchText,

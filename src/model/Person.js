@@ -238,12 +238,12 @@ class Person {
       if (this._getHook){
         let project = this._getHook(key);
         for (let item in items){
-          result.push([project.getDuration(), this._getHook(item)]);
+          result.push([project, this._getHook(items[item])]);
         }
       }
       else{
         for (let item in items){
-          result.push([key, item]);
+          result.push([key, items[item]]);
         }
       }
     }
@@ -259,12 +259,12 @@ class Person {
       if (this._getHook){
         let project = this._getHook(key);
         for (let item in items){
-          result.push([project.getDuration(), this._getHook(item)]);
+          result.push([project, this._getHook(items[item])]);
         }
       }
       else{
         for (let item in items){
-          result.push([key, item]);
+          result.push([key, items[item]]);
         }
       }
     }

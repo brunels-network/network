@@ -242,12 +242,14 @@ def importBusiness(node, project, importers=None):
 
     from ._daterange import DateRange as _DateRange
 
+    pid = project.getID()
+
     try:
         name = str(node.Label)
-        positions = importPositions(node, importers=importers)
-        sources = importSources(node, importers=importers)
-        affiliations = importAffiliations(node, importers=importers)
-        notes = importNotes(node, importers=importers)
+        positions = {pid: importPositions(node, importers=importers)}
+        sources = {pid: importSources(node, importers=importers)}
+        affiliations = {pid: importAffiliations(node, importers=importers)}
+        notes = {pid: importNotes(node, importers=importers)}
 
         from ._business import Business as _Business
         return _Business({"name": name,

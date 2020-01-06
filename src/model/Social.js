@@ -15,33 +15,6 @@ import DateRange from './DateRange';
 
 import { ValueError } from './Errors';
 
-/*const fast_physics = {
-  enabled: true,
-  barnesHut: {
-    gravitationalConstant: -50,
-    centralGravity: 0.0,
-    springLength: 50,
-    springConstant: 0.02,
-    damping: 0.2,
-    avoidOverlap: 0.5
-  },
-  maxVelocity: 30,
-  minVelocity: 0.2,
-  solver: 'barnesHut',
-  stabilization: {
-    enabled: true,
-    iterations: 100,
-    updateInterval: 10,
-    onlyDynamicEdges: false,
-    fit: true
-  },
-  timestep: 0.5,
-  adaptiveTimestep: true
-};
-
-const slow_physics = {...fast_physics};
-slow_physics.timestep = 0.1;*/
-
 const fast_physics = {
   enabled: true,
   timestep: 0.5,
@@ -69,7 +42,7 @@ class Social {
                         edge_filters:null,
                         people:null,
                         businesses:null,
-                        messages:null};
+                        connections:null};
     this.state.network = null;
     this.state.window = new DateRange();
 
@@ -101,10 +74,10 @@ class Social {
       state.businesses = this.state.businesses;
     }
 
-    if (!(this.state.messages instanceof Connections)) {
-      state.messages = new Connections();
+    if (!(this.state.connections instanceof Connections)) {
+      state.connections = new Connections();
     } else {
-      state.messages = this.state.messages;
+      state.connections = this.state.connections;
     }
 
     if (!(this.state.positions instanceof Positions)) {
@@ -142,6 +115,13 @@ class Social {
       state.projects = this.state.projects;
     }
 
+    if (!(this.state.biographies instanceof Biographies)){
+      state.biographies = new Biographies();
+    }
+    else{
+      state.biographies = this.state.biographies;
+    }
+
     this.state = state;
 
     for (let key in this.state) {
@@ -160,7 +140,7 @@ class Social {
                         edge_filters:null,
                         people:null,
                         businesses: null,
-                        messages:null};
+                        connections:null};
   }
 
   getNodeFilters(){
@@ -186,7 +166,7 @@ class Social {
 
       if (node_filter) {
         let id = node_filter.getID();
-        let connections = this.getMessages().getConnectionsTo(node_filter);
+        let connections = this.getConnections().getConnectionsTo(node_filter);
         node_filter = {};
         node_filter[id] = 1;
         for (let connection in connections) {
@@ -289,13 +269,17 @@ class Social {
     return this.state.cache.businesses;
   }
 
-  getMessages() {
-    if (!this.state.cache.messages){
-      this.state.cache.messages =
-            this.state.messages.filter(this.getEdgeFilters());
+  getConnections() {
+    if (!this.state.cache.connections){
+      this.state.cache.connections =
+            this.state.connections.filter(this.getEdgeFilters());
     }
 
-    return this.state.cache.messages;
+    return this.state.cache.connections;
+  }
+
+  getBiographies(){
+    return this.state.biographies;
   }
 
   getAffiliations() {
@@ -319,7 +303,7 @@ class Social {
   }
 
   getConnectionsTo(item) {
-    return this.getMessages().getConnectionsTo(item);
+    return this.getConnections().getConnectionsTo(item);
   }
 
   getAnchor() {
@@ -413,7 +397,7 @@ class Social {
     const anchor = this.state.anchor;
     let nodes = this.getPeople().getNodes({anchor: anchor});
     nodes.add(this.getBusinesses().getNodes().get());
-    let edges = this.getMessages().getEdges();
+    let edges = this.getConnections().getEdges();
 
     let network = this.getNetwork();
 
@@ -463,8 +447,8 @@ class Social {
   }
 
   get(id) {
-    if (id[0] === "M") {
-      return this.getMessages().get(id);
+    if (id[0] === "C") {
+      return this.getConnections().get(id);
     }
     else if (id[0] === "P") {
       return this.getPeople().get(id);
