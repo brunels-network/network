@@ -17,6 +17,7 @@ class Projects {
       registry: {},
     };
 
+    this._names = {};
     this._isAProjectsObject = true;
   };
 
@@ -39,7 +40,20 @@ class Projects {
   }
 
   add(project){
-    if (!this.canAdd(project)){ return;}
+    if (!this.canAdd(project)){ return null;}
+
+    let existing = null;
+
+    try{
+      existing = this.getByName(project.getName());
+    }
+    catch(error){}
+
+    if (existing){
+      existing = existing.merge(project);
+      this.state.registry[existing.getID()] = existing;
+      return existing;
+    }
 
     project = Project.clone(project);
 
@@ -61,15 +75,58 @@ class Projects {
       }
 
       project.state.id = uid;
-      project._updateHooks(this._getHook);
-      this.state.registry[uid] = project;
     }
+
+    project._updateHooks(this._getHook);
+    this._names[project.getName()] = project.getID();
+    this.state.registry[project.getID()] = project;
+
+    return project;
+  }
+
+  getByName(name){
+    let id = this._names[name];
+
+    if (id){
+      return this.get(id);
+    }
+    else{
+      throw KeyError(`No project with name ${name}`);
+    }
+  }
+
+  find(name){
+    if (name instanceof Project || name._isAProjectObject){
+      return this.get(name.getID());
+    }
+
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this._names).forEach((key, index) => {
+      if (key.toLowerCase().indexOf(name) !== -1){
+        results.push(this.get(this._names[key]));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+
+    let keys = Object.keys(this._names).join("', '");
+
+    throw KeyError(`No project matches '${name}. Available projects ` +
+                   `are '${keys}'`);
   }
 
   get(id){
     let project = this.state.registry[id];
 
-    if (project === null){
+    if (!project){
       throw new MissingError(`No Project with ID ${id}`);
     }
 
@@ -93,13 +150,20 @@ class Projects {
   }
 
   toDry(){
-    return {value: this.state.registry};
+    return {value: this.state};
   }
 };
 
 Projects.unDry = function(value){
   let projects = new Projects();
   projects.state = value;
+  projects._names = {}
+
+  Object.keys(value.registry).forEach((key, index) => {
+    let v = value.registry[key];
+    projects._names[v.getName()] = key;
+  });
+
   return projects;
 }
 

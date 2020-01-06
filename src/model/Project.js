@@ -3,6 +3,7 @@ import Dry from "json-dry";
 import lodash from 'lodash';
 
 import DateRange from './DateRange';
+import {ValueError} from './Errors';
 
 function setState(val, def=null){
   if (val){
@@ -46,11 +47,19 @@ class Project {
       this.state.notes = setState(state.notes, {});
       this.state.url = setState(state.url, null);
       this.state.duration = new DateRange({value:state.duration});
+
+      if (!this.state.name){
+        throw ValueError("You cannot have a Project without a name");
+      }
     }
   }
 
   _updateHooks(hook){
     this._getHook = hook;
+  }
+
+  merge(other){
+    return this;
   }
 
   toString(){
@@ -76,8 +85,8 @@ class Project {
       return null;
     }
     else{
-      return {start: duration.getStart(),
-              end: duration.getEnd(),
+      return {start: duration.getEarliestStart(),
+              end: duration.getLatestEnd(),
               id: this.getID(),
               content: this.getName(),
              };
