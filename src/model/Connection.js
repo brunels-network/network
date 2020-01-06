@@ -4,6 +4,8 @@ import lodash from 'lodash';
 
 import DateRange from './DateRange';
 
+import {ValueError} from './Errors';
+
 function setState(val, def=null){
   if (val){
     return val;
@@ -12,15 +14,37 @@ function setState(val, def=null){
   }
 }
 
+function _mergeSources(state, other, key){
+  state = state[key];
+  other = other[key]
+
+  Object.keys(other).forEach((key, index) => {
+    if (!(key in state)){
+      state[key] = other[key];
+    }
+    else{
+      for (let item in other[key]){
+        if (!(item in state[key])){
+          state[key].push(item);
+        }
+      }
+    }
+  });
+}
+
 class Connection {
   constructor(props){
     this.state = {
-      name: null,
       id: null,
-      sent: null,
-      sender: null,
-      receiver: null,
-      scores: {},
+      n0: null,
+      n1: null,
+      shared: null,
+      type: null,
+      duration: null,
+      affiliations: null,
+      correspondances: null,
+      projects: null,
+      notes: null,
     };
 
     this.setState(props);
@@ -43,26 +67,68 @@ class Connection {
     return this.state.id;
   }
 
-  getSent(){
-    return this.state.sent;
+  getName(){
+    let n0 = this.state.n0;
+    let n1 = this.state.n1;
+
+    if (n0 <= n1){
+      return `${n0}<=>${n1}`;
+    }
+    else{
+      return `${n1}<=>${n0}`;
+    }
   }
 
-  getSender(){
+  getNode0(){
     if (this._getHook){
-      return this._getHook(this.state.sender);
+      return this._getHook(this.state.n0);
     }
     else {
-      return this.state.sender;
+      return this.state.n0;
     }
   }
 
-  getReceiver(){
+  getNode1(){
     if (this._getHook){
-      return this._getHook(this.state.receiver);
+      return this._getHook(this.state.n1);
     }
     else {
-      return this.state.receiver;
+      return this.state.n1;
     }
+  }
+
+  getNode0Name(){
+    let node0 = this.getNode0();
+
+    try{
+      return node0.getName();
+    }
+    catch(error){
+      return node0;
+    }
+  }
+
+  getNode1Name(){
+    let node1 = this.getNode1();
+
+    try{
+      return node1.getName();
+    }
+    catch(error){
+      return node1;
+    }
+  }
+
+  getDuration(){
+    return this.state.duration;
+  }
+
+  getAffiliationSources(){
+    return this.state.affiliations;
+  }
+
+  getCorrespondanceSources(){
+    return this.state.correspondances;
   }
 
   filterWindow(window){
@@ -73,8 +139,6 @@ class Connection {
       window = new DateRange(window);
     }
 
-    window = window.intersect(this.getSent());
-
     if (!window){
       return null;
     }
@@ -84,30 +148,62 @@ class Connection {
 
   setState(state){
     if (state){
-      this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.sent = new DateRange(state.sent);
-      this.state.sender = setState(state.sender);
-      this.state.receiver = setState(state.receiver);
-      this.state.scores = setState(state.scores, {});
+      this.state.n0 = setState(state.n0);
+      this.state.n1 = setState(state.n1);
+      this.state.shared = setState(state.shared, []);
+      this.state.type = setState(state.type);
+      this.state.duration = setState(state.duration);
+      this.state.affiliations = setState(state.affiliations, {});
+      this.state.correspondances = setState(state.correspondances, {});
+      this.state.notes = setState(state.notes, []);
+      this.state.projects = setState(state.projects, {});
+
+      if (!this.state.n0 || !this.state.n1){
+        throw new ValueError(`Invalid connection ${this}`);
+      }
     }
   }
 
+  merge(other){
+    if (!this._getHook){
+      if (other._getHook){
+        return other.merge(this);
+      }
+    }
+
+    let state = lodash.cloneDeep(this.state);
+
+    Object.keys(other.state.shared).forEach((key, index) => {
+      if (!(key in state.shared)){
+        state.shared[key] = other.state.shared[key];
+      }
+    });
+
+    Object.keys(other.state.notes).forEach((key, index) => {
+      if (!(key in state.notes)){
+        state.notes[key] = other.state.notes[key];
+      }
+    });
+
+    _mergeSources(state, other.state, "affiliations");
+    _mergeSources(state, other.state, "correspondances");
+
+    state.duration = state.duration.merge(other.state.duration);
+
+    let c = new Connection();
+    c.state = state;
+    c._getHook = this._getHook;
+
+    return c;
+  }
+
   toString(){
-    return `Connection(name=${this.state.name} ` +
-           `${this.state.sender}=>${this.state.receiver})`;
+    return `Connection(${this.getNode0Name()}<=>${this.getNode1Name()})`;
   }
 
   toEdge(){
     let weight = 1.0;
-
-    if (this.state.scores){
-      weight = this.state.scores.weight;
-
-      if (!weight){
-        weight = 1.0;
-      }
-    }
 
     let color = 'red';
 
@@ -127,8 +223,8 @@ class Connection {
 
     let edge = {
       id:this.getID(),
-      from:this.state.sender,
-      to:this.state.receiver,
+      from:this.state.n0,
+      to:this.state.n1,
       size:weight,
       color:color,
     };
