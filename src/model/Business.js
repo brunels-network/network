@@ -1,8 +1,10 @@
 
-import Dry from 'json-dry';
+import Dry from "json-dry";
 import lodash from 'lodash';
 
 import DateRange from './DateRange';
+
+import {ValueError} from './Errors';
 
 function setState(val, def=null){
   if (val){
@@ -47,7 +49,7 @@ class Business {
       sources: [],
       scores: {},
       affiliations: {},
-      notes: {},
+      notes: [],
     };
 
     this.setState(props);
@@ -72,7 +74,13 @@ class Business {
       group = group.getID();
     }
 
-    return (group in this.state.affiliations);
+    Object.keys(this.state.affiliations).forEach((key, index) =>{
+      if (group in this.state.affiliations[key]){
+        return true;
+      }
+    });
+
+    return false;
   }
 
   getID(){
@@ -105,16 +113,24 @@ class Business {
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.affiliations = setState(state.affiliations, {});
       this.state.projects = setState(state.projects, {});
-      this.state.sources = setState(state.sources, []);
+      this.state.affiliations = setState(state.affiliations, {});
       this.state.scores = setState(state.scores, {});
-      this.state.notes = setState(state.notes, {})
+      this.state.sources = setState(state.sources, []);
+      this.state.notes = setState(state.notes, []);
+
+      if (!this.state.name){
+        throw ValueError("You cannot have an Business without a name");
+      }
     }
   }
 
   _updateHooks(hook){
     this._getHook = hook;
+  }
+
+  merge(other){
+    return this;
   }
 
   toString(){

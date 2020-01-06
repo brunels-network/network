@@ -2,6 +2,8 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
+import {ValueError} from './Errors';
+
 function setState(val, def=null){
   if (val){
     return val;
@@ -16,7 +18,7 @@ class Position {
       name: null,
       id: null,
       sources: [],
-      notes: {},
+      notes: [],
     };
 
     this.setState(props);
@@ -36,17 +38,36 @@ class Position {
     return this.state.id;
   }
 
+  static makeCanonical(name){
+    if (!name){
+      return null;
+    }
+    else{
+      return name.trim().toLowerCase();
+    }
+  }
+
   setState(state){
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
+      this.state.notes = setState(state.notes, []);
       this.state.sources = setState(state.sources, []);
-      this.state.notes = setState(state.notes, {})
+
+      this.state.canonical = Position.makeCanonical(this.state.name);
+
+      if (!this.state.name){
+        throw ValueError("You cannot have an Position without a name");
+      }
     }
   }
 
   _updateHooks(hook){
     this._getHook = hook;
+  }
+
+  merge(other){
+    return this;
   }
 
   toString(){

@@ -2,6 +2,10 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
+import Date from './Date';
+
+import {ValueError} from './Errors';
+
 function setState(val, def=null){
   if (val){
     return val;
@@ -15,7 +19,9 @@ class Source {
     this.state = {
       name: null,
       id: null,
-      notes: {},
+      date: null,
+      description: null,
+      notes: [],
     };
 
     this.setState(props);
@@ -35,16 +41,58 @@ class Source {
     return this.state.id;
   }
 
+  getDate(){
+    return this.state.date;
+  }
+
+  updateDate(date, force=false){
+    if (!(date instanceof Date || date._isADateObject)){
+      date = new Date(date);
+    }
+
+    if (date.isNull()){
+      return false;
+    }
+
+    if (this.getDate().isNull()){
+      this.state.date = date;
+      return true;
+    }
+
+    if (Date.ne(this.getDate(), date)){
+      if (force){
+        this.state.date = this.getDate().merge(date);
+        return true;
+      }
+      else{
+        console.log(`Disagreement of date for ${this}: ` +
+                    `${this.getDate()} vs ${date}`);
+      }
+    }
+
+    return false;
+  }
+
   setState(state){
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
-      this.state.notes = setState(state.notes, {})
+      this.state.notes = setState(state.notes, []);
+      this.state.sources = setState(state.sources, []);
+      this.state.date = setState(state.date, new Date());
+
+      if (!this.state.name){
+        throw ValueError("You cannot have an Source without a name");
+      }
     }
   }
 
   _updateHooks(hook){
     this._getHook = hook;
+  }
+
+  merge(other){
+    return this;
   }
 
   toString(){
