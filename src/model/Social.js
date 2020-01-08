@@ -217,7 +217,7 @@ class Social {
     }
 
     if (_filtersNodes(filter)) {
-      let connections = this.getConnections().getConnectionsTo(filter);
+      let connections = this.getConnectionsTo(filter);
       let node_filter = {...filter};
 
       for (let connection in connections) {
