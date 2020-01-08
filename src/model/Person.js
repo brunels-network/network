@@ -81,17 +81,43 @@ class Person {
       group = group.getID();
     }
 
-    Object.keys(this.state.affiliations).forEach((key, index) =>{
-      if (group in this.state.affiliations[key]){
-        return true;
+    let in_group = false;
+
+    Object.keys(this.state.affiliations).forEach((key, index)=>{
+      if (in_group){
+        return;
+      }
+
+      if (this.state.affiliations[key].includes(group)){
+        in_group = true;
       }
     });
 
-    return false;
+    if (!in_group){
+      Object.keys(this.state.positions).forEach((key, index)=>{
+        if (in_group){
+          return;
+        }
+
+        if (this.state.positions[key].includes(group)){
+          in_group = true;
+        }
+      });
+    }
+
+    return in_group;
   }
 
   getID(){
     return this.state.id;
+  }
+
+  filterProject(project){
+    if (project.getID){
+      project = project.getID();
+    }
+
+    return this;
   }
 
   filterWindow(window){

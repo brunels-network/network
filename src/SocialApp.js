@@ -15,7 +15,6 @@ import BrunelMenu from './components/BrunelMenu';
 
 // Brunel model
 import Social from './model/Social';
-import Project from './model/Project';
 
 // Data for import
 import graph_data from './data.json';
@@ -38,26 +37,7 @@ class SocialApp extends React.Component {
 
     // special cases for Brunel project...
     social.setAnchor("Brunel");
-
-    social.add(new Project({name:"SS Great Western",
-                            duration:new DateRange({start:"1836-06-26",
-                                                    end:"1838-03-31"}),
-                            url:"https://en.wikipedia.org/wiki/SS_Great_Western",
-                          }));
-
-    social.add(new Project({name:"SS Great Britain",
-                            duration:new DateRange({start:"1839-07-01",
-                                                    end:"1843-07-19"}),
-                            url:"https://en.wikipedia.org/wiki/SS_Great_Britain",
-                          }));
-
-    social.add(new Project({name:"SS Great Eastern",
-                            duration:new DateRange({start:"1854-05-01",
-                                                    end:"1858-01-31"}),
-                            url:"https://en.wikipedia.org/wiki/SS_Great_Eastern",
-                          }));
-
-    social.setWindow(new DateRange({start:"1835-01-01", end:"1860-12-31"}));
+    social.setWindow(new DateRange({start:"1836-06-26", end:"1858-01-31"}));
 
     this.state = {
       social: social,
@@ -103,8 +83,13 @@ class SocialApp extends React.Component {
     this.setState({social:social});
   }
 
+  selectProject(project){
+    let social = this.state.social;
+    social.toggleProjectFilter(project);
+    this.setState({social:social});
+  }
+
   showInfo(item){
-    console.log("showInfo");
     console.log(item);
     if (item._isAProjectObject){
       this.setState({overlay_item:item,
@@ -213,6 +198,7 @@ class SocialApp extends React.Component {
 
     const node_filter = social.getNodeFilter();
     const group_filter = social.getGroupFilter();
+    const project_filter = social.getProjectFilter();
 
     let filter_text = null;
     let reset_button = null;
@@ -223,6 +209,16 @@ class SocialApp extends React.Component {
 
     if (group_filter){
       let text = `${group_filter}`;
+      if (filter_text){
+        filter_text = `${filter_text} and ${text}`;
+      }
+      else{
+        filter_text = text;
+      }
+    }
+
+    if (project_filter){
+      let text = `${project_filter}`;
       if (filter_text){
         filter_text = `${filter_text} and ${text}`;
       }
@@ -250,7 +246,7 @@ class SocialApp extends React.Component {
 
     return (
       <div>
-        <div className={styles.container}></div>
+        <div className={styles.backgroundImage} />
         <ReactModal isOpen={this.state.isOverlayOpen}
                     onRequestClose={()=>{this.closeOverlay()}}
                     contentLabel='Information overlay'
@@ -271,7 +267,6 @@ class SocialApp extends React.Component {
                    emitHamburgerClicked={()=>{this.setState({isHamburgerMenuOpen:true})}}
                    emitSelected={(item)=>{this.slotSelected(item)}}
                    emitClicked={(item)=>{this.slotClicked(item)}}/>
-
 
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
                       position='bottom'>
@@ -308,6 +303,7 @@ class SocialApp extends React.Component {
           <SocialGraph social={this.state.social}
                        emitClicked={(id)=>this.slotClicked(id)} />
         </div>
+
         <div className={styles.bottomContainer}>
           <button onClick={() => this.toggleTimeLinePanel()}
                   className={styles.controlButton}
@@ -321,6 +317,7 @@ class SocialApp extends React.Component {
             View source</a>
           </div>
         </div>
+
       </div>
     );
   }

@@ -34,7 +34,7 @@ class Social {
     }
 
     this.state.anchor = null;
-    this.state.filter = {node:null, group:null};
+    this.state.filter = {node:null, group:null, project:null};
     this.state.cache = {graph:null,
                         projectTimeLine:null,
                         itemTimeLine:null,
@@ -162,6 +162,15 @@ class Social {
         });
       }
 
+      let project_filter = this.state.project_filter;
+
+      if (project_filter){
+        let id = project_filter.getID();
+        this.state.cache.node_filters.push((item)=>{
+          return item.filterProject(id);
+        });
+      }
+
       let node_filter = this.state.filter.node;
 
       if (node_filter) {
@@ -201,6 +210,7 @@ class Social {
             }
           }
           catch(error){
+            console.log(`Filter error: ${error}`);
             return item;
           }
         });
@@ -322,6 +332,10 @@ class Social {
     return this.state.filter.group;
   }
 
+  getProjectFilter(){
+    return this.state.filter.project;
+  }
+
   resetFilters(){
     this.state.filter = {node:null, group:null};
     this.clearCache();
@@ -353,6 +367,17 @@ class Social {
     }
     else{
       this.state.filter.group = item;
+    }
+
+    this.clearCache();
+  }
+
+  toggleProjectFilter(item){
+    if (this.state.filter.project === item){
+      this.state.filter.project = null;
+    }
+    else{
+      this.state.filter.project = item;
     }
 
     this.clearCache();

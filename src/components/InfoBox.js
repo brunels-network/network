@@ -32,7 +32,7 @@ function getBiography({item, social, emitClicked=null_function,
     connections = social.getConnectionsTo(item);
   }
   catch(error){
-    connections = null;
+    console.log(`CONNECTIONS ERROR ${error}`);
   }
 
   if (item.getAffiliations){
@@ -84,10 +84,6 @@ function getBiography({item, social, emitClicked=null_function,
                 <div>
                   <GroupsList groups={positions}
                                       emitClicked={emitSelected}/>
-                  <p>
-                    Note that all times are made up for testing
-                    purposes!
-                  </p>
                 </div>]);
   }
   else{
@@ -206,6 +202,7 @@ function InfoBox(props) {
   catch(error){
     data = {title:default_title, image:default_image,
             pages:[["Title", default_text]]};
+    console.log(`ERROR ${error}`);
   }
 
   const pages = data.pages;

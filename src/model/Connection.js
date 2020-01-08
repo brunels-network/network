@@ -49,7 +49,7 @@ class Connection {
 
     this.setState(props);
     this._getHook = null;
-    this._isAMessageObject = true;
+    this._isAConnectionObject = true;
   }
 
   static clone(item){

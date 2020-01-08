@@ -149,6 +149,9 @@ class DateRange{
     if (!other.hasBounds()){
       return this;
     }
+    else if (!this.hasBounds()){
+      return other;
+    }
 
     const start = Date.max(this.getStart(), other.getStart());
 

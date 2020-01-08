@@ -167,29 +167,35 @@ class Connections {
   }
 
   getConnectionsTo(item){
-    let id = item.getID();
+    if (item.getID){
+      item = item.getID();
+    }
 
-    let connections = [];
     let seen = {};
 
     for (let key in this.state.registry){
       let connection = this.state.registry[key];
-      let n = null;
 
-      if (connection.getNode0ID() === id){
-        n = this._getHook(connection.getNode1ID());
+      if (connection.getNode0ID() === item){
+        seen[connection.getNode1ID()] = 1;
       }
-      else if (connection.getNode1ID() === id){
-        n = this._getHook(connection.getNode0ID());
+      else if (connection.getNode1ID() === item){
+        seen[connection.getNode0ID()] = 1;
       }
+    }
 
-      if (n){
-        let n_id = n.getID();
-        if (!(n_id in seen)){
-          connections.push(n);
-          seen[n_id] = 1;
+    let connections = [];
+
+    if (this._getHook){
+      Object.keys(seen).forEach((key, item)=>{
+        try{
+          connections.push(this._getHook(key));
         }
-      }
+        catch(error){}
+      });
+    }
+    else{
+      connections = Object.keys(seen);
     }
 
     return connections;
