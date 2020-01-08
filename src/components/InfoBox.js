@@ -82,26 +82,26 @@ function getBiography({item, social, emitSelected=null_function,
     pages.push(["Connections", "None"]);
   }
 
-  if (positions.length > 0){
+  if (Object.keys(positions).length > 0){
     pages.push(["Positions",
                 <div>
                   <GroupsList groups={positions}
-                                      emitSelected={emitSelected}
-                                      emitToggleFilter={emitToggleFilter}
-                                      social={social}/>
+                              emitSelected={emitSelected}
+                              emitToggleFilter={emitToggleFilter}
+                              social={social}/>
                 </div>]);
   }
   else{
     pages.push(["Positions", "None"]);
   }
 
-  if (affiliations.length > 0){
+  if (Object.keys(affiliations).length > 0){
     pages.push(["Affiliations",
                 <div>
                   <GroupsList groups={affiliations}
-                                      emitSelected={emitSelected}
-                                      emitToggleFilter={emitToggleFilter}
-                                      social={social}/>
+                              emitSelected={emitSelected}
+                              emitToggleFilter={emitToggleFilter}
+                              social={social}/>
                 </div>]);
 }
   else{
