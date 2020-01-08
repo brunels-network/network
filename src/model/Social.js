@@ -88,6 +88,7 @@ class Social {
                         connections:null};
     this.state.network = null;
     this.state.window = new DateRange();
+    this._rebuilding = 0;
 
     this._isASocialObject = true;
   }
@@ -182,8 +183,9 @@ class Social {
                         node_filters:null,
                         edge_filters:null,
                         people:null,
-                        businesses: null,
+                        businesses:null,
                         connections:null};
+    this._rebuilding = 0;
   }
 
   getNodeFilters(){
@@ -191,6 +193,7 @@ class Social {
       return this.state.cache.node_filters;
     }
 
+    this._rebuilding += 1;
     this.state.cache.node_filters = [];
 
     // must do time first, as this can affect all of the other filters!
@@ -252,6 +255,7 @@ class Social {
       });
     }
 
+    this._rebuilding -= 1;
     return this.state.cache.node_filters;
   }
 
@@ -312,8 +316,11 @@ class Social {
 
   getPeople() {
     if (!this.state.cache.people){
+      console.log("REBUILD PEOPLE");
+      this._rebuilding += 1;
       this.state.cache.people =
             this.state.people.filter(this.getNodeFilters());
+      this._rebuilding -= 1;
     }
 
     return this.state.cache.people;
@@ -321,8 +328,11 @@ class Social {
 
   getBusinesses() {
     if (!this.state.cache.businesses){
+      console.log("REBUILD BUSINESSES");
+      this._rebuilding += 1;
       this.state.cache.businesses =
             this.state.businesses.filter(this.getNodeFilters());
+      this._rebuilding -= 1;
     }
 
     return this.state.cache.businesses;
@@ -330,8 +340,11 @@ class Social {
 
   getConnections() {
     if (!this.state.cache.connections){
+      console.log("REBUILD CONNECTIONS");
+      this._rebuilding += 1;
       this.state.cache.connections =
             this.state.connections.filter(this.getEdgeFilters());
+      this._rebuilding -=1;
     }
 
     return this.state.cache.connections;
@@ -519,13 +532,28 @@ class Social {
     }
 
     if (id[0] === "C") {
-      return this.getConnections().get(id);
+      if (this._rebuilding){
+        return this.state.connections.get(id);
+      }
+      else{
+        return this.getConnections().get(id);
+      }
     }
     else if (id[0] === "P") {
-      return this.getPeople().get(id);
+      if (this._rebuilding){
+        return this.state.people.get(id);
+      }
+      else{
+        return this.getPeople().get(id);
+      }
     }
     else if (id[0] === "B") {
-      return this.getBusinesses().get(id);
+      if (this._rebuilding){
+        return this.state.businesses.get(id);
+      }
+      else{
+        return this.getBusinesses().get(id);
+      }
     }
     else if (id[0] === "Q") {
       return this.getPositions().get(id);
