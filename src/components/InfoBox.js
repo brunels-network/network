@@ -21,11 +21,11 @@ let default_text = <div>
 
 function null_function(item){}
 
-function getBiography({item, social, emitClicked=null_function,
-                       emitSelected=null_function}){
+function getBiography({item, social, emitSelected=null_function,
+                       emitToggleFilter=null_function}){
   let pages = [];
-  let affiliations = [];
-  let positions = [];
+  let affiliations = {};
+  let positions = {};
   let connections = [];
 
   try{
@@ -67,13 +67,16 @@ function getBiography({item, social, emitClicked=null_function,
 
   pages.push(["Biography",
               (<div>
-                 {bio}
-                 {alive}
+                 <div>{bio}</div>
+                 <div>{alive}</div>
                </div>)]);
 
   if (connections.length > 0){
-    pages.push(["Connections", <ConnectionList connections={connections}
-                                               emitClicked={emitClicked}/>]);
+    pages.push(["Connections", <ConnectionList
+                                      connections={connections}
+                                      emitSelected={emitSelected}
+                                      emitToggleFilter={emitToggleFilter}
+                                      social={social}/>]);
   }
   else{
     pages.push(["Connections", "None"]);
@@ -83,7 +86,9 @@ function getBiography({item, social, emitClicked=null_function,
     pages.push(["Positions",
                 <div>
                   <GroupsList groups={positions}
-                                      emitClicked={emitSelected}/>
+                                      emitSelected={emitSelected}
+                                      emitToggleFilter={emitToggleFilter}
+                                      social={social}/>
                 </div>]);
   }
   else{
@@ -94,7 +99,9 @@ function getBiography({item, social, emitClicked=null_function,
     pages.push(["Affiliations",
                 <div>
                   <GroupsList groups={affiliations}
-                                      emitClicked={emitSelected}/>
+                                      emitSelected={emitSelected}
+                                      emitToggleFilter={emitToggleFilter}
+                                      social={social}/>
                 </div>]);
 }
   else{
@@ -102,13 +109,15 @@ function getBiography({item, social, emitClicked=null_function,
   }
 
   pages.push(["Analysis",
-              <div>Here is space for graphs and analysis of {item.getName()}</div>]);
+              <div>
+                Here is space for graphs and analysis of {item.getName()}
+              </div>]);
 
   return pages;
 }
 
-function extractData({item, social, emitClicked=null_function,
-                      emitSelected=null_function}){
+function extractData({item, social, emitSelected=null_function,
+                      emitToggleFilter=null_function}){
   let data = {title:default_title, image:default_image,
               pages:[["Title", default_text]]};
 
@@ -138,8 +147,8 @@ function extractData({item, social, emitClicked=null_function,
                   {item.getName()}
                  </button>
     data.pages = getBiography({item:item, social:social,
-                               emitClicked:emitClicked,
-                               emitSelected:emitSelected});
+                               emitSelected:emitSelected,
+                               emitToggleFilter:emitToggleFilter});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
   }
   else if (item instanceof Business){
@@ -148,8 +157,8 @@ function extractData({item, social, emitClicked=null_function,
                   {item.getName()}
                  </button>
     data.pages = getBiography({item:item, social:social,
-                               emitClicked:emitClicked,
-                               emitSelected:emitSelected});
+                               emitSelected:emitSelected,
+                               emitToggleFilter:emitToggleFilter});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
   }
   else if (item instanceof Connection){
@@ -158,7 +167,7 @@ function extractData({item, social, emitClicked=null_function,
     let n0 = item.getNode0();
     if (n0.getName){
       let node = n0;
-      n0 = <button href="#" onClick={()=>{emitClicked(node)}}
+      n0 = <button href="#" onClick={()=>{emitSelected(node)}}
                   className={styles.button}>
                   {n0.getName()}
                </button>;
@@ -167,7 +176,7 @@ function extractData({item, social, emitClicked=null_function,
     let n1 = item.getNode1();
     if (n1.getName){
       let node = n1;
-      n1 = <button href="#" onClick={()=>{emitClicked(node)}}
+      n1 = <button href="#" onClick={()=>{emitSelected(node)}}
                    className={styles.button}>
                    {n1.getName()}
                  </button>;
@@ -212,10 +221,12 @@ function InfoBox(props) {
     let panes = [];
 
     for (let i=0; i<pages.length; ++i){
-      panes.push(<TabPanel key={pages[i][0]} tabId={pages[i][0]} className={styles.tabPanel}>
+      panes.push(<TabPanel key={pages[i][0]} tabId={pages[i][0]}
+                           className={styles.tabPanel}>
                    {pages[i][1]}
                  </TabPanel>);
-      tabs.push(<Tab key={pages[i][0]} className={styles.tab} tabFor={pages[i][0]}>{pages[i][0]}</Tab>);
+      tabs.push(<Tab key={pages[i][0]} className={styles.tab}
+                     tabFor={pages[i][0]}>{pages[i][0]}</Tab>);
     }
 
     return (

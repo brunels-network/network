@@ -2,53 +2,30 @@
 import React from 'react';
 
 import styles from './GroupsList.module.css';
+import Social from '../model/Social';
 
 function null_function(item){}
 
-function GroupsList({groups, title, emitClicked=null_function}) {
+function GroupsList({groups, title=null, emitClicked=null_function,
+                     emitSelected=null_function, social=null}) {
   if (!groups || groups.length === 0) {
     return null;
   }
 
-  const listitems = groups.map((item) => {
-    let i = item;
-    let name = item;
-    let project = null;
+  let projects = [];
 
-    if (item.length){
-      i = item[1];
-      name = item[1];
-      project = item[0];
-      item = item[1]
-    }
-
-    if (item.getName) {
-      name = item.getName();
-    }
-    else if (item.getID) {
-      name = item.getID();
-    }
-
-    if (project){
-      return (<li key={name+project.getName()}>
-        <button href="#" onClick={() => { emitClicked(i);}}
-          className={styles.button}>
-          {name}</button> :&nbsp;
-          for project {project.getName()}</li>);
-    }
-    else{
-      return (<li key={name+project.getName()}>
-        <button href="#" onClick={() => { emitClicked(i);}}
-          className={styles.button}>
-          {name}</button></li>);
-    }
+  Object.keys(groups).forEach((key, item)=>{
+    console.log(key, item);
   });
 
   if (title){
-    return (<div>{title}<br /><ul className={styles.list}>{listitems}</ul></div>);
+    return (<div>
+              <div className={styles.title}>{title}</div>
+              {projects.join("\n")}
+            </div>);
   }
-  else{
-    return (<ul className={styles.list}>{listitems}</ul>);
+  else {
+    return projects.join("\n");
   }
 }
 

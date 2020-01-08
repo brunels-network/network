@@ -117,6 +117,10 @@ class Person {
       project = project.getID();
     }
 
+    if (!(project in this.state.projects)){
+      return null;
+    }
+
     return this;
   }
 
@@ -257,45 +261,11 @@ class Person {
   }
 
   getAffiliations(){
-    let result = [];
-
-    for (let key in this.state.affiliations){
-      let items = this.state.affiliations[key];
-      if (this._getHook){
-        let project = this._getHook(key);
-        for (let item in items){
-          result.push([project, this._getHook(items[item])]);
-        }
-      }
-      else{
-        for (let item in items){
-          result.push([key, items[item]]);
-        }
-      }
-    }
-
-    return result;
+    return this.state.affiliations;
   }
 
   getPositions(){
-    let result = [];
-
-    for (let key in this.state.positions){
-      let items = this.state.positions[key];
-      if (this._getHook){
-        let project = this._getHook(key);
-        for (let item in items){
-          result.push([project, this._getHook(items[item])]);
-        }
-      }
-      else{
-        for (let item in items){
-          result.push([key, items[item]]);
-        }
-      }
-    }
-
-    return result;
+    return this.state.positions;
   }
 
   getScores(){

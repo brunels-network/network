@@ -23,6 +23,49 @@ const fast_physics = {
 const slow_physics = {...fast_physics};
 slow_physics.timestep = 0.1;
 
+function _filtersNodes(filter){
+  let yes = false;
+
+  Object.keys(filter).forEach((key, value)=>{
+    if (yes){
+      return;
+    }
+    else if (key[0] === "P" || key[0] === "B"){
+      yes = true;
+      return;
+    }
+  });
+
+  return yes;
+}
+
+function _filtersGroups(filter){
+  let yes = false;
+
+  Object.keys(filter).forEach((key, value)=>{
+    if (yes){
+      return;
+    }
+    else if (key[0] !== "P" || key[0] !== "B" || key[0] !== "J"){
+      yes = true;
+    }
+  });
+}
+
+function _filtersProjects(filter){
+  let yes = false;
+
+  Object.keys(filter).forEach((key, value)=>{
+    if (yes){
+      return;
+    }
+    else if (key[0] === "J"){
+      yes = true;
+    }
+  });
+
+  return yes;
+}
 
 class Social {
   constructor(props) {
@@ -34,7 +77,7 @@ class Social {
     }
 
     this.state.anchor = null;
-    this.state.filter = {node:null, group:null, project:null};
+    this.state.filter = {};
     this.state.cache = {graph:null,
                         projectTimeLine:null,
                         itemTimeLine:null,
@@ -144,77 +187,69 @@ class Social {
   }
 
   getNodeFilters(){
-    if (!this.state.cache.node_filters){
-      this.state.cache.node_filters = [];
+    if (this.state.cache.node_filters){
+      return this.state.cache.node_filters;
+    }
 
-      // must do time first, as this can affect all of the other filters!
-      let window = this.getWindow();
+    this.state.cache.node_filters = [];
 
-      if (window.hasStart() || window.hasEnd()){
-        this.state.cache.node_filters.push((item)=>{
-          try{
-            return item.filterWindow(window);
-          }
-          catch(error){
-            console.log(`ERROR ${error}: ${item}`);
-            return item;
-          }
-        });
-      }
+    // must do time first, as this can affect all of the other filters!
+    let window = this.getWindow();
 
-      let project_filter = this.state.project_filter;
-
-      if (project_filter){
-        let id = project_filter.getID();
-        this.state.cache.node_filters.push((item)=>{
-          return item.filterProject(id);
-        });
-      }
-
-      let node_filter = this.state.filter.node;
-
-      if (node_filter) {
-        let id = node_filter.getID();
-        let connections = this.getConnections().getConnectionsTo(node_filter);
-        node_filter = {};
-        node_filter[id] = 1;
-        for (let connection in connections) {
-          let node = connections[connection];
-          node_filter[node.getID()] = 1;
+    if (window.hasStart() || window.hasEnd()){
+      this.state.cache.node_filters.push((item)=>{
+        try{
+          return item.filterWindow(window);
         }
+        catch(error){
+          console.log(`ERROR ${error}: ${item}`);
+          return item;
+        }
+      });
+    }
 
-        this.state.cache.node_filters.push((item)=>{
-          if (item.getID() in node_filter){
+    const filter = this.state.filter;
+
+    if (_filtersProjects(filter)){
+      this.state.cache.node_filters.push((item)=>{
+        return item.filterProject(filter);
+      });
+    }
+
+    if (_filtersNodes(filter)) {
+      let connections = this.getConnections().getConnectionsTo(filter);
+      let node_filter = {...filter};
+
+      for (let connection in connections) {
+        let node = connections[connection];
+        node_filter[node.getID()] = 1;
+      }
+
+      this.state.cache.node_filters.push((item)=>{
+        if (item.getID() in node_filter){
+          return item;
+        }
+        else{
+          return null;
+        }
+      });
+    }
+
+    if (_filtersGroups(filter)){
+      this.state.cache.node_filters.push((item)=>{
+        try{
+          if (item.inGroup(filter)){
             return item;
           }
           else{
             return null;
           }
-        });
-      }
-
-      let group_filter = this.state.filter.group;
-
-      if (group_filter){
-        if (group_filter.getID){
-          group_filter = group_filter.getID();
         }
-
-        this.state.cache.node_filters.push((item)=>{
-          try{
-            if (item.inGroup(group_filter)){
-              return item;
-            }
-            else{
-              return null;
-            }
-          }
-          catch(error){
-            console.log(`Filter error: ${error}`);
-            return item;
-          }
-        });
-      }
+        catch(error){
+          console.log(`Filter error: ${error}`);
+          return item;
+        }
+      });
     }
 
     return this.state.cache.node_filters;
@@ -231,6 +266,20 @@ class Social {
         this.state.cache.edge_filters.push((item)=>{
           try{
             return item.filterWindow(window);
+          }
+          catch(error){
+            console.log(`ERROR ${error}: ${item}`);
+            return item;
+          }
+        });
+      }
+
+      const filter = this.state.filter;
+
+      if (_filtersProjects(filter)){
+        this.state.cache.edge_filters.push((item)=>{
+          try{
+            return item.filterProject(filter);
           }
           catch(error){
             console.log(`ERROR ${error}: ${item}`);
@@ -324,20 +373,31 @@ class Social {
     return {...this.state.filter};
   }
 
-  getNodeFilter(){
-    return this.state.filter.node;
+  getFilterText(){
+    const filter = [];
+
+    Object.keys(this.state.filter).forEach((key, item)=>{
+      filter.push(this.get(key));
+    });
+
+    if (filter.length > 0){
+      return filter.join(" and ");
+    }
+    else{
+      return null;
+    }
   }
 
-  getGroupFilter(){
-    return this.state.filter.group;
-  }
+  isFiltered(item){
+    if (item.getID){
+      item = item.getID();
+    }
 
-  getProjectFilter(){
-    return this.state.filter.project;
+    return item in this.state.filter;
   }
 
   resetFilters(){
-    this.state.filter = {node:null, group:null};
+    this.state.filter = {};
     this.clearCache();
   }
 
@@ -350,34 +410,16 @@ class Social {
     this.clearCache();
   }
 
-  toggleNodeFilter(item) {
-    if (this.state.filter.node === item) {
-      this.state.filter.node = null;
+  toggleFilter(item){
+    if (item.getID){
+      item = item.getID();
+    }
+
+    if (item in this.state.filter){
+      delete this.state.filter[item];
     }
     else{
-      this.state.filter.node = item;
-    }
-
-    this.clearCache();
-  }
-
-  toggleGroupFilter(item){
-    if (this.state.filter.group === item){
-      this.state.filter.group = null;
-    }
-    else{
-      this.state.filter.group = item;
-    }
-
-    this.clearCache();
-  }
-
-  toggleProjectFilter(item){
-    if (this.state.filter.project === item){
-      this.state.filter.project = null;
-    }
-    else{
-      this.state.filter.project = item;
+      this.state.filter[item] = 1;
     }
 
     this.clearCache();
@@ -472,6 +514,10 @@ class Social {
   }
 
   get(id) {
+    if (id.getID){
+      id = id.getID();
+    }
+
     if (id[0] === "C") {
       return this.getConnections().get(id);
     }

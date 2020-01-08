@@ -71,24 +71,6 @@ class SocialApp extends React.Component {
                    overlay_item:null});
   }
 
-  selectNode(node){
-    let social = this.state.social;
-    social.toggleNodeFilter(node);
-    this.setState({social:social});
-  }
-
-  selectGroup(group){
-    let social = this.state.social;
-    social.toggleGroupFilter(group);
-    this.setState({social:social});
-  }
-
-  selectProject(project){
-    let social = this.state.social;
-    social.toggleProjectFilter(project);
-    this.setState({social:social});
-  }
-
   showInfo(item){
     console.log(item);
     if (item._isAProjectObject){
@@ -101,28 +83,15 @@ class SocialApp extends React.Component {
     }
   }
 
-  slotSelected(item){
+  slotToggleFilter(item){
     if (!item){
       return;
     }
 
-    if (item){
-      const social = this.state.social;
-      item = social.get(item);
-    }
+    let social = this.state.social;
+    social.toggleFilter(item);
 
-    let is_node = false;
-
-    if (item.isNode){
-      is_node = item.isNode();
-    }
-
-    if (is_node){
-      this.selectNode(item);
-    }
-    else {
-      this.selectGroup(item);
-    }
+    this.setState(social);
   }
 
   getNetwork(){
@@ -136,7 +105,7 @@ class SocialApp extends React.Component {
     }
   }
 
-  slotClicked(id){
+  slotSelected(id){
     if (!id){
       this.closePanels();
       return;
@@ -196,36 +165,8 @@ class SocialApp extends React.Component {
     const overlay_item = this.state.overlay_item;
     const social = this.state.social;
 
-    const node_filter = social.getNodeFilter();
-    const group_filter = social.getGroupFilter();
-    const project_filter = social.getProjectFilter();
-
-    let filter_text = null;
     let reset_button = null;
-
-    if (node_filter){
-      filter_text = `${node_filter}`;
-    }
-
-    if (group_filter){
-      let text = `${group_filter}`;
-      if (filter_text){
-        filter_text = `${filter_text} and ${text}`;
-      }
-      else{
-        filter_text = text;
-      }
-    }
-
-    if (project_filter){
-      let text = `${project_filter}`;
-      if (filter_text){
-        filter_text = `${filter_text} and ${text}`;
-      }
-      else{
-        filter_text = text;
-      }
-    }
+    let filter_text = social.getFilterText();
 
     if (filter_text){
       filter_text = <div className={styles.filterText}>
@@ -288,8 +229,8 @@ class SocialApp extends React.Component {
           <span className={styles.closePanelButton}
                 onClick={()=>{this.setState({isInfoPanelOpen:false})}}>X</span>
           <InfoBox item={selected} social={social}
-                   emitClicked={(item)=>{this.slotClicked(item)}}
-                   emitSelected={(item)=>{this.slotSelected(item)}}/>
+                   emitSelected={(item)=>{this.slotSelected(item)}}
+                   emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}/>
         </SlidingPanel>
 
         <SlidingPanel isOpen={this.state.isHamburgerMenuOpen}
@@ -301,7 +242,7 @@ class SocialApp extends React.Component {
 
         <div className={styles.graphContainer}>
           <SocialGraph social={this.state.social}
-                       emitClicked={(id)=>this.slotClicked(id)} />
+                       emitClicked={(id)=>this.slotSelected(id)} />
         </div>
 
         <div className={styles.bottomContainer}>
