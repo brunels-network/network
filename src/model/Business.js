@@ -43,18 +43,23 @@ class Business {
 
   inGroup(group){
     if (group.getID){
-      group = group.getID();
+      let ids = {}
+      ids[group.getID()] = 1;
+      group = ids;
     }
 
     let in_group = false;
 
-    Object.keys(this.state.affiliations).forEach((key, index)=>{
+    Object.keys(this.state.affiliations).forEach((key, _i)=>{
       if (in_group){
         return;
       }
 
-      if (this.state.affiliations[key].includes(group)){
-        in_group = true;
+      for (let index in this.state.affiliations[key]){
+        if (this.state.affiliations[key][index] in group){
+          in_group = true;
+          return;
+        }
       }
     });
 

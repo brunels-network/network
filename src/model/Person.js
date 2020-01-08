@@ -78,34 +78,40 @@ class Person {
 
   inGroup(group){
     if (group.getID){
-      group = group.getID();
+      let ids = {}
+      ids[group.getID()] = 1;
+      group = ids;
     }
 
-    let in_group = false;
+    let ngroups = 0;
 
-    Object.keys(this.state.affiliations).forEach((key, index)=>{
-      if (in_group){
-        return;
-      }
-
-      if (this.state.affiliations[key].includes(group)){
-        in_group = true;
+    Object.keys(group).forEach((key, index)=>{
+      if (key){
+        if (key[0] === "Q" || key[0] === "A"){
+          ngroups += 1;
+        }
       }
     });
 
-    if (!in_group){
-      Object.keys(this.state.positions).forEach((key, index)=>{
-        if (in_group){
-          return;
-        }
+    let seen = {};
 
-        if (this.state.positions[key].includes(group)){
-          in_group = true;
+    Object.keys(this.state.affiliations).forEach((key, _i)=>{
+      for (let index in this.state.affiliations[key]){
+        if (this.state.affiliations[key][index] in group){
+          seen[this.state.affiliations[key][index]] = 1;
         }
-      });
-    }
+      }
+    });
 
-    return in_group;
+    Object.keys(this.state.positions).forEach((key, index)=>{
+      for (let index in this.state.positions[key]){
+        if (this.state.positions[key][index] in group){
+          seen[this.state.positions[key][index]] = 1;
+        }
+      }
+    });
+
+    return Object.keys(seen).length === ngroups;
   }
 
   getID(){

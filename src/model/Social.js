@@ -50,6 +50,8 @@ function _filtersGroups(filter){
       yes = true;
     }
   });
+
+  return yes;
 }
 
 function _filtersProjects(filter){
