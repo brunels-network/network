@@ -173,13 +173,7 @@ class Connections {
       item[id] = 1;
     }
 
-    let nnodes= 0;
-
-    Object.keys(item).forEach((key, index)=>{
-      if (key[0] === "P" || key[0] === "B"){
-        nnodes += 1;
-      }
-    });
+    let nnodes = Object.keys(item).length;
 
     let seen = {};
 

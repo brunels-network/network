@@ -23,52 +23,6 @@ const fast_physics = {
 const slow_physics = {...fast_physics};
 slow_physics.timestep = 0.1;
 
-function _filtersNodes(filter){
-  let yes = false;
-
-  Object.keys(filter).forEach((key, value)=>{
-    if (yes){
-      return;
-    }
-    else if (key[0] === "P" || key[0] === "B"){
-      yes = true;
-      return;
-    }
-  });
-
-  return yes;
-}
-
-function _filtersGroups(filter){
-  let yes = false;
-
-  Object.keys(filter).forEach((key, value)=>{
-    if (yes){
-      return;
-    }
-    else if (key[0] !== "P" || key[0] !== "B" || key[0] !== "J"){
-      yes = true;
-    }
-  });
-
-  return yes;
-}
-
-function _filtersProjects(filter){
-  let yes = false;
-
-  Object.keys(filter).forEach((key, value)=>{
-    if (yes){
-      return;
-    }
-    else if (key[0] === "J"){
-      yes = true;
-    }
-  });
-
-  return yes;
-}
-
 class Social {
   constructor(props) {
     if (props){
@@ -213,25 +167,27 @@ class Social {
       });
     }
 
-    const filter = this.state.filter;
+    const project_filter = this.state.filter.project;
 
-    if (_filtersProjects(filter)){
+    if (project_filter){
       this.state.cache.node_filters.push((item)=>{
-        return item.filterProject(filter);
+        return item.filterProject(project_filter);
       });
     }
 
-    if (_filtersNodes(filter)) {
-      let connections = this.getConnectionsTo(filter);
-      let node_filter = {...filter};
+    const node_filter = this.state.filter.node;
+
+    if (node_filter) {
+      let connections = this.getConnectionsTo(node_filter);
+      let filter = {...node_filter};
 
       for (let connection in connections) {
         let node = connections[connection];
-        node_filter[node.getID()] = 1;
+        filter[node.getID()] = 1;
       }
 
       this.state.cache.node_filters.push((item)=>{
-        if (item.getID() in node_filter){
+        if (item.getID() in filter){
           return item;
         }
         else{
@@ -240,10 +196,12 @@ class Social {
       });
     }
 
-    if (_filtersGroups(filter)){
+    const group_filter = this.state.filter.group;
+
+    if (group_filter){
       this.state.cache.node_filters.push((item)=>{
         try{
-          if (item.inGroup(filter)){
+          if (item.inGroup(group_filter)){
             return item;
           }
           else{
@@ -280,12 +238,12 @@ class Social {
         });
       }
 
-      const filter = this.state.filter;
+      const project_filter = this.state.filter.project;
 
-      if (_filtersProjects(filter)){
+      if (project_filter){
         this.state.cache.edge_filters.push((item)=>{
           try{
-            return item.filterProject(filter);
+            return item.filterProject(project_filter);
           }
           catch(error){
             console.log(`ERROR ${error}: ${item}`);
@@ -316,63 +274,90 @@ class Social {
     return true;
   }
 
-  getPeople() {
-    if (!this.state.cache.people){
-      console.log("REBUILD PEOPLE");
-      this._rebuilding += 1;
-      this.state.cache.people =
-            this.state.people.filter(this.getNodeFilters());
-      this._rebuilding -= 1;
+  getPeople(filtered=true) {
+    if (this._rebuilding){
+      filtered = false;
     }
 
-    return this.state.cache.people;
+    if (filtered){
+      if (!this.state.cache.people){
+        console.log("REBUILD PEOPLE");
+        this._rebuilding += 1;
+        this.state.cache.people =
+              this.state.people.filter(this.getNodeFilters());
+        this._rebuilding -= 1;
+      }
+
+      return this.state.cache.people;
+    }
+    else{
+      return this.state.people;
+    }
   }
 
-  getBusinesses() {
-    if (!this.state.cache.businesses){
-      console.log("REBUILD BUSINESSES");
-      this._rebuilding += 1;
-      this.state.cache.businesses =
-            this.state.businesses.filter(this.getNodeFilters());
-      this._rebuilding -= 1;
+  getBusinesses(filtered=true) {
+    if (this._rebuilding){
+      filtered = false;
     }
 
-    return this.state.cache.businesses;
+    if (filtered){
+      if (!this.state.cache.businesses){
+        console.log("REBUILD BUSINESSES");
+        this._rebuilding += 1;
+        this.state.cache.businesses =
+              this.state.businesses.filter(this.getNodeFilters());
+        this._rebuilding -= 1;
+      }
+
+      return this.state.cache.businesses;
+    }
+    else{
+      return this.state.businesses;
+    }
   }
 
-  getConnections() {
-    if (!this.state.cache.connections){
-      console.log("REBUILD CONNECTIONS");
-      this._rebuilding += 1;
-      this.state.cache.connections =
-            this.state.connections.filter(this.getEdgeFilters());
-      this._rebuilding -=1;
+  getConnections(filtered=true) {
+    if (this._rebuilding){
+      filtered = false;
     }
 
-    return this.state.cache.connections;
+    if (filtered){
+      if (!this.state.cache.connections){
+        console.log("REBUILD CONNECTIONS");
+        this._rebuilding += 1;
+        this.state.cache.connections =
+              this.state.connections.filter(this.getEdgeFilters());
+        this._rebuilding -=1;
+      }
+
+      return this.state.cache.connections;
+    }
+    else{
+      return this.state.connections;
+    }
   }
 
-  getBiographies(){
+  getBiographies(filtered=true){
     return this.state.biographies;
   }
 
-  getAffiliations() {
+  getAffiliations(filtered=true) {
     return this.state.affiliations;
   }
 
-  getPositions() {
+  getPositions(filtered=true) {
     return this.state.positions;
   }
 
-  getSources() {
+  getSources(filtered=true) {
     return this.state.sources;
   }
 
-  getNotes() {
+  getNotes(filtered=true) {
     return this.state.notes;
   }
 
-  getProjects() {
+  getProjects(filtered=true) {
     return this.state.projects;
   }
 
@@ -391,15 +376,87 @@ class Social {
   getFilterText(){
     const filter = [];
 
-    Object.keys(this.state.filter).forEach((key, item)=>{
-      filter.push(this.get(key));
-    });
+    let f = this.state.filter.node;
 
-    if (filter.length > 0){
-      return filter.join(" and ");
+    if (f){
+      let parts = [];
+
+      Object.keys(f).forEach((key, index)=>{
+        parts.push(this.get(key, false).getName());
+      });
+
+      parts.sort();
+
+      if (parts.length === 1){
+        filter.push(`connected to ${parts[0]}`);
+      }
+      else if (parts.length > 1){
+        filter.push(`connected to (${parts.join(" and ")})`);
+      }
+    }
+
+    f = this.state.filter.group;
+
+    if (f){
+      let parts = [];
+
+      Object.keys(f).forEach((key, index)=>{
+        parts.push(this.get(key, false).getName());
+      });
+
+      parts.sort();
+
+      if (parts.length === 1){
+        filter.push(`in group ${parts[0]}`);
+      }
+      else if (parts.length > 1){
+        filter.push(`in groups (${parts.join(" and ")})`);
+      }
+    }
+
+    f = this.state.filter.project;
+
+    if (f){
+      let parts = [];
+
+      Object.keys(f).forEach((key, index)=>{
+        parts.push(this.get(key, false).getName());
+      });
+
+      parts.sort();
+
+      if (parts.length === 1){
+        filter.push(`in project ${parts[0]}`);
+      }
+      else if (parts.length > 1){
+        filter.push(`in projects (${parts.join(" and ")})`);
+      }
+    }
+
+    if (filter.length === 1){
+      return filter[0];
+    }
+    else if (filter.length > 1){
+      return `[${filter.join("] and [")}]`;
     }
     else{
       return null;
+    }
+  }
+
+  _getType(item){
+    if (item.getID){
+      item = item.getID();
+    }
+
+    if (item[0] === "P" || item[0] === "B"){
+      return "node";
+    }
+    else if (item[0] === "J"){
+      return "project";
+    }
+    else{
+      return "group";
     }
   }
 
@@ -408,7 +465,16 @@ class Social {
       item = item.getID();
     }
 
-    return item in this.state.filter;
+    let type = this._getType(item);
+
+    const filter = this.state.filter[type];
+
+    if (filter){
+      return item in filter;
+    }
+    else{
+      return false;
+    }
   }
 
   resetFilters(){
@@ -430,12 +496,24 @@ class Social {
       item = item.getID();
     }
 
-    if (item in this.state.filter){
-      delete this.state.filter[item];
+    let type = this._getType(item);
+
+    if (!(type in this.state.filter)){
+      this.state.filter[type] = {};
+    }
+
+    if (item in this.state.filter[type]){
+      delete this.state.filter[type][item];
+
+      if (Object.keys(this.state.filter[type]).length === 0){
+        delete this.state.filter[type];
+      }
     }
     else{
-      this.state.filter[item] = 1;
+      this.state.filter[type][item] = 1;
     }
+
+    console.log(this.state.filter);
 
     this.clearCache();
   }
@@ -528,49 +606,40 @@ class Social {
     }
   }
 
-  get(id) {
+  get(id, filtered=true) {
     if (id.getID){
       id = id.getID();
     }
 
+    if (this._rebuilding){
+      // we cannot get filtered data when rebuilding, else otherwise
+      // we get race conditions and weird results
+      filtered = false;
+    }
+
     if (id[0] === "C") {
-      if (this._rebuilding){
-        return this.state.connections.get(id);
-      }
-      else{
-        return this.getConnections().get(id);
-      }
+      return this.getConnections(filtered).get(id);
     }
     else if (id[0] === "P") {
-      if (this._rebuilding){
-        return this.state.people.get(id);
-      }
-      else{
-        return this.getPeople().get(id);
-      }
+      return this.getPeople(filtered).get(id);
     }
     else if (id[0] === "B") {
-      if (this._rebuilding){
-        return this.state.businesses.get(id);
-      }
-      else{
-        return this.getBusinesses().get(id);
-      }
+      return this.getBusinesses(filtered).get(id);
     }
     else if (id[0] === "Q") {
-      return this.getPositions().get(id);
+      return this.getPositions(filtered).get(id);
     }
     else if (id[0] === "A") {
-      return this.getAffiliations().get(id);
+      return this.getAffiliations(filtered).get(id);
     }
     else if (id[0] === "S") {
-      return this.getSources().get(id);
+      return this.getSources(filtered).get(id);
     }
     else if (id[0] === "N") {
-      return this.getNotes().get(id);
+      return this.getNotes(filtered).get(id);
     }
     else if (id[0] === "J") {
-      return this.getProjects().get(id);
+      return this.getProjects(filtered).get(id);
     }
     else {
       return id;

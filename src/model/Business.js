@@ -2,6 +2,8 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
+import DateRange from './DateRange';
+
 import {ValueError} from './Errors';
 
 function setState(val, def=null){
@@ -9,6 +11,54 @@ function setState(val, def=null){
     return val;
   } else {
     return def;
+  }
+}
+
+function _filterWindow(values, window){
+  if (!values){
+    return values;
+  }
+
+  let ret = null;
+
+  Object.keys(values).forEach((key, index)=>{
+    let dates = values[key];
+
+    let intersect = window.intersect(dates);
+
+    if (!intersect){
+      if (!ret){ ret = {...values}}
+      delete ret[key];
+    }
+  });
+
+  if (ret){
+    return ret;
+  }
+  else{
+    return values;
+  }
+}
+
+function _filterProject(values, project){
+  if (!values){
+    return values;
+  }
+
+  let ret = null;
+
+  Object.keys(values).forEach((key, index)=>{
+    if (!(key in project)){
+      if (!ret){ ret = {...values}}
+      delete ret[key];
+    }
+  });
+
+  if (ret){
+    return ret;
+  }
+  else{
+    return values;
   }
 }
 
@@ -48,30 +98,85 @@ class Business {
       group = ids;
     }
 
-    let in_group = false;
+    let seen = {};
 
     Object.keys(this.state.affiliations).forEach((key, _i)=>{
-      if (in_group){
-        return;
-      }
-
       for (let index in this.state.affiliations[key]){
         if (this.state.affiliations[key][index] in group){
-          in_group = true;
-          return;
+          seen[this.state.affiliations[key][index]] = 1;
         }
       }
     });
 
-    return in_group;
+    return Object.keys(seen).length === Object.keys(group).length;
   }
 
   getID(){
     return this.state.id;
   }
 
+  filterProject(project){
+    if (project.getID)
+    {
+      let id = project.getID();
+      project = {};
+      project[id] = 1;
+    }
+
+    let nprojects = Object.keys(project).length;
+
+    let seen = {};
+
+    Object.keys(this.state.projects).forEach((key, index)=>{
+      if (key in project){
+        seen[key] = 1;
+      }
+    });
+
+    if (Object.keys(seen).length !== nprojects){
+      return null;
+    }
+
+    let affiliations = _filterProject(this.state.affiliations, project);
+
+    if (affiliations !== this.state.affiliations){
+      let business = new Business();
+      business.state = {...this.state};
+      business.state.affiliations = affiliations;
+      business._getHook = this._getHook;
+      return business;
+    }
+    else{
+      return this;
+    }
+  }
+
   filterWindow(window){
-    return this;
+    if (!window){
+      return this;
+    }
+    else if (!(window._isADateRangeObject)){
+      window = new DateRange(window);
+    }
+
+    window = window.intersect(this.getAlive());
+
+    if (!window){
+      return null;
+    }
+
+    let affiliations = _filterWindow(this.state.affiliations, window);
+
+    if (affiliations !== this.state.affiliations){
+      let business = new Business();
+      business.state = {...this.state};
+      business.state.affiliations = affiliations;
+      business._getHook = this._getHook;
+      return business;
+    }
+    else{
+      return this;
+    }
   }
 
   setState(state){

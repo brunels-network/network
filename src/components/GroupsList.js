@@ -28,7 +28,7 @@ function GroupsList({groups, title=null, emitSelected=null_function,
                   </button> :&nbsp;
                   <input type="checkbox"
                         className={styles.checkbox}
-                        onClick={()=>{emitToggleFilter(group);}}
+                        onChange={(event)=>{emitToggleFilter(group);}}
                         checked={is_filtered}
                     >
                   </input>
@@ -39,7 +39,7 @@ function GroupsList({groups, title=null, emitSelected=null_function,
     let is_filtered = social.isFiltered(project);
 
     projects.push(
-      <div className={styles.project}>
+      <div className={styles.project} key={project.getName()}>
         <div className={styles.projectHeader}>
           <button href="#" className={styles.projectButton}
                   onClick={()=>{emitSelected(project);}}>
@@ -47,12 +47,12 @@ function GroupsList({groups, title=null, emitSelected=null_function,
           </button> :&nbsp;
           <input type="checkbox"
             className={styles.checkbox}
-            onClick={()=>{emitToggleFilter(project);}}
+            onChange={(event)=>{emitToggleFilter(project);}}
             checked={is_filtered}
           >
           </input>
         </div>
-        <div clasName={styles.projectBody}>
+        <div className={styles.projectBody}>
           <ul>
             {items}
           </ul>

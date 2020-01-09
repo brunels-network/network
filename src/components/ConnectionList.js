@@ -30,7 +30,7 @@ function ConnectionList({connections, title, emitSelected=null_function,
         </button> :&nbsp;
         <input type="checkbox"
                className={styles.checkbox}
-               onClick={()=>{emitToggleFilter(i);}}
+               onChange={(event)=>{emitToggleFilter(i);}}
                checked={is_filtered}
           >
         </input>

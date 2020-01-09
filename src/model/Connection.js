@@ -139,6 +139,31 @@ class Connection {
     return this.state.correspondances;
   }
 
+  filterProject(project){
+    if (project.getID){
+      let id = project.getID();
+      project = {};
+      project[id] = 1;
+    }
+
+    let nprojects = Object.keys(project).length;
+
+    let seen = {};
+
+    Object.keys(this.state.projects).forEach((key, index)=>{
+      if (key in project){
+        seen[key] = 1;
+      }
+    });
+
+    if (Object.keys(seen).length !== nprojects){
+      return null;
+    }
+    else{
+      return this;
+    }
+  }
+
   filterWindow(window){
     if (!window || !this.state.sent){
       return this;

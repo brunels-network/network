@@ -40,6 +40,28 @@ function _filterWindow(values, window){
   }
 }
 
+function _filterProject(values, project){
+  if (!values){
+    return values;
+  }
+
+  let ret = null;
+
+  Object.keys(values).forEach((key, index)=>{
+    if (!(key in project)){
+      if (!ret){ ret = {...values}}
+      delete ret[key];
+    }
+  });
+
+  if (ret){
+    return ret;
+  }
+  else{
+    return values;
+  }
+}
+
 class Person {
   constructor(props){
     this.state = {
@@ -83,16 +105,6 @@ class Person {
       group = ids;
     }
 
-    let ngroups = 0;
-
-    Object.keys(group).forEach((key, index)=>{
-      if (key){
-        if (key[0] === "Q" || key[0] === "A"){
-          ngroups += 1;
-        }
-      }
-    });
-
     let seen = {};
 
     Object.keys(this.state.affiliations).forEach((key, _i)=>{
@@ -111,7 +123,7 @@ class Person {
       }
     });
 
-    return Object.keys(seen).length === ngroups;
+    return Object.keys(seen).length === Object.keys(group).length;
   }
 
   getID(){
@@ -119,15 +131,42 @@ class Person {
   }
 
   filterProject(project){
-    if (project.getID){
-      project = project.getID();
+    if (project.getID)
+    {
+      let id = project.getID();
+      project = {};
+      project[id] = 1;
     }
 
-    if (!(project in this.state.projects)){
+    let nprojects = Object.keys(project).length;
+
+    let seen = {};
+
+    Object.keys(this.state.projects).forEach((key, index)=>{
+      if (key in project){
+        seen[key] = 1;
+      }
+    });
+
+    if (Object.keys(seen).length !== nprojects){
       return null;
     }
 
-    return this;
+    let affiliations = _filterProject(this.state.affiliations, project);
+    let positions = _filterProject(this.state.positions, project);
+
+    if (affiliations !== this.state.affiliations ||
+      positions !== this.state.positions){
+      let person = new Person();
+      person.state = {...this.state};
+      person.state.affiliations = affiliations;
+      person.state.positions = positions;
+      person._getHook = this._getHook;
+      return person;
+    }
+    else{
+      return this;
+    }
   }
 
   filterWindow(window){
