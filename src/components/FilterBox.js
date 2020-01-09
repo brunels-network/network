@@ -58,35 +58,37 @@ function FilterBox(props){
 
   let filter_text = social.getFilterText();
 
-  let filter_info = null;
+  if (!filter_text){
+    filter_text = "No filters";
+  }
 
-  if (filter_text){
-    let emitClearFilters = props.emitClearFilters;
+  let emitClearFilters = props.emitClearFilters;
 
-    if (!emitClearFilters){
-      emitClearFilters = null_function;
-    }
+  if (!emitClearFilters){
+    emitClearFilters = null_function;
+  }
 
-    filter_info = <AccordionItem uuid="filterinfo"
-                                 className={styles.accordionItem}>
-                    <AccordionItemHeading>
-                      <AccordionItemButton className={styles.accordionButton}>
-                        Current Filter
-                      </AccordionItemButton>
-                    </AccordionItemHeading>
-                    <AccordionItemPanel className={styles.accordionPanel}>
-                      <div className={styles.filterContainer}>
-                        <div className={styles.filterText}>
-                          {filter_text}
-                        </div>
-                        <button className={styles.resetButton}
+  let filter_info = <AccordionItem uuid="filterinfo"
+                                className={styles.accordionItem}>
+                  <AccordionItemHeading>
+                    <AccordionItemButton className={styles.accordionButton}>
+                      Current Filter
+                    </AccordionItemButton>
+                  </AccordionItemHeading>
+                  <AccordionItemPanel className={styles.accordionPanel}>
+                    <div className={styles.filterContainer}>
+                      <div className={styles.filterText}>
+                        {filter_text}
+                      </div>
+                      <div>
+                        <button className={styles.itemButton}
                                 onClick={emitClearFilters}>
                           Clear Filters
                         </button>
                       </div>
-                    </AccordionItemPanel>
-                  </AccordionItem>;
-  }
+                    </div>
+                  </AccordionItemPanel>
+                </AccordionItem>;
 
   let projects = filterList(social.getProjects(false), props);
   let positions = filterList(social.getPositions(false), props);
