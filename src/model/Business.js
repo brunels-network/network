@@ -159,12 +159,6 @@ class Business {
       window = new DateRange(window);
     }
 
-    window = window.intersect(this.getAlive());
-
-    if (!window){
-      return null;
-    }
-
     let affiliations = _filterWindow(this.state.affiliations, window);
 
     if (affiliations !== this.state.affiliations){

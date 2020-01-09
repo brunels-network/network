@@ -8,6 +8,7 @@ import ReactModal from 'react-modal';
 import SocialGraph from "./components/SocialGraph";
 import InfoBox from "./components/InfoBox";
 import TimeLineBox from './components/TimeLineBox';
+import FilterBox from './components/FilterBox';
 import SlidingPanel from './components/SlidingPanel';
 import OverlayBox from './components/OverlayBox';
 import SearchBar from './components/SearchBar';
@@ -45,6 +46,7 @@ class SocialApp extends React.Component {
       overlay_item: null,
       isInfoPanelOpen: false,
       isTimeLinePanelOpen: false,
+      isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false
@@ -63,6 +65,7 @@ class SocialApp extends React.Component {
     this.setState({isInfoPanelOpen:false,
                    isTimeLinePanelOpen:false,
                    isHamburgerMenuOpen:false,
+                   isFilterPanelOpen:false,
                   });
   }
 
@@ -81,6 +84,10 @@ class SocialApp extends React.Component {
       this.setState({selected_item:item,
                      isInfoPanelOpen:true});
     }
+  }
+
+  slotClearFilters(){
+    this.resetFilters();
   }
 
   slotToggleFilter(item){
@@ -145,7 +152,13 @@ class SocialApp extends React.Component {
   }
 
   toggleTimeLinePanel(){
-    this.setState({isTimeLinePanelOpen: !(this.state.isTimeLinePanelOpen)});
+    this.setState({isFilterPanelOpen: false,
+                   isTimeLinePanelOpen: !(this.state.isTimeLinePanelOpen)});
+}
+
+  toggleFilterPanel(){
+    this.setState({isTimeLinePanelOpen: false,
+                   isFilterPanelOpen: !(this.state.isFilterPanelOpen)});
   }
 
   viewAbout(){
@@ -164,20 +177,6 @@ class SocialApp extends React.Component {
     const selected = this.state.selected_item;
     const overlay_item = this.state.overlay_item;
     const social = this.state.social;
-
-    let reset_button = null;
-    let filter_text = social.getFilterText();
-
-    if (filter_text){
-      filter_text = <div className={styles.filterText}>
-                      {filter_text}
-                    </div>;
-      reset_button = <button onClick={() => {this.resetFilters()}}
-                             className={styles.controlButton}
-                             style={{fontSize:"small"}}>
-                       Reset Filters
-                     </button>;
-    }
 
     let menu = [];
 
@@ -224,6 +223,16 @@ class SocialApp extends React.Component {
                                     this.slotWindowChanged(window)}}/>
         </SlidingPanel>
 
+        <SlidingPanel isOpen={this.state.isFilterPanelOpen}
+                      position='bottom'>
+          <span className={styles.closePanelButton}
+                onClick={()=>{this.setState({isFilterPanelOpen:false})}}>X</span>
+          <FilterBox social={social}
+                     emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}
+                     emitSelected={(item)=>{this.slotSelected(item)}}
+                     emitClearFilters={()=>{this.slotClearFilters()}}/>
+        </SlidingPanel>
+
         <SlidingPanel isOpen={this.state.isInfoPanelOpen}
                       position='right'>
           <span className={styles.closePanelButton}
@@ -246,17 +255,14 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.bottomContainer}>
-          <button onClick={() => this.toggleTimeLinePanel()}
-                  className={styles.controlButton}
-                  style={{fontSize:"small"}}>
-            Show timeline
+          <button onClick={()=>this.toggleTimeLinePanel()}
+                  className={styles.controlButton}>
+            Timeline
+          </button>&nbsp;
+          <button onClick={()=>{this.toggleFilterPanel()}}
+                  className={styles.controlButton}>
+            Filters
           </button>
-          {filter_text}
-          {reset_button}
-          <div className={styles.citationText}>
-           <a href="https://github.com/chryswoods/brunel">
-            View source</a>
-          </div>
         </div>
 
       </div>
