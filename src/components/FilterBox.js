@@ -36,7 +36,7 @@ function filterList(items, props){
               <button className={styles.itemButton}
                       onClick={()=>{emitSelected(item);}}>
                 {item.getName()}
-              </button>
+              </button>&nbsp;
               <label className={styles.checkBox}>
                 <input type="checkbox"
                        checked={is_filtered}
@@ -94,14 +94,7 @@ function FilterBox(props){
   let people = filterList(social.getPeople(false), props);
   let businesses = filterList(social.getBusinesses(false), props);
 
-  let preexpanded = "projects";
-
-  if (filter_info){
-    preexpanded = "filterinfo";
-  }
-
   return <Accordion allowMultipleExpanded={false}
-                    preExpanded={preexpanded}
                     allowZeroExpanded={true}
                     className={styles.accordion}>
           {filter_info}

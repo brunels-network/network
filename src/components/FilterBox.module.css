@@ -1,14 +1,16 @@
 
 .itemButton {
+  display: inline-block;
+  position: relative;
   background-color: white;
   border-radius: 8px;
   color: black;
   border: 2px solid rgb(3, 99, 32);
-  font-size: small;
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
   opacity: 0.8;
   max-width: 80%;
+  height: 100%;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
 }
 
@@ -20,16 +22,14 @@
 
 .itemButton:active {
   box-shadow: 0 2px rgba(0,0,0,0.2);
-  transform: translateY(2px);
 }
 
 .checkBox {
-  display: block;
+  display: inline-block;
   position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
+  height: 100%;
+  width: 15%;
   cursor: pointer;
-  font-size: 22px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -46,22 +46,33 @@
 
 .checkMark {
   position: absolute;
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  border: 2px solid rgb(3, 99, 32);
+  height: 100%;
+  width: 100%;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+  opacity: 0.8;
   top: 0;
   left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
+  bottom: 0;
+  right: 0;
 }
-
 
 /* On mouse-over, add a grey background color */
 .checkBox:hover input ~ .checkMark {
-  background-color: #ccc;
+  background-color: rgb(3, 99, 32);
+  opacity: 1.0;
+  color: white;
 }
 
 /* When the checkbox is checked, add a blue background */
 .checkBox input:checked ~ .checkMark {
   background-color: #2196F3;
+  border: 2px solid #2196F3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -79,7 +90,7 @@
 /* Style the checkmark/indicator */
 .checkBox .checkMark:after {
   left: 9px;
-  top: 5px;
+  top: 25%;
   width: 5px;
   height: 10px;
   border: solid white;
@@ -96,7 +107,9 @@
 	display: flex;
 	flex-wrap: wrap;
 	margin-left: -10px;
-	margin-top: -10px;
+  margin-top: -10px;
+  align-items: center;
+  text-align: center;
 }
 
 .listItem {
