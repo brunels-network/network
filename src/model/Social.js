@@ -617,32 +617,42 @@ class Social {
       filtered = false;
     }
 
-    if (id[0] === "C") {
-      return this.getConnections(filtered).get(id);
+    try{
+      if (id[0] === "C") {
+        return this.getConnections(filtered).get(id);
+      }
+      else if (id[0] === "P") {
+        return this.getPeople(filtered).get(id);
+      }
+      else if (id[0] === "B") {
+        return this.getBusinesses(filtered).get(id);
+      }
+      else if (id[0] === "Q") {
+        return this.getPositions(filtered).get(id);
+      }
+      else if (id[0] === "A") {
+        return this.getAffiliations(filtered).get(id);
+      }
+      else if (id[0] === "S") {
+        return this.getSources(filtered).get(id);
+      }
+      else if (id[0] === "N") {
+        return this.getNotes(filtered).get(id);
+      }
+      else if (id[0] === "J") {
+        return this.getProjects(filtered).get(id);
+      }
+      else {
+        return id;
+      }
     }
-    else if (id[0] === "P") {
-      return this.getPeople(filtered).get(id);
-    }
-    else if (id[0] === "B") {
-      return this.getBusinesses(filtered).get(id);
-    }
-    else if (id[0] === "Q") {
-      return this.getPositions(filtered).get(id);
-    }
-    else if (id[0] === "A") {
-      return this.getAffiliations(filtered).get(id);
-    }
-    else if (id[0] === "S") {
-      return this.getSources(filtered).get(id);
-    }
-    else if (id[0] === "N") {
-      return this.getNotes(filtered).get(id);
-    }
-    else if (id[0] === "J") {
-      return this.getProjects(filtered).get(id);
-    }
-    else {
-      return id;
+    catch(error){
+      if (filtered){
+        return this.get(id, false);
+      }
+      else{
+        throw error;
+      }
     }
   }
 

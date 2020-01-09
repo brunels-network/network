@@ -38,6 +38,19 @@ class Businesses {
     return c;
   }
 
+  values(){
+    let names = Object.keys(this._names);
+    names.sort();
+
+    let output = [];
+
+    names.forEach((key, index)=>{
+      output.push(this.get(this._names[key]));
+    });
+
+    return output;
+  }
+
   canAdd(item){
     return (item instanceof Business) || item._isABusinessObject;
   }

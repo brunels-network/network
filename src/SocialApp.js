@@ -223,6 +223,15 @@ class SocialApp extends React.Component {
                                     this.slotWindowChanged(window)}}/>
         </SlidingPanel>
 
+        <SlidingPanel isOpen={this.state.isInfoPanelOpen}
+                      position='right'>
+          <span className={styles.closePanelButton}
+                onClick={()=>{this.setState({isInfoPanelOpen:false})}}>X</span>
+          <InfoBox item={selected} social={social}
+                   emitSelected={(item)=>{this.slotSelected(item)}}
+                   emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}/>
+        </SlidingPanel>
+
         <SlidingPanel isOpen={this.state.isFilterPanelOpen}
                       position='bottom'>
           <span className={styles.closePanelButton}
@@ -231,15 +240,6 @@ class SocialApp extends React.Component {
                      emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}
                      emitSelected={(item)=>{this.slotSelected(item)}}
                      emitClearFilters={()=>{this.slotClearFilters()}}/>
-        </SlidingPanel>
-
-        <SlidingPanel isOpen={this.state.isInfoPanelOpen}
-                      position='right'>
-          <span className={styles.closePanelButton}
-                onClick={()=>{this.setState({isInfoPanelOpen:false})}}>X</span>
-          <InfoBox item={selected} social={social}
-                   emitSelected={(item)=>{this.slotSelected(item)}}
-                   emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}/>
         </SlidingPanel>
 
         <SlidingPanel isOpen={this.state.isHamburgerMenuOpen}

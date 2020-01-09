@@ -55,11 +55,11 @@ class DateRange{
   }
 
   hasEnd(){
-    return this.state.end !== null;
+    return this.state.end && !this.state.end.isNull();
   }
 
   hasStart(){
-    return this.state.start !== null;
+    return this.state.start && !this.state.start.isNull();
   }
 
   isInstant(){
@@ -195,7 +195,16 @@ class DateRange{
 
   getDelta(){
     if (this.hasStart() && this.hasEnd()){
-      return this.getLatestEnd().toDate() - this.getEarliestStart().toDate();
+      try{
+        return this.getLatestEnd().toDate() - this.getEarliestStart().toDate();
+      }
+      catch(error){
+        console.log(error);
+        console.log(this.hasStart(), this.hasEnd());
+        console.log(this.getStart(), this.getEnd());
+        console.log(this.getLatestEnd(), this.getEarliestStart());
+        throw error;
+      }
     }
     else{
       return null;
@@ -253,7 +262,7 @@ class DateRange{
 
     if (delta === null){
       if (state.start !== null && state.end !== null){
-        delta = -(this.delta());     //milliseconds
+        delta = -(this.getDelta());     //milliseconds
       }
       else{
         delta = -3600000;     //milliseconds
@@ -384,12 +393,20 @@ class DateRange{
 
         if (state.start){
           start = new Date(state.start);
+
+          if (start.isNull()){
+            start = null;
+          }
         }
 
         let end = null;
 
         if (state.end){
           end = new Date(state.end);
+
+          if (end.isNull()){
+            end = null;
+          }
         }
 
         if (start && end){

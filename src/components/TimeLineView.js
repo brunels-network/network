@@ -128,23 +128,24 @@ class TimeLineView extends Component {
       let new_window = max_window.intersect(window);
 
       if (new_window.getDelta() !== window.getDelta()){
-        if (window.getStart() < max_window.getStart()){
-          new_window = new DateRange({start:max_window.getStart(),
-                                      end:max_window.getStart()+window.getDelta()});
+        if (window.getStartDate() < max_window.getStartDate()){
+          new_window = new DateRange({start:max_window.getStartDate(),
+                                      end:max_window.getStartDate()
+                                            +window.getDelta()});
         }
-        else if (window.getEnd() > max_window.getEnd()){
-          new_window = new DateRange({start:max_window.getEnd()-window.getDelta(),
-                                      end:max_window.getEnd()});
-        }
-
-        if (new_window.getStart() < max_window.getStart()){
-          new_window = new DateRange({start:max_window.getStart(),
-                                      end:new_window.end()});
+        else if (window.getEndDate() > max_window.getEndDate()){
+          new_window = new DateRange({start:max_window.getEndDate()-window.getDelta(),
+                                      end:max_window.getEndDate()});
         }
 
-        if (new_window.getEnd() > max_window.getEnd()){
-          new_window = new DateRange({start:new_window.getStart(),
-                                      end:max_window.getEnd()});
+        if (new_window.getStartDate() < max_window.getStartDate()){
+          new_window = new DateRange({start:max_window.getStartDate(),
+                                      end:new_window.endDate()});
+        }
+
+        if (new_window.getEndDate() > max_window.getEndDate()){
+          new_window = new DateRange({start:new_window.getStartDate(),
+                                      end:max_window.getEndDate()});
         }
 
         window = new_window;
@@ -153,8 +154,8 @@ class TimeLineView extends Component {
       const min_delta = 24*60*60*1000;
 
       if (window.getDelta() < min_delta){
-        window = new DateRange({start:window.getStart(),
-                                end:window.getStart()+min_delta});
+        window = new DateRange({start:window.getStartDate(),
+                                end:window.getStartDate()+min_delta});
       }
     }
 
