@@ -94,8 +94,12 @@ class TimeLineView extends Component {
 
   rangeChangedHandler(props){
     if (props.byUser){
-      let window = new DateRange({start:new Date(props.start),
-                                  end:new Date(props.end)});
+      let window = new DateRange({start:props.start.toISOString(),
+                                  end:props.end.toISOString()});
+      if (!window.hasBounds()){
+        console.log(`Something went wrong? ${window}`);
+        return;
+      }
       this._window = window;
     }
 
@@ -121,6 +125,8 @@ class TimeLineView extends Component {
     if (this._window === window){
       return;
     }
+
+    console.log(`Setting window ${window}`);
 
     const max_window = this.state.max_window;
 
@@ -149,6 +155,8 @@ class TimeLineView extends Component {
         }
 
         window = new_window;
+
+        console.log(`Fitted into ${new_window}`);
       }
 
       const min_delta = 24*60*60*1000;
@@ -160,6 +168,7 @@ class TimeLineView extends Component {
     }
 
     this._window = window;
+    console.log(`Set window to ${window}`);
     this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
                                  {animation:true});
   }

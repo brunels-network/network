@@ -2,12 +2,12 @@
 import Dry from 'json-dry';
 import lodash from 'lodash';
 
-import Date from './Date';
+import RoughDate from './RoughDate';
 import {ValueError} from './Errors';
 
 function _clean(val){
   if (!val || val._isADateRangeObject || val._isAMomentObject ||
-              val._isADateObject){
+              val._isARoughDateObject){
     return val;
   }
   else if (val.hasOwnProperty("start") || val.hasOwnProperty("end") ||
@@ -15,7 +15,7 @@ function _clean(val){
     return new DateRange(val);
   }
   else{
-    return new Date(val);
+    return new RoughDate(val);
   }
 }
 
@@ -51,19 +51,29 @@ class DateRange{
   }
 
   hasBounds(){
-    return this.state.start !== null || this.state.end !== null;
+    return this.hasStart() && this.hasEnd();
   }
 
   hasEnd(){
-    return this.state.end && !this.state.end.isNull();
+    if (this.state.end){
+      return !(this.state.end.isNull());
+    }
+    else{
+      return false;
+    }
   }
 
   hasStart(){
-    return this.state.start && !this.state.start.isNull();
+    if (this.state.start){
+      return !(this.state.start.isNull());
+    }
+    else{
+      return false;
+    }
   }
 
   isInstant(){
-    return this.state.start !== null && this.state.start === this.state.end;
+    return this.hasStart() && (this.state.start === this.state.end);
   }
 
   toDate(){
@@ -91,7 +101,7 @@ class DateRange{
       const other_start = date.getEarliestStart();
 
       if (my_start && other_start){
-        if (Date.gt(my_start, other_start)){ return false;}
+        if (RoughDate.gt(my_start, other_start)){ return false;}
       }
       else if (other_start){
         return false;
@@ -101,7 +111,7 @@ class DateRange{
       const other_end = date.getLatestEnd();
 
       if (my_end && other_end){
-        if (Date.lt(my_end, other_end)){ return false;}
+        if (RoughDate.lt(my_end, other_end)){ return false;}
       }
       else if (my_end){
         return false;
@@ -109,7 +119,7 @@ class DateRange{
 
       return true;
     }
-    else if (date._isADateObject){
+    else if (date._isARoughDateObject){
       if (date.isExact()){
         return this.contains(date.toDate());
       }
@@ -153,19 +163,19 @@ class DateRange{
       return other;
     }
 
-    const start = Date.max(this.getStart(), other.getStart());
+    const start = RoughDate.max(this.getStart(), other.getStart());
 
     if (!this.contains(start)){
       return null;
     }
 
-    const end = Date.min(this.getEnd(), other.getEnd());
+    const end = RoughDate.min(this.getEnd(), other.getEnd());
 
     if (!this.contains(end)){
       return null;
     }
 
-    if (Date.eq(start, end)){
+    if (RoughDate.eq(start, end)){
       return new DateRange({both:start});
     }
     else{
@@ -182,10 +192,10 @@ class DateRange{
       other = new DateRange({value:other});
     }
 
-    const start = Date.min(this.getStart(), other.getStart());
-    const end = Date.max(this.getEnd(), other.getEnd());
+    const start = RoughDate.min(this.getStart(), other.getStart());
+    const end = RoughDate.max(this.getEnd(), other.getEnd());
 
-    if (Date.eq(start, end)){
+    if (RoughDate.eq(start, end)){
       return new DateRange({both:start});
     }
     else{
@@ -376,23 +386,26 @@ class DateRange{
       else if (state._isADateRangeObject){
         this.state = {...state.state};
       }
+      else if (state._isARoughDateObject){
+        this.state = {"start":state, "end": state};
+      }
       else if (state.hasOwnProperty("value")){
         this.setState(state.value);
         return;
       }
       else if (state.hasOwnProperty("both")){
-        this.state.start = new Date(state.both);
+        this.state.start = new RoughDate(state.both);
         this.state.end = this.state.start;
       }
       else if (typeof state === "string"){
-        this.state.start = new Date(state);
+        this.state.start = new RoughDate(state);
         this.state.end = this.state.start;
       }
       else {
         let start = null;
 
         if (state.start){
-          start = new Date(state.start);
+          start = new RoughDate(state.start);
 
           if (start.isNull()){
             start = null;
@@ -402,7 +415,7 @@ class DateRange{
         let end = null;
 
         if (state.end){
-          end = new Date(state.end);
+          end = new RoughDate(state.end);
 
           if (end.isNull()){
             end = null;
@@ -410,15 +423,15 @@ class DateRange{
         }
 
         if (start && end){
-          if (Date.gt(start, end)){
+          if (RoughDate.gt(start, end)){
             let tmp = start;
             start = end;
             end = tmp;
           }
 
-          if (Date.lt(start, end)){
-            let tmp = Date.min(start, end);
-            end = Date.max(start, end);
+          if (RoughDate.lt(start, end)){
+            let tmp = RoughDate.min(start, end);
+            end = RoughDate.max(start, end);
             start = tmp;
           }
         }

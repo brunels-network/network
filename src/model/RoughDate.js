@@ -81,7 +81,7 @@ function _merge_raw(s1, s2){
   return `${s1} + ${s2}`;
 }
 
-class Date{
+class RoughDate{
   constructor(state){
     this.state = {
       start: null,
@@ -91,7 +91,7 @@ class Date{
 
     this.setState(state);
 
-    this._isADateObject = true;
+    this._isARoughDateObject = true;
   }
 
   setState(state){
@@ -101,7 +101,7 @@ class Date{
       this.state.raw = null;
       return;
     }
-    else if (state._isADateObject){
+    else if (state._isARoughDateObject){
       this.state = {...state.state};
       return;
     }
@@ -119,7 +119,7 @@ class Date{
       return;
     }
     else if (typeof(state) === "string"){
-      this.setState({start:state, raw:state});
+      this.setState({start:_toDate(state), raw:state});
       return;
     }
 
@@ -127,7 +127,7 @@ class Date{
     let end = _toDate(state.end);
 
     if (!start){
-      this.setState(new Date());
+      this.setState(new RoughDate());
       return;
     }
 
@@ -137,17 +137,17 @@ class Date{
   }
 
   static clone(item){
-    let d = new Date();
+    let d = new RoughDate();
     d.state = lodash.cloneDeep(item.state);
     return d;
   }
 
   static max(d1, d2){
-    return new Date(_get_max(d1.getLatest(), d2.getLatest()));
+    return new RoughDate(_get_max(d1.getLatest(), d2.getLatest()));
   }
 
   static min(d1, d2){
-    return new Date(_get_min(d1.getEarliest(), d2.getEarliest()));
+    return new RoughDate(_get_min(d1.getEarliest(), d2.getEarliest()));
   }
 
   static delta(d1, d2){
@@ -178,15 +178,15 @@ class Date{
   }
 
   static le(d1, d2){
-    return Date.eq(d1, d2) || Date.lt(d1, d2);
+    return RoughDate.eq(d1, d2) || RoughDate.lt(d1, d2);
   }
 
   static ge(d1, d2){
-    return Date.eq(d1, d2) || Date.gt(d1, d2);
+    return RoughDate.eq(d1, d2) || RoughDate.gt(d1, d2);
   }
 
   static ne(d1, d2){
-    return !(Date.eq(d1, d2));
+    return !(RoughDate.eq(d1, d2));
   }
 
   add(delta){
@@ -299,17 +299,17 @@ class Date{
                  end: _get_max(this.getEnd(), other.getEnd()),
                  raw: _merge_raw(this.getRaw(), other.getRaw())};
 
-    let date = new Date();
+    let date = new RoughDate();
     date.state = state;
 
     return date;
   }
 }
 
-Date.unDry = function(value){
-  return new Date(value);
+RoughDate.unDry = function(value){
+  return new RoughDate(value);
 }
 
-Dry.registerClass("Date", Date);
+Dry.registerClass("Date", RoughDate);
 
-export default Date;
+export default RoughDate;

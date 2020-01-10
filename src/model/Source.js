@@ -2,7 +2,7 @@
 import Dry from "json-dry";
 import lodash from 'lodash';
 
-import Date from './Date';
+import RoughDate from './RoughDate';
 
 import {ValueError} from './Errors';
 
@@ -46,8 +46,8 @@ class Source {
   }
 
   updateDate(date, force=false){
-    if (!(date instanceof Date || date._isADateObject)){
-      date = new Date(date);
+    if (!(date instanceof RoughDate || date._isARoughDateObject)){
+      date = new RoughDate(date);
     }
 
     if (date.isNull()){
@@ -59,7 +59,7 @@ class Source {
       return true;
     }
 
-    if (Date.ne(this.getDate(), date)){
+    if (RoughDate.ne(this.getDate(), date)){
       if (force){
         this.state.date = this.getDate().merge(date);
         return true;
@@ -79,7 +79,7 @@ class Source {
       this.state.id = setState(state.id);
       this.state.notes = setState(state.notes, []);
       this.state.sources = setState(state.sources, []);
-      this.state.date = setState(state.date, new Date());
+      this.state.date = setState(state.date, new RoughDate());
 
       if (!this.state.name){
         throw ValueError("You cannot have an Source without a name");

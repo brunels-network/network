@@ -269,6 +269,8 @@ class Social {
       return false;
     }
 
+    console.log(`Have set window to ${window}`);
+
     this.state.window = window;
     this.clearCache();
     return true;
