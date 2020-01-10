@@ -13,6 +13,10 @@ function _toDate(val, def=null){
       return val;
     }
 
+    /*if (val.toISOString){
+      val = val.toISOString();
+    }*/
+
     let date = moment(val);
 
     if (!date.isValid()){
@@ -32,10 +36,14 @@ function _toDate(val, def=null){
   }
 }
 
+// NOTE FOR FUTURE - moment(x) < moment(y) === true
+//            even though moment(x).toDate() < moment(y).toDate() === false
+//   MOMENT COMPARISONS ARE BROKEN!
+
 function _get_min(d1, d2){
   if (d1){
     if (d2){
-      if (d1 < d2){
+      if (d1.toDate() < d2.toDate()){
         return d1;
       }
       else{
@@ -54,7 +62,7 @@ function _get_min(d1, d2){
 function _get_max(d1, d2){
   if (d1){
     if (d2){
-      if (d1 > d2){
+      if (d1.toDate() > d2.toDate()){
         return d1;
       }
       else{
@@ -96,9 +104,7 @@ class RoughDate{
 
   setState(state){
     if (!state || state === "null" || state === null){
-      this.state.start = null;
-      this.state.end = null;
-      this.state.raw = null;
+      this.state = {start:null};
       return;
     }
     else if (state._isARoughDateObject){
@@ -106,20 +112,23 @@ class RoughDate{
       return;
     }
     else if (state._isADateRangeObject){
-      let d = state.toDate();
-      this.state = d.state;
+      this.state = state.toDate();
       return;
     }
     else if (state._isAMomentObject){
-      this.setState({start:state});
+      this.state = {start: _toDate(state)};
+      return;
+    }
+    else if (state.toISOString){
+      this.state = {start:_toDate(state)};
       return;
     }
     else if (state.hasOwnProperty("value")){
-      this.setState(state.value);
+      this.state = {start:state.value};
       return;
     }
     else if (typeof(state) === "string"){
-      this.setState({start:_toDate(state), raw:state});
+      this.state = {start:_toDate(state), raw:state};
       return;
     }
 
@@ -127,13 +136,18 @@ class RoughDate{
     let end = _toDate(state.end);
 
     if (!start){
-      this.setState(new RoughDate());
+      this.state = {start: null};
       return;
     }
 
     this.state.start = start;
     this.state.end = end;
     this.state.raw = state.raw;
+
+    if (this.isNull()){
+      console.log("NULL RoughDate?");
+      console.log(state);
+    }
   }
 
   static clone(item){
@@ -151,12 +165,21 @@ class RoughDate{
   }
 
   static delta(d1, d2){
-    return d1.getLatest() - d2.getEarliest();
+    return d1.getLatestDate() - d2.getEarliestDate();
   }
 
-  static eq(d1, d2){
-    return d1.state.start === d2.state.start &&
-           d1.state.end === d2.state.end;
+  static getDelta(d1, d2){
+    return RoughDate.delta(d1, d2);
+  }
+
+  static eq(item, other){
+    if (item._isARoughDateObject && other._isARoughDateObject){
+      return item.getEarliestString() === other.getEarliestString() &&
+             item.getLatestString() === other.getLatestString();
+    }
+    else{
+      return false;
+    }
   }
 
   static lt(d1, d2){
@@ -164,7 +187,7 @@ class RoughDate{
       return false;
     }
     else{
-      return d1.getEarliest() < d2.getEarliest();
+      return d1.getEarliestDate() < d2.getEarliestDate();
     }
   }
 
@@ -173,7 +196,7 @@ class RoughDate{
       return false;
     }
     else {
-      return d1.getEarliest() > d2.getEarliest();
+      return d1.getEarliestDate() > d2.getEarliestDate();
     }
   }
 
@@ -240,15 +263,65 @@ class RoughDate{
   }
 
   getEarliest(){
-    return this.state.start;
+    let state = {"start": this.state.start};
+    let r = new RoughDate();
+    r.state = state;
+    return r;
   }
 
   getLatest(){
     if (this.state.end){
-      return this.state.end;
+      let state = {"start": this.state.end};
+      let r = new RoughDate();
+      r.state = state;
+      return r;
     }
     else{
-      return this.state.start;
+      return this.getEarliest();
+    }
+  }
+
+  getEarliestDate(){
+    let d = this.getEarliest();
+
+    if (d){
+      return d.toDate();
+    }
+    else{
+      return null;
+    }
+  }
+
+  getLatestDate(){
+    let d = this.getLatest();
+
+    if (d){
+      return d.toDate();
+    }
+    else{
+      return null;
+    }
+  }
+
+  getEarliestString(){
+    let d = this.getEarliest();
+
+    if (d){
+      return d.toDate().toISOString();
+    }
+    else{
+      return null;
+    }
+  }
+
+  getLatestString(){
+    let d = this.getLatest();
+
+    if (d){
+      return d.toDate().toISOString();
+    }
+    else{
+      return null;
     }
   }
 
@@ -265,6 +338,17 @@ class RoughDate{
   }
 
   toDate(){
+    let m = this.toMoment();
+
+    if (m){
+      return m.toDate();
+    }
+    else{
+      return null;
+    }
+  }
+
+  toMoment(){
     if (this.isNull()){
       return null;
     }

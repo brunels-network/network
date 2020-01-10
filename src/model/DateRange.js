@@ -6,8 +6,7 @@ import RoughDate from './RoughDate';
 import {ValueError} from './Errors';
 
 function _clean(val){
-  if (!val || val._isADateRangeObject || val._isAMomentObject ||
-              val._isARoughDateObject){
+  if (!val || val._isADateRangeObject){
     return val;
   }
   else if (val.hasOwnProperty("start") || val.hasOwnProperty("end") ||
@@ -15,7 +14,7 @@ function _clean(val){
     return new DateRange(val);
   }
   else{
-    return new RoughDate(val);
+    return new DateRange({both:new RoughDate(val)});
   }
 }
 
@@ -119,28 +118,6 @@ class DateRange{
 
       return true;
     }
-    else if (date._isARoughDateObject){
-      if (date.isExact()){
-        return this.contains(date.toDate());
-      }
-      else{
-        return this.contains(date.toRange());
-      }
-    }
-    else if (date._isAMomentObject){
-      const start = this.getEarliestStart();
-      const end = this.getLatestEnd();
-
-      if (start && date < start.toDate()){
-        return false;
-      }
-      else if (end && date > end.toDate()){
-        return false;
-      }
-      else{
-        return true;
-      }
-    }
     else {
       throw new ValueError(`Invalid Date ${date}`);
     }
@@ -151,9 +128,6 @@ class DateRange{
 
     if (!other){
       return this;
-    }
-    else if (!(other._isADateRangeObject)){
-      other = new DateRange({value:other});
     }
 
     if (!other.hasBounds()){
@@ -429,7 +403,7 @@ class DateRange{
             end = tmp;
           }
 
-          if (RoughDate.lt(start, end)){
+          if (RoughDate.gt(start, end)){
             let tmp = RoughDate.min(start, end);
             end = RoughDate.max(start, end);
             start = tmp;

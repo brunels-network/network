@@ -133,7 +133,19 @@ class TimeLineView extends Component {
     if (max_window){
       let new_window = max_window.intersect(window);
 
+      console.log(`Intersect is ${new_window}`);
+
       if (new_window.getDelta() !== window.getDelta()){
+        let t = max_window.getStartDate() - window.getDelta();
+        let s = max_window.getStartDate();
+
+        console.log(max_window);
+        console.log(s);
+        console.log(s._isAMomentObject);
+        console.log(window.getDelta());
+        console.log(t);
+        console.log(t.toISOString());
+
         if (window.getStartDate() < max_window.getStartDate()){
           new_window = new DateRange({start:max_window.getStartDate(),
                                       end:max_window.getStartDate()
@@ -261,8 +273,11 @@ class TimeLineView extends Component {
 
     this._window = window;
 
-    let start = this._window.getStartDate();
-    let end = this._window.getEndDate();
+    let start = new Date(this._window.getEarliestStart().toDate());
+    let end = new Date(this._window.getLatestEnd().toDate());
+
+    console.log(start);
+    console.log(end);
 
     let items = null;
 
