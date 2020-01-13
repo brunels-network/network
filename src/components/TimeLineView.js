@@ -40,7 +40,6 @@ class TimeLineView extends Component {
 
     this.state = {
       dimensions: {height:300, width:600},
-      max_window: new DateRange({start:"1800-01-01", end:"2020-12-31"}),
     }
 
     this._is_activated = this.props.is_active;
@@ -126,59 +125,6 @@ class TimeLineView extends Component {
       return;
     }
 
-    console.log(`Setting window ${window}`);
-
-    const max_window = this.state.max_window;
-
-    if (max_window){
-      let new_window = max_window.intersect(window);
-
-      console.log(`Intersect is ${new_window}`);
-
-      if (new_window.getDelta() !== window.getDelta()){
-        let t = max_window.getStartDate() - window.getDelta();
-        let s = max_window.getStartDate();
-
-        console.log(max_window);
-        console.log(s);
-        console.log(s._isAMomentObject);
-        console.log(window.getDelta());
-        console.log(t);
-        console.log(t.toISOString());
-
-        if (window.getStartDate() < max_window.getStartDate()){
-          new_window = new DateRange({start:max_window.getStartDate(),
-                                      end:max_window.getStartDate()
-                                            +window.getDelta()});
-        }
-        else if (window.getEndDate() > max_window.getEndDate()){
-          new_window = new DateRange({start:max_window.getEndDate()-window.getDelta(),
-                                      end:max_window.getEndDate()});
-        }
-
-        if (new_window.getStartDate() < max_window.getStartDate()){
-          new_window = new DateRange({start:max_window.getStartDate(),
-                                      end:new_window.endDate()});
-        }
-
-        if (new_window.getEndDate() > max_window.getEndDate()){
-          new_window = new DateRange({start:new_window.getStartDate(),
-                                      end:max_window.getEndDate()});
-        }
-
-        window = new_window;
-
-        console.log(`Fitted into ${new_window}`);
-      }
-
-      const min_delta = 24*60*60*1000;
-
-      if (window.getDelta() < min_delta){
-        window = new DateRange({start:window.getStartDate(),
-                                end:window.getStartDate()+min_delta});
-      }
-    }
-
     this._window = window;
     console.log(`Set window to ${window}`);
     this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
@@ -249,41 +195,40 @@ class TimeLineView extends Component {
     my_options["height"] = height;
     my_options["width"] = width;
 
-    let max_window = this.state.max_window;
-
-    if (max_window){
-      my_options["max"] = max_window.getEndDate();
-      my_options["min"] = max_window.getStartDate();
-    }
-
     let window = this._window;
+    let max_window = this._window;
 
     if (this.props.getWindow){
       window = this.props.getWindow();
     }
 
-    if (!(window && window.hasBounds())){
-      if (max_window && max_window.hasBounds()){
-        window = max_window;
+    if (this.props.getMaxWindow){
+      max_window = this.props.getMaxWindow();
+
+      if (max_window.hasBounds()){
+        my_options["max"] = max_window.getEndDate();
+        my_options["min"] = max_window.getStartDate();
+
+        if (!window){
+          window = max_window;
+        }
       }
-      else{
-        window = new DateRange({start:"2000-01-31", end:"2020-12-31"});
-      }
+    }
+
+    if (!window){
+      window = new DateRange({start:"2000-01-31", end:"2020-12-31"});
     }
 
     this._window = window;
 
-    let start = new Date(this._window.getEarliestStart().toDate());
-    let end = new Date(this._window.getLatestEnd().toDate());
-
-    console.log(start);
-    console.log(end);
+    let start = this._window.getEarliestStart();
+    let end = this._window.getLatestEnd();
 
     let items = null;
 
     if (this.isActive()){
       if (this.props.getItems){
-        items = this.props.getItems();
+        //items = this.props.getItems();
       }
     }
 
@@ -292,11 +237,11 @@ class TimeLineView extends Component {
     }
 
     if (start){
-      my_options["start"] = start;
+      my_options["start"] = start.toDate();
     }
 
     if (end){
-      my_options["end"] = end;
+      my_options["end"] = end.toEnd();
     }
 
     let timeline = this.getTimeLine();
@@ -308,6 +253,9 @@ class TimeLineView extends Component {
       timeline.setWindow(start, end, {animation:false});
       this._is_activated = activated;
     }
+
+    console.log(`WINDOW = ${window}`);
+    console.log(`MAXWINDOW = ${max_window}`);
 
     return (
       <div className={styles.container}

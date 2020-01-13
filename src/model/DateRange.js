@@ -49,6 +49,32 @@ class DateRange{
     return d;
   }
 
+  static eq(item, other){
+    if (item === other){
+      return true;
+    }
+
+    if (item.hasStart() && other.hasStart()){
+      if (!RoughDate.eq(item.getStart(), other.getStart())){
+        return false;
+      }
+      else if (item.hasStart() || other.hasStart()){
+        return false;
+      }
+    }
+
+    if (item.hasEnd() && other.hasEnd()){
+      if (!RoughDate.eq(item.getEnd(), other.getEnd())){
+        return false;
+      }
+      else if (item.hasEnd() || other.hasEnd()){
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   hasBounds(){
     return this.hasStart() && this.hasEnd();
   }

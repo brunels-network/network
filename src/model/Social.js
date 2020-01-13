@@ -44,6 +44,7 @@ class Social {
                         connections:null};
     this.state.network = null;
     this.state.window = new DateRange();
+    this.state.max_window = new DateRange();
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -260,18 +261,71 @@ class Social {
     return this.state.window;
   }
 
+  getMaxWindow(){
+    return this.state.max_window;
+  }
+
+  _fitWindow(window){
+    let new_window = this.state.max_window.intersect(window);
+
+    let delta = window.getDelta();
+
+    if (new_window.getDelta() === delta){
+      return window;
+    }
+
+    if (delta > this.state.max_window.getDelta()){
+      return DateRange.clone(this.state.max_window);
+    }
+
+    if (window.getStartDate() < this.state.max_window.getStartDate()){
+      return new DateRange({start:this.state.max_window.getStartDate(),
+                            end:this.state.max_window.getStartDate()+delta});
+    }
+    else{
+      return new DateRange({start:this.state.max_window.getEndDate()-delta,
+                            end:this.state.max_window.getEndDate()});
+    }
+  }
+
+  setMaxWindow(window){
+    if (!window._isADateRangeObject){
+      window = new DateRange(window);
+    }
+
+    if (window === this.state.max_window){
+      return false;
+    }
+
+    console.log(`Have set max window to ${window}`);
+
+    this.state.max_window = window;
+
+    let fitted = this._fitWindow(this.state.window);
+
+    if (fitted !== this.state.window){
+      this.setWindow(fitted);
+    }
+  }
+
   setWindow(window){
     if (!window._isADateRangeObject){
       window = new DateRange(window);
     }
 
-    if (window === this.state.window){
+    if (DateRange.eq(window, this.state.window)){
       return false;
     }
 
-    console.log(`Have set window to ${window}`);
+    let fitted = this._fitWindow(window);
 
-    this.state.window = window;
+    if (DateRange.eq(fitted, this.state.window)){
+      return false;
+    }
+
+    console.log(`Have set window to ${fitted}`);
+
+    this.state.window = fitted;
     this.clearCache();
     return true;
   }

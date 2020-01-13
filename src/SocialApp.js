@@ -38,7 +38,7 @@ class SocialApp extends React.Component {
 
     // special cases for Brunel project...
     social.setAnchor("Brunel");
-    social.setWindow(new DateRange({start:"1836-06-26", end:"1858-01-31"}));
+    social.setMaxWindow(new DateRange({start:"1836-06-26", end:"1858-01-31"}));
 
     this.state = {
       social: social,
@@ -213,6 +213,7 @@ class SocialApp extends React.Component {
           <span className={styles.closePanelButton}
                 onClick={()=>{this.setState({isTimeLinePanelOpen:false})}}>X</span>
           <TimeLineBox selected={selected}
+                       getMaxWindow={()=>{return this.state.social.getMaxWindow()}}
                        getProjectWindow={()=>{return this.state.social.getWindow()}}
                        getItemWindow={()=>{return this.state.social.getWindow()}}
                        getProjectTimeLine={()=>{return this.state.social.getProjectTimeLine()}}
