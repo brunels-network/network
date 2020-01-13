@@ -258,10 +258,12 @@ class Social {
   }
 
   getWindow(){
+    console.log(`GET WINDOW ${this.state.window} : ${this.state.max_window}`);
     return this.state.window;
   }
 
   getMaxWindow(){
+    console.log(`GET MAXWINDOW ${this.state.max_window}`);
     return this.state.max_window;
   }
 
@@ -270,7 +272,7 @@ class Social {
 
     let delta = window.getDelta();
 
-    if (new_window.getDelta() === delta){
+    if (new_window && (new_window.getDelta() === delta)){
       return window;
     }
 
@@ -294,17 +296,22 @@ class Social {
     }
 
     if (window === this.state.max_window){
-      return false;
+      return;
     }
 
     console.log(`Have set max window to ${window}`);
 
     this.state.max_window = window;
 
-    let fitted = this._fitWindow(this.state.window);
+    if (this.state.window && this.state.window.hasBounds()){
+      let fitted = this._fitWindow(this.state.window);
 
-    if (fitted !== this.state.window){
-      this.setWindow(fitted);
+      if (fitted !== this.state.window){
+        this.setWindow(fitted);
+      }
+    }
+    else{
+      this.state.window = this.state.max_window;
     }
   }
 

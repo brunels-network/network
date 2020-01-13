@@ -206,12 +206,18 @@ class TimeLineView extends Component {
       max_window = this.props.getMaxWindow();
 
       if (max_window.hasBounds()){
-        my_options["max"] = max_window.getEndDate();
-        my_options["min"] = max_window.getStartDate();
+        my_options["max"] = max_window.getLatestEnd().toDate();
+        my_options["min"] = max_window.getEarliestStart().toDate();
 
         if (!window){
           window = max_window;
         }
+
+        console.log(`USING MAX_WINDOW ${max_window}`);
+      }
+      else{
+        console.log(`Unbounded max_window? ${max_window}`);
+        max_window = null;
       }
     }
 
@@ -228,7 +234,7 @@ class TimeLineView extends Component {
 
     if (this.isActive()){
       if (this.props.getItems){
-        //items = this.props.getItems();
+        items = this.props.getItems();
       }
     }
 
@@ -237,11 +243,13 @@ class TimeLineView extends Component {
     }
 
     if (start){
-      my_options["start"] = start.toDate();
+      start = start.toDate();
+      my_options["start"] = start;
     }
 
     if (end){
-      my_options["end"] = end.toEnd();
+      end = end.toDate();
+      my_options["end"] = end;
     }
 
     let timeline = this.getTimeLine();
@@ -254,8 +262,7 @@ class TimeLineView extends Component {
       this._is_activated = activated;
     }
 
-    console.log(`WINDOW = ${window}`);
-    console.log(`MAXWINDOW = ${max_window}`);
+    console.log(my_options);
 
     return (
       <div className={styles.container}

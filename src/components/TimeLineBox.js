@@ -92,6 +92,7 @@ class TimeLineBox extends Component {
             <TimeLineView ref={el => (this.tabs.projects = el)}
                           name="projects"
                           selected={this.props.selected}
+                          getMaxWindow={this.props.getMaxWindow}
                           getWindow={this.props.getProjectWindow}
                           getItems={this.props.getProjectTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}
@@ -103,6 +104,7 @@ class TimeLineBox extends Component {
             <TimeLineView ref={el => (this.tabs.items = el)}
                           name="items"
                           selected={this.props.selected}
+                          getMaxWindow={this.props.getMaxWindow}
                           getWindow={this.props.getItemWindow}
                           getItems={this.props.getItemTimeLine}
                           emitWindowChanged={this.props.emitWindowChanged}

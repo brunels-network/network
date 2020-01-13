@@ -81,15 +81,15 @@ class Project {
   getTimeLine(){
     const duration = this.getDuration();
 
-    if (!duration){
-      return null;
-    }
-    else{
-      return {start: duration.getEarliestStart(),
-              end: duration.getLatestEnd(),
+    if (duration && duration.hasBounds()){
+      return {start: duration.getEarliestStart().toDate(),
+              end: duration.getLatestEnd().toDate(),
               id: this.getID(),
               content: this.getName(),
              };
+    }
+    else{
+      return null;
     }
   }
 
