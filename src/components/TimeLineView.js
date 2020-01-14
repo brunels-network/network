@@ -43,7 +43,6 @@ class TimeLineView extends Component {
     }
 
     this._is_activated = this.props.is_active;
-    this._window = null;
   }
 
   activate(){
@@ -92,20 +91,20 @@ class TimeLineView extends Component {
   }
 
   rangeChangedHandler(props){
-    if (props.byUser){
-      let window = new DateRange({start:props.start.toISOString(),
-                                  end:props.end.toISOString()});
+    let window = null;
+
+    if (props.byUser || this._byUser){
+      this._byUser = false;
+      window = new DateRange({start:props.start.toISOString(),
+                              end:props.end.toISOString()});
       if (!window.hasBounds()){
         console.log(`Something went wrong? ${window}`);
         return;
       }
-      this._window = window;
     }
-
-    //we emit the set window, not what the TimeLine thinks, as otherwise
-    //we get weird behaviour on setup as we get initial rangeChanged fires
-    //for pre-rendered views
-    const window = this._window;
+    else{
+      window = this.getWindow();
+    }
 
     if (window && this.isActive() && this.props.emitWindowChanged){
       this.props.emitWindowChanged(window);
@@ -117,18 +116,32 @@ class TimeLineView extends Component {
       return;
     }
 
+
     if (!window){
       return;
     }
 
-    if (this._window === window){
+    let old_window = this.getWindow();
+
+    if (DateRange.eq(window, old_window)){
+      console.log("NO CHANGE IN WINDOW");
       return;
     }
 
-    this._window = window;
-    console.log(`Set window to ${window}`);
+    console.log(`CHANGED FROM ${old_window} to ${window}`);
+
+    this._byUser = true;
     this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
                                  {animation:true});
+  }
+
+  getWindow(){
+    if (this.props.getWindow){
+      return this.props.getWindow();
+    }
+    else{
+      return null;
+    }
   }
 
   setStartDate(date){
@@ -136,7 +149,7 @@ class TimeLineView extends Component {
       return;
     }
 
-    const window = this._window;
+    const window = this.getWindow();
 
     if (window){
       this.setWindow(new DateRange({start:date, end:window.getEndDate()}));
@@ -148,7 +161,7 @@ class TimeLineView extends Component {
       return;
     }
 
-    const window = this._window;
+    const window = this.getWindow();
 
     if (window){
       this.setWindow(new DateRange({start:window.getStartDate(), end:date}));
@@ -156,7 +169,7 @@ class TimeLineView extends Component {
   }
 
   scrollLeft(){
-    const window = this._window;
+    const window = this.getWindow();
 
     if (window){
       this.setWindow(window.shiftEarlier());
@@ -164,7 +177,7 @@ class TimeLineView extends Component {
   }
 
   scrollRight(){
-    const window = this._window;
+    const window = this.getWindow();
 
     if (window){
       this.setWindow(window.shiftLater());
@@ -172,7 +185,7 @@ class TimeLineView extends Component {
   }
 
   zoomIn(){
-    const window = this._window;
+    const window = this.getWindow();
 
     if (window){
       this.setWindow(window.zoomIn());
@@ -180,7 +193,7 @@ class TimeLineView extends Component {
   }
 
   zoomOut(){
-    const window = this._window;
+    const window = this.getWindow();
 
     if (window){
       this.setWindow(window.zoomOut());
@@ -195,12 +208,8 @@ class TimeLineView extends Component {
     my_options["height"] = height;
     my_options["width"] = width;
 
-    let window = this._window;
-    let max_window = this._window;
-
-    if (this.props.getWindow){
-      window = this.props.getWindow();
-    }
+    let window = this.getWindow();
+    let max_window = window;
 
     if (this.props.getMaxWindow){
       max_window = this.props.getMaxWindow();
@@ -212,8 +221,6 @@ class TimeLineView extends Component {
         if (!window){
           window = max_window;
         }
-
-        console.log(`USING MAX_WINDOW ${max_window}`);
       }
       else{
         console.log(`Unbounded max_window? ${max_window}`);
@@ -223,12 +230,11 @@ class TimeLineView extends Component {
 
     if (!window){
       window = new DateRange({start:"2000-01-31", end:"2020-12-31"});
+      console.log("NO WINDOW!?!");
     }
 
-    this._window = window;
-
-    let start = this._window.getEarliestStart();
-    let end = this._window.getLatestEnd();
+    let start = window.getEarliestStart();
+    let end = window.getLatestEnd();
 
     let items = null;
 
@@ -261,8 +267,6 @@ class TimeLineView extends Component {
       timeline.setWindow(start, end, {animation:false});
       this._is_activated = activated;
     }
-
-    console.log(my_options);
 
     return (
       <div className={styles.container}

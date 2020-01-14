@@ -258,12 +258,10 @@ class Social {
   }
 
   getWindow(){
-    console.log(`GET WINDOW ${this.state.window} : ${this.state.max_window}`);
     return this.state.window;
   }
 
   getMaxWindow(){
-    console.log(`GET MAXWINDOW ${this.state.max_window}`);
     return this.state.max_window;
   }
 
@@ -320,11 +318,16 @@ class Social {
       window = new DateRange(window);
     }
 
+    console.log(`setWindow(${window})`);
+
     if (DateRange.eq(window, this.state.window)){
+      console.log("No change in window");
       return false;
     }
 
     let fitted = this._fitWindow(window);
+
+    console.log(`fitted = ${fitted}`);
 
     if (DateRange.eq(fitted, this.state.window)){
       return false;

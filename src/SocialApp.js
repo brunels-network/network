@@ -140,6 +140,7 @@ class SocialApp extends React.Component {
   }
 
   slotWindowChanged(window){
+    console.log(`slotWindowChanged(${window})`);
     let social = this.state.social;
 
     if (social.setWindow(window)){
