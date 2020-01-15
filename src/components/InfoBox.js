@@ -116,6 +116,10 @@ function getBiography({item, social, emitSelected=null_function,
   return pages;
 }
 
+function _getSourceList(sources){
+  return <ul><li>Will be listed here...</li></ul>;
+}
+
 function extractData({item, social, emitSelected=null_function,
                       emitToggleFilter=null_function}){
   let data = {title:default_title, image:default_image,
@@ -184,6 +188,26 @@ function extractData({item, social, emitSelected=null_function,
 
     let asources = item.getAffiliationSources();
     let csources = item.getCorrespondanceSources();
+    let duration = item.getDuration();
+
+    if (duration){
+      duration = <div>Connected from {duration.getEarliest().toString()} to&nbsp;
+                      {duration.getLatest().toString()}.</div>
+    }
+
+    if (asources){
+      asources = <div>
+                   <div>Affiliation Sources</div>
+                   <div>{_getSourceList(asources)}</div>
+                 </div>;
+    }
+
+    if (csources){
+      csources = <div>
+                   <div>Correspondance Sources</div>
+                   <div>{_getSourceList(csources)}</div>
+                 </div>;
+    }
 
     let pages = [];
     pages.push(["Connection",
@@ -194,6 +218,7 @@ function extractData({item, social, emitSelected=null_function,
                   <div>to</div>
                   {n1}
                 </div>
+                <div>{duration}</div>
                 <div>{asources}</div>
                 <div>{csources}</div>
                </div>]);
