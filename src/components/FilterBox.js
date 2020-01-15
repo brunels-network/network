@@ -9,6 +9,8 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion';
 
+import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
+
 import styles from './FilterBox.module.css';
 
 function null_function(args=null){}
@@ -31,8 +33,7 @@ function filterList(items, props){
   let output = items.values().map((item)=>{
     let is_filtered = social.isFiltered(item);
 
-    return <div className={styles.listItem}
-               key={item.getName()}>
+    return <ResponsiveListItem key={item.getName()}>
               <button className={styles.itemButton}
                       onClick={()=>{emitSelected(item);}}>
                 {item.getName()}
@@ -43,10 +44,10 @@ function filterList(items, props){
                        onChange={(event)=>{emitToggleFilter(item);}}/>
                 <span className={styles.checkMark}/>
               </label>
-           </div>;
+           </ResponsiveListItem>;
   });
 
-  return <div className={styles.listItems}>{output}</div>;
+  return <ResponsiveList>{output}</ResponsiveList>;
 }
 
 function FilterBox(props){
