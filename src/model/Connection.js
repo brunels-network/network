@@ -235,24 +235,23 @@ class Connection {
     return `Connection(${this.getNode0Name()}<=>${this.getNode1Name()})`;
   }
 
+  getColorFromType(){
+    switch(this.state.type){
+      case "strong":
+        return "red";
+      case "direct":
+        return "black";
+      case "weak":
+        return "grey";
+      default:
+        console.log(this.state.type);
+        return "green";
+    }
+  }
+
   toEdge(){
-    let weight = 1.0;
-
-    let color = 'red';
-
-    if (weight > 10.0){
-      weight = 10.0;
-    }
-    else if (weight >= 4){
-      color = 'black';
-    }
-    else if (weight > 1.0){
-      color = 'gray';
-    }
-    else{
-      color = 'gray';
-      weight = 1.0;
-    }
+    let color = this.getColorFromType();
+    let weight = 1;
 
     let edge = {
       id:this.getID(),

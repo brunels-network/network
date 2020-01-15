@@ -297,8 +297,6 @@ class Social {
       return;
     }
 
-    console.log(`Have set max window to ${window}`);
-
     this.state.max_window = window;
 
     if (this.state.window && this.state.window.hasBounds()){
@@ -318,22 +316,15 @@ class Social {
       window = new DateRange(window);
     }
 
-    console.log(`setWindow(${window})`);
-
     if (DateRange.eq(window, this.state.window)){
-      console.log("No change in window");
       return false;
     }
 
     let fitted = this._fitWindow(window);
 
-    console.log(`fitted = ${fitted}`);
-
     if (DateRange.eq(fitted, this.state.window)){
       return false;
     }
-
-    console.log(`Have set window to ${fitted}`);
 
     this.state.window = fitted;
     this.clearCache();

@@ -58,18 +58,18 @@ class DateRange{
       if (!RoughDate.eq(item.getStart(), other.getStart())){
         return false;
       }
-      else if (item.hasStart() || other.hasStart()){
-        return false;
-      }
+    }
+    else if (item.hasStart() || other.hasStart()){
+      return false;
     }
 
     if (item.hasEnd() && other.hasEnd()){
       if (!RoughDate.eq(item.getEnd(), other.getEnd())){
         return false;
       }
-      else if (item.hasEnd() || other.hasEnd()){
-        return false;
-      }
+    }
+    else if (item.hasEnd() || other.hasEnd()){
+      return false;
     }
 
     return true;

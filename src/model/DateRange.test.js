@@ -16,6 +16,22 @@ test("simple", ()=>{
   expect(a.hasEnd()).toStrictEqual(true);
   expect(a.getEndDate() - a.getStartDate()).toStrictEqual(24*60*60*1000);
   expect(RoughDate.delta(a.getEnd(), a.getStart())).toStrictEqual(24*60*60*1000);
+
+  let b = new DateRange({start:"1850-12-02", end:"1852-01-01"});
+
+  expect(DateRange.eq(a, a)).toStrictEqual(true);
+  expect(DateRange.eq(b, b)).toStrictEqual(true);
+  expect(DateRange.eq(a, b)).toStrictEqual(false);
+
+  let c = new DateRange({start:"1850-12-02", end:"1850-12-01"});
+
+  expect(DateRange.eq(a, c)).toStrictEqual(true);
+  expect(DateRange.eq(c, a)).toStrictEqual(true);
+
+  let d = DateRange.clone(b);
+
+  expect(DateRange.eq(b, d)).toStrictEqual(true);
+  expect(DateRange.eq(c, d)).toStrictEqual(false);
 });
 
 test("intersect", ()=>{

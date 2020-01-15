@@ -124,11 +124,8 @@ class TimeLineView extends Component {
     let old_window = this.getWindow();
 
     if (DateRange.eq(window, old_window)){
-      console.log("NO CHANGE IN WINDOW");
       return;
     }
-
-    console.log(`CHANGED FROM ${old_window} to ${window}`);
 
     this._byUser = true;
     this.getTimeLine().setWindow(window.getStartDate(), window.getEndDate(),
