@@ -13,6 +13,7 @@ import styles from './Accordion.module.css';
 
 function BAccordion(props){
   return <Accordion className={styles.accordion}
+                    preExpanded={props.preExpanded}
                     allowMultipleExpanded={props.allowMultipleExpanded}
                     allowZeroExpanded={props.allowZeroExpanded}>
            {props.children}

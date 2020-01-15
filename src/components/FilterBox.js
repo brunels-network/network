@@ -4,10 +4,9 @@ import React from 'react';
 import {
   Accordion,
   AccordionItem,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
+  AccordionTitle,
+  AccordionPanel,
+} from './Accordion';
 
 import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
 import CheckBox from './CheckBox';
@@ -68,26 +67,23 @@ function FilterBox(props){
     emitClearFilters = null_function;
   }
 
-  let filter_info = <AccordionItem uuid="filterinfo"
-                                className={styles.accordionItem}>
-                  <AccordionItemHeading>
-                    <AccordionItemButton className={styles.accordionButton}>
-                      Current Filter
-                    </AccordionItemButton>
-                  </AccordionItemHeading>
-                  <AccordionItemPanel className={styles.accordionPanel}>
-                    <div className={styles.filterContainer}>
-                      <div className={styles.filterText}>
-                        {filter_text}
-                      </div>
-                      <div>
-                        <DefaultButton onClick={emitClearFilters}>
-                          Clear Filters
-                        </DefaultButton>
-                      </div>
-                    </div>
-                  </AccordionItemPanel>
-                </AccordionItem>;
+  let filter_info = <AccordionItem uuid="filterinfo">
+                      <AccordionTitle>
+                        Current Filter
+                      </AccordionTitle>
+                      <AccordionPanel>
+                        <div className={styles.filterContainer}>
+                          <div className={styles.filterText}>
+                            {filter_text}
+                          </div>
+                          <div>
+                            <DefaultButton onClick={emitClearFilters}>
+                              Clear Filters
+                            </DefaultButton>
+                          </div>
+                        </div>
+                      </AccordionPanel>
+                    </AccordionItem>;
 
   let projects = filterList(social.getProjects(false), props);
   let positions = filterList(social.getPositions(false), props);
@@ -96,68 +92,52 @@ function FilterBox(props){
   let businesses = filterList(social.getBusinesses(false), props);
 
   return <Accordion allowMultipleExpanded={false}
-                    allowZeroExpanded={true}
-                    className={styles.accordion}>
+                    allowZeroExpanded={true}>
           {filter_info}
 
-          <AccordionItem uuid="projects"
-                         className={styles.accordionItem}>
-            <AccordionItemHeading>
-              <AccordionItemButton className={styles.accordionButton}>
+          <AccordionItem uuid="projects">
+            <AccordionTitle>
                 Projects
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel className={styles.accordionPanel}>
+            </AccordionTitle>
+            <AccordionPanel>
               {projects}
-            </AccordionItemPanel>
+            </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem uuid="people"
-                         className={styles.accordionItem}>
-            <AccordionItemHeading>
-              <AccordionItemButton className={styles.accordionButton}>
-                People
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel className={styles.accordionPanel}>
+          <AccordionItem uuid="people">
+            <AccordionTitle>
+              People
+            </AccordionTitle>
+            <AccordionPanel>
               {people}
-            </AccordionItemPanel>
+            </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem uuid="businesses"
-                         className={styles.accordionItem}>
-            <AccordionItemHeading>
-              <AccordionItemButton className={styles.accordionButton}>
-                Businesses
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel className={styles.accordionPanel}>
+          <AccordionItem uuid="businesses">
+            <AccordionTitle>
+              Businesses
+            </AccordionTitle>
+            <AccordionPanel>
               {businesses}
-            </AccordionItemPanel>
+            </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem uuid="positions"
-                         className={styles.accordionItem}>
-            <AccordionItemHeading>
-              <AccordionItemButton className={styles.accordionButton}>
-                Positions
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel className={styles.accordionPanel}>
+          <AccordionItem uuid="positions">
+            <AccordionTitle>
+              Positions
+            </AccordionTitle>
+            <AccordionPanel>
               {positions}
-            </AccordionItemPanel>
+            </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem uuid="affiliations"
-                         className={styles.accordionItem}>
-            <AccordionItemHeading>
-              <AccordionItemButton className={styles.accordionButton}>
-                Affiliations
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel className={styles.accordionPanel}>
+          <AccordionItem uuid="affiliations">
+            <AccordionTitle>
+              Affiliations
+            </AccordionTitle>
+            <AccordionPanel>
               {affiliations}
-            </AccordionItemPanel>
+            </AccordionPanel>
           </AccordionItem>
 
         </Accordion>;

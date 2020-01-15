@@ -228,7 +228,8 @@ function extractData({item, social, emitSelected=null_function,
 
     if (asources || csources){
       accordion = <Accordion allowMultipleExpanded={true}
-                             allowZeroExpanded={true}>
+                             allowZeroExpanded={true}
+                             preExpanded={["asources", "csources"]}>
                     {asources}
                     {csources}
                   </Accordion>;
