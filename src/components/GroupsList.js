@@ -27,10 +27,11 @@ function GroupsList({groups, title=null, emitSelected=null_function,
 
       items.push(<ResponsiveListItem key={group.getName()}>
                   <DefaultButton onClick={()=>{emitSelected(group);}}
-                                 style={{width:"80%"}}>
+                                 style={{width:"70%"}}>
                     {group.getName()}
                   </DefaultButton>
                   <CheckBox onChange={(event)=>{emitToggleFilter(group);}}
+                            style={{width:"20%"}}
                             checked={is_filtered}/>
                  </ResponsiveListItem>);
     }
@@ -41,15 +42,16 @@ function GroupsList({groups, title=null, emitSelected=null_function,
     projects.push(
       <div className={styles.project} key={project.getName()}>
         <div className={styles.projectHeader}>
-          <DefaultButton style={{width:"80%"}}
+          <DefaultButton style={{width:"75%"}}
                          onClick={()=>{emitSelected(project);}}>
             {project.getName()}
           </DefaultButton>
           <CheckBox onChange={(event)=>{emitToggleFilter(project);}}
+                    style={{width:"20%"}}
                     checked={is_filtered}/>
         </div>
         <div className={styles.projectBody}>
-          <ResponsiveList>
+          <ResponsiveList style={{minWidth:"100%"}}>
             {items}
           </ResponsiveList>
         </div>
