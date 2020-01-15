@@ -81,10 +81,9 @@ function FilterBox(props){
                         {filter_text}
                       </div>
                       <div>
-                        <button className={styles.itemButton}
-                                onClick={emitClearFilters}>
+                        <DefaultButton onClick={emitClearFilters}>
                           Clear Filters
-                        </button>
+                        </DefaultButton>
                       </div>
                     </div>
                   </AccordionItemPanel>

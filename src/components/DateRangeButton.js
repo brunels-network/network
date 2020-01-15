@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import styles from './DateRangeButton.module.css';
+import DefaultButton from './DefaultButton';
 
 function _null_function(date){};
 
@@ -11,8 +11,6 @@ function DateRangeButton(props){
   if (!d){
     return null;
   }
-
-  console.log(d);
 
   if (!(d._isARoughDateObject || d._isADateRangeObject)){
     return null;
@@ -34,10 +32,9 @@ function DateRangeButton(props){
     d = d.toDateRange();
   }
 
-  return <button href="#" onClick={()=>{emitSelected(d)}}
-                 className={styles.button}>
+  return <DefaultButton onClick={()=>{emitSelected(d)}} style={props.style}>
            {s}
-         </button>;
+         </DefaultButton>;
 }
 
 export default DateRangeButton;

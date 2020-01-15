@@ -3,6 +3,9 @@ import React from 'react';
 
 import DateRangeButton from './DateRangeButton';
 import DateRange from '../model/DateRange';
+import DefaultButton from './DefaultButton';
+
+import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
 
 import styles from './SourceList.module.css';
 
@@ -27,21 +30,22 @@ function SourceList(props){
     let daterange = DateRange.mergeAll(sources[key]);
 
     if (daterange){
-      return <li key={source.getName()}>
-               <button href="#" onClick={()=>{emitSelected(source)}}
-                       className={styles.button}>
+      return <ResponsiveListItem key={source.getName()}>
+               <DefaultButton onClick={()=>{emitSelected(source)}}
+                              style={{width:"60%"}}>
                  {source.getName()}
-               </button> : <DateRangeButton value={daterange}
-                                            emitSelected={emitSelected}/>
-             </li>;
+               </DefaultButton>
+               <DateRangeButton style={{width:"40%"}}
+                                value={daterange}
+                                emitSelected={emitSelected}/>
+             </ResponsiveListItem>;
     }
     else{
-      return <li key={source.getName()}>
-               <button href="#" onClick={()=>{emitSelected(source)}}
-                       className={styles.button}>
+      return <ResponsiveListItem key={source.getName()}>
+               <DefaultButton onClick={()=>{emitSelected(source)}}>
                  {source.getName()}
-               </button>
-             </li>;
+               </DefaultButton>
+             </ResponsiveListItem>;
     }
   });
 
@@ -53,20 +57,16 @@ function SourceList(props){
     return <div className={styles.container}>
              <div className={styles.title}>{title}</div>
              <div className={styles.body}>
-               <ul className={styles.list}>
+               <ResponsiveList>
                  {output}
-               </ul>
+               </ResponsiveList>
              </div>
            </div>;
   }
   else{
-    return <div className={styles.container}>
-             <div className={styles.body}>
-               <ul className={styles.list}>
-                 {output}
-               </ul>
-             </div>
-           </div>;
+    return <ResponsiveList>
+              {output}
+           </ResponsiveList>;
   }
 }
 

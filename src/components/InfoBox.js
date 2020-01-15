@@ -6,6 +6,7 @@ import GroupsList from './GroupsList';
 import ConnectionList from './ConnectionList';
 import SourceList from './SourceList';
 import DateRangeButton from './DateRangeButton';
+import DefaultButton from './DefaultButton';
 
 import Social from '../model/Social';
 import Person from '../model/Person';
@@ -144,20 +145,18 @@ function extractData({item, social, emitSelected=null_function,
   }
 
   if (item instanceof Person){
-    data.title = <button href="#" className={styles.button}
-                         onClick={()=>{emitSelected(item);}}>
+    data.title = <DefaultButton onClick={()=>{emitSelected(item);}}>
                   {item.getName()}
-                 </button>
+                 </DefaultButton>
     data.pages = getBiography({item:item, social:social,
                                emitSelected:emitSelected,
                                emitToggleFilter:emitToggleFilter});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
   }
   else if (item instanceof Business){
-    data.title = <button href="#" className={styles.button}
-                         onClick={()=>{emitSelected(item);}}>
+    data.title = <DefaultButton onClick={()=>{emitSelected(item);}}>
                   {item.getName()}
-                 </button>
+                 </DefaultButton>
     data.pages = getBiography({item:item, social:social,
                                emitSelected:emitSelected,
                                emitToggleFilter:emitToggleFilter});
@@ -169,19 +168,17 @@ function extractData({item, social, emitSelected=null_function,
     let n0 = item.getNode0();
     if (n0.getName){
       let node = n0;
-      n0 = <button href="#" onClick={()=>{emitSelected(node)}}
-                  className={styles.button}>
+      n0 = <DefaultButton onClick={()=>{emitSelected(node)}}>
                   {n0.getName()}
-               </button>;
+           </DefaultButton>
     }
 
     let n1 = item.getNode1();
     if (n1.getName){
       let node = n1;
-      n1 = <button href="#" onClick={()=>{emitSelected(node)}}
-                   className={styles.button}>
-                   {n1.getName()}
-                 </button>;
+      n1 = <DefaultButton onClick={()=>{emitSelected(node)}}>
+            {n1.getName()}
+           </DefaultButton>;
     }
 
     let asources = item.getAffiliationSources();

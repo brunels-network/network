@@ -1,7 +1,10 @@
 
 import React from 'react';
 
-import styles from './ConnectionList.module.css';
+import DefaultButton from './DefaultButton';
+import CheckBox from './CheckBox';
+
+import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
 
 function null_function(item){}
 
@@ -23,27 +26,23 @@ function ConnectionList({connections, title, emitSelected=null_function,
     }
 
     return (
-      <li key={name}>
-        <button href="#" className={styles.button}
-          onClick={()=>{emitSelected(i);}}>
+      <ResponsiveListItem key={name}>
+        <DefaultButton onClick={()=>{emitSelected(i);}}
+                       style={{width:"80%"}}>
           {name}
-        </button> :&nbsp;
-        <input type="checkbox"
-               className={styles.checkbox}
-               onChange={(event)=>{emitToggleFilter(i);}}
-               checked={is_filtered}
-          >
-        </input>
-      </li>);
+        </DefaultButton>
+        <CheckBox onChange={(event)=>{emitToggleFilter(i);}}
+                  checked={is_filtered}/>
+      </ResponsiveListItem>);
   });
 
   if (title){
-    return (<div>{title}<br /><ul className={styles.list}>{listitems}</ul></div>);
+    return (<div>{title}<br />
+                 <ResponsiveList>{listitems}</ResponsiveList></div>);
   }
   else{
-    return (<ul className={styles.list}>{listitems}</ul>);
+    return (<ResponsiveList>{listitems}</ResponsiveList>);
   }
 }
-
 
 export default ConnectionList;

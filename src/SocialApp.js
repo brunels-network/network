@@ -13,6 +13,7 @@ import SlidingPanel from './components/SlidingPanel';
 import OverlayBox from './components/OverlayBox';
 import SearchBar from './components/SearchBar';
 import BrunelMenu from './components/BrunelMenu';
+import DefaultButton from './components/DefaultButton';
 
 // Brunel model
 import Social from './model/Social';
@@ -270,14 +271,12 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.bottomContainer}>
-          <button onClick={()=>this.toggleTimeLinePanel()}
-                  className={styles.controlButton}>
-            {timeline_text}
-          </button>&nbsp;
-          <button onClick={()=>{this.toggleFilterPanel()}}
-                  className={styles.controlButton}>
+          <DefaultButton onClick={()=>{this.toggleFilterPanel()}}>
             Filters
-          </button>
+          </DefaultButton>
+          <DefaultButton onClick={()=>this.toggleTimeLinePanel()}>
+            {timeline_text}
+          </DefaultButton>
         </div>
 
       </div>
