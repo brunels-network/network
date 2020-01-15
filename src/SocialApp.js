@@ -38,7 +38,7 @@ class SocialApp extends React.Component {
 
     // special cases for Brunel project...
     social.setAnchor("Brunel");
-    social.setMaxWindow(new DateRange({start:"1836-06-26", end:"1858-01-31"}));
+    social.setMaxWindow(new DateRange({start:"1800-01-01", end:"1860-01-01"}));
 
     this.state = {
       social: social,

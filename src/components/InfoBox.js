@@ -182,13 +182,20 @@ function extractData({item, social, emitSelected=null_function,
                  </button>;
     }
 
+    let asources = item.getAffiliationSources();
+    let csources = item.getCorrespondanceSources();
+
     let pages = [];
     pages.push(["Connection",
                <div style={{textAlign:"center"}}>
-                 <div>From</div>
-                 {n0}
-                 <div>to</div>
-                 {n1}
+                 <div>
+                  <div>From</div>
+                  {n0}
+                  <div>to</div>
+                  {n1}
+                </div>
+                <div>{asources}</div>
+                <div>{csources}</div>
                </div>]);
 
     pages.push(["Source", "Space to see the original source for this Connection"]);

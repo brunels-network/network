@@ -9,6 +9,9 @@ function _clean(val){
   if (!val || val._isADateRangeObject){
     return val;
   }
+  else if (val._isARoughDateObject){
+    return val.toDateRange();
+  }
   else if (val.hasOwnProperty("start") || val.hasOwnProperty("end") ||
            val.hasOwnProperty("both") || val.hasOwnProperty("value")){
     return new DateRange(val);

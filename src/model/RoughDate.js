@@ -337,11 +337,31 @@ class RoughDate{
     }
   }
 
+  toDateRange(){
+    if (this.isNull()){
+      return new DateRange();
+    }
+    else if (this.isFuzzy()){
+      return new DateRange({start:this.getEarliest(), end:this.getLatest()});
+    }
+    else{
+      return new DateRange({both:this.getEarliest()});
+    }
+  }
+
   toDate(){
     let m = this.toMoment();
 
     if (m){
-      return m.toDate();
+      try{
+        return m.toDate();
+      }
+      catch(error){
+        console.log(`STRANGE ERROR ${error}`);
+        console.log(`m = ${m}`);
+        console.log(m);
+        return null;
+      }
     }
     else{
       return null;

@@ -165,7 +165,7 @@ class Connection {
   }
 
   filterWindow(window){
-    if (!window || !this.state.sent){
+    if (!window){
       return this;
     }
     else if (!(window._isADateRangeObject)){
@@ -173,10 +173,23 @@ class Connection {
     }
 
     if (!window){
-      return null;
+      return this;
     }
 
-    return this;
+    let duration = this.getDuration();
+
+    if (!duration){
+      return this;
+    }
+
+    let intersect = window.intersect(duration);
+
+    if (!intersect){
+      return null;
+    }
+    else{
+      return this;
+    }
   }
 
   setState(state){
@@ -237,28 +250,40 @@ class Connection {
 
   getColorFromType(){
     switch(this.state.type){
-      case "strong":
-        return "red";
       case "direct":
-        return "black";
-      case "weak":
-        return "grey";
+        return "rgb(150,150,150)";
+      case "indirect":
+        return "rgb(180,180,180)";
       default:
-        console.log(this.state.type);
-        return "green";
+        console.log(`Unknown type? ${this.state.type}`);
+        return "red";
+    }
+  }
+
+  getWeightFromType(){
+    switch(this.state.type){
+      case "direct":
+        return 1.0;
+      case "indirect":
+        return 0.5;
+      default:
+        console.log(`Unknown type? ${this.state.type}`);
+        return 0.5;
     }
   }
 
   toEdge(){
     let color = this.getColorFromType();
-    let weight = 1;
+    let weight = this.getWeightFromType();
 
     let edge = {
       id:this.getID(),
       from:this.state.n0,
       to:this.state.n1,
-      size:weight,
+      value:weight,
       color:color,
+      scaling:{min:0.5, max:1},
+      arrows:{to:false, middle:false, from:false},
     };
 
     return edge;

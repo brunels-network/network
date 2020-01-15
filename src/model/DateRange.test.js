@@ -45,4 +45,11 @@ test("intersect", ()=>{
   let union = new DateRange({start:"1849-01-31", end:"1850-12-31"}).toString();
   expect(a.union(b).toString()).toStrictEqual(union);
   expect(b.union(a).toString()).toStrictEqual(union);
+
+  let c = new RoughDate({start:"1841-01-01", end:"1841-12-31"});
+  let d = new DateRange({start:"1839-12-08", end:"1841-01-17"});
+
+  intersect = new DateRange({start:"1841-01-01", end:"1841-01-17"}).toString();
+  console.log(intersect);
+  expect(d.intersect(c).toString()).toStrictEqual(intersect);
 });

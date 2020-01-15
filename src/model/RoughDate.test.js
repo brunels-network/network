@@ -1,5 +1,6 @@
 
 import RoughDate from './RoughDate';
+import DateRange from './DateRange';
 
 test("simple", ()=>{
     let a = new RoughDate({start:"1850-01-01", end:"1850-12-31"});
@@ -21,4 +22,27 @@ test("simple", ()=>{
 
     expect(RoughDate.eq(b, d)).toStrictEqual(true);
     expect(RoughDate.eq(c, d)).toStrictEqual(false);
+});
+
+test("intersect", ()=>{
+    let a = new RoughDate({start:"1823-01-01", end:"1833-12-31"});
+    let b = new DateRange({start:"1830-01-01", end:"1860-01-01"});
+
+    let intersect = new DateRange({start:"1830-01-01", end:"1833-12-31"})
+
+    expect(b.intersect(a).toString()).toStrictEqual(intersect.toString());
+
+    let m1 = a.toDateRange().getStart();
+    let m2 = b.getStart();
+
+    expect(RoughDate.max(m1,m2).toString()).toStrictEqual(m2.toString());
+
+});
+
+test("minmax", ()=>{
+    let a = new RoughDate({start:"1841-01-01", end:"1841-12-31"});
+    let b = new RoughDate("1839-12-08");
+
+    expect(RoughDate.min(a, b).toString()).toStrictEqual(b.toString());
+    expect(RoughDate.max(a, b).toString()).toStrictEqual(a.getLatest().toString());
 });
