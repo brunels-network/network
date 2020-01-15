@@ -46,6 +46,26 @@ class DateRange{
     }
   }
 
+  toSimpleString(){
+    if (this.hasBounds()){
+      if (this.isInstant()){
+        return this.getStart().toSimpleString();
+      }
+      else{
+        return this.getEarliestStart().merge(this.getLatestEnd()).toSimpleString();
+      }
+    }
+    else if (this.hasStart()){
+      return `${this.getStart().toSimpleString()}<=>future`;
+    }
+    else if (this.hasEnd()){
+      return `past<=>${this.getEnd().toSimpleString()}`;
+    }
+    else{
+      return "past<=>future";
+    }
+  }
+
   static clone(item){
     let d = new DateRange();
     d.state = lodash.cloneDeep(item.state);
@@ -76,6 +96,55 @@ class DateRange{
     }
 
     return true;
+  }
+
+  static mergeAll(dates){
+    if (!dates){
+      return null;
+    }
+    else if (dates._isARoughDateObject || dates._isARoughDateObject){
+      return dates;
+    }
+
+    if (!dates.length || dates.length === 0){
+      return null;
+    }
+
+    let date = dates[0];
+
+    if (dates.length > 1){
+      for (let i=1; i<dates.length; ++i){
+        if (!dates[i].isNull()){
+          if (date.isNull()){
+            date = dates[i];
+          }
+          else{
+            date = date.merge(dates[i]);
+          }
+        }
+      }
+    }
+
+    if (date.isNull()){
+      return null;
+    }
+    else{
+      return date;
+    }
+  }
+
+  merge(other){
+    if (!other){
+      return this;
+    }
+    else if (other._isARoughDateObject){
+      other = other.toDateRange();
+    }
+
+    return new DateRange({start: RoughDate.min(this.getEarliestStart(),
+                                               other.getEarliestStart()),
+                          end: RoughDate.max(this.getLatestEnd(),
+                                             other.getLatestEnd())});
   }
 
   hasBounds(){

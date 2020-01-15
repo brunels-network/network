@@ -19,10 +19,12 @@
   text-align: center;
 }
 
-.datePicker:hover {
-  background-color: rgb(3, 99, 32);
-  opacity: 1.0;
-  color: white;
+@media(hover: hover) and (pointer: fine){
+  .datePicker:hover {
+    background-color: rgb(3, 99, 32);
+    opacity: 1.0;
+    color: white;
+  }
 }
 
 .zoomButton {
@@ -35,11 +37,6 @@
   transition-duration: 0.2s;
 }
 
-.zoomButton:hover {
-  color: black;
-  background-color: white;
-}
-
 .scrollButton {
   font-size: small;
   text-align: center;
@@ -50,7 +47,18 @@
   transition-duration: 0.2s;
 }
 
-.scrollButton:hover {
-  color: black;
-  background-color: white;
+@media(hover: hover) and (pointer: fine){
+  .datePicker:hover {
+    background-color: rgb(3, 99, 32);
+    opacity: 1.0;
+    color: white;
+  }
+  .scrollButton:hover {
+    color: black;
+    background-color: white;
+  }
+  .zoomButton:hover {
+    color: black;
+    background-color: white;
+  }
 }

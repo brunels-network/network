@@ -34,12 +34,6 @@
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
 }
 
-.controlButton:hover {
-  background-color: #008CBA;
-  opacity: 1.0;
-  color: white;
-}
-
 .controlButton:active {
   box-shadow: 0 2px rgba(0,0,0,0.2);
   transform: translateY(2px);
@@ -77,12 +71,6 @@
   padding: 2px 5px;
 }
 
-.closePanelButton:hover {
-  padding: 2px 5px;
-  background-color: red;
-  color: white;
-}
-
 .closeOverlayButton {
   position: absolute;
   background-color: white;
@@ -94,12 +82,6 @@
   top: -10px;
   right: -10px;
   padding: 2px 5px;
-}
-
-.closeOverlayButton:hover {
-  padding: 2px 5px;
-  background-color: red;
-  color: white;
 }
 
 .modal {
@@ -130,4 +112,22 @@
 
 .modalOverlayBeforeClose{
   opacity: 0;
+}
+
+@media(hover: hover) and (pointer: fine){
+  .controlButton:hover {
+    background-color: #008CBA;
+    opacity: 1.0;
+    color: white;
+  }
+  .closeOverlayButton:hover {
+    padding: 2px 5px;
+    background-color: red;
+    color: white;
+  }
+  .closePanelButton:hover {
+    padding: 2px 5px;
+    background-color: red;
+    color: white;
+  }
 }

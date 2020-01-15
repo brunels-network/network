@@ -17,12 +17,6 @@
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
 }
 
-.itemButton:hover {
-  background-color: rgb(3, 99, 32);
-  opacity: 1.0;
-  color: white;
-}
-
 .itemButton:active {
   box-shadow: 0 2px rgba(0,0,0,0.2);
 }
@@ -62,11 +56,6 @@
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
-}
-
-/* On mouse-over, add a grey background color */
-.checkBox:hover input ~ .checkMark {
-  background-color: #ccc;
 }
 
 /* When the checkbox is checked, add a blue background */
@@ -123,6 +112,19 @@
 	margin-left: 2px;
   margin-top: 2px;
   background-color: rgba(3, 99, 32, 0.103);
+}
+
+
+@media(hover: hover) and (pointer: fine){
+  .itemButton:hover {
+    background-color: rgb(3, 99, 32);
+    opacity: 1.0;
+    color: white;
+  }
+
+  .checkBox:hover input ~ .checkMark {
+    background-color: #ccc;
+  }
 }
 
 @media (min-width: 410px) {

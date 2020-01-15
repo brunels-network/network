@@ -4,6 +4,8 @@ import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
 import GroupsList from './GroupsList';
 import ConnectionList from './ConnectionList';
+import SourceList from './SourceList';
+import DateRangeButton from './DateRangeButton';
 
 import Social from '../model/Social';
 import Person from '../model/Person';
@@ -116,10 +118,6 @@ function getBiography({item, social, emitSelected=null_function,
   return pages;
 }
 
-function _getSourceList(sources){
-  return <ul><li>Will be listed here...</li></ul>;
-}
-
 function extractData({item, social, emitSelected=null_function,
                       emitToggleFilter=null_function}){
   let data = {title:default_title, image:default_image,
@@ -191,22 +189,21 @@ function extractData({item, social, emitSelected=null_function,
     let duration = item.getDuration();
 
     if (duration){
-      duration = <div>Connected from {duration.getEarliest().toString()} to&nbsp;
-                      {duration.getLatest().toString()}.</div>
+      duration = <div>Connected <DateRangeButton value={duration}
+                                                 emitSelected={emitSelected}/>
+                 </div>
     }
 
     if (asources){
-      asources = <div>
-                   <div>Affiliation Sources</div>
-                   <div>{_getSourceList(asources)}</div>
-                 </div>;
+      asources = <SourceList social={social} sources={asources}
+                             emitSelected={emitSelected}
+                             title="Affiliation Sources"/>;
     }
 
     if (csources){
-      csources = <div>
-                   <div>Correspondance Sources</div>
-                   <div>{_getSourceList(csources)}</div>
-                 </div>;
+      csources = <SourceList social={social} sources={csources}
+                             emitSelected={emitSelected}
+                             title="Correspondance Sources"/>;
     }
 
     let pages = [];

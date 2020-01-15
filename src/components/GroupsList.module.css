@@ -11,10 +11,12 @@
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
 }
 
-.button:hover {
-  background-color: rgb(2, 43, 228);
-  opacity: 1.0;
-  color: white;
+@media(hover: hover) and (pointer: fine){
+  .button:hover {
+    background-color: rgb(2, 43, 228);
+    opacity: 1.0;
+    color: white;
+  }
 }
 
 .button:active {

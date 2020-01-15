@@ -15,10 +15,12 @@
   transition: 100ms ease-in-out;
 }
 
-.menuItem:hover {
-  background-color: blue;
-}
-
 .menuItem:active {
   transform: translateX(5px);
+}
+
+@media(hover: hover) and (pointer: fine){
+  .menuItem:hover {
+    background-color: blue;
+  }
 }

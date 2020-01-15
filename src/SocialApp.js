@@ -38,7 +38,7 @@ class SocialApp extends React.Component {
 
     // special cases for Brunel project...
     social.setAnchor("Brunel");
-    social.setMaxWindow(new DateRange({start:"1800-01-01", end:"1860-01-01"}));
+    social.setMaxWindow(new DateRange({start:"1800-01-01", end:"1860-12-31"}));
 
     this.state = {
       social: social,
@@ -118,6 +118,14 @@ class SocialApp extends React.Component {
       return;
     }
 
+    if (id._isADateRangeObject){
+      let social = this.state.social;
+      if (social.setWindow(id)){
+        this.setState({social:social});
+      }
+      return;
+    }
+
     let network = this.getNetwork();
     if (network){
       let selection = network.getSelection();
@@ -179,6 +187,12 @@ class SocialApp extends React.Component {
     const social = this.state.social;
 
     let menu = [];
+
+    let timeline_text = "Timeline";
+
+    if (social){
+      timeline_text = `Timeline : ${social.getWindow().toSimpleString()}`;
+    }
 
     menu.push(["About", ()=>{this.viewAbout()}]);
     menu.push(["View Source", ()=>{this.viewSource()}]);
@@ -258,7 +272,7 @@ class SocialApp extends React.Component {
         <div className={styles.bottomContainer}>
           <button onClick={()=>this.toggleTimeLinePanel()}
                   className={styles.controlButton}>
-            Timeline
+            {timeline_text}
           </button>&nbsp;
           <button onClick={()=>{this.toggleFilterPanel()}}
                   className={styles.controlButton}>

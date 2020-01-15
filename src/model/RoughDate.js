@@ -262,6 +262,35 @@ class RoughDate{
     }
   }
 
+  toSimpleString(){
+    if (this.isNull()){
+      return "unknown";
+    }
+    else if (this.isFuzzy()){
+      let s = this.state.start.toDate();
+      let e = this.state.end.toDate();
+
+      console.log(`${s.getMonth()} ${e.getMonth()} ${s.getDate()} ${e.getDate()}`);
+
+      if (s.getMonth() === 0 && e.getMonth() === 11 &&
+          s.getDate() === 1 && e.getDate() === 31){
+        //the dates span full years
+        if (s.getFullYear() === e.getFullYear()){
+          return s.getFullYear();
+        }
+        else{
+          return `${s.getFullYear()}-${e.getFullYear()}`;
+        }
+      }
+      else{
+        return `${s.getDate()}/${s.getMonth()+1}/${s.getFullYear()}-${e.getDate()}/${e.getMonth()+1}/${e.getFullYear()}`;
+      }
+    }
+    else{
+      return this.state.start.format("LL");
+    }
+  }
+
   getEarliest(){
     let state = {"start": this.state.start};
     let r = new RoughDate();

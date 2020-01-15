@@ -46,11 +46,6 @@
   transition-duration: 0.2s;
 }
 
-.hamburgerButton:hover {
-  background-color: green;
-  color: white;
-}
-
 .hamburgerButton:active {
   background-color: rgba(0,0,0,0);
   color: black;
@@ -81,10 +76,6 @@
   transition-duration: 0.2s;
 }
 
-.searchButton:hover {
-  background-color: blue;
-}
-
 .searchButton:active {
   transform: rotate(5deg);
   background-color: green;
@@ -110,7 +101,16 @@
   padding: 2px 5px;
 }
 
-.closeResultButton:hover {
-  background: red;
-  color: white;
+@media(hover: hover) and (pointer: fine){
+  .hamburgerButton:hover {
+    background-color: green;
+    color: white;
+  }
+  .closeResultButton:hover {
+    background: red;
+    color: white;
+  }
+  .searchButton:hover {
+    background-color: blue;
+  }
 }
