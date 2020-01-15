@@ -2,6 +2,13 @@ import React from "react";
 
 import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTitle,
+  AccordionPanel,
+} from './Accordion';
+
 import GroupsList from './GroupsList';
 import ConnectionList from './ConnectionList';
 import SourceList from './SourceList';
@@ -186,21 +193,45 @@ function extractData({item, social, emitSelected=null_function,
     let duration = item.getDuration();
 
     if (duration){
-      duration = <div>Connected <DateRangeButton value={duration}
-                                                 emitSelected={emitSelected}/>
+      duration = <div>
+                   <div>during</div>
+                   <DateRangeButton value={duration}
+                                    emitSelected={emitSelected}/>
                  </div>
     }
 
     if (asources){
-      asources = <SourceList social={social} sources={asources}
-                             emitSelected={emitSelected}
-                             title="Affiliation Sources"/>;
+      asources = <AccordionItem uuid="asources">
+                   <AccordionTitle>
+                     Affiliation Sources
+                   </AccordionTitle>
+                   <AccordionPanel>
+                     <SourceList social={social} sources={asources}
+                                 emitSelected={emitSelected}/>
+                   </AccordionPanel>
+                 </AccordionItem>;
     }
 
     if (csources){
-      csources = <SourceList social={social} sources={csources}
-                             emitSelected={emitSelected}
-                             title="Correspondance Sources"/>;
+      csources = <AccordionItem uuid="csources">
+                   <AccordionTitle>
+                     Correspondance Sources
+                   </AccordionTitle>
+                   <AccordionPanel>
+                     <SourceList social={social} sources={csources}
+                                 emitSelected={emitSelected}/>
+                   </AccordionPanel>
+                 </AccordionItem>;
+    }
+
+    let accordion = null;
+
+    if (asources || csources){
+      accordion = <Accordion allowMultipleExpanded={true}
+                             allowZeroExpanded={true}>
+                    {asources}
+                    {csources}
+                  </Accordion>;
     }
 
     let pages = [];
@@ -213,11 +244,9 @@ function extractData({item, social, emitSelected=null_function,
                   {n1}
                 </div>
                 <div>{duration}</div>
-                <div>{asources}</div>
-                <div>{csources}</div>
+                <div>{accordion}</div>
                </div>]);
 
-    pages.push(["Source", "Space to see the original source for this Connection"]);
     pages.push(["Analysis", "Space for analysis of this Connection"]);
 
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
