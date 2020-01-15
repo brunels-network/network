@@ -10,6 +10,8 @@ import {
 } from 'react-accessible-accordion';
 
 import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
+import CheckBox from './CheckBox';
+import DefaultButton from './DefaultButton';
 
 import styles from './FilterBox.module.css';
 
@@ -34,16 +36,13 @@ function filterList(items, props){
     let is_filtered = social.isFiltered(item);
 
     return <ResponsiveListItem key={item.getName()}>
-              <button className={styles.itemButton}
-                      onClick={()=>{emitSelected(item);}}>
+              <DefaultButton style={{position:"relative",
+                                     maxWidth:"80%"}}
+                             onClick={()=>{emitSelected(item);}}>
                 {item.getName()}
-              </button>&nbsp;
-              <label className={styles.checkBox}>
-                <input type="checkbox"
-                       checked={is_filtered}
-                       onChange={(event)=>{emitToggleFilter(item);}}/>
-                <span className={styles.checkMark}/>
-              </label>
+              </DefaultButton>&nbsp;
+              <CheckBox checked={is_filtered}
+                        onChange={(event)=>{emitToggleFilter(item);}}/>
            </ResponsiveListItem>;
   });
 
