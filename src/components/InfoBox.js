@@ -12,6 +12,7 @@ import {
 import GroupsList from './GroupsList';
 import ConnectionList from './ConnectionList';
 import SourceList from './SourceList';
+import WeightsList from './WeightsList';
 import DateRangeButton from './DateRangeButton';
 import DefaultButton from './DefaultButton';
 
@@ -262,16 +263,20 @@ function extractData({item, social, emitSelected=null_function,
     let pages = [];
     pages.push(["Connection",
                <div style={{textAlign:"center"}}>
-                 <div>
                   {n0}
                   <div>||</div>
                   {n1}
-                </div>
-                <div>&nbsp;</div>
-                <div>{duration}</div>
-                <div>&nbsp;</div>
-                <div>{accordion}</div>
-               </div>]);
+                  <div>&nbsp;</div>
+                  <div>{duration}</div>
+                </div>]);
+
+    pages.push(["Sources", <div>{accordion}</div>]);
+
+    pages.push(["Projects", <WeightsList weights={item.getWeights()}
+                                         type={item.getType()}
+                                         social={social}
+                                         emitSelected={emitSelected}
+                                         emitToggleFilter={emitToggleFilter}/>]);
 
     pages.push(["Analysis", "Space for analysis of this Connection"]);
 

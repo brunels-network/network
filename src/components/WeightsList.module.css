@@ -1,0 +1,20 @@
+
+.project {
+  padding: 2px;
+  text-align: center;
+  break-before: always;
+  break-after: always;
+  border: 2px solid rgb(3, 99, 32);
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.projectHeader {
+  padding: 10px;
+  background-color: rgb(150, 211, 240);
+  border-radius: 5px;
+}
+
+.projectBody {
+  padding-top: 5px;
+}

@@ -228,6 +228,7 @@ class Connection {
       this.state.affiliations = setState(state.affiliations, {});
       this.state.correspondances = setState(state.correspondances, {});
       this.state.notes = setState(state.notes, []);
+      this.state.weights = setState(state.weights, {});
       this.state.projects = setState(state.projects, {});
 
       if (!this.state.n0 || !this.state.n1){
@@ -285,15 +286,35 @@ class Connection {
     }
   }
 
+  getType(){
+    return this.state.type;
+  }
+
+  getWeights(){
+    return this.state.weights;
+  }
+
+  getWeight(){
+    let weight = 1.0;
+
+    Object.keys(this.state.weights).forEach((key, index)=>{
+      weight += this.state.weights[key];
+    });
+
+    return weight;
+  }
+
   getWeightFromType(){
+    let weight = this.getWeight();
+
     switch(this.state.type){
       case "direct":
-        return 1.0;
+        return 1.0 * weight;
       case "indirect":
-        return 0.5;
+        return 0.5 * weight;
       default:
         console.log(`Unknown type? ${this.state.type}`);
-        return 0.5;
+        return 0.5 * weight;
     }
   }
 
@@ -307,7 +328,7 @@ class Connection {
       to:this.state.n1,
       value:weight,
       color:color,
-      scaling:{min:0.5, max:1},
+      scaling:{min:0.5, max:5},
       arrows:{to:false, middle:false, from:false},
     };
 

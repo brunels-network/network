@@ -13,6 +13,17 @@ def _setState(state, val, default=None):
         return default
 
 
+def _mergeWeights(state, other, key):
+    state = state[key]
+    other = other[key]
+
+    for key, value in other.items():
+        if key not in state:
+            state[key] = value
+        else:
+            state[key] += value
+
+
 def _mergeSources(state, other, key):
     state = state[key]
     other = other[key]
@@ -41,6 +52,7 @@ class Connection:
             "affiliations": None,
             "correspondances": None,
             "projects": None,
+            "weights": None,
             "notes": None,
         }
 
@@ -60,6 +72,7 @@ class Connection:
         self.state["correspondances"] = _setState(state, "correspondances", {})
         self.state["notes"] = _setState(state, "notes", [])
         self.state["projects"] = _setState(state, "projects", {})
+        self.state["weights"] = _setState(state, "weights", {})
 
         if self.state["n0"] is None or self.state["n1"] is None:
             raise ValueError(f"Invalid connection! {self.state['n0']}<=>"
@@ -88,6 +101,8 @@ class Connection:
         _mergeSources(state, other.state, "affiliations")
         _mergeSources(state, other.state, "correspondances")
 
+        _mergeWeights(state, other.state, "weights")
+
         state["duration"] = state["duration"].merge(other.state["duration"])
 
         m = Connection()
@@ -108,6 +123,16 @@ class Connection:
 
     def __repr__(self):
         return self.__str__()
+
+    @staticmethod
+    def getConnectionName(node1, node2):
+        n0 = node1.getID()
+        n1 = node2.getID()
+
+        if n0 <= n1:
+            return f"{n0}<=>{n1}"
+        else:
+            return f"{n1}<=>{n0}"
 
     def getName(self):
         n0 = self.state["n0"]
@@ -161,6 +186,9 @@ class Connection:
 
     def getID(self):
         return self.state["id"]
+
+    def getWeights(self):
+        return self.state["weights"]
 
     def toDry(self):
         state = {}

@@ -75,6 +75,9 @@ class Connections:
         except KeyError:
             raise KeyError(f"No Message with ID {id}")
 
+    def find(self, node0, node1):
+        return self.getByName(_Connection.getConnectionName(node0, node1))
+
     def getByName(self, name):
         try:
             return self.get(self._names[name])

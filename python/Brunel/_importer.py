@@ -441,6 +441,7 @@ def importConnection(edge, project, mapping=None, importers=None):
                             "duration": duration,
                             "shared": shared_links,
                             "projects": {project.getID(): _DateRange.null()},
+                            "weights": {project.getID(): 1.0},
                             "type": typ,
                             })
 
