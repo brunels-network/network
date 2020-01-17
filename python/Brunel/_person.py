@@ -13,6 +13,18 @@ def _setState(state, val, default=None):
         return default
 
 
+def _mergeName(old, new, key):
+    if len(":".join(new[key])) > len(":".join(old[key])):
+        old[key] = new[key]
+
+
+def _mergeNames(old, new):
+    for key in ["titles", "firstnames", "surnames", "suffixes"]:
+        _mergeName(old, new, key)
+
+    if old["orig_name"] != new["orig_name"]:
+        old["orig_name"] = f"{old['orig_name']} or {new['orig_name']}"
+
 def _mergeProjects(old, new, key):
     old = old[key]
     new = new[key]
@@ -53,6 +65,8 @@ class Person:
         import copy as _copy
         state = _copy.copy(self.state)
 
+        _mergeNames(state, other.state)
+
         _mergeProjects(state, other.state, "positions")
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
@@ -63,6 +77,7 @@ class Person:
         p = Person()
         p.state = state
         p._getHook = self._getHook
+
         return p
 
     def __str__(self):

@@ -37,14 +37,10 @@ class Positions:
         if not isinstance(position, _Position):
             raise TypeError("Can only add a Position to Positions")
 
-        print(f'Adding {position.getName()}')
-
         try:
             return self.getByName(position.getName())
         except Exception:
             pass
-
-        print("This is a new position")
 
         id = position.getID()
 
@@ -63,8 +59,6 @@ class Positions:
             self.state["registry"][uid] = position
 
         self._names[position.getCanonical()] = position.getID()
-        print(f"Added {position.getCanonical()}")
-        print(self._names)
         position._getHook = self._getHook
         return position
 

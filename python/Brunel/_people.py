@@ -23,6 +23,11 @@ class People:
 
         self.load(props)
 
+        self._log = []
+
+    def addLog(self, log):
+        self._log.append(log)
+
     def add(self, person: _Person):
         if person is None:
             return
@@ -42,10 +47,22 @@ class People:
         try:
             existing = self.getByName(person.getName())
         except Exception:
-            pass
+            existing = None
+
+        if existing is None:
+            try:
+                existing = self.getByFuzzyName(person)
+            except Exception as e:
+                existing = None
+
+            if existing:
+                self.addLog(f"Have fuzzy matched {person.getName()} "
+                            f"to {existing.getName()}")
 
         if existing:
+            del self._names[existing.getName()]
             existing = existing.merge(person)
+            self._names[existing.getName()] = existing.getID()
             self.state["registry"][existing.getID()] = existing
             return existing
 
@@ -69,6 +86,12 @@ class People:
         self._names[person.getName()] = person.getID()
         return person
 
+    def getLog(self):
+        if len(self._log) == 0:
+            return None
+        else:
+            return "\n".join(self._log)
+
     def values(self):
         return self.state["registry"].values()
 
@@ -77,6 +100,20 @@ class People:
             return self.state["registry"][id]
         except Exception:
             raise KeyError(f"No Person with ID {id}")
+
+    def getByFuzzyName(self, person):
+        # find all people with matching surname
+        surname = person.getSurname()
+
+        for (pid, p) in self.state["registry"].items():
+            if p.couldBe(person):
+                y = input(f"Is {person.getName()} the same person "
+                          f"as {p.getName()}? (y/n) ")
+
+                if y and y.lower()[0] == "y":
+                    return p
+
+        return None
 
     def getByName(self, name):
         try:
