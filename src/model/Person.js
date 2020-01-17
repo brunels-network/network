@@ -130,6 +130,35 @@ class Person {
     return this.state.id;
   }
 
+  filterSource(source){
+    if (source.getID){
+      let id = source.getID();
+      source = {};
+      source[id] = 1;
+    }
+
+    let nsources = Object.keys(source).length;
+
+    let seen = {};
+
+    Object.keys(this.state.sources).forEach((key, index)=>{
+      let s = this.state.sources[key];
+
+      Object.keys(source).forEach((source_id, index)=>{
+        if (s.includes(source_id)){
+          seen[source_id] = 1;
+        }
+      });
+    });
+
+    if (Object.keys(seen).length !== nsources){
+      return null;
+    }
+    else{
+      return this;
+    }
+  }
+
   filterProject(project){
     if (project.getID)
     {
@@ -307,6 +336,10 @@ class Person {
 
   getAffiliations(){
     return this.state.affiliations;
+  }
+
+  getSources(){
+    return this.state.sources;
   }
 
   getPositions(){

@@ -33,6 +33,7 @@ function getBiography({item, social, emitSelected=null_function,
   let pages = [];
   let affiliations = {};
   let positions = {};
+  let sources = {};
   let connections = [];
 
   try{
@@ -48,6 +49,10 @@ function getBiography({item, social, emitSelected=null_function,
 
   if (item.getPositions){
     positions = item.getPositions();
+  }
+
+  if (item.getSources){
+    sources = item.getSources();
   }
 
   let alive = null;
@@ -112,9 +117,19 @@ function getBiography({item, social, emitSelected=null_function,
                               emitToggleFilter={emitToggleFilter}
                               social={social}/>
                 </div>]);
-}
+  }
   else{
     pages.push(["Affiliations", "None"]);
+  }
+
+  if (Object.keys(sources).length > 0){
+    pages.push(["Sources",
+                <div>
+                  <GroupsList groups={sources}
+                              emitSelected={emitSelected}
+                              emitToggleFilter={emitToggleFilter}
+                              social={social}/>
+                </div>]);
   }
 
   pages.push(["Analysis",

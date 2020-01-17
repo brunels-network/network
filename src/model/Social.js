@@ -176,6 +176,14 @@ class Social {
       });
     }
 
+    const source_filter = this.state.filter.source;
+
+    if (source_filter){
+      this.state.cache.node_filters.push((item)=>{
+        return item.filterSource(source_filter);
+      });
+    }
+
     const node_filter = this.state.filter.node;
 
     if (node_filter) {
@@ -245,6 +253,20 @@ class Social {
         this.state.cache.edge_filters.push((item)=>{
           try{
             return item.filterProject(project_filter);
+          }
+          catch(error){
+            console.log(`ERROR ${error}: ${item}`);
+            return item;
+          }
+        });
+      }
+
+      const source_filter = this.state.filter.source;
+
+      if (source_filter){
+        this.state.cache.edge_filters.push((item)=>{
+          try{
+            return item.filterSource(source_filter);
           }
           catch(error){
             console.log(`ERROR ${error}: ${item}`);
@@ -452,6 +474,25 @@ class Social {
       }
     }
 
+    f = this.state.filter.source;
+
+    if (f){
+      let parts = [];
+
+      Object.keys(f).forEach((key, index)=>{
+        parts.push(this.get(key, false).getName());
+      });
+
+      parts.sort();
+
+      if (parts.length === 1){
+        filter.push(`with source ${parts[0]}`);
+      }
+      else if (parts.length > 1){
+        filter.push(`with sources (${parts.join(" and ")})`);
+      }
+    }
+
     f = this.state.filter.group;
 
     if (f){
@@ -511,6 +552,9 @@ class Social {
     }
     else if (item[0] === "J"){
       return "project";
+    }
+    else if (item[0] === "S"){
+      return "source";
     }
     else{
       return "group";

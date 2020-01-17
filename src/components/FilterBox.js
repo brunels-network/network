@@ -86,10 +86,13 @@ function FilterBox(props){
                     </AccordionItem>;
 
   let projects = filterList(social.getProjects(false), props);
+  let sources = filterList(social.getSources(false), props);
   let positions = filterList(social.getPositions(false), props);
   let affiliations = filterList(social.getAffiliations(false), props);
   let people = filterList(social.getPeople(false), props);
   let businesses = filterList(social.getBusinesses(false), props);
+
+  console.log(sources);
 
   return <Accordion allowMultipleExpanded={false}
                     allowZeroExpanded={true}>
@@ -101,6 +104,15 @@ function FilterBox(props){
             </AccordionTitle>
             <AccordionPanel>
               {projects}
+            </AccordionPanel>
+          </AccordionItem>
+
+          <AccordionItem uuid="sources">
+            <AccordionTitle>
+                Sources
+            </AccordionTitle>
+            <AccordionPanel>
+              {sources}
             </AccordionPanel>
           </AccordionItem>
 

@@ -68,7 +68,7 @@ class Business {
       name: null,
       id: null,
       projects: {},
-      sources: [],
+      sources: {},
       scores: {},
       affiliations: {},
       notes: [],
@@ -113,6 +113,36 @@ class Business {
 
   getID(){
     return this.state.id;
+  }
+
+
+  filterSource(source){
+    if (source.getID){
+      let id = source.getID();
+      source = {};
+      source[id] = 1;
+    }
+
+    let nsources = Object.keys(source).length;
+
+    let seen = {};
+
+    Object.keys(this.state.sources).forEach((key, index)=>{
+      let s = this.state.sources[key];
+
+      Object.keys(source).forEach((source_id, index)=>{
+        if (s.includes(source_id)){
+          seen[source_id] = 1;
+        }
+      });
+    });
+
+    if (Object.keys(seen).length !== nsources){
+      return null;
+    }
+    else{
+      return this;
+    }
   }
 
   filterProject(project){
@@ -180,7 +210,7 @@ class Business {
       this.state.projects = setState(state.projects, {});
       this.state.affiliations = setState(state.affiliations, {});
       this.state.scores = setState(state.scores, {});
-      this.state.sources = setState(state.sources, []);
+      this.state.sources = setState(state.sources, {});
       this.state.notes = setState(state.notes, []);
 
       if (!this.state.name){
@@ -207,6 +237,10 @@ class Business {
 
   getAffiliations(){
     return this.state.affiliations;
+  }
+
+  getSources(){
+    return this.state.sources;
   }
 
   getScores(){
