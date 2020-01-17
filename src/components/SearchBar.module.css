@@ -18,6 +18,8 @@
 .resultContainer {
   background-color: white;
   width: 80%;
+  max-height: 200px;
+  overflow-y: auto;
   border: 2px;
   border-color: green;
   display: flex;

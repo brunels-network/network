@@ -109,6 +109,48 @@ class Sources {
     }
   }
 
+  search(name){
+    if (name instanceof Source || name._isASourceObject){
+      name = name.getName();
+    }
+
+    name = name.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this.state.registry).forEach((key, index) => {
+      let item = this.state.registry[key];
+
+      let description = item.getDescription();
+
+      if (!description){
+        description = "";
+      }
+
+      try{
+        if (item.getName().toLowerCase().indexOf(name) !== -1){
+          results.push(item);
+        }
+        else if (description.toLowerCase().indexOf(name) !== -1){
+          results.push(item);
+        }
+      }
+      catch(error){
+        console.log(error);
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+    else{
+      return null;
+    }
+  }
+
   find(name){
     if (name instanceof Source || name._isASourceObject){
       return this.get(name.getID());

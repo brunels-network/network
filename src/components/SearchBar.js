@@ -2,10 +2,15 @@
 import React from 'react';
 import Spinner from 'react-spinkit';
 
+import DefaultButton from './DefaultButton';
+
 import styles from './SearchBar.module.css';
 
 // This class is heavily inspired by react-search-field
 // from https://github.com/nutboltu/react-search-field
+
+function _null_function(item){}
+
 
 function SearchResults(props){
   let results = props.results;
@@ -52,13 +57,95 @@ class SearchBar extends React.Component {
                    results:null});
   }
 
+  startSuggestion(text){
+    let social = this.props.social;
+    if (!social){
+      return;
+    }
+
+    let items = null;
+
+    try{
+      items = social.find(text);
+    }
+    catch(error){
+      items = null;
+    }
+
+    let emitSelected = this.props.emitSelected;
+
+    if (!emitSelected){
+      emitSelected = _null_function;
+    }
+
+    let emitToggleFilter = this.props.emitToggleFilter;
+
+    if (!emitToggleFilter){
+      emitToggleFilter = _null_function;
+    }
+
+    if (items){
+      let results = items.map((item)=>{
+        let name = item.getName();
+        return <DefaultButton onClick={()=>{emitSelected(item)}}
+                              style={{width:"100%"}}>
+                {name}
+               </DefaultButton>
+      });
+
+      this.setSuggestions(results);
+    }
+    else{
+      this.setSuggestions(null);
+    }
+  }
+
+  startSearch(text){
+    let social = this.props.social;
+
+    if (!social){
+      this.setResults([<div>No results!</div>]);
+      return;
+    }
+
+    let items = null;
+
+    try{
+      items = social.find(text);
+    }
+    catch(error){
+      items = null;
+    }
+
+    let emitSelected = this.props.emitSelected;
+
+    if (!emitSelected){
+      emitSelected = _null_function;
+    }
+
+    if (items){
+      let results = items.map((item)=>{
+        let name = item.getName();
+        return <DefaultButton onClick={()=>{emitSelected(item)}}
+                              style={{width:"100%"}}>
+                {name}
+               </DefaultButton>
+      });
+
+      this.setResults(results);
+    }
+    else{
+      this.setResults([<div>Really no results!</div>]);
+    }
+  }
+
   searchFor(text){
     if (text && text.length > 0){
       this.setState({searching:text,
-                    suggestions:null,
-                    results:null});
+                     suggestions:null,
+                     results:null});
 
-      setTimeout(()=>{this.setResults(["result1", "result2", "result3"])}, 500);
+      setTimeout(()=>{this.startSearch(text)}, 10);
     }
     else{
       this.setState({suggestions:null,
@@ -69,7 +156,7 @@ class SearchBar extends React.Component {
 
   autocomplete(text){
     if (text && text.length > 0){
-      this.setSuggestions([text, text, text]);
+      this.startSuggestion(text);
     }
     else{
       this.setState({suggestions:null,

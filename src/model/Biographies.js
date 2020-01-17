@@ -44,6 +44,32 @@ class Biographies{
     }
   }
 
+  search(text){
+    if (!text){
+      return null;
+    }
+
+    text = text.trim().toLowerCase();
+
+    let results = [];
+
+    Object.keys(this.state.bios).forEach((key, index)=>{
+      if (this.state.bios[key].toLowerCase().indexOf(text) !== -1){
+        results.push(this.getNode(key));
+      }
+    });
+
+    if (results.length === 1){
+      return results[0];
+    }
+    else if (results.length > 1){
+      return results;
+    }
+    else{
+      return null;
+    }
+  }
+
   add(node, biography){
     if (!node || !biography){
       return null;

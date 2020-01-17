@@ -23,6 +23,21 @@ const fast_physics = {
 const slow_physics = {...fast_physics};
 slow_physics.timestep = 0.1;
 
+function _push(values, list){
+  if (!list){
+    return;
+  }
+
+  if (values.length){
+    for (let i=0; i<values.length; ++i){
+      list.push(values[i]);
+    }
+  }
+  else{
+    list.push(values);
+  }
+}
+
 class Social {
   constructor(props) {
     if (props){
@@ -576,6 +591,54 @@ class Social {
     else{
       return false;
     }
+  }
+
+  find(text){
+    let result = [];
+
+    try{
+      let items = this.getPeople(false).find(text);
+      _push(items, result);
+    }
+    catch(error)
+    {}
+
+    try{
+      let items = this.getBusinesses(false).find(text);
+      _push(items, result);
+    }
+    catch(error)
+    {}
+
+    try{
+      let items = this.getPositions(false).find(text);
+      _push(items, result);
+    }
+    catch(error)
+    {}
+
+    try{
+      let items = this.getAffiliations(false).find(text);
+      _push(items, result);
+    }
+    catch(error)
+    {}
+
+    try{
+      let items = this.getSources(false).search(text);
+      _push(items, result);
+    }
+    catch(error)
+    {}
+
+    try{
+      let items = this.getBiographies(false).search(text);
+      _push(items, result);
+    }
+    catch(error)
+    {}
+
+    return result;
   }
 
   resetFilters(){
