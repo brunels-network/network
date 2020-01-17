@@ -144,19 +144,28 @@ def importProjectDates(node, importers=None):
     except Exception:
         return _DateRange.null()
 
+    if dates is None or dates == "0":
+        return _DateRange.null()
+
     import re as _re
 
     pattern = _re.compile(r":")
+    raw = dates
     dates = pattern.split(dates)
 
-    if len(dates) == 1:
-        return _DateRange(both=_Date(dates[0]))
-    elif len(dates) == 2:
-        return _DateRange(start=_Date(dates[0]), end=_Date(dates[1]))
-    else:
-        print(f"Could not interpret project dates from {dates}")
+    try:
+        if len(dates) == 1:
+            return _DateRange(both=_Date(dates[0]))
+        elif len(dates) == 2:
+            return _DateRange(start=_Date(dates[0]), end=_Date(dates[1]))
+        else:
+            print(f"Could not interpret project dates from {raw}")
+            print(node)
+            return _DateRange.null()
+    except Exception:
+        print(f"Could not interpret project dates from {raw}")
+        print(node)
         return _DateRange.null()
-
 
 def importPerson(node, project, importers=None):
     try:
@@ -436,7 +445,7 @@ def importConnection(edge, project, mapping=None, importers=None):
                             })
 
     except Exception as e:
-        print(f"Fail to add connection!\n{edge}\n{e}\n")
+        print(f"\nFailed to add connection!\n{e}\n{edge}\n\n")
         return None
 
 

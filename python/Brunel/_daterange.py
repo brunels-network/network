@@ -110,14 +110,12 @@ class Date:
                     year = int(parts[0])
                     start = _datetime.date(year=year, month=1, day=1)
                     end = _datetime.date(year=year, month=12, day=31)
-            except Exception:
+            except Exception as e:
                 print(f"Unrecognised year? {parts} : {raw}")
-                self.state = {}
-                return
+                raise e
         else:
             print(f"Unrecognised date? {parts} : {raw}")
-            self.state = {}
-            return
+            raise ValueError("Invalid date")
 
         if start is None and end is None:
             self.state = {}
