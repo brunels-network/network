@@ -32,7 +32,7 @@ function SourceList(props){
     if (daterange){
       return <ResponsiveListItem key={source.getName()}>
                <DefaultButton onClick={()=>{emitSelected(source)}}
-                              style={{width:"60%"}}>
+                              style={{width:"50%"}}>
                  {source.getName()}
                </DefaultButton>
                <DateRangeButton style={{width:"40%"}}

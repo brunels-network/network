@@ -6,6 +6,8 @@ import CheckBox from './CheckBox';
 
 import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
 
+import styles from './ConnectionList.module.css';
+
 function null_function(item){}
 
 function ConnectionList({connections, title, emitSelected=null_function,
@@ -28,20 +30,25 @@ function ConnectionList({connections, title, emitSelected=null_function,
     return (
       <ResponsiveListItem key={name}>
         <DefaultButton onClick={()=>{emitSelected(i);}}
-                       style={{width:"80%"}}>
+                       style={{width:"70%"}}>
           {name}
         </DefaultButton>
         <CheckBox onChange={(event)=>{emitToggleFilter(i);}}
-                  checked={is_filtered}/>
+                  checked={is_filtered}
+                  style={{width:"20%"}}/>
       </ResponsiveListItem>);
   });
 
   if (title){
-    return (<div>{title}<br />
-                 <ResponsiveList>{listitems}</ResponsiveList></div>);
+    return (<div className={styles.connections}>
+              <div className={styles.title}>{title}</div>
+              <ResponsiveList>{listitems}</ResponsiveList>
+            </div>);
   }
   else{
-    return (<ResponsiveList>{listitems}</ResponsiveList>);
+    return (<div className={styles.connections}>
+              <ResponsiveList>{listitems}</ResponsiveList>
+            </div>);
   }
 }
 

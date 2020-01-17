@@ -359,13 +359,6 @@ class Person {
 
     let weight = 10.0;
 
-    if (this.state.scores){
-      weight = this.state.scores.weight;
-      if (!weight){
-        weight = 10.0;
-      }
-    }
-
     if (weight < 5.0){
       weight = 5.0;
     }
@@ -375,7 +368,7 @@ class Person {
 
     node["size"] = weight;
 
-    let keys = [];
+    let keys = Object.keys(this.state.projects);
 
     if (keys.length > 0){
       node["group"] = keys.sort().join(":");

@@ -214,21 +214,13 @@ class Business {
   }
 
   getNode(is_anchor=false){
-    let node = {
-      id: this.getID(),
+    let node = {id: this.getID(),
       label: this.getName(),
       title: this.getName(),
-      shape: "dot",
+      shape: "diamond",
      };
 
-    let weight = 1.0;
-
-    if (this.state.scores){
-      weight = this.state.scores.weight;
-      if (!weight){
-        weight = 1.0;
-      }
-    }
+    let weight = 10.0;
 
     if (weight < 5.0){
       weight = 5.0;
@@ -239,7 +231,7 @@ class Business {
 
     node["size"] = weight;
 
-    let keys = [];
+    let keys = Object.keys(this.state.projects);
 
     if (keys.length > 0){
       node["group"] = keys.sort().join(":");

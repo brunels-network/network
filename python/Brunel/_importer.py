@@ -518,8 +518,8 @@ def importSources(node, importers=None):
     pattern = _re.compile(r":")
 
     for source in pattern.split(str(node["Source(s)"])):
-        source = extractSourceName(source)
-        source = sources.add(source)
+        name = extractSourceName(source)
+        source = sources.add(name)
 
         if source:
             result.append(source.getID())

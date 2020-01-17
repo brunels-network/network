@@ -16,9 +16,6 @@ import DateRangeButton from './DateRangeButton';
 import DefaultButton from './DefaultButton';
 
 import Social from '../model/Social';
-import Person from '../model/Person';
-import Business from '../model/Business';
-import Connection from '../model/Connection';
 
 import styles from './InfoBox.module.css';
 
@@ -82,11 +79,13 @@ function getBiography({item, social, emitSelected=null_function,
                </div>)]);
 
   if (connections.length > 0){
-    pages.push(["Connections", <ConnectionList
+    pages.push(["Connections", <div>
+                                  <ConnectionList
                                       connections={connections}
                                       emitSelected={emitSelected}
                                       emitToggleFilter={emitToggleFilter}
-                                      social={social}/>]);
+                                      social={social}/>
+                               </div>]);
   }
   else{
     pages.push(["Connections", "None"]);
@@ -151,8 +150,8 @@ function extractData({item, social, emitSelected=null_function,
     return data;
   }
 
-  if (item instanceof Person){
-    data.title = <DefaultButton onClick={()=>{emitSelected(item);}}>
+  if (item._isAPersonObject){
+    data.title = <DefaultButton onClick={()=>{emitToggleFilter(item);}}>
                   {item.getName()}
                  </DefaultButton>
     data.pages = getBiography({item:item, social:social,
@@ -160,8 +159,8 @@ function extractData({item, social, emitSelected=null_function,
                                emitToggleFilter:emitToggleFilter});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG/640px-Illustrirte_Zeitung_%281843%29_21_332_1_Das_vom_Stapellaufen_des_Great-Britain.PNG";
   }
-  else if (item instanceof Business){
-    data.title = <DefaultButton onClick={()=>{emitSelected(item);}}>
+  else if (item._isABusinessObject){
+    data.title = <DefaultButton onClick={()=>{emitToggleFilter(item);}}>
                   {item.getName()}
                  </DefaultButton>
     data.pages = getBiography({item:item, social:social,
@@ -169,7 +168,17 @@ function extractData({item, social, emitSelected=null_function,
                                emitToggleFilter:emitToggleFilter});
     data.image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
   }
-  else if (item instanceof Connection){
+  else if (item._isASourceObject){
+    data.title = item.getName();
+    let description = item.getDescription();
+    if (!description){
+      description = "No description";
+    }
+    data.pages = [["Description", description],
+                  ["Analysis", "Analysis for this source - where else has it been cited?"]];
+    data.image = "https://upload.wikimedia.org/wikipedia/commons/9/91/Sumerian_26th_c_Adab.jpg";
+  }
+  else if (item._isAConnectionObject){
     data.title = null;
 
     let n0 = item.getNode0();
@@ -203,7 +212,7 @@ function extractData({item, social, emitSelected=null_function,
     if (asources){
       asources = <AccordionItem uuid="asources">
                    <AccordionTitle>
-                     Affiliation Sources
+                     Affiliation
                    </AccordionTitle>
                    <AccordionPanel>
                      <SourceList social={social} sources={asources}
@@ -215,7 +224,7 @@ function extractData({item, social, emitSelected=null_function,
     if (csources){
       csources = <AccordionItem uuid="csources">
                    <AccordionTitle>
-                     Correspondance Sources
+                     Correspondance
                    </AccordionTitle>
                    <AccordionPanel>
                      <SourceList social={social} sources={csources}
@@ -239,12 +248,13 @@ function extractData({item, social, emitSelected=null_function,
     pages.push(["Connection",
                <div style={{textAlign:"center"}}>
                  <div>
-                  <div>From</div>
                   {n0}
-                  <div>to</div>
+                  <div>||</div>
                   {n1}
                 </div>
+                <div>&nbsp;</div>
                 <div>{duration}</div>
+                <div>&nbsp;</div>
                 <div>{accordion}</div>
                </div>]);
 
@@ -292,7 +302,8 @@ function InfoBox(props) {
         <Tabs
           key={panes.length}
           vertical
-          onChange={(tabId) => { console.log(tabId) }}
+          onChange={(tabId) => { console.log(tabId); }}
+          defaultTab={pages[0][0]}
           className={styles.tabs}
         >
           <TabList className={styles.tablist}>

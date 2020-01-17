@@ -77,6 +77,7 @@ class Source {
     if (state){
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
+      this.state.description = setState(state.description);
       this.state.notes = setState(state.notes, []);
       this.state.sources = setState(state.sources, []);
       this.state.date = setState(state.date, new RoughDate());
@@ -101,6 +102,10 @@ class Source {
 
   getName(){
     return this.state.name;
+  }
+
+  getDescription(){
+    return this.state.description;
   }
 
   toDry(){

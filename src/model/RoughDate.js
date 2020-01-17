@@ -270,8 +270,6 @@ class RoughDate{
       let s = this.state.start.toDate();
       let e = this.state.end.toDate();
 
-      console.log(`${s.getMonth()} ${e.getMonth()} ${s.getDate()} ${e.getDate()}`);
-
       if (s.getMonth() === 0 && e.getMonth() === 11 &&
           s.getDate() === 1 && e.getDate() === 31){
         //the dates span full years
