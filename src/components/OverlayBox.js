@@ -30,7 +30,6 @@ class OverlayBox extends React.Component {
     if (!url){
       return (<div className={styles.container}>
                 <div className={styles.centerContainer}>
-                  There is nothing to display!
                   {item}
                   <div>
                     <button className={styles.button}

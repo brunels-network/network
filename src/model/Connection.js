@@ -277,7 +277,7 @@ class Connection {
   getColorFromType(){
     switch(this.state.type){
       case "direct":
-        return "rgb(250,200,200)";
+        return "rgb(180,150,150)";
       case "indirect":
         return "rgb(180,180,180)";
       default:
@@ -328,7 +328,7 @@ class Connection {
       to:this.state.n1,
       value:weight,
       color:color,
-      scaling:{min:0.5, max:5},
+      scaling:{min:0.5, max:2},
       arrows:{to:false, middle:false, from:false},
     };
 

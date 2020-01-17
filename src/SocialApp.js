@@ -171,15 +171,33 @@ class SocialApp extends React.Component {
   }
 
   viewAbout(){
-    console.log("View about");
+    let item = <div>
+                 <div>
+                   This is a demo of the application to view
+                   Brunel's temporal social network. This is an
+                   incomplete application containing incomplete
+                   data and should not be relied on or viewed as
+                   being accurate.
+                 </div>
+                 <div>If you want more information, then please
+                      visit the <a href="https://github.com/chryswoods/brunel">
+                        GitHub repository
+                      </a>
+                 </div>
+               </div>;
+    this.setState({"overlay_item": item,
+                   "isOverlayOpen": true});
   }
 
   viewSource(){
     console.log("View source");
+    var win = window.open("https://github.com/chryswoods/brunel", '_blank');
+    win.focus();
   }
 
   resetAll(){
     console.log("Reset all");
+    window.location.reload(true);
   }
 
   render(){
