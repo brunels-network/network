@@ -150,6 +150,10 @@ function extractData({item, social, emitSelected=null_function,
     return data;
   }
 
+  if (!item){
+    return data;
+  }
+
   //refresh the item in case of updates...
   if (item.getID){
     item = item.getID();

@@ -1,6 +1,6 @@
 
 import Dry from 'json-dry';
-import uuidv4 from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import lodash from 'lodash';
 
 import Source from './Source';

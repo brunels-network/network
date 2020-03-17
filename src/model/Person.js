@@ -387,7 +387,8 @@ class Person {
     let node = {id: this.getID(),
                 label: this.getName(),
                 title: this.getName(),
-                shape: "dot",
+                fixed: false,
+                shape: "circle",
                };
 
     let weight = 10.0;
@@ -411,8 +412,8 @@ class Person {
     }
 
     if (is_anchor){
-      node["shape"] = "star";
-      node["physics"] = false;
+      node["shape"] = "rect";
+      node["fixed"] = true;
       node["group"] = "anchor";
       node["size"] = 20.0;
     }

@@ -1,7 +1,6 @@
 
 import Dry from 'json-dry';
-import uuidv4 from 'uuid';
-import vis from 'vis-network';
+import { v4 as uuidv4 } from 'uuid';
 import lodash from 'lodash';
 
 import Business from './Business';
@@ -190,7 +189,7 @@ class Businesses {
   }
 
   getNodes({anchor=null} = {}){
-    let nodes = new vis.DataSet();
+    let nodes = [];
 
     Object.keys(this.state.registry).forEach((key, index)=>{
       let business = this.state.registry[key];
@@ -205,7 +204,7 @@ class Businesses {
         }
 
         if (node){
-          nodes.add(node);
+          nodes.push(node);
         }
       }
     });

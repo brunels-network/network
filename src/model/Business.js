@@ -251,7 +251,7 @@ class Business {
     let node = {id: this.getID(),
       label: this.getName(),
       title: this.getName(),
-      shape: "diamond",
+      shape: "circle",
      };
 
     let weight = 10.0;
@@ -275,7 +275,7 @@ class Business {
     }
 
     if (is_anchor){
-      node["shape"] = "star";
+      node["shape"] = "rect";
       node["physics"] = false;
       node["group"] = "anchor";
       node["size"] = 20.0;

@@ -105,6 +105,10 @@ class Connection {
     return this.state.n1;
   }
 
+  areNodesVisible(n){
+    return n[this.state.n0] && n[this.state.n1];
+  }
+
   getNode0Name(){
     let node0 = this.getNode0();
 
@@ -324,8 +328,8 @@ class Connection {
 
     let edge = {
       id:this.getID(),
-      from:this.state.n0,
-      to:this.state.n1,
+      source:this.state.n0,
+      target:this.state.n1,
       value:weight,
       color:color,
       scaling:{min:0.5, max:2},

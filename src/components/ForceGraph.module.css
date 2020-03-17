@@ -1,0 +1,53 @@
+
+.container {
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.graph {
+  height: 100%;
+  width: 100%;
+  border: black;
+}
+
+.node {
+  stroke: black;
+  stroke-width: 0.1%;
+}
+
+.node.highlight {
+  fill: cyan;
+}
+
+.link {
+  stroke: lightgray;
+  stroke-width: 0.1em;
+}
+
+.link.highlight {
+  stroke: red;
+  stroke-width: 0.2em;
+}
+
+.node_text {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+
+  font-size: xx-small;
+  stroke-width: 0;
+  fill: black;
+}
+
+.node_text.highlight {
+  stroke: black;
+  stroke-width: 1;
+  fill: black;
+  font-size: large;
+}

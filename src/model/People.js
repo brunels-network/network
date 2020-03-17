@@ -1,7 +1,6 @@
 
 import Dry from 'json-dry';
-import uuidv4 from 'uuid';
-import vis from 'vis-network';
+import { v4 as uuidv4 } from 'uuid';
 import lodash from 'lodash';
 
 import Person from './Person';
@@ -190,7 +189,7 @@ class People {
   }
 
   getNodes({anchor=null} = {}){
-    let nodes = new vis.DataSet();
+    let nodes = [];
 
     if (anchor.getID){
       anchor = anchor.getID();
@@ -209,7 +208,7 @@ class People {
         }
 
         if (node){
-          nodes.add(node);
+          nodes.push(node);
         }
       }
     });

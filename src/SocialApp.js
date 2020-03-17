@@ -43,6 +43,7 @@ class SocialApp extends React.Component {
 
     this.state = {
       social: social,
+      highlighted_item: null,
       selected_item: null,
       overlay_item: null,
       isInfoPanelOpen: false,
@@ -67,6 +68,7 @@ class SocialApp extends React.Component {
                    isTimeLinePanelOpen:false,
                    isHamburgerMenuOpen:false,
                    isFilterPanelOpen:false,
+                   highlighted_item:null,
                   });
   }
 
@@ -76,7 +78,6 @@ class SocialApp extends React.Component {
   }
 
   showInfo(item){
-    console.log(item);
     if (item._isAProjectObject){
       this.setState({overlay_item:item,
                      isOverlayOpen:true});
@@ -102,15 +103,16 @@ class SocialApp extends React.Component {
     this.setState(social);
   }
 
-  getNetwork(){
-    const social = this.state.social;
+  slotHighlighted(id){
+    if (!id){
+      return;
+    }
 
-    if (social){
-      return social.getNetwork();
+    if (id._isADateRangeObject){
+      return;
     }
-    else{
-      return null;
-    }
+
+    this.setState({highlighted_item:id});
   }
 
   slotSelected(id){
@@ -125,22 +127,6 @@ class SocialApp extends React.Component {
         this.setState({social:social});
       }
       return;
-    }
-
-    let network = this.getNetwork();
-    if (network){
-      let selection = network.getSelection();
-      try{
-        if (id.getID){
-          network.selectNodes([id.getID()]);
-        }
-        else{
-          network.selectNodes([id]);
-        }
-      }
-      catch(error){
-        network.setSelection(selection);
-      }
     }
 
     const social = this.state.social;
@@ -202,6 +188,7 @@ class SocialApp extends React.Component {
 
   render(){
     const selected = this.state.selected_item;
+    const highlighted = this.state.highlighted_item;
     const overlay_item = this.state.overlay_item;
     const social = this.state.social;
 
@@ -239,6 +226,7 @@ class SocialApp extends React.Component {
         <SearchBar social={social}
                    emitHamburgerClicked={()=>{this.setState({isHamburgerMenuOpen:true})}}
                    emitSelected={(item)=>{this.slotSelected(item)}}
+                   emitHighlighted={(item)=>{this.slotHighlighted(item)}}
                    emitClicked={(item)=>{this.slotClicked(item)}}/>
 
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
@@ -253,6 +241,7 @@ class SocialApp extends React.Component {
                        getItemTimeLine={()=>{return this.state.social.getItemTimeLine()}}
                        emitClicked={(item)=>{this.slotClicked(item)}}
                        emitSelected={(item)=>{this.slotClicked(item)}}
+                       emitHighlighted={(item)=>{this.slotHighlighted(item)}}
                        emitWindowChanged={(window)=>{
                                     this.slotWindowChanged(window)}}/>
         </SlidingPanel>
@@ -263,6 +252,7 @@ class SocialApp extends React.Component {
                 onClick={()=>{this.setState({isInfoPanelOpen:false})}}>X</span>
           <InfoBox item={selected} social={social}
                    emitSelected={(item)=>{this.slotSelected(item)}}
+                   emitHighlighted={(item)=>{this.slotHighlighted(item)}}
                    emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}/>
         </SlidingPanel>
 
@@ -273,6 +263,7 @@ class SocialApp extends React.Component {
           <FilterBox social={social}
                      emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}
                      emitSelected={(item)=>{this.slotSelected(item)}}
+                     emitHighlighted={(item)=>{this.slotHighlighted(item)}}
                      emitClearFilters={()=>{this.slotClearFilters()}}/>
         </SlidingPanel>
 
@@ -285,6 +276,8 @@ class SocialApp extends React.Component {
 
         <div className={styles.graphContainer}>
           <SocialGraph social={this.state.social}
+                       selected={selected}
+                       highlighted={highlighted}
                        emitClicked={(id)=>this.slotSelected(id)} />
         </div>
 
