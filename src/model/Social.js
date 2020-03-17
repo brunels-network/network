@@ -57,7 +57,6 @@ class Social {
                         people:null,
                         businesses:null,
                         connections:null};
-    this.state.network = null;
     this.state.window = new DateRange();
     this.state.max_window = new DateRange();
     this._rebuilding = 0;
@@ -720,29 +719,17 @@ class Social {
 
     const anchor = this.state.anchor;
     let nodes = this.getPeople().getNodes({anchor: anchor});
-    nodes.add(this.getBusinesses().getNodes().get());
-    let edges = this.getConnections().getEdges();
+    nodes = nodes.concat(this.getBusinesses().getNodes());
 
-    let network = this.getNetwork();
-
-    if (network){
-      //make sure that the screen updates gracefully
-      network.setOptions({physics: false});
-
-      setTimeout(()=>{network.setOptions({physics: slow_physics})}, 250);
-      setTimeout(()=>{network.setOptions({physics: fast_physics})}, 500);
+    let n = {};
+    for (let i in nodes){
+      n[nodes[i].id] = 1;
     }
+
+    let edges = this.getConnections().getEdges(n);
 
     this.state.cache.graph = {"nodes": nodes, "edges": edges};
     return this.state.cache.graph;
-  }
-
-  setNetwork(network){
-    this.state.network = network;
-  }
-
-  getNetwork(){
-    return this.state.network;
   }
 
   add(item){

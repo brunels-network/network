@@ -1,7 +1,6 @@
 
 import Dry from 'json-dry';
-import uuidv4 from 'uuid';
-import vis from 'vis-network';
+import { v4 as uuidv4 } from 'uuid';
 import lodash from 'lodash';
 
 import Connection from './Connection';
@@ -159,6 +158,7 @@ class Connections {
     });
 
     let connections = new Connections();
+
     connections.state.registry = registry;
     connections._names = names;
     connections._updateHooks(this._getHook);
@@ -216,13 +216,23 @@ class Connections {
     return connections;
   }
 
-  getEdges(){
-    let edges = new vis.DataSet();
+  getEdges(ids=null){
+    let edges = [];
 
-    Object.keys(this.state.registry).forEach((key, index)=>{
-      let connection = this.state.registry[key];
-      edges.add(connection.toEdge());
-    });
+    if (ids){
+      Object.keys(this.state.registry).forEach((key, index)=>{
+        let connection = this.state.registry[key];
+        if (connection.areNodesVisible(ids)){
+          edges.push(connection.toEdge());
+        }
+      });
+    }
+    else{
+      Object.keys(this.state.registry).forEach((key, index)=>{
+        let connection = this.state.registry[key];
+        edges.push(connection.toEdge());
+      });
+    }
 
     return edges;
   }
