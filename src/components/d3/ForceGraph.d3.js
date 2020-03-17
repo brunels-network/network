@@ -298,8 +298,17 @@ class ForceGraphD3 {
 
     if (props.social){
       let graph = props.social.getGraph();
+
+      //the social object will cache the 'getGraph' result, meaning
+      //that any change in this object signals that the graph needs
+      //to be redrawn
       if (graph !== this.state.graph){
+        //save the cached graph
         this.state.graph = graph;
+
+        //this view needs to clone its own copy of the graph, as
+        //D3 will update the graph object. We need to clone in case
+        //two ForceGraph.d3 views are viewing the same Social graph
         graph = lodash.cloneDeep(this.state.graph);
 
         // need to update IDs so that the edges refer to the index

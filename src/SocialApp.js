@@ -102,17 +102,6 @@ class SocialApp extends React.Component {
     this.setState(social);
   }
 
-  getNetwork(){
-    const social = this.state.social;
-
-    if (social){
-      return social.getNetwork();
-    }
-    else{
-      return null;
-    }
-  }
-
   slotSelected(id){
     if (!id){
       this.closePanels();
@@ -125,22 +114,6 @@ class SocialApp extends React.Component {
         this.setState({social:social});
       }
       return;
-    }
-
-    let network = this.getNetwork();
-    if (network){
-      let selection = network.getSelection();
-      try{
-        if (id.getID){
-          network.selectNodes([id.getID()]);
-        }
-        else{
-          network.selectNodes([id]);
-        }
-      }
-      catch(error){
-        network.setSelection(selection);
-      }
     }
 
     const social = this.state.social;
