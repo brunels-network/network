@@ -8,18 +8,14 @@ import styles from './ForceGraph.module.css';
 class ForceGraph extends React.Component {
   constructor(props){
     super(props);
-    this.graph = new ForceGraphD3();
 
-    this.state = {"width": 600,
-                  "height": 400};
-
-    this.updateSize = this.updateSize.bind(this);
+    this._graph = new ForceGraphD3(props);
+    this._updateSize = this._updateSize.bind(this);
   }
 
   componentDidMount(){
-    window.addEventListener('resize', this.updateSize);
-    this.setState({"width": this.container.offsetWidth,
-                   "height": this.container.offsetHeight});
+    window.addEventListener('resize', this._updateSize);
+    this._updateSize();
   }
 
   componentWillUnmount() {
@@ -27,22 +23,20 @@ class ForceGraph extends React.Component {
   }
 
   componentDidUpdate(){
-    this.graph.setState(this.state);
-    this.graph.update(this.props);
-    this.graph.draw();
+    this._graph.update(this.props);
+    this._graph.draw();
   }
 
-  updateSize(){
-    if (this.container){
-      this.setState({
-        width: this.container.offsetWidth,
-        height: this.container.offsetHeight
-      });
+  _updateSize(){
+    if (this.container && this._graph){
+      this._graph.update({width: this.container.offsetWidth,
+                          height: this.container.offsetHeight});
+      this._graph.draw();
     }
   }
 
   render(){
-    let s = `${styles.graph} ${this.graph.className()}`;
+    let s = `${styles.graph} ${this._graph.className()}`;
 
     return <div ref={el => (this.container = el)}
                 style={{width:"100%", height:"100%"}}>

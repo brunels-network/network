@@ -129,7 +129,7 @@ function handleMouseClick(THIS){
     items = svg.selectAll(`[target_id=${id}]`);
     items.classed(styles.highlight, true);
 
-    THIS.signalClicked(id);
+    THIS.state.signalClicked(id);
     d3.event.stopPropagation();
   }
 
@@ -184,7 +184,7 @@ function handleMouseOver(THIS) {
         .classed(styles.highlight, true);
     }
 
-    THIS.signalMouseOver(id);
+    THIS.state.signalMouseOver(id);
   }
 
   return handle;
@@ -232,7 +232,7 @@ function handleMouseOut(THIS) {
         .classed(styles.highlight, false);
     }
 
-    THIS.signalMouseOut(id);
+    THIS.state.signalMouseOut(id);
   }
 
   return handle;
@@ -240,7 +240,7 @@ function handleMouseOut(THIS) {
 
 /** The main class that renders the graph in the ForceGraph */
 class ForceGraphD3 {
-  constructor(){
+  constructor(props){
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
     let uid = uuidv4();
@@ -249,27 +249,32 @@ class ForceGraphD3 {
                    last_color: -1,
                    group_to_color: {}};
 
-    this.state = {"width": 600,
-                  "height": 400};
+    this.state = {width: 600,
+                  height: 400,
+                  social: null,
+                  signalClicked: _null_function,
+                  signalMouseOut: _null_function,
+                  signalMouseOver: _null_function};
 
-    this.signalClicked = _null_function;
-    this.signalMouseOut = _null_function;
-    this.signalMouseOver = _null_function;
+    this._size_changed = true;
+    this._graph_changed = true;
+
+    this.update(props);
   }
 
-  setState(state){
+  update(props){
     let size_changed = false;
 
-    if (state.width){
-      if (this.state.width !== state.width){
-        this.state.width = state.width;
+    if (props.width){
+      if (this.state.width !== props.width){
+        this.state.width = props.width;
         size_changed = true;
       }
     }
 
-    if (state.height){
-      if (this.state.height !== state.height){
-        this.state.height = state.height;
+    if (props.height){
+      if (this.state.height !== props.height){
+        this.state.height = props.height;
         size_changed = true;
       }
     }
@@ -277,70 +282,79 @@ class ForceGraphD3 {
     if (size_changed){
       this._size_changed = true;
     }
-  }
 
-  update(props){
-    if (props.signalClicked) this.signalClicked = props.signalClicked;
-    if (props.signalMouseOut) this.signalMouseOut = props.signalMouseOut;
-    if (props.signalMouseOver) this.signalMouseOver = props.signalMouseOver;
+    if (props.signalClicked){
+      this.state.signalClicked = props.signalClicked;
+    }
+
+    if (props.signalMouseOut) {
+      this.state.signalMouseOut = props.signalMouseOut;
+    }
+
+    if (props.signalMouseOver) {
+      this.state.signalMouseOver = props.signalMouseOver;
+    }
 
     if (props.social){
-      let graph = lodash.cloneDeep(props.social.getGraph());
+      if (true){
+        this.state.social = props.social;
+        let graph = lodash.cloneDeep(this.state.social.getGraph());
 
-      // need to update IDs so that the edges refer to the index
-      // of the node in the nodes array - this could be optimised!
-      for (let l in graph.edges){
-        let edge = graph.edges[l];
+        // need to update IDs so that the edges refer to the index
+        // of the node in the nodes array - this could be optimised!
+        for (let l in graph.edges){
+          let edge = graph.edges[l];
+          for (let n in graph.nodes){
+            let node = graph.nodes[n];
+            if (edge.source === node.id){
+              edge.source = n;
+              edge.source_id = node.id;
+            }
+            else if (edge.target === node.id){
+              edge.target = n;
+              edge.target_id = node.id;
+            }
+          }
+        }
+
+        //index any old nodes
+        let old_nodes = [];
+        let old = {};
+
+        if (this._graph){
+          old_nodes = this._graph.nodes;
+
+          for (let n in old_nodes){
+            old[old_nodes[n].id] = n;
+          }
+        }
+
         for (let n in graph.nodes){
           let node = graph.nodes[n];
-          if (edge.source === node.id){
-            edge.source = n;
-            edge.source_id = node.id;
-          }
-          else if (edge.target === node.id){
-            edge.target = n;
-            edge.target_id = node.id;
-          }
-        }
-      }
 
-      //index any old nodes
-      let old_nodes = [];
-      let old = {};
+          let i = old[node.id];
 
-      if (this._graph){
-        old_nodes = this._graph.nodes;
-
-        for (let n in old_nodes){
-          old[old_nodes[n].id] = n;
-        }
-      }
-
-      for (let n in graph.nodes){
-        let node = graph.nodes[n];
-
-        let i = old[node.id];
-
-        if (i){
-          let o = old_nodes[i];
-          node.x = o.x;
-          node.y = o.y;
-        }
-
-        if (node.fixed){
           if (i){
-            node.fx = node.x;
-            node.fy = node.y;
+            let o = old_nodes[i];
+            node.x = o.x;
+            node.y = o.y;
           }
-          else{
-            node.fx = this.state.width / 2;
-            node.fy = this.state.height / 2;
+
+          if (node.fixed){
+            if (i){
+              node.fx = node.x;
+              node.fy = node.y;
+            }
+            else{
+              node.fx = this.state.width / 2;
+              node.fy = this.state.height / 2;
+            }
           }
         }
-      }
 
-      this._graph = graph;
-      this._graph_changed = true;
+        this._graph = graph;
+        this._graph_changed = true;
+      }
     }
   }
 
@@ -463,15 +477,13 @@ class ForceGraphD3 {
   }
 
   drawFromScratch(){
-    this._is_drawn = true;
+    console.log("DRAW FROM SCRATCH");
     let graph = this._graph;
 
     if (!graph){
       console.log("Nothing to draw...");
       return;
     }
-
-    let THIS = this;
 
     d3.select(`.${this.className()} > *`).remove();
 
@@ -496,7 +508,7 @@ class ForceGraphD3 {
       .attr('height', height)
       .attr('width', width)
       .attr('id', 'svg-viz')
-      .on("click", ()=>{THIS.signalClicked(null)});
+      .on("click", ()=>{this.state.signalClicked(null)}, {passive: true});
 
     let mainGroup = svg;
     this._mainGroup = mainGroup;
@@ -510,9 +522,12 @@ class ForceGraphD3 {
     this._link = this._updateLink(graph.edges);
     this._node = this._updateNode(graph.nodes);
     this._label = this._updateNodeText(graph.nodes);
+
+    this._is_drawn = true;
   }
 
   draw(){
+    console.log("DRAW");
     if (!this._is_drawn){
       this.drawFromScratch();
       this._size_changed = false;
