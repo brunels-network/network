@@ -238,6 +238,18 @@ function handleMouseOut(THIS) {
   return handle;
 }
 
+function _resolve(item){
+  if (!item){
+    return null;
+  }
+  else if (item.getID){
+    return item.getID();
+  }
+  else{
+    return item;
+  }
+}
+
 /** The main class that renders the graph in the ForceGraph */
 class ForceGraphD3 {
   constructor(props){
@@ -248,6 +260,8 @@ class ForceGraphD3 {
     this.state = {width: 600,
                   height: 400,
                   social: null,
+                  selected: null,
+                  highlighted: null,
                   signalClicked: _null_function,
                   signalMouseOut: _null_function,
                   signalMouseOver: _null_function,
@@ -266,14 +280,14 @@ class ForceGraphD3 {
   update(props){
     let size_changed = false;
 
-    if (props.width){
+    if (props.hasOwnProperty("width")){
       if (this.state.width !== props.width){
         this.state.width = props.width;
         size_changed = true;
       }
     }
 
-    if (props.height){
+    if (props.hasOwnProperty("height")){
       if (this.state.height !== props.height){
         this.state.height = props.height;
         size_changed = true;
@@ -284,20 +298,39 @@ class ForceGraphD3 {
       this._size_changed = true;
     }
 
-    if (props.signalClicked){
-      this.state.signalClicked = props.signalClicked;
+    if (props.hasOwnProperty("signalClicked")){
+      if (this.state.signalClicked){
+        this.state.signalClicked = props.signalClicked;
+      }
+      else{
+        this.state.signalClicked = _null_function;
+      }
     }
 
-    if (props.signalMouseOut) {
-      this.state.signalMouseOut = props.signalMouseOut;
+    if (props.hasOwnProperty("signalMouseOut")){
+      if (this.state.signalMouseOut){
+        this.state.signalMouseOut = props.signalMouseOut;
+      }
+      else{
+        this.state.signalMouseOut = _null_function;
+      }
     }
 
-    if (props.signalMouseOver) {
-      this.state.signalMouseOver = props.signalMouseOver;
+    if (props.hasOwnProperty("signalMouseOver")){
+      if (this.state.signalMouseOver){
+        this.state.signalMouseOver = props.signalMouseOver;
+      }
+      else{
+        this.state.signalMouseOver = _null_function;
+      }
     }
 
-    if (props.social){
-      let graph = props.social.getGraph();
+    if (props.hasOwnProperty("social")){
+      let graph = null;
+
+      if (props.social){
+        graph = props.social.getGraph();
+      }
 
       //the social object will cache the 'getGraph' result, meaning
       //that any change in this object signals that the graph needs
@@ -365,8 +398,15 @@ class ForceGraphD3 {
 
         this._graph = graph;
         this._graph_changed = true;
-        console.log("GRAPH CHANGED");
       }
+    }
+
+    if (props.hasOwnProperty("selected")){
+      this.state.selected = _resolve(props.selected);
+    }
+
+    if (props.hasOwnProperty("highlighted")){
+      this.state.highlighted = _resolve(props.highlighted);
     }
   }
 

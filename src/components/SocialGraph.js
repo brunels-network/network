@@ -30,7 +30,9 @@ class SocialGraph extends React.Component {
       return (<div style={{width:"100%", height:"100%"}}>
                 <ForceGraph
                      social={this.props.social}
-                     signalClicked={this.props.emitClicked} />
+                     signalClicked={this.props.emitClicked}
+                     highlighted={this.props.highlighted}
+                     selected={this.props.selected} />
               </div>
              );
     }

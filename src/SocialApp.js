@@ -68,6 +68,7 @@ class SocialApp extends React.Component {
                    isTimeLinePanelOpen:false,
                    isHamburgerMenuOpen:false,
                    isFilterPanelOpen:false,
+                   highlighted_item:null,
                   });
   }
 
@@ -77,7 +78,6 @@ class SocialApp extends React.Component {
   }
 
   showInfo(item){
-    console.log(item);
     if (item._isAProjectObject){
       this.setState({overlay_item:item,
                      isOverlayOpen:true});
