@@ -244,17 +244,18 @@ class ForceGraphD3 {
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
     let uid = uuidv4();
-    this.uid = uid.slice(uid.length-8);
-    this.colors = {color: d3.scaleOrdinal(d3.schemeCategory10),
-                   last_color: -1,
-                   group_to_color: {}};
 
     this.state = {width: 600,
                   height: 400,
                   social: null,
                   signalClicked: _null_function,
                   signalMouseOut: _null_function,
-                  signalMouseOver: _null_function};
+                  signalMouseOver: _null_function,
+                  colors: {color: d3.scaleOrdinal(d3.schemeCategory10),
+                           last_color: -1,
+                           group_to_color: {}},
+                  uid: uid.slice(uid.length-8)
+                 };
 
     this._size_changed = true;
     this._graph_changed = true;
@@ -359,19 +360,19 @@ class ForceGraphD3 {
   }
 
   className(){
-    return `ForceGraphD3-${this.uid}`;
+    return `ForceGraphD3-${this.state.uid}`;
   }
 
   getGroupColor(group){
-    let color = this.colors.group_to_color[group];
+    let color = this.state.colors.group_to_color[group];
 
     if (!color){
-      this.colors.last_color += 1;
-      color = this.colors.last_color;
-      this.colors.group_to_color[group] = color;
+      this.state.colors.last_color += 1;
+      color = this.state.colors.last_color;
+      this.state.colors.group_to_color[group] = color;
     }
 
-    return this.colors.color(color);
+    return this.state.colors.color(color);
   }
 
   _updateNode(data){
