@@ -297,9 +297,10 @@ class ForceGraphD3 {
     }
 
     if (props.social){
-      if (true){
-        this.state.social = props.social;
-        let graph = lodash.cloneDeep(this.state.social.getGraph());
+      let graph = props.social.getGraph();
+      if (graph !== this.state.graph){
+        this.state.graph = graph;
+        graph = lodash.cloneDeep(this.state.graph);
 
         // need to update IDs so that the edges refer to the index
         // of the node in the nodes array - this could be optimised!
@@ -355,6 +356,7 @@ class ForceGraphD3 {
 
         this._graph = graph;
         this._graph_changed = true;
+        console.log("GRAPH CHANGED");
       }
     }
   }
@@ -528,7 +530,6 @@ class ForceGraphD3 {
   }
 
   draw(){
-    console.log("DRAW");
     if (!this._is_drawn){
       this.drawFromScratch();
       this._size_changed = false;
