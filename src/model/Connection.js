@@ -332,8 +332,6 @@ class Connection {
       target:this.state.n1,
       value:weight,
       color:color,
-      scaling:{min:0.5, max:2},
-      arrows:{to:false, middle:false, from:false},
     };
 
     return edge;

@@ -17,7 +17,7 @@ function dragLink(THIS){
   let simulation = THIS._simulation;
 
   function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    simulation.alphaTarget(0.3).restart();
 
     //find the two nodes connected to this edge
     let source = THIS._graph.nodes[d.source.index];
@@ -32,6 +32,8 @@ function dragLink(THIS){
   }
 
   function dragged(d) {
+    if (!THIS._is_running) simulation.restart();
+
     //find the two nodes connected to this edge
     let source = THIS._graph.nodes[d.source.index];
     let target = THIS._graph.nodes[d.target.index];
@@ -49,7 +51,7 @@ function dragLink(THIS){
   }
 
   function dragended(d) {
-    if (!d3.event.active) simulation.alphaTarget(0);
+    simulation.alphaTarget(0).restart();
 
     //find the two nodes connected to this edge
     let source = THIS._graph.nodes[d.source.index];
@@ -67,21 +69,23 @@ function dragLink(THIS){
   }
 
   return d3.drag()
-      .on("start", dragstarted, {passive: true})
-      .on("drag", dragged, {passive: true})
-      .on("end", dragended, {passive: true});
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
 };
 
 function drag(THIS) {
   let simulation = THIS._simulation;
 
   function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    simulation.alphaTarget(0.3).restart();
     d.fx = d.x;
     d.fy = d.y;
   }
 
   function dragged(d) {
+    if (!THIS._is_running) simulation.restart();
+
     let w = THIS.state.width;
     let h = THIS.state.height;
 
@@ -90,7 +94,8 @@ function drag(THIS) {
   }
 
   function dragended(d) {
-    if (!d3.event.active) simulation.alphaTarget(0);
+    simulation.alphaTarget(0).restart();
+
     if (!d.fixed){
       d.fx = null;
       d.fy = null;
@@ -98,9 +103,9 @@ function drag(THIS) {
   }
 
   return d3.drag()
-      .on("start", dragstarted, {passive: true})
-      .on("drag", dragged, {passive: true})
-      .on("end", dragended, {passive: true});
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
 };
 
 function handleMouseClick(THIS){
@@ -257,8 +262,8 @@ class ForceGraphD3 {
     // with any other graphs on the same page
     let uid = uuidv4();
 
-    this.state = {width: 600,
-                  height: 400,
+    this.state = {width: null,
+                  height: null,
                   social: null,
                   selected: null,
                   highlighted: null,
@@ -273,8 +278,98 @@ class ForceGraphD3 {
 
     this._size_changed = true;
     this._graph_changed = true;
+    this._is_running = false;
 
     this.update(props);
+  }
+
+  updateGraph(social){
+    let w = this.state.width;
+    let h = this.state.height;
+
+    this.state.social = social;
+
+    if (!w || !h){
+      return;
+    }
+
+    let graph = null;
+
+    if (social){
+      graph = social.getGraph();
+    }
+
+    //the social object will cache the 'getGraph' result, meaning
+    //that any change in this object signals that the graph needs
+    //to be redrawn
+    if (graph !== this.state.graph){
+      //save the cached graph
+      this.state.graph = graph;
+
+      //this view needs to clone its own copy of the graph, as
+      //D3 will update the graph object. We need to clone in case
+      //two ForceGraph.d3 views are viewing the same Social graph
+      graph = lodash.cloneDeep(this.state.graph);
+
+      // need to update IDs so that the edges refer to the index
+      // of the node in the nodes array - this could be optimised!
+      for (let l in graph.edges){
+        let edge = graph.edges[l];
+        for (let n in graph.nodes){
+          let node = graph.nodes[n];
+          if (edge.source === node.id){
+            edge.source = n;
+            edge.source_id = node.id;
+          }
+          else if (edge.target === node.id){
+            edge.target = n;
+            edge.target_id = node.id;
+          }
+        }
+      }
+
+      //index any old nodes
+      let old_nodes = [];
+      let old = {};
+
+      if (this._graph){
+        old_nodes = this._graph.nodes;
+
+        for (let n in old_nodes){
+          old[old_nodes[n].id] = n;
+        }
+      }
+
+      for (let n in graph.nodes){
+        let node = graph.nodes[n];
+
+        let i = old[node.id];
+
+        if (i){
+          let o = old_nodes[i];
+          node.x = o.x;
+          node.y = o.y;
+        }
+        else{
+          node.x = w * Math.random();
+          node.y = h * Math.random();
+        }
+
+        if (node.fixed){
+          if (i){
+            node.fx = node.x;
+            node.fy = node.y;
+          }
+          else{
+            node.fx = w / 2;
+            node.fy = h / 2;
+          }
+        }
+      }
+
+      this._graph = graph;
+      this._graph_changed = true;
+    }
   }
 
   update(props){
@@ -326,79 +421,7 @@ class ForceGraphD3 {
     }
 
     if (props.hasOwnProperty("social")){
-      let graph = null;
-
-      if (props.social){
-        graph = props.social.getGraph();
-      }
-
-      //the social object will cache the 'getGraph' result, meaning
-      //that any change in this object signals that the graph needs
-      //to be redrawn
-      if (graph !== this.state.graph){
-        //save the cached graph
-        this.state.graph = graph;
-
-        //this view needs to clone its own copy of the graph, as
-        //D3 will update the graph object. We need to clone in case
-        //two ForceGraph.d3 views are viewing the same Social graph
-        graph = lodash.cloneDeep(this.state.graph);
-
-        // need to update IDs so that the edges refer to the index
-        // of the node in the nodes array - this could be optimised!
-        for (let l in graph.edges){
-          let edge = graph.edges[l];
-          for (let n in graph.nodes){
-            let node = graph.nodes[n];
-            if (edge.source === node.id){
-              edge.source = n;
-              edge.source_id = node.id;
-            }
-            else if (edge.target === node.id){
-              edge.target = n;
-              edge.target_id = node.id;
-            }
-          }
-        }
-
-        //index any old nodes
-        let old_nodes = [];
-        let old = {};
-
-        if (this._graph){
-          old_nodes = this._graph.nodes;
-
-          for (let n in old_nodes){
-            old[old_nodes[n].id] = n;
-          }
-        }
-
-        for (let n in graph.nodes){
-          let node = graph.nodes[n];
-
-          let i = old[node.id];
-
-          if (i){
-            let o = old_nodes[i];
-            node.x = o.x;
-            node.y = o.y;
-          }
-
-          if (node.fixed){
-            if (i){
-              node.fx = node.x;
-              node.fy = node.y;
-            }
-            else{
-              node.fx = this.state.width / 2;
-              node.fy = this.state.height / 2;
-            }
-          }
-        }
-
-        this._graph = graph;
-        this._graph_changed = true;
-      }
+      this.updateGraph(props.social);
     }
 
     if (props.hasOwnProperty("selected")){
@@ -439,9 +462,9 @@ class ForceGraphD3 {
                .attr("r", d=>{return d.size})
                .attr("id", d=>{return d.id})
                .attr("fill", d=>{return this.getGroupColor(d.group)})
-               .on("click", handleMouseClick(this), {passive: true})
-               .on("mouseover", handleMouseOver(this), {passive: true})
-               .on("mouseout", handleMouseOut(this), {passive: true})
+               .on("click", handleMouseClick(this))
+               .on("mouseover", handleMouseOver(this))
+               .on("mouseout", handleMouseOut(this))
                .call(drag(this));
 
     return node;
@@ -460,9 +483,9 @@ class ForceGraphD3 {
                )
                .text(d => d.label)
                .attr("id", d=>{return d.id})
-               .on("click", handleMouseClick(this), {passive: true})
-               .on("mouseover", handleMouseOver(this), {passive: true})
-               .on("mouseout", handleMouseOut(this), {passive: true})
+               .on("click", handleMouseClick(this))
+               .on("mouseover", handleMouseOver(this))
+               .on("mouseout", handleMouseOut(this))
                .call(drag(this));
 
     return text;
@@ -482,9 +505,9 @@ class ForceGraphD3 {
                .attr("id", d=>{return d.id})
                .attr("source_id", d=>{return d.source_id})
                .attr("target_id", d=>{return d.target_id})
-               .on("click", handleMouseClick(this), {passive: true})
-               .on("mouseover", handleMouseOver(this), {passive: true})
-               .on("mouseout", handleMouseOut(this), {passive: true})
+               .on("click", handleMouseClick(this))
+               .on("mouseover", handleMouseOver(this))
+               .on("mouseout", handleMouseOut(this))
                .call(dragLink(this));
 
     return link;
@@ -494,12 +517,17 @@ class ForceGraphD3 {
     if (this._simulation){
       this._simulation.stop();
       this._simulation = null;
+      this._is_running = false;
     }
 
     let w = this.state.width;
     let h = this.state.height;
 
     let THIS = this;
+
+    function ended(){
+      THIS._is_running = false;
+    }
 
     function ticked(){
       THIS._link
@@ -518,11 +546,20 @@ class ForceGraphD3 {
     }
 
     let simulation = d3.forceSimulation(this._graph.nodes)
-      //.force('center', d3.forceCenter(w/2, h/2))
-      .force('charge', d3.forceManyBody().strength(-50))
-      .force('link', d3.forceLink().links(this._graph.edges).distance(150).iterations(20))
-      .force('collision', d3.forceCollide().radius(25).iterations(20))
-      .on('tick', ticked);
+      .force('charge', d3.forceManyBody().strength(-150)
+                                         .distanceMin(1)
+                                         .distanceMax(100))
+      .force('link', d3.forceLink().links(this._graph.edges)
+                                   .distance((d)=>{return 25 * (1 + d.value)})
+                                   .iterations(5))
+      .force('collision', d3.forceCollide()
+                            .radius((d)=>{return (1 + d.size)})
+                            .strength(1.0)
+                            .iterations(5))
+      .on('tick', ticked)
+      .on('end', ended);
+
+    this._is_running = true;
 
     // save the simulation so that we can update it later...
     this._simulation = simulation;
@@ -533,8 +570,15 @@ class ForceGraphD3 {
     let graph = this._graph;
 
     if (!graph){
-      console.log("Nothing to draw...");
-      return;
+      if (this.state.social){
+        this.updateGraph(this.state.social);
+      }
+
+      graph = this._graph;
+      if (!graph){
+        console.log("Nothing to draw...");
+        return;
+      }
     }
 
     d3.select(`.${this.className()} > *`).remove();
@@ -560,7 +604,7 @@ class ForceGraphD3 {
       .attr('height', height)
       .attr('width', width)
       .attr('id', 'svg-viz')
-      .on("click", ()=>{this.state.signalClicked(null)}, {passive: true});
+      .on("click", ()=>{this.state.signalClicked(null)});
 
     let mainGroup = svg;
     this._mainGroup = mainGroup;
