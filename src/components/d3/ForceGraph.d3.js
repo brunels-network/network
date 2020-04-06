@@ -1,19 +1,18 @@
+import * as d3 from "d3";
 
-import * as d3 from 'd3';
+import lodash from "lodash";
 
-import lodash from 'lodash';
+import { v4 as uuidv4 } from "uuid";
 
-import { v4 as uuidv4 } from 'uuid';
+import styles from "../ForceGraph.module.css";
 
-import styles from '../ForceGraph.module.css';
+function _null_function(params) {}
 
-function _null_function(params){};
-
-function constrain(x, w, r=20){
+function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));
 }
 
-function dragLink(THIS){
+function dragLink(THIS) {
   let simulation = THIS._simulation;
 
   function dragstarted(d) {
@@ -57,22 +56,23 @@ function dragLink(THIS){
     let source = THIS._graph.nodes[d.source.index];
     let target = THIS._graph.nodes[d.target.index];
 
-    if (!source.fixed){
+    if (!source.fixed) {
       source.fx = null;
       source.fy = null;
     }
 
-    if (!target.fixed){
+    if (!target.fixed) {
       target.fx = null;
       target.fy = null;
     }
   }
 
-  return d3.drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
-};
+  return d3
+    .drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended);
+}
 
 function drag(THIS) {
   let simulation = THIS._simulation;
@@ -96,22 +96,23 @@ function drag(THIS) {
   function dragended(d) {
     simulation.alphaTarget(0).restart();
 
-    if (!d.fixed){
+    if (!d.fixed) {
       d.fx = null;
       d.fy = null;
     }
   }
 
-  return d3.drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
-};
+  return d3
+    .drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended);
+}
 
-function handleMouseClick(THIS){
-  function handle(){
+function handleMouseClick(THIS) {
+  function handle() {
     let svg = THIS._mainGroup;
-    if (!svg){
+    if (!svg) {
       return;
     }
 
@@ -120,7 +121,7 @@ function handleMouseClick(THIS){
 
     let id = node.attr("id");
 
-    if (!id){
+    if (!id) {
       return;
     }
 
@@ -142,9 +143,9 @@ function handleMouseClick(THIS){
 }
 
 function handleMouseOver(THIS) {
-  function handle(){
+  function handle() {
     let svg = THIS._mainGroup;
-    if (!svg){
+    if (!svg) {
       return;
     }
 
@@ -153,7 +154,7 @@ function handleMouseOver(THIS) {
 
     let id = node.attr("id");
 
-    if (!id){
+    if (!id) {
       return;
     }
 
@@ -166,7 +167,7 @@ function handleMouseOver(THIS) {
     items.classed(styles.highlight, true);
 
     //highlight the nodes with this node as a target
-    items.each((d, i)=>{
+    items.each((d, i) => {
       let target_id = d.target.id;
       svg.selectAll(`#${target_id}`).classed(styles.highlight, true);
     });
@@ -176,16 +177,18 @@ function handleMouseOver(THIS) {
     items.classed(styles.highlight, true);
 
     //highlight the nodes with this node as a source
-    items.each((d, i)=>{
+    items.each((d, i) => {
       let source_id = d.source.id;
       svg.selectAll(`#${source_id}`).classed(styles.highlight, true);
     });
 
-    if (node.attr("source_id")){
-      svg.selectAll(`#${node.attr("source_id")}`)
+    if (node.attr("source_id")) {
+      svg
+        .selectAll(`#${node.attr("source_id")}`)
         .classed(styles.highlight, true);
 
-      svg.selectAll(`#${node.attr("target_id")}`)
+      svg
+        .selectAll(`#${node.attr("target_id")}`)
         .classed(styles.highlight, true);
     }
 
@@ -196,9 +199,9 @@ function handleMouseOver(THIS) {
 }
 
 function handleMouseOut(THIS) {
-  function handle(){
+  function handle() {
     let svg = THIS._mainGroup;
-    if (!svg){
+    if (!svg) {
       return;
     }
 
@@ -214,7 +217,7 @@ function handleMouseOut(THIS) {
     items.classed(styles.highlight, false);
 
     //highlight the nodes with this node as a target
-    items.each((d, i)=>{
+    items.each((d, i) => {
       let target_id = d.target.id;
       svg.selectAll(`#${target_id}`).classed(styles.highlight, false);
     });
@@ -224,16 +227,18 @@ function handleMouseOut(THIS) {
     items.classed(styles.highlight, false);
 
     //highlight the nodes with this node as a source
-    items.each((d, i)=>{
+    items.each((d, i) => {
       let source_id = d.source.id;
       svg.selectAll(`#${source_id}`).classed(styles.highlight, false);
     });
 
-    if (node.attr("source_id")){
-      svg.selectAll(`#${node.attr("source_id")}`)
+    if (node.attr("source_id")) {
+      svg
+        .selectAll(`#${node.attr("source_id")}`)
         .classed(styles.highlight, false);
 
-      svg.selectAll(`#${node.attr("target_id")}`)
+      svg
+        .selectAll(`#${node.attr("target_id")}`)
         .classed(styles.highlight, false);
     }
 
@@ -243,38 +248,39 @@ function handleMouseOut(THIS) {
   return handle;
 }
 
-function _resolve(item){
-  if (!item){
+function _resolve(item) {
+  if (!item) {
     return null;
-  }
-  else if (item.getID){
+  } else if (item.getID) {
     return item.getID();
-  }
-  else{
+  } else {
     return item;
   }
 }
 
 /** The main class that renders the graph in the ForceGraph */
 class ForceGraphD3 {
-  constructor(props){
+  constructor(props) {
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
     let uid = uuidv4();
 
-    this.state = {width: null,
-                  height: null,
-                  social: null,
-                  selected: null,
-                  highlighted: null,
-                  signalClicked: _null_function,
-                  signalMouseOut: _null_function,
-                  signalMouseOver: _null_function,
-                  colors: {color: d3.scaleOrdinal(d3.schemeCategory10),
-                           last_color: -1,
-                           group_to_color: {}},
-                  uid: uid.slice(uid.length-8)
-                 };
+    this.state = {
+      width: null,
+      height: null,
+      social: null,
+      selected: null,
+      highlighted: null,
+      signalClicked: _null_function,
+      signalMouseOut: _null_function,
+      signalMouseOver: _null_function,
+      colors: {
+        color: d3.scaleOrdinal(d3.schemeCategory10),
+        last_color: -1,
+        group_to_color: {},
+      },
+      uid: uid.slice(uid.length - 8),
+    };
 
     this._size_changed = true;
     this._graph_changed = true;
@@ -283,26 +289,26 @@ class ForceGraphD3 {
     this.update(props);
   }
 
-  updateGraph(social){
+  updateGraph(social) {
     let w = this.state.width;
     let h = this.state.height;
 
     this.state.social = social;
 
-    if (!w || !h){
+    if (!w || !h) {
       return;
     }
 
     let graph = null;
 
-    if (social){
+    if (social) {
       graph = social.getGraph();
     }
 
-    //the social object will cache the 'getGraph' result, meaning
-    //that any change in this object signals that the graph needs
-    //to be redrawn
-    if (graph !== this.state.graph){
+    // the social object will cache the 'getGraph' result, meaning
+    // that any change in this object signals that the graph needs
+    // to be redrawn
+    if (graph !== this.state.graph) {
       //save the cached graph
       this.state.graph = graph;
 
@@ -313,15 +319,14 @@ class ForceGraphD3 {
 
       // need to update IDs so that the edges refer to the index
       // of the node in the nodes array - this could be optimised!
-      for (let l in graph.edges){
+      for (let l in graph.edges) {
         let edge = graph.edges[l];
-        for (let n in graph.nodes){
+        for (let n in graph.nodes) {
           let node = graph.nodes[n];
-          if (edge.source === node.id){
+          if (edge.source === node.id) {
             edge.source = n;
             edge.source_id = node.id;
-          }
-          else if (edge.target === node.id){
+          } else if (edge.target === node.id) {
             edge.target = n;
             edge.target_id = node.id;
           }
@@ -332,35 +337,33 @@ class ForceGraphD3 {
       let old_nodes = [];
       let old = {};
 
-      if (this._graph){
+      if (this._graph) {
         old_nodes = this._graph.nodes;
 
-        for (let n in old_nodes){
+        for (let n in old_nodes) {
           old[old_nodes[n].id] = n;
         }
       }
 
-      for (let n in graph.nodes){
+      for (let n in graph.nodes) {
         let node = graph.nodes[n];
 
         let i = old[node.id];
 
-        if (i){
+        if (i) {
           let o = old_nodes[i];
           node.x = o.x;
           node.y = o.y;
-        }
-        else{
+        } else {
           node.x = w * Math.random();
           node.y = h * Math.random();
         }
 
-        if (node.fixed){
-          if (i){
+        if (node.fixed) {
+          if (i) {
             node.fx = node.x;
             node.fy = node.y;
-          }
-          else{
+          } else {
             node.fx = w / 2;
             node.fy = h / 2;
           }
@@ -372,75 +375,72 @@ class ForceGraphD3 {
     }
   }
 
-  update(props){
+  update(props) {
     let size_changed = false;
 
-    if (props.hasOwnProperty("width")){
-      if (this.state.width !== props.width){
+    if (props.hasOwnProperty("width")) {
+      if (this.state.width !== props.width) {
         this.state.width = props.width;
         size_changed = true;
       }
     }
 
-    if (props.hasOwnProperty("height")){
-      if (this.state.height !== props.height){
+    if (props.hasOwnProperty("height")) {
+      if (this.state.height !== props.height) {
         this.state.height = props.height;
         size_changed = true;
       }
     }
 
-    if (size_changed){
+    if (size_changed) {
       this._size_changed = true;
     }
 
-    if (props.hasOwnProperty("signalClicked")){
-      if (this.state.signalClicked){
+    if (props.hasOwnProperty("signalClicked")) {
+      if (this.state.signalClicked) {
         this.state.signalClicked = props.signalClicked;
-      }
-      else{
+      } else {
         this.state.signalClicked = _null_function;
       }
     }
 
-    if (props.hasOwnProperty("signalMouseOut")){
-      if (this.state.signalMouseOut){
+    if (props.hasOwnProperty("signalMouseOut")) {
+      if (this.state.signalMouseOut) {
         this.state.signalMouseOut = props.signalMouseOut;
-      }
-      else{
+      } else {
         this.state.signalMouseOut = _null_function;
       }
     }
 
-    if (props.hasOwnProperty("signalMouseOver")){
-      if (this.state.signalMouseOver){
+    if (props.hasOwnProperty("signalMouseOver")) {
+      if (this.state.signalMouseOver) {
         this.state.signalMouseOver = props.signalMouseOver;
-      }
-      else{
+      } else {
         this.state.signalMouseOver = _null_function;
       }
     }
 
-    if (props.hasOwnProperty("social")){
+    if (props.hasOwnProperty("social")) {
       this.updateGraph(props.social);
     }
 
-    if (props.hasOwnProperty("selected")){
+    if (props.hasOwnProperty("selected")) {
       this.state.selected = _resolve(props.selected);
     }
 
-    if (props.hasOwnProperty("highlighted")){
+    if (props.hasOwnProperty("highlighted")) {
       this.state.highlighted = _resolve(props.highlighted);
     }
   }
 
-  className(){
+  className() {
     return `ForceGraphD3-${this.state.uid}`;
   }
 
-  getGroupColor(group){
+  getGroupColor(group) {
     let color = this.state.colors.group_to_color[group];
 
-    if (!color){
+    if (!color) {
       this.state.colors.last_color += 1;
       color = this.state.colors.last_color;
       this.state.colors.group_to_color[group] = color;
@@ -449,72 +449,85 @@ class ForceGraphD3 {
     return this.state.colors.color(color);
   }
 
-  _updateNode(data){
+  _updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 
-    node = node.data(data, d=>d.id)
-               .join(
-                 enter => enter.append("circle")
-                               .attr("class", `node ${styles.node}`),
-                 update => update.attr("class",
-                                       `node ${styles.node}`)
-               )
-               .attr("r", d=>{return d.size})
-               .attr("id", d=>{return d.id})
-               .attr("fill", d=>{return this.getGroupColor(d.group)})
-               .on("click", handleMouseClick(this))
-               .on("mouseover", handleMouseOver(this))
-               .on("mouseout", handleMouseOut(this))
-               .call(drag(this));
+    node = node
+      .data(data, (d) => d.id)
+      .join(
+        (enter) => enter.append("circle").attr("class", `node ${styles.node}`),
+        (update) => update.attr("class", `node ${styles.node}`)
+      )
+      .attr("r", (d) => {
+        return d.size;
+      })
+      .attr("id", (d) => {
+        return d.id;
+      })
+      .attr("fill", (d) => {
+        return this.getGroupColor(d.group);
+      })
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
+      .call(drag(this));
 
     return node;
   }
 
-  _updateNodeText(data){
-    let text = this._mainGroup.select(".node_text-group")
-                              .selectAll(".node_text");
+  _updateNodeText(data) {
+    let text = this._mainGroup
+      .select(".node_text-group")
+      .selectAll(".node_text");
 
-    text = text.data(data, d=>d.id)
-               .join(
-                 enter => enter.append("text")
-                               .attr("class", `node_text ${styles.node_text}`),
-                 update => update.attr("class",
-                                       `node_text ${styles.node_text}`)
-               )
-               .text(d => d.label)
-               .attr("id", d=>{return d.id})
-               .on("click", handleMouseClick(this))
-               .on("mouseover", handleMouseOver(this))
-               .on("mouseout", handleMouseOut(this))
-               .call(drag(this));
+    text = text
+      .data(data, (d) => d.id)
+      .join(
+        (enter) =>
+          enter.append("text").attr("class", `node_text ${styles.node_text}`),
+        (update) => update.attr("class", `node_text ${styles.node_text}`)
+      )
+      .text((d) => d.label)
+      .attr("id", (d) => {
+        return d.id;
+      })
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
+      .call(drag(this));
 
     return text;
   }
 
-  _updateLink(data){
+  _updateLink(data) {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
-    link = link.data(data, d=>d.id)
-               .join(
-                 enter => enter.append("line")
-                               .attr("class", `link ${styles.link}`),
-                 update => update.attr("class",
-                                       `link ${styles.link}`)
-               )
-               .attr("class", `link ${styles.link}`)
-               .attr("id", d=>{return d.id})
-               .attr("source_id", d=>{return d.source_id})
-               .attr("target_id", d=>{return d.target_id})
-               .on("click", handleMouseClick(this))
-               .on("mouseover", handleMouseOver(this))
-               .on("mouseout", handleMouseOut(this))
-               .call(dragLink(this));
+    link = link
+      .data(data, (d) => d.id)
+      .join(
+        (enter) => enter.append("line").attr("class", `link ${styles.link}`),
+        (update) => update.attr("class", `link ${styles.link}`)
+      )
+      .attr("class", `link ${styles.link}`)
+      .attr("id", (d) => {
+        return d.id;
+      })
+      .attr("source_id", (d) => {
+        return d.source_id;
+      })
+      .attr("target_id", (d) => {
+        return d.target_id;
+      })
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
+      .call(dragLink(this));
 
     return link;
   }
 
-  _updateSimulation(){
-    if (this._simulation){
+  _updateSimulation() {
+    if (this._simulation) {
       this._simulation.stop();
       this._simulation = null;
       this._is_running = false;
@@ -525,39 +538,56 @@ class ForceGraphD3 {
 
     let THIS = this;
 
-    function ended(){
+    function ended() {
       THIS._is_running = false;
     }
 
-    function ticked(){
+    function ticked() {
       THIS._link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => d.target.x)
+        .attr("y2", (d) => d.target.y);
 
       THIS._node
-        .attr("cx", d => { return d.x = constrain(d.x, w, d.r) })
-        .attr("cy", d => { return d.y = constrain(d.y, h, d.r) });
+        .attr("cx", (d) => {
+          return (d.x = constrain(d.x, w, d.r));
+        })
+        .attr("cy", (d) => {
+          return (d.y = constrain(d.y, h, d.r));
+        });
 
-      THIS._label
-        .attr("x", d => d.x)
-        .attr("y", d => d.y);
+      THIS._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
     }
 
-    let simulation = d3.forceSimulation(this._graph.nodes)
-      .force('charge', d3.forceManyBody().strength(-150)
-                                         .distanceMin(1)
-                                         .distanceMax(100))
-      .force('link', d3.forceLink().links(this._graph.edges)
-                                   .distance((d)=>{return 25 * (1 + d.value)})
-                                   .iterations(5))
-      .force('collision', d3.forceCollide()
-                            .radius((d)=>{return (1 + d.size)})
-                            .strength(1.0)
-                            .iterations(5))
-      .on('tick', ticked)
-      .on('end', ended);
+    let simulation = d3
+      .forceSimulation(this._graph.nodes)
+      .force(
+        "charge",
+        d3.forceManyBody().strength(-150).distanceMin(1).distanceMax(100)
+      )
+      .force(
+        "link",
+        d3
+          .forceLink()
+          .links(this._graph.edges)
+          .distance((d) => {
+            return 25 * (1 + d.value);
+          })
+          .iterations(5)
+      )
+      .force(
+        "collision",
+        d3
+          .forceCollide()
+          .radius((d) => {
+            return 1 + d.size;
+          })
+          .strength(1.0)
+          .iterations(5)
+      )
+      .on("tick", ticked)
+      .on("end", ended);
 
     this._is_running = true;
 
@@ -565,17 +595,17 @@ class ForceGraphD3 {
     this._simulation = simulation;
   }
 
-  drawFromScratch(){
+  drawFromScratch() {
     console.log("DRAW FROM SCRATCH");
     let graph = this._graph;
 
-    if (!graph){
-      if (this.state.social){
+    if (!graph) {
+      if (this.state.social) {
         this.updateGraph(this.state.social);
       }
 
       graph = this._graph;
-      if (!graph){
+      if (!graph) {
         console.log("Nothing to draw...");
         return;
       }
@@ -585,7 +615,7 @@ class ForceGraphD3 {
 
     let container = d3.select(`.${this.className()}`);
 
-    if (!container){
+    if (!container) {
       console.log(`Cannot find container element class ${this.className()}`);
       return;
     }
@@ -595,16 +625,19 @@ class ForceGraphD3 {
 
     console.log(`REDRAW ${width}x${height}`);
 
-    if (!width || !height){
+    if (!width || !height) {
       console.log(`Invalid width or height? ${width} x ${height}`);
       return;
     }
 
-    let svg = container.append('svg')
-      .attr('height', height)
-      .attr('width', width)
-      .attr('id', 'svg-viz')
-      .on("click", ()=>{this.state.signalClicked(null)});
+    let svg = container
+      .append("svg")
+      .attr("height", height)
+      .attr("width", width)
+      .attr("id", "svg-viz")
+      .on("click", () => {
+        this.state.signalClicked(null);
+      });
 
     let mainGroup = svg;
     this._mainGroup = mainGroup;
@@ -622,8 +655,8 @@ class ForceGraphD3 {
     this._is_drawn = true;
   }
 
-  draw(){
-    if (!this._is_drawn){
+  draw() {
+    if (!this._is_drawn) {
       this.drawFromScratch();
       this._size_changed = false;
       this._graph_changed = false;
@@ -632,16 +665,17 @@ class ForceGraphD3 {
 
     let update_simulation = false;
 
-    if (this._size_changed){
+    if (this._size_changed) {
       let container = d3.select(`.${this.className()}`);
-      container.selectAll("svg")
-               .attr("width", this.state.width)
-               .attr("height", this.state.height);
+      container
+        .selectAll("svg")
+        .attr("width", this.state.width)
+        .attr("height", this.state.height);
       this._size_changed = false;
       update_simulation = true;
     }
 
-    if (this._graph_changed){
+    if (this._graph_changed) {
       this._node = this._updateNode(this._graph.nodes);
       this._label = this._updateNodeText(this._graph.nodes);
       this._link = this._updateLink(this._graph.edges);
@@ -649,10 +683,10 @@ class ForceGraphD3 {
       update_simulation = true;
     }
 
-    if (update_simulation){
+    if (update_simulation) {
       this._updateSimulation();
     }
   }
-};
+}
 
 export default ForceGraphD3;

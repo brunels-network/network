@@ -1,47 +1,43 @@
 import React from "react";
-
-import ForceGraph from './ForceGraph';
+import ForceGraph from "./ForceGraph";
 
 class SocialGraph extends React.Component {
-  getGraph(){
+  getGraph() {
     const social = this.props.social;
 
-    if (social){
+    if (social) {
       return social.getGraph();
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  getNetwork(){
+  getNetwork() {
     const social = this.props.social;
 
-    if (social){
+    if (social) {
       return social.getNetwork();
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  render(){
-    if (this.props.social){
-      return (<div style={{width:"100%", height:"100%"}}>
-                <ForceGraph
-                     social={this.props.social}
-                     signalClicked={this.props.emitClicked}
-                     highlighted={this.props.highlighted}
-                     selected={this.props.selected} />
-              </div>
-             );
-    }
-    else{
-      return (<div>
-                No data to display!!!
-              </div>);
+  render() {
+    if (this.props.social) {
+      return (
+        <div style={{ width: "100%", height: "100%" }}>
+          <ForceGraph
+            social={this.props.social}
+            signalClicked={this.props.emitClicked}
+            highlighted={this.props.highlighted}
+            selected={this.props.selected}
+          />
+        </div>
+      );
+    } else {
+      return <div>No data to display!!!</div>;
     }
   }
-};
+}
 
 export default SocialGraph;

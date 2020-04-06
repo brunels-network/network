@@ -1,45 +1,46 @@
-
 // package imports
-import React from 'react';
-import Dry from 'json-dry';
-import ReactModal from 'react-modal';
+import React from "react";
+import Dry from "json-dry";
+import ReactModal from "react-modal";
 
 // Brunel components
 import SocialGraph from "./components/SocialGraph";
 import InfoBox from "./components/InfoBox";
-import TimeLineBox from './components/TimeLineBox';
-import FilterBox from './components/FilterBox';
-import SlidingPanel from './components/SlidingPanel';
-import OverlayBox from './components/OverlayBox';
-import SearchBar from './components/SearchBar';
-import BrunelMenu from './components/BrunelMenu';
-import DefaultButton from './components/DefaultButton';
+import TimeLineBox from "./components/TimeLineBox";
+import FilterBox from "./components/FilterBox";
+import SlidingPanel from "./components/SlidingPanel";
+import OverlayBox from "./components/OverlayBox";
+import SearchBar from "./components/SearchBar";
+import BrunelMenu from "./components/BrunelMenu";
+import DefaultButton from "./components/DefaultButton";
 
 // Brunel model
-import Social from './model/Social';
+import Social from "./model/Social";
 
 // Data for import
-import graph_data from './data.json';
+import graph_data from "./data.json";
 
 // Styling for the app
-import styles from './SocialApp.module.css'
-import DateRange from './model/DateRange';
+import styles from "./SocialApp.module.css";
+import DateRange from "./model/DateRange";
 
 class SocialApp extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     let social = Dry.parse(graph_data);
     console.log(social);
 
-    if (!(social instanceof Social )){
+    if (!(social instanceof Social)) {
       console.log("Could not parse!");
       social = new Social();
     }
 
     // special cases for Brunel project...
     social.setAnchor("Brunel");
-    social.setMaxWindow(new DateRange({start:"1800-01-01", end:"1860-12-31"}));
+    social.setMaxWindow(
+      new DateRange({ start: "1800-01-01", end: "1860-12-31" })
+    );
 
     this.state = {
       social: social,
@@ -51,49 +52,55 @@ class SocialApp extends React.Component {
       isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
-      isOverlayOpen: false
+      isOverlayOpen: false,
     };
 
     this.socialGraph = null;
   }
 
-  resetFilters(){
+  resetFilters() {
     let social = this.state.social;
     social.resetFilters();
-    this.setState({social:social});
+    this.setState({ social: social });
   }
 
-  closePanels(){
-    this.setState({isInfoPanelOpen:false,
-                   isTimeLinePanelOpen:false,
-                   isHamburgerMenuOpen:false,
-                   isFilterPanelOpen:false,
-                   highlighted_item:null,
-                  });
+  closePanels() {
+    this.setState({
+      isInfoPanelOpen: false,
+      isTimeLinePanelOpen: false,
+      isHamburgerMenuOpen: false,
+      isFilterPanelOpen: false,
+      highlighted_item: null,
+    });
   }
 
-  closeOverlay(){
-    this.setState({isOverlayOpen:false,
-                   overlay_item:null});
+  closeOverlay() {
+    this.setState({
+      isOverlayOpen: false,
+      overlay_item: null,
+    });
   }
 
-  showInfo(item){
-    if (item._isAProjectObject){
-      this.setState({overlay_item:item,
-                     isOverlayOpen:true});
+  showInfo(item) {
+    if (item._isAProjectObject) {
+      this.setState({
+        overlay_item: item,
+        isOverlayOpen: true,
+      });
+    } else {
+      this.setState({
+        selected_item: item,
+        isInfoPanelOpen: true,
+      });
     }
-    else{
-      this.setState({selected_item:item,
-                     isInfoPanelOpen:true});
-    }
   }
 
-  slotClearFilters(){
+  slotClearFilters() {
     this.resetFilters();
   }
 
-  slotToggleFilter(item){
-    if (!item){
+  slotToggleFilter(item) {
+    if (!item) {
       return;
     }
 
@@ -103,28 +110,28 @@ class SocialApp extends React.Component {
     this.setState(social);
   }
 
-  slotHighlighted(id){
-    if (!id){
+  slotHighlighted(id) {
+    if (!id) {
       return;
     }
 
-    if (id._isADateRangeObject){
+    if (id._isADateRangeObject) {
       return;
     }
 
-    this.setState({highlighted_item:id});
+    this.setState({ highlighted_item: id });
   }
 
-  slotSelected(id){
-    if (!id){
+  slotSelected(id) {
+    if (!id) {
       this.closePanels();
       return;
     }
 
-    if (id._isADateRangeObject){
+    if (id._isADateRangeObject) {
       let social = this.state.social;
-      if (social.setWindow(id)){
-        this.setState({social:social});
+      if (social.setWindow(id)) {
+        this.setState({ social: social });
       }
       return;
     }
@@ -134,59 +141,64 @@ class SocialApp extends React.Component {
     this.showInfo(item);
   }
 
-  slotWindowChanged(window){
+  slotWindowChanged(window) {
     let social = this.state.social;
 
-    if (social.setWindow(window)){
-      this.setState({social:social});
+    if (social.setWindow(window)) {
+      this.setState({ social: social });
     }
   }
 
-  toggleInfoPanel(){
-    this.setState({isInfoPanelOpen: !(this.state.isInfoPanelOpen)});
+  toggleInfoPanel() {
+    this.setState({ isInfoPanelOpen: !this.state.isInfoPanelOpen });
   }
 
-  toggleTimeLinePanel(){
-    this.setState({isFilterPanelOpen: false,
-                   isTimeLinePanelOpen: !(this.state.isTimeLinePanelOpen)});
-}
-
-  toggleFilterPanel(){
-    this.setState({isTimeLinePanelOpen: false,
-                   isFilterPanelOpen: !(this.state.isFilterPanelOpen)});
+  toggleTimeLinePanel() {
+    this.setState({
+      isFilterPanelOpen: false,
+      isTimeLinePanelOpen: !this.state.isTimeLinePanelOpen,
+    });
   }
 
-  viewAbout(){
-    let item = <div>
-                 <div>
-                   This is a demo of the application to view
-                   Brunel's temporal social network. This is an
-                   incomplete application containing incomplete
-                   data and should not be relied on or viewed as
-                   being accurate.
-                 </div>
-                 <div>If you want more information, then please
-                      visit the <a href="https://github.com/chryswoods/brunel">
-                        GitHub repository
-                      </a>
-                 </div>
-               </div>;
-    this.setState({"overlay_item": item,
-                   "isOverlayOpen": true});
+  toggleFilterPanel() {
+    this.setState({
+      isTimeLinePanelOpen: false,
+      isFilterPanelOpen: !this.state.isFilterPanelOpen,
+    });
   }
 
-  viewSource(){
+  viewAbout() {
+    let item = (
+      <div>
+        <div>
+          This is a demo of the application to view Brunel's temporal social
+          network. This is an incomplete application containing incomplete data
+          and should not be relied on or viewed as being accurate.
+        </div>
+        <div>
+          If you want more information, then please visit the{" "}
+          <a href="https://github.com/chryswoods/brunel">GitHub repository</a>
+        </div>
+      </div>
+    );
+    this.setState({
+      overlay_item: item,
+      isOverlayOpen: true,
+    });
+  }
+
+  viewSource() {
     console.log("View source");
-    var win = window.open("https://github.com/chryswoods/brunel", '_blank');
+    var win = window.open("https://github.com/chryswoods/brunel", "_blank");
     win.focus();
   }
 
-  resetAll(){
+  resetAll() {
     console.log("Reset all");
     window.location.reload(true);
   }
 
-  render(){
+  render() {
     const selected = this.state.selected_item;
     const highlighted = this.state.highlighted_item;
     const overlay_item = this.state.overlay_item;
@@ -196,103 +208,210 @@ class SocialApp extends React.Component {
 
     let timeline_text = "Timeline";
 
-    if (social){
+    if (social) {
       timeline_text = `Timeline : ${social.getWindow().toSimpleString()}`;
     }
 
-    menu.push(["About", ()=>{this.viewAbout()}]);
-    menu.push(["View Source", ()=>{this.viewSource()}]);
-    menu.push(["Reset", ()=>{this.resetAll()}]);
+    menu.push([
+      "About",
+      () => {
+        this.viewAbout();
+      },
+    ]);
+    menu.push([
+      "View Source",
+      () => {
+        this.viewSource();
+      },
+    ]);
+    menu.push([
+      "Reset",
+      () => {
+        this.resetAll();
+      },
+    ]);
 
     return (
       <div>
         <div className={styles.backgroundImage} />
-        <ReactModal isOpen={this.state.isOverlayOpen}
-                    onRequestClose={()=>{this.closeOverlay()}}
-                    contentLabel='Information overlay'
-                    className={styles.modal}
-                    overlayClassName={{base:styles.modalOverlay,
-                                       afterOpen:styles.modalOverlayAfterOpen,
-                                       beforeClose:styles.modalOverlayBeforeClose}}
-                    closeTimeoutMS={200}
-                    appElement={document.getElementById('root')}
-                    >
-          <div className={styles.closeOverlayButton}
-                onClick={()=>{this.closeOverlay()}}>X</div>
-          <OverlayBox item={overlay_item}
-                      emitClose={()=>{this.closeOverlay()}}/>
+        <ReactModal
+          isOpen={this.state.isOverlayOpen}
+          onRequestClose={() => {
+            this.closeOverlay();
+          }}
+          contentLabel="Information overlay"
+          className={styles.modal}
+          overlayClassName={{
+            base: styles.modalOverlay,
+            afterOpen: styles.modalOverlayAfterOpen,
+            beforeClose: styles.modalOverlayBeforeClose,
+          }}
+          closeTimeoutMS={200}
+          appElement={document.getElementById("root")}
+        >
+          <div
+            className={styles.closeOverlayButton}
+            onClick={() => {
+              this.closeOverlay();
+            }}
+          >
+            X
+          </div>
+          <OverlayBox
+            item={overlay_item}
+            emitClose={() => {
+              this.closeOverlay();
+            }}
+          />
         </ReactModal>
 
-        <SearchBar social={social}
-                   emitHamburgerClicked={()=>{this.setState({isHamburgerMenuOpen:true})}}
-                   emitSelected={(item)=>{this.slotSelected(item)}}
-                   emitHighlighted={(item)=>{this.slotHighlighted(item)}}
-                   emitClicked={(item)=>{this.slotClicked(item)}}/>
+        <SearchBar
+          social={social}
+          emitHamburgerClicked={() => {
+            this.setState({
+              isHamburgerMenuOpen: !this.state.isHamburgerMenuOpen,
+            });
+          }}
+          emitSelected={(item) => {
+            this.slotSelected(item);
+          }}
+          emitHighlighted={(item) => {
+            this.slotHighlighted(item);
+          }}
+          emitClicked={(item) => {
+            this.slotClicked(item);
+          }}
+        />
 
-        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen}
-                      position='bottom'>
-          <span className={styles.closePanelButton}
-                onClick={()=>{this.setState({isTimeLinePanelOpen:false})}}>X</span>
-          <TimeLineBox selected={selected}
-                       getMaxWindow={()=>{return this.state.social.getMaxWindow()}}
-                       getProjectWindow={()=>{return this.state.social.getWindow()}}
-                       getItemWindow={()=>{return this.state.social.getWindow()}}
-                       getProjectTimeLine={()=>{return this.state.social.getProjectTimeLine()}}
-                       getItemTimeLine={()=>{return this.state.social.getItemTimeLine()}}
-                       emitClicked={(item)=>{this.slotClicked(item)}}
-                       emitSelected={(item)=>{this.slotClicked(item)}}
-                       emitHighlighted={(item)=>{this.slotHighlighted(item)}}
-                       emitWindowChanged={(window)=>{
-                                    this.slotWindowChanged(window)}}/>
+        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom">
+          <span
+            className={styles.closePanelButton}
+            onClick={() => {
+              this.setState({ isTimeLinePanelOpen: false });
+            }}
+          >
+            X
+          </span>
+          <TimeLineBox
+            selected={selected}
+            getMaxWindow={() => {
+              return this.state.social.getMaxWindow();
+            }}
+            getProjectWindow={() => {
+              return this.state.social.getWindow();
+            }}
+            getItemWindow={() => {
+              return this.state.social.getWindow();
+            }}
+            getProjectTimeLine={() => {
+              return this.state.social.getProjectTimeLine();
+            }}
+            getItemTimeLine={() => {
+              return this.state.social.getItemTimeLine();
+            }}
+            emitClicked={(item) => {
+              this.slotClicked(item);
+            }}
+            emitSelected={(item) => {
+              this.slotClicked(item);
+            }}
+            emitHighlighted={(item) => {
+              this.slotHighlighted(item);
+            }}
+            emitWindowChanged={(window) => {
+              this.slotWindowChanged(window);
+            }}
+          />
         </SlidingPanel>
 
-        <SlidingPanel isOpen={this.state.isInfoPanelOpen}
-                      position='right'>
-          <span className={styles.closePanelButton}
-                onClick={()=>{this.setState({isInfoPanelOpen:false})}}>X</span>
-          <InfoBox item={selected} social={social}
-                   emitSelected={(item)=>{this.slotSelected(item)}}
-                   emitHighlighted={(item)=>{this.slotHighlighted(item)}}
-                   emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}/>
+        <SlidingPanel isOpen={this.state.isInfoPanelOpen} position="right">
+          <span
+            className={styles.closePanelButton}
+            onClick={() => {
+              this.setState({ isInfoPanelOpen: false });
+            }}
+          >
+            X
+          </span>
+          <InfoBox
+            item={selected}
+            social={social}
+            emitSelected={(item) => {
+              this.slotSelected(item);
+            }}
+            emitHighlighted={(item) => {
+              this.slotHighlighted(item);
+            }}
+            emitToggleFilter={(item) => {
+              this.slotToggleFilter(item);
+            }}
+          />
         </SlidingPanel>
 
-        <SlidingPanel isOpen={this.state.isFilterPanelOpen}
-                      position='bottom'>
-          <span className={styles.closePanelButton}
-                onClick={()=>{this.setState({isFilterPanelOpen:false})}}>X</span>
-          <FilterBox social={social}
-                     emitToggleFilter={(item)=>{this.slotToggleFilter(item)}}
-                     emitSelected={(item)=>{this.slotSelected(item)}}
-                     emitHighlighted={(item)=>{this.slotHighlighted(item)}}
-                     emitClearFilters={()=>{this.slotClearFilters()}}/>
+        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom">
+          <span
+            className={styles.closePanelButton}
+            onClick={() => {
+              this.setState({ isFilterPanelOpen: false });
+            }}
+          >
+            X
+          </span>
+          <FilterBox
+            social={social}
+            emitToggleFilter={(item) => {
+              this.slotToggleFilter(item);
+            }}
+            emitSelected={(item) => {
+              this.slotSelected(item);
+            }}
+            emitHighlighted={(item) => {
+              this.slotHighlighted(item);
+            }}
+            emitClearFilters={() => {
+              this.slotClearFilters();
+            }}
+          />
         </SlidingPanel>
 
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen}
-                      position='left'
-                      size="100px" minSize="100px">
-          <BrunelMenu emitClose={()=>{this.setState({isHamburgerMenuOpen:false})}}
-                      items={menu} />
+        <SlidingPanel
+          isOpen={this.state.isHamburgerMenuOpen}
+          position="left"
+          size="100px"
+          minSize="100px"
+        >
+          <BrunelMenu
+            emitClose={() => {
+              this.setState({ isHamburgerMenuOpen: false });
+            }}
+            items={menu}
+          />
         </SlidingPanel>
 
         <div className={styles.graphContainer}>
-          <SocialGraph social={this.state.social}
-                       selected={selected}
-                       highlighted={highlighted}
-                       emitClicked={(id)=>this.slotSelected(id)} />
+          <SocialGraph
+            social={this.state.social}
+            selected={selected}
+            highlighted={highlighted}
+            emitClicked={(id) => this.slotSelected(id)}
+          />
         </div>
 
         <div className={styles.bottomContainer}>
-          <DefaultButton onClick={()=>{this.toggleFilterPanel()}}>
+          <DefaultButton
+            onClick={() => {
+              this.toggleFilterPanel();
+            }}
+          >
             Filters
           </DefaultButton>
-          <DefaultButton onClick={()=>this.toggleTimeLinePanel()}>
+          <DefaultButton onClick={() => this.toggleTimeLinePanel()}>
             {timeline_text}
           </DefaultButton>
         </div>
-
       </div>
     );
   }
-};
+}
 
 export default SocialApp;
