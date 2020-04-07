@@ -1,62 +1,61 @@
+import Dry from "json-dry";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import lodash from 'lodash';
+import People from "./People";
+import Businesses from "./Businesses";
+import Connections from "./Connections";
+import Positions from "./Positions";
+import Affiliations from "./Affiliations";
+import Sources from "./Sources";
+import Notes from "./Notes";
+import Projects from "./Projects";
+import Biographies from "./Biographies";
+import DateRange from "./DateRange";
 
-import People from './People';
-import Businesses from './Businesses';
-import Connections from './Connections';
-import Positions from './Positions';
-import Affiliations from './Affiliations';
-import Sources from './Sources';
-import Notes from './Notes';
-import Projects from './Projects';
-import Biographies from './Biographies';
-import DateRange from './DateRange';
-
-import { ValueError } from './Errors';
+import { ValueError } from "./Errors";
 
 const fast_physics = {
   enabled: true,
   timestep: 0.5,
 };
 
-const slow_physics = {...fast_physics};
+const slow_physics = { ...fast_physics };
 slow_physics.timestep = 0.1;
 
-function _push(values, list){
-  if (!list){
+function _push(values, list) {
+  if (!list) {
     return;
   }
 
-  if (values.length){
-    for (let i=0; i<values.length; ++i){
+  if (values.length) {
+    for (let i = 0; i < values.length; ++i) {
       list.push(values[i]);
     }
-  }
-  else{
+  } else {
     list.push(values);
   }
 }
 
 class Social {
   constructor(props) {
-    if (props){
+    if (props) {
       this.state = props;
-    }
-    else{
+    } else {
       this.state = {};
     }
 
     this.state.anchor = null;
     this.state.filter = {};
-    this.state.cache = {graph:null,
-                        projectTimeLine:null,
-                        itemTimeLine:null,
-                        node_filters:null,
-                        edge_filters:null,
-                        people:null,
-                        businesses:null,
-                        connections:null};
+    this.state.cache = {
+      graph: null,
+      projectTimeLine: null,
+      itemTimeLine: null,
+      node_filters: null,
+      edge_filters: null,
+      people: null,
+      businesses: null,
+      connections: null,
+    };
     this.state.window = new DateRange();
     this.state.max_window = new DateRange();
     this._rebuilding = 0;
@@ -64,28 +63,28 @@ class Social {
     this._isASocialObject = true;
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Social();
     c.state = lodash.cloneDeep(item.state);
     return c;
   }
 
   _updateHooks() {
-    let getHook = (id) => { return this.get(id); };
+    let getHook = (id) => {
+      return this.get(id);
+    };
 
     let state = { ...this.state };
 
     if (!(this.state.people instanceof People)) {
       state.people = new People();
-    }
-    else {
+    } else {
       state.people = this.state.people;
     }
 
     if (!(this.state.businesses instanceof Businesses)) {
       state.businesses = new Businesses();
-    }
-    else {
+    } else {
       state.businesses = this.state.businesses;
     }
 
@@ -97,70 +96,67 @@ class Social {
 
     if (!(this.state.positions instanceof Positions)) {
       state.positions = new Positions();
-    }
-    else {
+    } else {
       state.positions = this.state.positions;
     }
 
     if (!(this.state.affiliations instanceof Affiliations)) {
       state.affiliations = new Affiliations();
-    }
-    else {
+    } else {
       state.affiliations = this.state.affiliations;
     }
 
     if (!(this.state.sources instanceof Sources)) {
       state.sources = new Sources();
-    }
-    else {
+    } else {
       state.sources = this.state.sources;
     }
 
     if (!(this.state.notes instanceof Notes)) {
       state.notes = new Notes();
-    }
-    else {
+    } else {
       state.notes = this.state.notes;
     }
 
-    if (!(this.state.projects instanceof Projects)){
+    if (!(this.state.projects instanceof Projects)) {
       state.projects = new Projects();
-    }
-    else {
+    } else {
       state.projects = this.state.projects;
     }
 
-    if (!(this.state.biographies instanceof Biographies)){
+    if (!(this.state.biographies instanceof Biographies)) {
       state.biographies = new Biographies();
-    }
-    else{
+    } else {
       state.biographies = this.state.biographies;
     }
 
     this.state = state;
 
     for (let key in this.state) {
-      try{
+      try {
         this.state[key]._updateHooks(getHook);
+      } catch (error) {
+        console.error(error);
       }
-      catch(error){}
     }
   }
 
-  clearCache(){
-    this.state.cache = {graph:null,
-                        projectTimeLine:null,
-                        itemTimeLine:null,
-                        node_filters:null,
-                        edge_filters:null,
-                        people:null,
-                        businesses:null,
-                        connections:null};
+  clearCache() {
+    this.state.cache = {
+      graph: null,
+      projectTimeLine: null,
+      itemTimeLine: null,
+      node_filters: null,
+      edge_filters: null,
+      people: null,
+      businesses: null,
+      connections: null,
+    };
     this._rebuilding = 0;
   }
 
-  getNodeFilters(){
-    if (this.state.cache.node_filters){
+  getNodeFilters() {
+    if (this.state.cache.node_filters) {
       return this.state.cache.node_filters;
     }
 
@@ -170,12 +166,11 @@ class Social {
     // must do time first, as this can affect all of the other filters!
     let window = this.getWindow();
 
-    if (window.hasStart() || window.hasEnd()){
-      this.state.cache.node_filters.push((item)=>{
-        try{
+    if (window.hasStart() || window.hasEnd()) {
+      this.state.cache.node_filters.push((item) => {
+        try {
           return item.filterWindow(window);
-        }
-        catch(error){
+        } catch (error) {
           console.log(`ERROR ${error}: ${item}`);
           return item;
         }
@@ -184,16 +179,16 @@ class Social {
 
     const project_filter = this.state.filter.project;
 
-    if (project_filter){
-      this.state.cache.node_filters.push((item)=>{
+    if (project_filter) {
+      this.state.cache.node_filters.push((item) => {
         return item.filterProject(project_filter);
       });
     }
 
     const source_filter = this.state.filter.source;
 
-    if (source_filter){
-      this.state.cache.node_filters.push((item)=>{
+    if (source_filter) {
+      this.state.cache.node_filters.push((item) => {
         return item.filterSource(source_filter);
       });
     }
@@ -202,18 +197,17 @@ class Social {
 
     if (node_filter) {
       let connections = this.getConnectionsTo(node_filter);
-      let filter = {...node_filter};
+      let filter = { ...node_filter };
 
       for (let connection in connections) {
         let node = connections[connection];
         filter[node.getID()] = 1;
       }
 
-      this.state.cache.node_filters.push((item)=>{
-        if (item.getID() in filter){
+      this.state.cache.node_filters.push((item) => {
+        if (item.getID() in filter) {
           return item;
-        }
-        else{
+        } else {
           return null;
         }
       });
@@ -221,17 +215,15 @@ class Social {
 
     const group_filter = this.state.filter.group;
 
-    if (group_filter){
-      this.state.cache.node_filters.push((item)=>{
-        try{
-          if (item.inGroup(group_filter)){
+    if (group_filter) {
+      this.state.cache.node_filters.push((item) => {
+        try {
+          if (item.inGroup(group_filter)) {
             return item;
-          }
-          else{
+          } else {
             return null;
           }
-        }
-        catch(error){
+        } catch (error) {
           console.log(`Filter error: ${error}`);
           return item;
         }
@@ -242,19 +234,18 @@ class Social {
     return this.state.cache.node_filters;
   }
 
-  getEdgeFilters(){
-    if (!this.state.cache.edge_filters){
+  getEdgeFilters() {
+    if (!this.state.cache.edge_filters) {
       this.state.cache.edge_filters = [];
 
       // must do time first, as this can affect all of the other filters!
       let window = this.getWindow();
 
-      if (window.hasStart() || window.hasEnd()){
-        this.state.cache.edge_filters.push((item)=>{
-          try{
+      if (window.hasStart() || window.hasEnd()) {
+        this.state.cache.edge_filters.push((item) => {
+          try {
             return item.filterWindow(window);
-          }
-          catch(error){
+          } catch (error) {
             console.log(`ERROR ${error}: ${item}`);
             return item;
           }
@@ -263,12 +254,11 @@ class Social {
 
       const project_filter = this.state.filter.project;
 
-      if (project_filter){
-        this.state.cache.edge_filters.push((item)=>{
-          try{
+      if (project_filter) {
+        this.state.cache.edge_filters.push((item) => {
+          try {
             return item.filterProject(project_filter);
-          }
-          catch(error){
+          } catch (error) {
             console.log(`ERROR ${error}: ${item}`);
             return item;
           }
@@ -277,12 +267,11 @@ class Social {
 
       const source_filter = this.state.filter.source;
 
-      if (source_filter){
-        this.state.cache.edge_filters.push((item)=>{
-          try{
+      if (source_filter) {
+        this.state.cache.edge_filters.push((item) => {
+          try {
             return item.filterSource(source_filter);
-          }
-          catch(error){
+          } catch (error) {
             console.log(`ERROR ${error}: ${item}`);
             return item;
           }
@@ -293,72 +282,74 @@ class Social {
     return this.state.cache.edge_filters;
   }
 
-  getWindow(){
+  getWindow() {
     return this.state.window;
   }
 
-  getMaxWindow(){
+  getMaxWindow() {
     return this.state.max_window;
   }
 
-  _fitWindow(window){
+  _fitWindow(window) {
     let new_window = this.state.max_window.intersect(window);
 
     let delta = window.getDelta();
 
-    if (new_window && (new_window.getDelta() === delta)){
+    if (new_window && new_window.getDelta() === delta) {
       return window;
     }
 
-    if (delta > this.state.max_window.getDelta()){
+    if (delta > this.state.max_window.getDelta()) {
       return DateRange.clone(this.state.max_window);
     }
 
-    if (window.getStartDate() < this.state.max_window.getStartDate()){
-      return new DateRange({start:this.state.max_window.getStartDate(),
-                            end:this.state.max_window.getStartDate()+delta});
-    }
-    else{
-      return new DateRange({start:this.state.max_window.getEndDate()-delta,
-                            end:this.state.max_window.getEndDate()});
+    if (window.getStartDate() < this.state.max_window.getStartDate()) {
+      return new DateRange({
+        start: this.state.max_window.getStartDate(),
+        end: this.state.max_window.getStartDate() + delta,
+      });
+    } else {
+      return new DateRange({
+        start: this.state.max_window.getEndDate() - delta,
+        end: this.state.max_window.getEndDate(),
+      });
     }
   }
 
-  setMaxWindow(window){
-    if (!window._isADateRangeObject){
+  setMaxWindow(window) {
+    if (!window._isADateRangeObject) {
       window = new DateRange(window);
     }
 
-    if (window === this.state.max_window){
+    if (window === this.state.max_window) {
       return;
     }
 
     this.state.max_window = window;
 
-    if (this.state.window && this.state.window.hasBounds()){
+    if (this.state.window && this.state.window.hasBounds()) {
       let fitted = this._fitWindow(this.state.window);
 
-      if (fitted !== this.state.window){
+      if (fitted !== this.state.window) {
         this.setWindow(fitted);
       }
-    }
-    else{
+    } else {
       this.state.window = this.state.max_window;
     }
   }
 
-  setWindow(window){
-    if (!window._isADateRangeObject){
+  setWindow(window) {
+    if (!window._isADateRangeObject) {
       window = new DateRange(window);
     }
 
-    if (DateRange.eq(window, this.state.window)){
+    if (DateRange.eq(window, this.state.window)) {
       return false;
     }
 
     let fitted = this._fitWindow(window);
 
-    if (DateRange.eq(fitted, this.state.window)){
+    if (DateRange.eq(fitted, this.state.window)) {
       return false;
     }
 
@@ -367,90 +358,90 @@ class Social {
     return true;
   }
 
-  getPeople(filtered=true) {
-    if (this._rebuilding){
+  getPeople(filtered = true) {
+    if (this._rebuilding) {
       filtered = false;
     }
 
-    if (filtered){
-      if (!this.state.cache.people){
+    if (filtered) {
+      if (!this.state.cache.people) {
         console.log("REBUILD PEOPLE");
         this._rebuilding += 1;
-        this.state.cache.people =
-              this.state.people.filter(this.getNodeFilters());
+        this.state.cache.people = this.state.people.filter(
+          this.getNodeFilters()
+        );
         this._rebuilding -= 1;
       }
 
       return this.state.cache.people;
-    }
-    else{
+    } else {
       return this.state.people;
     }
   }
 
-  getBusinesses(filtered=true) {
-    if (this._rebuilding){
+  getBusinesses(filtered = true) {
+    if (this._rebuilding) {
       filtered = false;
     }
 
-    if (filtered){
-      if (!this.state.cache.businesses){
+    if (filtered) {
+      if (!this.state.cache.businesses) {
         console.log("REBUILD BUSINESSES");
         this._rebuilding += 1;
-        this.state.cache.businesses =
-              this.state.businesses.filter(this.getNodeFilters());
+        this.state.cache.businesses = this.state.businesses.filter(
+          this.getNodeFilters()
+        );
         this._rebuilding -= 1;
       }
 
       return this.state.cache.businesses;
-    }
-    else{
+    } else {
       return this.state.businesses;
     }
   }
 
-  getConnections(filtered=true) {
-    if (this._rebuilding){
+  getConnections(filtered = true) {
+    if (this._rebuilding) {
       filtered = false;
     }
 
-    if (filtered){
-      if (!this.state.cache.connections){
+    if (filtered) {
+      if (!this.state.cache.connections) {
         console.log("REBUILD CONNECTIONS");
         this._rebuilding += 1;
-        this.state.cache.connections =
-              this.state.connections.filter(this.getEdgeFilters());
-        this._rebuilding -=1;
+        this.state.cache.connections = this.state.connections.filter(
+          this.getEdgeFilters()
+        );
+        this._rebuilding -= 1;
       }
 
       return this.state.cache.connections;
-    }
-    else{
+    } else {
       return this.state.connections;
     }
   }
 
-  getBiographies(filtered=true){
+  getBiographies(filtered = true) {
     return this.state.biographies;
   }
 
-  getAffiliations(filtered=true) {
+  getAffiliations(filtered = true) {
     return this.state.affiliations;
   }
 
-  getPositions(filtered=true) {
+  getPositions(filtered = true) {
     return this.state.positions;
   }
 
-  getSources(filtered=true) {
+  getSources(filtered = true) {
     return this.state.sources;
   }
 
-  getNotes(filtered=true) {
+  getNotes(filtered = true) {
     return this.state.notes;
   }
 
-  getProjects(filtered=true) {
+  getProjects(filtered = true) {
     return this.state.projects;
   }
 
@@ -463,120 +454,111 @@ class Social {
   }
 
   getFilter() {
-    return {...this.state.filter};
+    return { ...this.state.filter };
   }
 
-  getFilterText(){
+  getFilterText() {
     const filter = [];
 
     let f = this.state.filter.node;
 
-    if (f){
+    if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index)=>{
+      Object.keys(f).forEach((key, index) => {
         parts.push(this.get(key, false).getName());
       });
 
       parts.sort();
 
-      if (parts.length === 1){
+      if (parts.length === 1) {
         filter.push(`connected to ${parts[0]}`);
-      }
-      else if (parts.length > 1){
+      } else if (parts.length > 1) {
         filter.push(`connected to (${parts.join(" and ")})`);
       }
     }
 
     f = this.state.filter.source;
 
-    if (f){
+    if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index)=>{
+      Object.keys(f).forEach((key, index) => {
         parts.push(this.get(key, false).getName());
       });
 
       parts.sort();
 
-      if (parts.length === 1){
+      if (parts.length === 1) {
         filter.push(`with source ${parts[0]}`);
-      }
-      else if (parts.length > 1){
+      } else if (parts.length > 1) {
         filter.push(`with sources (${parts.join(" and ")})`);
       }
     }
 
     f = this.state.filter.group;
 
-    if (f){
+    if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index)=>{
+      Object.keys(f).forEach((key, index) => {
         parts.push(this.get(key, false).getName());
       });
 
       parts.sort();
 
-      if (parts.length === 1){
+      if (parts.length === 1) {
         filter.push(`in group ${parts[0]}`);
-      }
-      else if (parts.length > 1){
+      } else if (parts.length > 1) {
         filter.push(`in groups (${parts.join(" and ")})`);
       }
     }
 
     f = this.state.filter.project;
 
-    if (f){
+    if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index)=>{
+      Object.keys(f).forEach((key, index) => {
         parts.push(this.get(key, false).getName());
       });
 
       parts.sort();
 
-      if (parts.length === 1){
+      if (parts.length === 1) {
         filter.push(`in project ${parts[0]}`);
-      }
-      else if (parts.length > 1){
+      } else if (parts.length > 1) {
         filter.push(`in projects (${parts.join(" and ")})`);
       }
     }
 
-    if (filter.length === 1){
+    if (filter.length === 1) {
       return filter[0];
-    }
-    else if (filter.length > 1){
+    } else if (filter.length > 1) {
       return `[${filter.join("] and [")}]`;
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  _getType(item){
-    if (item.getID){
+  _getType(item) {
+    if (item.getID) {
       item = item.getID();
     }
 
-    if (item[0] === "P" || item[0] === "B"){
+    if (item[0] === "P" || item[0] === "B") {
       return "node";
-    }
-    else if (item[0] === "J"){
+    } else if (item[0] === "J") {
       return "project";
-    }
-    else if (item[0] === "S"){
+    } else if (item[0] === "S") {
       return "source";
-    }
-    else{
+    } else {
       return "group";
     }
   }
 
-  isFiltered(item){
-    if (item.getID){
+  isFiltered(item) {
+    if (item.getID) {
       item = item.getID();
     }
 
@@ -584,63 +566,50 @@ class Social {
 
     const filter = this.state.filter[type];
 
-    if (filter){
+    if (filter) {
       return item in filter;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-  find(text){
+  find(text) {
     let result = [];
 
-    try{
+    try {
       let items = this.getPeople(false).find(text);
       _push(items, result);
-    }
-    catch(error)
-    {}
+    } catch (error) {}
 
-    try{
+    try {
       let items = this.getBusinesses(false).find(text);
       _push(items, result);
-    }
-    catch(error)
-    {}
+    } catch (error) {}
 
-    try{
+    try {
       let items = this.getPositions(false).find(text);
       _push(items, result);
-    }
-    catch(error)
-    {}
+    } catch (error) {}
 
-    try{
+    try {
       let items = this.getAffiliations(false).find(text);
       _push(items, result);
-    }
-    catch(error)
-    {}
+    } catch (error) {}
 
-    try{
+    try {
       let items = this.getSources(false).search(text);
       _push(items, result);
-    }
-    catch(error)
-    {}
+    } catch (error) {}
 
-    try{
+    try {
       let items = this.getBiographies(false).search(text);
       _push(items, result);
-    }
-    catch(error)
-    {}
+    } catch (error) {}
 
     return result;
   }
 
-  resetFilters(){
+  resetFilters() {
     this.state.filter = {};
     this.clearCache();
   }
@@ -654,25 +623,24 @@ class Social {
     this.clearCache();
   }
 
-  toggleFilter(item){
-    if (item.getID){
+  toggleFilter(item) {
+    if (item.getID) {
       item = item.getID();
     }
 
     let type = this._getType(item);
 
-    if (!(type in this.state.filter)){
+    if (!(type in this.state.filter)) {
       this.state.filter[type] = {};
     }
 
-    if (item in this.state.filter[type]){
+    if (item in this.state.filter[type]) {
       delete this.state.filter[type][item];
 
-      if (Object.keys(this.state.filter[type]).length === 0){
+      if (Object.keys(this.state.filter[type]).length === 0) {
         delete this.state.filter[type];
       }
-    }
-    else{
+    } else {
       this.state.filter[type][item] = 1;
     }
 
@@ -681,8 +649,8 @@ class Social {
     this.clearCache();
   }
 
-  getProjectTimeLine(){
-    if (this.state.cache.projectTimeLine !== null){
+  getProjectTimeLine() {
+    if (this.state.cache.projectTimeLine !== null) {
       return this.state.cache.projectTimeLine;
     }
 
@@ -693,8 +661,8 @@ class Social {
     return this.state.cache.projectTimeLine;
   }
 
-  getItemTimeLine(){
-    if (this.state.cache.itemTimeLine !== null){
+  getItemTimeLine() {
+    if (this.state.cache.itemTimeLine !== null) {
       return this.state.cache.itemTimeLine;
     }
 
@@ -702,7 +670,7 @@ class Social {
 
     let projects = this.getProjects().getTimeLine();
 
-    projects.forEach((item)=>{
+    projects.forEach((item) => {
       item.type = "background";
       items.push(item);
     });
@@ -713,37 +681,37 @@ class Social {
   }
 
   getGraph() {
-    if (this.state.cache.graph !== null){
+    if (this.state.cache.graph !== null) {
       return this.state.cache.graph;
     }
 
     const anchor = this.state.anchor;
-    let nodes = this.getPeople().getNodes({anchor: anchor});
+    let nodes = this.getPeople().getNodes({ anchor: anchor });
     nodes = nodes.concat(this.getBusinesses().getNodes());
 
     let n = {};
-    for (let i in nodes){
+    for (let i in nodes) {
       n[nodes[i].id] = 1;
     }
 
     let edges = this.getConnections().getEdges(n);
 
-    this.state.cache.graph = {"nodes": nodes, "edges": edges};
+    this.state.cache.graph = { nodes: nodes, edges: edges };
     return this.state.cache.graph;
   }
 
-  add(item){
-    if (!item){
+  add(item) {
+    if (!item) {
       return;
     }
 
     let added = false;
 
-    Object.keys(this.state).forEach((key, index)=>{
-      if (!added){
+    Object.keys(this.state).forEach((key, index) => {
+      if (!added) {
         let group = this.state[key];
-        if (group && group.canAdd){
-          if (group.canAdd(item)){
+        if (group && group.canAdd) {
+          if (group.canAdd(item)) {
             group.add(item);
             added = true;
           }
@@ -751,57 +719,48 @@ class Social {
       }
     });
 
-    if (!added){
+    if (!added) {
       throw new ValueError(
-          `Do not know how to add ${item} to this Social group`);
+        `Do not know how to add ${item} to this Social group`
+      );
     }
   }
 
-  get(id, filtered=true) {
-    if (id.getID){
+  get(id, filtered = true) {
+    if (id.getID) {
       id = id.getID();
     }
 
-    if (this._rebuilding){
+    if (this._rebuilding) {
       // we cannot get filtered data when rebuilding, else otherwise
       // we get race conditions and weird results
       filtered = false;
     }
 
-    try{
+    try {
       if (id[0] === "C") {
         return this.getConnections(filtered).get(id);
-      }
-      else if (id[0] === "P") {
+      } else if (id[0] === "P") {
         return this.getPeople(filtered).get(id);
-      }
-      else if (id[0] === "B") {
+      } else if (id[0] === "B") {
         return this.getBusinesses(filtered).get(id);
-      }
-      else if (id[0] === "Q") {
+      } else if (id[0] === "Q") {
         return this.getPositions(filtered).get(id);
-      }
-      else if (id[0] === "A") {
+      } else if (id[0] === "A") {
         return this.getAffiliations(filtered).get(id);
-      }
-      else if (id[0] === "S") {
+      } else if (id[0] === "S") {
         return this.getSources(filtered).get(id);
-      }
-      else if (id[0] === "N") {
+      } else if (id[0] === "N") {
         return this.getNotes(filtered).get(id);
-      }
-      else if (id[0] === "J") {
+      } else if (id[0] === "J") {
         return this.getProjects(filtered).get(id);
-      }
-      else {
+      } else {
         return id;
       }
-    }
-    catch(error){
-      if (filtered){
+    } catch (error) {
+      if (filtered) {
         return this.get(id, false);
-      }
-      else{
+      } else {
         throw error;
       }
     }
@@ -817,7 +776,7 @@ Social.unDry = function (value) {
   social._updateHooks();
 
   return social;
-}
+};
 
 Dry.registerClass("Social", Social);
 

@@ -28,6 +28,7 @@ class SocialApp extends React.Component {
   constructor(props) {
     super(props);
 
+    // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
     console.log(social);
 
@@ -36,7 +37,7 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
-    // special cases for Brunel project...
+    // Special cases for Brunel project...
     social.setAnchor("Brunel");
     social.setMaxWindow(
       new DateRange({ start: "1800-01-01", end: "1860-12-31" })
@@ -323,7 +324,9 @@ class SocialApp extends React.Component {
             }}
           />
         </SlidingPanel>
+        
 
+        {/* Info panel on the RHS */}
         <SlidingPanel isOpen={this.state.isInfoPanelOpen} position="right">
           <span
             className={styles.closePanelButton}
@@ -348,6 +351,7 @@ class SocialApp extends React.Component {
           />
         </SlidingPanel>
 
+        {/* Filter on bottom of page */}
         <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom">
           <span
             className={styles.closePanelButton}
@@ -373,7 +377,9 @@ class SocialApp extends React.Component {
             }}
           />
         </SlidingPanel>
+        
 
+        {/* This creates the menu on the LHS opened by the hamburger */}
         <SlidingPanel
           isOpen={this.state.isHamburgerMenuOpen}
           position="left"
@@ -387,7 +393,8 @@ class SocialApp extends React.Component {
             items={menu}
           />
         </SlidingPanel>
-
+        
+        {/* The social graph itself */}
         <div className={styles.graphContainer}>
           <SocialGraph
             social={this.state.social}
@@ -396,7 +403,8 @@ class SocialApp extends React.Component {
             emitClicked={(id) => this.slotSelected(id)}
           />
         </div>
-
+        
+        {/* These are the two small buttons at the bottom of the page */}
         <div className={styles.bottomContainer}>
           <DefaultButton
             onClick={() => {

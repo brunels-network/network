@@ -12,11 +12,15 @@ function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));
 }
 
+let target_alpha = 0.3
+
 function dragLink(THIS) {
   let simulation = THIS._simulation;
 
   function dragstarted(d) {
-    simulation.alphaTarget(0.3).restart();
+    // simulation.alphaTarget(0.3).restart();
+
+    simulation.alphaTarget(target_alpha).restart();
 
     //find the two nodes connected to this edge
     let source = THIS._graph.nodes[d.source.index];
@@ -527,6 +531,7 @@ class ForceGraphD3 {
   }
 
   _updateSimulation() {
+
     if (this._simulation) {
       this._simulation.stop();
       this._simulation = null;
@@ -572,7 +577,7 @@ class ForceGraphD3 {
           .forceLink()
           .links(this._graph.edges)
           .distance((d) => {
-            return 25 * (1 + d.value);
+            return 50 * (1 + d.value);
           })
           .iterations(5)
       )
@@ -588,9 +593,12 @@ class ForceGraphD3 {
       )
       .on("tick", ticked)
       .on("end", ended);
-
+        
+    // simulation = simulation.force("charge", null);
+    // simulation = simulation.force("link", null);
+    
     this._is_running = true;
-
+    
     // save the simulation so that we can update it later...
     this._simulation = simulation;
   }

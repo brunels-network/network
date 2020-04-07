@@ -7,9 +7,8 @@ class SocialGraph extends React.Component {
 
     if (social) {
       return social.getGraph();
-    } else {
-      return null;
     }
+    return null;
   }
 
   getNetwork() {
@@ -17,9 +16,8 @@ class SocialGraph extends React.Component {
 
     if (social) {
       return social.getNetwork();
-    } else {
-      return null;
     }
+    return null;
   }
 
   render() {
