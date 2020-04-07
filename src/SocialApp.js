@@ -54,6 +54,7 @@ class SocialApp extends React.Component {
       isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
+      wobbleEnabled: false,
     };
 
     this.socialGraph = null;
@@ -166,6 +167,10 @@ class SocialApp extends React.Component {
       isTimeLinePanelOpen: false,
       isFilterPanelOpen: !this.state.isFilterPanelOpen,
     });
+  }
+
+  toggleWobble() {
+    this.setState({wobbleEnabled: !this.state.wobbleEnabled});
   }
 
   viewAbout() {
@@ -324,7 +329,6 @@ class SocialApp extends React.Component {
             }}
           />
         </SlidingPanel>
-        
 
         {/* Info panel on the RHS */}
         <SlidingPanel isOpen={this.state.isInfoPanelOpen} position="right">
@@ -377,7 +381,6 @@ class SocialApp extends React.Component {
             }}
           />
         </SlidingPanel>
-        
 
         {/* This creates the menu on the LHS opened by the hamburger */}
         <SlidingPanel
@@ -393,7 +396,7 @@ class SocialApp extends React.Component {
             items={menu}
           />
         </SlidingPanel>
-        
+
         {/* The social graph itself */}
         <div className={styles.graphContainer}>
           <SocialGraph
@@ -401,11 +404,19 @@ class SocialApp extends React.Component {
             selected={selected}
             highlighted={highlighted}
             emitClicked={(id) => this.slotSelected(id)}
+            wobble={this.state.wobbleEnabled}
           />
         </div>
-        
+
         {/* These are the two small buttons at the bottom of the page */}
         <div className={styles.bottomContainer}>
+          <DefaultButton
+            onClick={() => {
+              this.toggleWobble();
+            }}
+          >
+            Wobble
+          </DefaultButton>
           <DefaultButton
             onClick={() => {
               this.toggleFilterPanel();

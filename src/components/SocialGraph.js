@@ -29,6 +29,7 @@ class SocialGraph extends React.Component {
             signalClicked={this.props.emitClicked}
             highlighted={this.props.highlighted}
             selected={this.props.selected}
+            wobble={this.props.wobble}
           />
         </div>
       );
