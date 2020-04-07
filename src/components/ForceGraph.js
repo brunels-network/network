@@ -38,10 +38,16 @@ class ForceGraph extends React.Component {
   render(){
     let s = `${styles.graph} ${this._graph.className()}`;
 
-    return <div ref={el => (this.container = el)}
-                style={{width:"100%", height:"100%"}}>
-             <div className={s} />
-           </div>;
+    return (
+    //   <div className={styles.testgraph}>
+        <div
+          ref={(el) => (this.container = el)}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <div className={s} />
+        </div>
+    //   </div>
+    );
   }
 }
 

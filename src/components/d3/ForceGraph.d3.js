@@ -12,20 +12,10 @@ function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));
 }
 
-// Will set these so the sensitivity can be controlled using buttons on the
-// main screen ?
-let target_decay = 0.4;
-let target_alpha = 0.3
-
 function dragLink(THIS) {
   let simulation = THIS._simulation;
 
   function dragstarted(d) {
-    // simulation.alphaTarget(target_alpha).restart();
-
-    // simulation.alphaTarget(target_alpha).restart();
-
-    // simulation.velocityDecay(target_decay).restart();
 
     simulation.alphaTarget(THIS._target_alpha).velocityDecay(THIS._target_decay).restart();
 
@@ -90,7 +80,7 @@ function drag(THIS) {
 
   function dragstarted(d) {
     simulation.alphaTarget(THIS._target_alpha).velocityDecay(THIS._target_decay).restart();
-    // simulation.velocityDecay(target_decay).restart();
+
     d.fx = d.x;
     d.fy = d.y;
   }
@@ -297,6 +287,10 @@ class ForceGraphD3 {
     this._size_changed = true;
     this._graph_changed = true;
     this._is_running = false;
+
+    // Set parameters for the force simulation
+    this._target_decay = 0.4;
+    this._target_alpha = 0.3;
 
     this.update(props);
   }
@@ -609,9 +603,6 @@ class ForceGraphD3 {
       .on("tick", ticked)
       .on("end", ended);
 
-    // simulation = simulation.force("charge", null);
-    // simulation = simulation.force("link", null);
-
     this._is_running = true;
 
     // save the simulation so that we can update it later...
@@ -658,6 +649,7 @@ class ForceGraphD3 {
       .attr("height", height)
       .attr("width", width)
       .attr("id", "svg-viz")
+      .attr("align", "center")
       .on("click", () => {
         this.state.signalClicked(null);
       });

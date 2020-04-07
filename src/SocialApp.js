@@ -54,7 +54,7 @@ class SocialApp extends React.Component {
       isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
-      wobbleEnabled: false,
+      wobbleEnabled: true,
     };
 
     this.socialGraph = null;
