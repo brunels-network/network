@@ -170,7 +170,7 @@ class SocialApp extends React.Component {
   }
 
   toggleWobble() {
-    this.setState({wobbleEnabled: !this.state.wobbleEnabled});
+    this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
 
   viewAbout() {
