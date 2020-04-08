@@ -39,12 +39,21 @@
   transform: translateY(2px);
 }
 
-.bottomContainer {
+.analysisButtons {
   position: fixed;
   bottom: 10px;
   width: 30%;
   left: 50%;
   margin-left: -15%;
+  text-align: center;
+}
+
+.bottomContainer {
+  position: fixed;
+  bottom: 10px;
+  width: 50%;
+  left: 50%;
+  margin-left: -25%;
   text-align: center;
 }
 

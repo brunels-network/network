@@ -28,6 +28,8 @@ class SocialApp extends React.Component {
   constructor(props) {
     super(props);
 
+    this.toggleWobble = this.toggleWobble.bind(this);
+
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
     console.log(social);
@@ -319,7 +321,7 @@ class SocialApp extends React.Component {
               this.slotClicked(item);
             }}
             emitSelected={(item) => {
-              this.slotClicked(item);
+              this.slotSelected(item);
             }}
             emitHighlighted={(item) => {
               this.slotHighlighted(item);
@@ -410,11 +412,12 @@ class SocialApp extends React.Component {
 
         {/* These are the two small buttons at the bottom of the page */}
         <div className={styles.bottomContainer}>
-          <DefaultButton
-            onClick={() => {
+          {/* <ShipSelectorButton  */}
+          <DefaultButton onClick={this.toggleWobble}>
+            {/* onClick=
+            {() => {
               this.toggleWobble();
-            }}
-          >
+            }} */}
             Wobble
           </DefaultButton>
           <DefaultButton
