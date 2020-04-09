@@ -644,8 +644,6 @@ class Social {
       this.state.filter[type][item] = 1;
     }
 
-    console.log(this.state.filter);
-
     this.clearCache();
   }
 

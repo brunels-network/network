@@ -13,6 +13,8 @@ import OverlayBox from "./components/OverlayBox";
 import SearchBar from "./components/SearchBar";
 import BrunelMenu from "./components/BrunelMenu";
 import DefaultButton from "./components/DefaultButton";
+import ShipSelectorButton from "./components/ShipSelectorButton";
+import ShipSelector from "./components/ShipSelector";
 
 // Brunel model
 import Social from "./model/Social";
@@ -29,6 +31,8 @@ class SocialApp extends React.Component {
     super(props);
 
     this.toggleWobble = this.toggleWobble.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
+
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
@@ -103,6 +107,12 @@ class SocialApp extends React.Component {
     this.resetFilters();
   }
 
+  slotSetFilter(item) {
+      // Used with the 
+      this.resetFilters();
+      this.slotToggleFilter(item);
+  }
+
   slotToggleFilter(item) {
     if (!item) {
       return;
@@ -152,6 +162,19 @@ class SocialApp extends React.Component {
       this.setState({ social: social });
     }
   }
+
+  getMethods = (obj) => {
+    let properties = new Set();
+    let currentObj = obj;
+    do {
+      Object.getOwnPropertyNames(currentObj).map((item) =>
+        properties.add(item)
+      );
+    } while ((currentObj = Object.getPrototypeOf(currentObj)));
+    return [...properties.keys()].filter(
+      (item) => typeof obj[item] === "function"
+    );
+  };
 
   toggleInfoPanel() {
     this.setState({ isInfoPanelOpen: !this.state.isInfoPanelOpen });
@@ -412,14 +435,16 @@ class SocialApp extends React.Component {
 
         {/* These are the two small buttons at the bottom of the page */}
         <div className={styles.bottomContainer}>
-          {/* <ShipSelectorButton  */}
-          <DefaultButton onClick={this.toggleWobble}>
-            {/* onClick=
-            {() => {
-              this.toggleWobble();
-            }} */}
-            Wobble
-          </DefaultButton>
+          {/* <DefaultButton onClick={() => this.shipSelector()}>
+            Selector
+          </DefaultButton> */}
+          <ShipSelector
+            projects={this.state.social.getProjects()}
+            shipFilter={(item) => this.slotSetFilter(item)}
+            resetFilters={this.resetFilters}
+          />
+
+          <DefaultButton onClick={this.toggleWobble}>Wobble</DefaultButton>
           <DefaultButton
             onClick={() => {
               this.toggleFilterPanel();

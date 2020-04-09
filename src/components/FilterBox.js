@@ -1,89 +1,96 @@
-
-import React from 'react';
+import React from "react";
 
 import {
   Accordion,
   AccordionItem,
   AccordionTitle,
   AccordionPanel,
-} from './Accordion';
+} from "./Accordion";
 
-import {ResponsiveList, ResponsiveListItem} from './ResponsiveList';
-import CheckBox from './CheckBox';
-import DefaultButton from './DefaultButton';
+import { ResponsiveList, ResponsiveListItem } from "./ResponsiveList";
+import CheckBox from "./CheckBox";
+import DefaultButton from "./DefaultButton";
 
-import styles from './FilterBox.module.css';
+import styles from "./FilterBox.module.css";
 
-function null_function(args=null){}
+function null_function(args = null) {}
 
-function filterList(items, props){
+function filterList(items, props) {
   let social = props.social;
 
   let emitSelected = props.emitSelected;
 
-  if (!emitSelected){
+  if (!emitSelected) {
     emitSelected = null_function;
   }
 
   let emitToggleFilter = props.emitToggleFilter;
 
-  if (!emitToggleFilter){
+  if (!emitToggleFilter) {
     emitToggleFilter = null_function;
   }
 
-  let output = items.values().map((item)=>{
+  let output = items.values().map((item) => {
     let is_filtered = social.isFiltered(item);
 
-    return <ResponsiveListItem key={item.getName()}>
-              <DefaultButton style={{position:"relative",
-                                     maxWidth:"80%"}}
-                             onClick={()=>{emitSelected(item);}}>
-                {item.getName()}
-              </DefaultButton>&nbsp;
-              <CheckBox checked={is_filtered}
-                        onChange={(event)=>{emitToggleFilter(item);}}/>
-           </ResponsiveListItem>;
+    return (
+      <ResponsiveListItem key={item.getName()}>
+        <DefaultButton
+          style={{ position: "relative", maxWidth: "80%" }}
+          onClick={() => {
+            emitSelected(item);
+          }}
+        >
+          {item.getName()}
+        </DefaultButton>
+        &nbsp;
+        <CheckBox
+          checked={is_filtered}
+          onChange={(event) => {
+            emitToggleFilter(item);
+          }}
+        />
+      </ResponsiveListItem>
+    );
   });
 
   return <ResponsiveList>{output}</ResponsiveList>;
 }
 
-function FilterBox(props){
+function FilterBox(props) {
   let social = props.social;
 
-  if (!social){
+  if (!social) {
     return <div>No social to display!</div>;
   }
 
   let filter_text = social.getFilterText();
 
-  if (!filter_text){
+  if (!filter_text) {
     filter_text = "No filters";
   }
 
   let emitClearFilters = props.emitClearFilters;
 
-  if (!emitClearFilters){
+  if (!emitClearFilters) {
     emitClearFilters = null_function;
   }
 
-  let filter_info = <AccordionItem uuid="filterinfo">
-                      <AccordionTitle>
-                        Current Filter
-                      </AccordionTitle>
-                      <AccordionPanel>
-                        <div className={styles.filterContainer}>
-                          <div className={styles.filterText}>
-                            {filter_text}
-                          </div>
-                          <div>
-                            <DefaultButton onClick={emitClearFilters}>
-                              Clear Filters
-                            </DefaultButton>
-                          </div>
-                        </div>
-                      </AccordionPanel>
-                    </AccordionItem>;
+  let filter_info = (
+    <AccordionItem uuid="filterinfo">
+      <AccordionTitle>Current Filter</AccordionTitle>
+      <AccordionPanel>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterText}>{filter_text}</div>
+          <div>
+            <DefaultButton onClick={emitClearFilters}>
+              Clear Filters
+            </DefaultButton>
+          </div>
+        </div>
+      </AccordionPanel>
+    </AccordionItem>
+  );
 
   let projects = filterList(social.getProjects(false), props);
   let sources = filterList(social.getSources(false), props);
@@ -94,65 +101,41 @@ function FilterBox(props){
 
   console.log(sources);
 
-  return <Accordion allowMultipleExpanded={false}
-                    allowZeroExpanded={true}>
-          {filter_info}
+  return (
+    <Accordion allowMultipleExpanded={false} allowZeroExpanded={true}>
+      {filter_info}
 
-          <AccordionItem uuid="projects">
-            <AccordionTitle>
-                Projects
-            </AccordionTitle>
-            <AccordionPanel>
-              {projects}
-            </AccordionPanel>
-          </AccordionItem>
+      <AccordionItem uuid="projects">
+        <AccordionTitle>Projects</AccordionTitle>
+        <AccordionPanel>{projects}</AccordionPanel>
+      </AccordionItem>
 
-          <AccordionItem uuid="sources">
-            <AccordionTitle>
-                Sources
-            </AccordionTitle>
-            <AccordionPanel>
-              {sources}
-            </AccordionPanel>
-          </AccordionItem>
+      <AccordionItem uuid="sources">
+        <AccordionTitle>Sources</AccordionTitle>
+        <AccordionPanel>{sources}</AccordionPanel>
+      </AccordionItem>
 
-          <AccordionItem uuid="people">
-            <AccordionTitle>
-              People
-            </AccordionTitle>
-            <AccordionPanel>
-              {people}
-            </AccordionPanel>
-          </AccordionItem>
+      <AccordionItem uuid="people">
+        <AccordionTitle>People</AccordionTitle>
+        <AccordionPanel>{people}</AccordionPanel>
+      </AccordionItem>
 
-          <AccordionItem uuid="businesses">
-            <AccordionTitle>
-              Businesses
-            </AccordionTitle>
-            <AccordionPanel>
-              {businesses}
-            </AccordionPanel>
-          </AccordionItem>
+      <AccordionItem uuid="businesses">
+        <AccordionTitle>Businesses</AccordionTitle>
+        <AccordionPanel>{businesses}</AccordionPanel>
+      </AccordionItem>
 
-          <AccordionItem uuid="positions">
-            <AccordionTitle>
-              Positions
-            </AccordionTitle>
-            <AccordionPanel>
-              {positions}
-            </AccordionPanel>
-          </AccordionItem>
+      <AccordionItem uuid="positions">
+        <AccordionTitle>Positions</AccordionTitle>
+        <AccordionPanel>{positions}</AccordionPanel>
+      </AccordionItem>
 
-          <AccordionItem uuid="affiliations">
-            <AccordionTitle>
-              Affiliations
-            </AccordionTitle>
-            <AccordionPanel>
-              {affiliations}
-            </AccordionPanel>
-          </AccordionItem>
-
-        </Accordion>;
+      <AccordionItem uuid="affiliations">
+        <AccordionTitle>Affiliations</AccordionTitle>
+        <AccordionPanel>{affiliations}</AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  );
 }
 
 export default FilterBox;

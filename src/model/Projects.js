@@ -1,34 +1,33 @@
+import Dry from "json-dry";
+import { v4 as uuidv4 } from "uuid";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import { v4 as uuidv4 } from 'uuid';
-import lodash from 'lodash';
+import Project from "./Project";
+import { KeyError, MissingError } from "./Errors";
 
-import Project from './Project';
-import { KeyError, MissingError } from './Errors';
-
-function _generate_project_uid(){
+function _generate_project_uid() {
   let uid = uuidv4();
-  return "J" + uid.substring(uid.length-7);
+  return "J" + uid.substring(uid.length - 7);
 }
 
 class Projects {
-  constructor(props){
+  constructor(props) {
     this.state = {
       registry: {},
     };
 
     this._names = {};
     this._isAProjectsObject = true;
-  };
+  }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
-    for (let key in this.state.registry){
+    for (let key in this.state.registry) {
       this.state.registry[key]._updateHooks(hook);
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Projects();
     c.state = lodash.cloneDeep(item.state);
     c._names = lodash.cloneDeep(item._names);
@@ -36,34 +35,49 @@ class Projects {
     return c;
   }
 
-  values(){
+  values() {
     let names = Object.keys(this._names);
     names.sort();
 
     let output = [];
 
-    names.forEach((key, index)=>{
+    names.forEach((key, index) => {
       output.push(this.get(this._names[key]));
     });
 
     return output;
   }
 
-  canAdd(item){
-    return (item instanceof Project) || item._isAProjectObject;
+  getNames() {
+      return Object.keys(this._names);
+  }
+  
+  getIDs() {
+      return Object.values(this._names);
   }
 
-  add(project){
-    if (!this.canAdd(project)){ return null;}
+  getDetails() {
+      return this._names;
+  }
+
+  canAdd(item) {
+    return item instanceof Project || item._isAProjectObject;
+  }
+
+  add(project) {
+    if (!this.canAdd(project)) {
+      return null;
+    }
 
     let existing = null;
 
-    try{
+    try {
       existing = this.getByName(project.getName());
+    } catch (error) {
+      console.error("Cannot get project", error);
     }
-    catch(error){}
 
-    if (existing){
+    if (existing) {
       existing = existing.merge(project);
       this.state.registry[existing.getID()] = existing;
       return existing;
@@ -73,18 +87,17 @@ class Projects {
 
     let id = project.getID();
 
-    if (id){
-      if (id in this.state.registry){
+    if (id) {
+      if (id in this.state.registry) {
         throw new KeyError(`Duplicate Project ID ${project}`);
       }
 
       project._updateHooks(this._getHook);
       this.state.registry[id] = project;
-    }
-    else{
+    } else {
       let uid = _generate_project_uid();
 
-      while (uid in this.state.registry){
+      while (uid in this.state.registry) {
         uid = _generate_project_uid();
       }
 
@@ -98,19 +111,18 @@ class Projects {
     return project;
   }
 
-  getByName(name){
+  getByName(name) {
     let id = this._names[name];
 
-    if (id){
+    if (id) {
       return this.get(id);
-    }
-    else{
+    } else {
       throw MissingError(`No project with name ${name}`);
     }
   }
 
-  find(name){
-    if (name instanceof Project || name._isAProjectObject){
+  find(name) {
+    if (name instanceof Project || name._isAProjectObject) {
       return this.get(name.getID());
     }
 
@@ -119,42 +131,42 @@ class Projects {
     let results = [];
 
     Object.keys(this._names).forEach((key, index) => {
-      if (key.toLowerCase().indexOf(name) !== -1){
+      if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
     }
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No project matches '${name}. Available projects ` +
-                       `are '${keys}'`);
+    throw MissingError(
+      `No project matches '${name}. Available projects ` + `are '${keys}'`
+    );
   }
 
-  get(id){
+  get(id) {
     let project = this.state.registry[id];
 
-    if (!project){
+    if (!project) {
       throw new MissingError(`No Project with ID ${id}`);
     }
 
     return project;
   }
 
-  getTimeLine(){
+  getTimeLine() {
     let items = [];
 
-    Object.keys(this.state.registry).forEach((key, index)=>{
+    Object.keys(this.state.registry).forEach((key, index) => {
       let project = this.state.registry[key];
-      if (project){
+      if (project) {
         let timeline = project.getTimeLine();
-        if (timeline){
+        if (timeline) {
           items.push(timeline);
         }
       }
@@ -163,15 +175,15 @@ class Projects {
     return items;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
+}
 
-Projects.unDry = function(value){
+Projects.unDry = function (value) {
   let projects = new Projects();
   projects.state = value;
-  projects._names = {}
+  projects._names = {};
 
   Object.keys(value.registry).forEach((key, index) => {
     let v = value.registry[key];
@@ -179,7 +191,7 @@ Projects.unDry = function(value){
   });
 
   return projects;
-}
+};
 
 Dry.registerClass("Projects", Projects);
 
