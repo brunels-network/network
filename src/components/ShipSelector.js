@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import DefaultButton from "./DefaultButton";
 
@@ -18,7 +19,7 @@ class ShipSelector extends React.Component {
       return;
     }
 
-    this.state.lastShip = shipName;
+    this.setState({ lastShip: shipName });
     this.props.shipFilter(item);
   }
 
@@ -28,6 +29,7 @@ class ShipSelector extends React.Component {
     let output = projects.values().map((item) => {
       return (
         <DefaultButton
+          key={item.getName()}
           style={{ position: "relative", maxWidth: "80%" }}
           onClick={() => this.setFilter(item)}
         >
@@ -39,5 +41,11 @@ class ShipSelector extends React.Component {
     return output;
   }
 }
+
+ShipSelector.propTypes = {
+  projects: PropTypes.func,
+  resetFilters: PropTypes.func,
+  shipFilter: PropTypes.func
+};
 
 export default ShipSelector;

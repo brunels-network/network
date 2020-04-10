@@ -64,5 +64,8 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.1",
     "gh-pages": "^2.1.1"
+  },
+  "prettier": {
+        "printWidth": 120
   }
 }

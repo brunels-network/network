@@ -13,7 +13,6 @@ import OverlayBox from "./components/OverlayBox";
 import SearchBar from "./components/SearchBar";
 import BrunelMenu from "./components/BrunelMenu";
 import DefaultButton from "./components/DefaultButton";
-import ShipSelectorButton from "./components/ShipSelectorButton";
 import ShipSelector from "./components/ShipSelector";
 
 // Brunel model
@@ -32,7 +31,6 @@ class SocialApp extends React.Component {
 
     this.toggleWobble = this.toggleWobble.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
-
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
@@ -108,9 +106,8 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-      // Used with the 
-      this.resetFilters();
-      this.slotToggleFilter(item);
+    this.resetFilters();
+    this.slotToggleFilter(item);
   }
 
   slotToggleFilter(item) {
@@ -163,18 +160,18 @@ class SocialApp extends React.Component {
     }
   }
 
-  getMethods = (obj) => {
-    let properties = new Set();
-    let currentObj = obj;
-    do {
-      Object.getOwnPropertyNames(currentObj).map((item) =>
-        properties.add(item)
-      );
-    } while ((currentObj = Object.getPrototypeOf(currentObj)));
-    return [...properties.keys()].filter(
-      (item) => typeof obj[item] === "function"
-    );
-  };
+  //   getMethods = (obj) => {
+  //     let properties = new Set();
+  //     let currentObj = obj;
+  //     do {
+  //       Object.getOwnPropertyNames(currentObj).map((item) =>
+  //         properties.add(item)
+  //       );
+  //     } while ((currentObj = Object.getPrototypeOf(currentObj)));
+  //     return [...properties.keys()].filter(
+  //       (item) => typeof obj[item] === "function"
+  //     );
+  //   };
 
   toggleInfoPanel() {
     this.setState({ isInfoPanelOpen: !this.state.isInfoPanelOpen });
@@ -237,11 +234,11 @@ class SocialApp extends React.Component {
 
     let menu = [];
 
-    let timeline_text = "Timeline";
+    // let timeline_text = "Timeline";
 
-    if (social) {
-      timeline_text = `Timeline : ${social.getWindow().toSimpleString()}`;
-    }
+    // if (social) {
+    //   timeline_text = `Timeline : ${social.getWindow().toSimpleString()}`;
+    // }
 
     menu.push([
       "About",
@@ -433,28 +430,33 @@ class SocialApp extends React.Component {
           />
         </div>
 
-        {/* These are the two small buttons at the bottom of the page */}
         <div className={styles.bottomContainer}>
-          {/* <DefaultButton onClick={() => this.shipSelector()}>
-            Selector
-          </DefaultButton> */}
           <ShipSelector
             projects={this.state.social.getProjects()}
             shipFilter={(item) => this.slotSetFilter(item)}
             resetFilters={this.resetFilters}
           />
+        </div>
 
-          <DefaultButton onClick={this.toggleWobble}>Wobble</DefaultButton>
-          <DefaultButton
-            onClick={() => {
-              this.toggleFilterPanel();
-            }}
-          >
-            Filters
-          </DefaultButton>
-          <DefaultButton onClick={() => this.toggleTimeLinePanel()}>
-            {timeline_text}
-          </DefaultButton>
+        {/* Some side panel */}
+        <div className={styles.sidePanel}>
+          <div>
+            <DefaultButton
+              onClick={() => {
+                this.toggleFilterPanel();
+              }}
+            >
+              Filters
+            </DefaultButton>
+          </div>
+          <div>
+            <DefaultButton onClick={() => this.toggleTimeLinePanel()}>
+              {"Timeline"}
+            </DefaultButton>
+          </div>
+          <div>
+            <DefaultButton onClick={this.toggleWobble}>Wobble</DefaultButton>
+          </div>
         </div>
       </div>
     );

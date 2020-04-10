@@ -16,7 +16,6 @@ function dragLink(THIS) {
   let simulation = THIS._simulation;
 
   function dragstarted(d) {
-
     simulation.alphaTarget(THIS._target_alpha).velocityDecay(THIS._target_decay).restart();
 
     //find the two nodes connected to this edge
@@ -68,11 +67,7 @@ function dragLink(THIS) {
     }
   }
 
-  return d3
-    .drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended);
+  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
 }
 
 function drag(THIS) {
@@ -104,11 +99,7 @@ function drag(THIS) {
     }
   }
 
-  return d3
-    .drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended);
+  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
 }
 
 function handleMouseClick(THIS) {
@@ -169,7 +160,7 @@ function handleMouseOver(THIS) {
     items.classed(styles.highlight, true);
 
     //highlight the nodes with this node as a target
-    items.each((d, i) => {
+    items.each((d) => {
       let target_id = d.target.id;
       svg.selectAll(`#${target_id}`).classed(styles.highlight, true);
     });
@@ -179,19 +170,15 @@ function handleMouseOver(THIS) {
     items.classed(styles.highlight, true);
 
     //highlight the nodes with this node as a source
-    items.each((d, i) => {
+    items.each((d) => {
       let source_id = d.source.id;
       svg.selectAll(`#${source_id}`).classed(styles.highlight, true);
     });
 
     if (node.attr("source_id")) {
-      svg
-        .selectAll(`#${node.attr("source_id")}`)
-        .classed(styles.highlight, true);
+      svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, true);
 
-      svg
-        .selectAll(`#${node.attr("target_id")}`)
-        .classed(styles.highlight, true);
+      svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, true);
     }
 
     THIS.state.signalMouseOver(id);
@@ -219,7 +206,7 @@ function handleMouseOut(THIS) {
     items.classed(styles.highlight, false);
 
     //highlight the nodes with this node as a target
-    items.each((d, i) => {
+    items.each((d) => {
       let target_id = d.target.id;
       svg.selectAll(`#${target_id}`).classed(styles.highlight, false);
     });
@@ -229,19 +216,15 @@ function handleMouseOut(THIS) {
     items.classed(styles.highlight, false);
 
     //highlight the nodes with this node as a source
-    items.each((d, i) => {
+    items.each((d) => {
       let source_id = d.source.id;
       svg.selectAll(`#${source_id}`).classed(styles.highlight, false);
     });
 
     if (node.attr("source_id")) {
-      svg
-        .selectAll(`#${node.attr("source_id")}`)
-        .classed(styles.highlight, false);
+      svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, false);
 
-      svg
-        .selectAll(`#${node.attr("target_id")}`)
-        .classed(styles.highlight, false);
+      svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, false);
     }
 
     THIS.state.signalMouseOut(id);
@@ -384,22 +367,24 @@ class ForceGraphD3 {
   update(props) {
     let size_changed = false;
 
-    if(props.wobble) {
-        this._target_decay = 0.4;
-        this._target_alpha = 0.3;
-    } else { 
-        this._target_decay = 0.4;
-        this._target_alpha = 0;
+    if (props.wobble) {
+      this._target_decay = 0.4;
+      this._target_alpha = 0.3;
+    } else {
+      this._target_decay = 0.4;
+      this._target_alpha = 0;
     }
 
-    if (props.hasOwnProperty("width")) {
+    let hasWidth = Object.prototype.hasOwnProperty.call(props, "width");
+    if (hasWidth) {
       if (this.state.width !== props.width) {
         this.state.width = props.width;
         size_changed = true;
       }
     }
 
-    if (props.hasOwnProperty("height")) {
+    let hasHeight = Object.prototype.hasOwnProperty.call(props, "height");
+    if (hasHeight) {
       if (this.state.height !== props.height) {
         this.state.height = props.height;
         size_changed = true;
@@ -410,7 +395,9 @@ class ForceGraphD3 {
       this._size_changed = true;
     }
 
-    if (props.hasOwnProperty("signalClicked")) {
+    let hasSignalClicked = Object.prototype.hasOwnProperty.call(props, "signalClicked");
+
+    if (hasSignalClicked) {
       if (this.state.signalClicked) {
         this.state.signalClicked = props.signalClicked;
       } else {
@@ -418,7 +405,9 @@ class ForceGraphD3 {
       }
     }
 
-    if (props.hasOwnProperty("signalMouseOut")) {
+    let hasSignalMouseOut = Object.prototype.hasOwnProperty.call(props, "signalMouseOut");
+
+    if (hasSignalMouseOut) {
       if (this.state.signalMouseOut) {
         this.state.signalMouseOut = props.signalMouseOut;
       } else {
@@ -426,7 +415,9 @@ class ForceGraphD3 {
       }
     }
 
-    if (props.hasOwnProperty("signalMouseOver")) {
+    let hasSignalMouseOver = Object.prototype.hasOwnProperty.call(props, "signalMouseOver");
+
+    if (hasSignalMouseOver) {
       if (this.state.signalMouseOver) {
         this.state.signalMouseOver = props.signalMouseOver;
       } else {
@@ -434,15 +425,21 @@ class ForceGraphD3 {
       }
     }
 
-    if (props.hasOwnProperty("social")) {
+    let hasSocial = Object.prototype.hasOwnProperty.call(props, "social");
+
+    if (hasSocial) {
       this.updateGraph(props.social);
     }
 
-    if (props.hasOwnProperty("selected")) {
+    let hasSelected = Object.prototype.hasOwnProperty.call(props, "selected");
+
+    if (hasSelected) {
       this.state.selected = _resolve(props.selected);
     }
 
-    if (props.hasOwnProperty("highlighted")) {
+    let hasHighlighted = Object.prototype.hasOwnProperty.call(props, "highlighted");
+
+    if (hasHighlighted) {
       this.state.highlighted = _resolve(props.highlighted);
     }
   }
@@ -490,15 +487,12 @@ class ForceGraphD3 {
   }
 
   _updateNodeText(data) {
-    let text = this._mainGroup
-      .select(".node_text-group")
-      .selectAll(".node_text");
+    let text = this._mainGroup.select(".node_text-group").selectAll(".node_text");
 
     text = text
       .data(data, (d) => d.id)
       .join(
-        (enter) =>
-          enter.append("text").attr("class", `node_text ${styles.node_text}`),
+        (enter) => enter.append("text").attr("class", `node_text ${styles.node_text}`),
         (update) => update.attr("class", `node_text ${styles.node_text}`)
       )
       .text((d) => d.label)
@@ -576,10 +570,7 @@ class ForceGraphD3 {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .force(
-        "charge",
-        d3.forceManyBody().strength(-150).distanceMin(1).distanceMax(100)
-      )
+      .force("charge", d3.forceManyBody().strength(-150).distanceMin(1).distanceMax(100))
       .force(
         "link",
         d3
@@ -682,10 +673,7 @@ class ForceGraphD3 {
 
     if (this._size_changed) {
       let container = d3.select(`.${this.className()}`);
-      container
-        .selectAll("svg")
-        .attr("width", this.state.width)
-        .attr("height", this.state.height);
+      container.selectAll("svg").attr("width", this.state.width).attr("height", this.state.height);
       this._size_changed = false;
       update_simulation = true;
     }
