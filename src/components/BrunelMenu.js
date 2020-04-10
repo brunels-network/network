@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import styles from "./BrunelMenu.module.css";
 
@@ -12,12 +13,12 @@ function BrunelMenu(props) {
   props.items.forEach((item, index) => {
     let func = item[1];
 
-    // if (props.emitClose) {
-    //   func = () => {
-    //     props.emitClose();
-    //     item[1]();
-    //   };
-    // }
+    if (props.emitClose) {
+      func = () => {
+        props.emitClose();
+        item[1]();
+      };
+    }
 
     buttons.push(
       <button
@@ -34,5 +35,10 @@ function BrunelMenu(props) {
 
   return <div className={styles.menu}>{buttons}</div>;
 }
+
+BrunelMenu.propTypes = {
+  items: PropTypes.array,
+  emitClose: PropTypes.func,
+};
 
 export default BrunelMenu;

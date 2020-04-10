@@ -1,11 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTitle,
-  AccordionPanel,
-} from "./Accordion";
+import { Accordion, AccordionItem, AccordionTitle, AccordionPanel } from "./Accordion";
 
 import { ResponsiveList, ResponsiveListItem } from "./ResponsiveList";
 import CheckBox from "./CheckBox";
@@ -13,7 +9,7 @@ import DefaultButton from "./DefaultButton";
 
 import styles from "./FilterBox.module.css";
 
-function null_function(args = null) {}
+function null_function() {}
 
 function filterList(items, props) {
   let social = props.social;
@@ -46,7 +42,7 @@ function filterList(items, props) {
         &nbsp;
         <CheckBox
           checked={is_filtered}
-          onChange={(event) => {
+          onChange={() => {
             emitToggleFilter(item);
           }}
         />
@@ -56,6 +52,12 @@ function filterList(items, props) {
 
   return <ResponsiveList>{output}</ResponsiveList>;
 }
+
+filterList.propTypes = {
+  social: PropTypes.func,
+  emitSelected: PropTypes.func,
+  emitToggleFilter: PropTypes.func,
+};
 
 function FilterBox(props) {
   let social = props.social;
@@ -83,9 +85,7 @@ function FilterBox(props) {
         <div className={styles.filterContainer}>
           <div className={styles.filterText}>{filter_text}</div>
           <div>
-            <DefaultButton onClick={emitClearFilters}>
-              Clear Filters
-            </DefaultButton>
+            <DefaultButton onClick={emitClearFilters}>Clear Filters</DefaultButton>
           </div>
         </div>
       </AccordionPanel>

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import styles from "../ForceGraph.module.css";
 
-function _null_function(params) {}
+function _null_function() {}
 
 function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));

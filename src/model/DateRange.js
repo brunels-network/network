@@ -1,507 +1,469 @@
+import Dry from "json-dry";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import lodash from 'lodash';
+import RoughDate from "./RoughDate";
+import { ValueError } from "./Errors";
 
-import RoughDate from './RoughDate';
-import {ValueError} from './Errors';
-
-function _clean(val){
-  if (!val || val._isADateRangeObject){
+function _clean(val) {
+  if (!val || val._isADateRangeObject) {
     return val;
-  }
-  else if (val._isARoughDateObject){
+  } else if (val._isARoughDateObject) {
     return val.toDateRange();
-  }
-  else if (val.hasOwnProperty("start") || val.hasOwnProperty("end") ||
-           val.hasOwnProperty("both") || val.hasOwnProperty("value")){
+  } else if (
+    val.hasOwnProperty("start") ||
+    val.hasOwnProperty("end") ||
+    val.hasOwnProperty("both") ||
+    val.hasOwnProperty("value")
+  ) {
     return new DateRange(val);
-  }
-  else{
-    return new DateRange({both:new RoughDate(val)});
+  } else {
+    return new DateRange({ both: new RoughDate(val) });
   }
 }
 
-class DateRange{
-  constructor(state){
+class DateRange {
+  constructor(state) {
     this.state = {
       start: null,
-      end: null
-    }
+      end: null,
+    };
 
     this.setState(state);
     this._isADateRangeObject = true;
   }
 
-  toString(){
-    if (this.hasBounds()){
-      if (this.isInstant()){
+  toString() {
+    if (this.hasBounds()) {
+      if (this.isInstant()) {
         return `DateRange(${this.getStartString()})`;
-      }
-      else{
+      } else {
         return `DateRange(${this.getStartString()} to ${this.getEndString()})`;
       }
-    }
-    else{
+    } else {
       return "DateRange::unbounded";
     }
   }
 
-  toSimpleString(){
-    if (this.hasBounds()){
-      if (this.isInstant()){
+  toSimpleString() {
+    if (this.hasBounds()) {
+      if (this.isInstant()) {
         return this.getStart().toSimpleString();
-      }
-      else{
+      } else {
         return this.getEarliestStart().merge(this.getLatestEnd()).toSimpleString();
       }
-    }
-    else if (this.hasStart()){
+    } else if (this.hasStart()) {
       return `${this.getStart().toSimpleString()}<=>future`;
-    }
-    else if (this.hasEnd()){
+    } else if (this.hasEnd()) {
       return `past<=>${this.getEnd().toSimpleString()}`;
-    }
-    else{
+    } else {
       return "past<=>future";
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let d = new DateRange();
     d.state = lodash.cloneDeep(item.state);
     return d;
   }
 
-  static eq(item, other){
-    if (item === other){
+  static eq(item, other) {
+    if (item === other) {
       return true;
     }
 
-    if (item.hasStart() && other.hasStart()){
-      if (!RoughDate.eq(item.getStart(), other.getStart())){
+    if (item.hasStart() && other.hasStart()) {
+      if (!RoughDate.eq(item.getStart(), other.getStart())) {
         return false;
       }
-    }
-    else if (item.hasStart() || other.hasStart()){
+    } else if (item.hasStart() || other.hasStart()) {
       return false;
     }
 
-    if (item.hasEnd() && other.hasEnd()){
-      if (!RoughDate.eq(item.getEnd(), other.getEnd())){
+    if (item.hasEnd() && other.hasEnd()) {
+      if (!RoughDate.eq(item.getEnd(), other.getEnd())) {
         return false;
       }
-    }
-    else if (item.hasEnd() || other.hasEnd()){
+    } else if (item.hasEnd() || other.hasEnd()) {
       return false;
     }
 
     return true;
   }
 
-  static mergeAll(dates){
-    if (!dates){
+  static mergeAll(dates) {
+    if (!dates) {
       return null;
-    }
-    else if (dates._isARoughDateObject || dates._isARoughDateObject){
+    } else if (dates._isARoughDateObject || dates._isARoughDateObject) {
       return dates;
     }
 
-    if (!dates.length || dates.length === 0){
+    if (!dates.length || dates.length === 0) {
       return null;
     }
 
     let date = dates[0];
 
-    if (dates.length > 1){
-      for (let i=1; i<dates.length; ++i){
-        if (!dates[i].isNull()){
-          if (date.isNull()){
+    if (dates.length > 1) {
+      for (let i = 1; i < dates.length; ++i) {
+        if (!dates[i].isNull()) {
+          if (date.isNull()) {
             date = dates[i];
-          }
-          else{
+          } else {
             date = date.merge(dates[i]);
           }
         }
       }
     }
 
-    if (date.isNull()){
+    if (date.isNull()) {
       return null;
-    }
-    else{
+    } else {
       return date;
     }
   }
 
-  merge(other){
-    if (!other){
+  merge(other) {
+    if (!other) {
       return this;
-    }
-    else if (other._isARoughDateObject){
+    } else if (other._isARoughDateObject) {
       other = other.toDateRange();
     }
 
-    return new DateRange({start: RoughDate.min(this.getEarliestStart(),
-                                               other.getEarliestStart()),
-                          end: RoughDate.max(this.getLatestEnd(),
-                                             other.getLatestEnd())});
+    return new DateRange({
+      start: RoughDate.min(this.getEarliestStart(), other.getEarliestStart()),
+      end: RoughDate.max(this.getLatestEnd(), other.getLatestEnd()),
+    });
   }
 
-  hasBounds(){
+  hasBounds() {
     return this.hasStart() && this.hasEnd();
   }
 
-  hasEnd(){
-    if (this.state.end){
-      return !(this.state.end.isNull());
-    }
-    else{
+  hasEnd() {
+    if (this.state.end) {
+      return !this.state.end.isNull();
+    } else {
       return false;
     }
   }
 
-  hasStart(){
-    if (this.state.start){
-      return !(this.state.start.isNull());
-    }
-    else{
+  hasStart() {
+    if (this.state.start) {
+      return !this.state.start.isNull();
+    } else {
       return false;
     }
   }
 
-  isInstant(){
-    return this.hasStart() && (this.state.start === this.state.end);
+  isInstant() {
+    return this.hasStart() && this.state.start === this.state.end;
   }
 
-  toDate(){
-    if (this.hasStart()){
-      if (this.hasEnd()){
+  toDate() {
+    if (this.hasStart()) {
+      if (this.hasEnd()) {
         return this.getStart().merge(this.getEnd());
-      }
-      else{
+      } else {
         return this.getStart();
       }
-    }
-    else{
+    } else {
       return this.getEnd();
     }
   }
 
-  contains(date){
+  contains(date) {
     date = _clean(date);
 
-    if (!date){
+    if (!date) {
       return true;
-    }
-    else if (date._isADateRangeObject){
+    } else if (date._isADateRangeObject) {
       const my_start = this.getEarliestStart();
       const other_start = date.getEarliestStart();
 
-      if (my_start && other_start){
-        if (RoughDate.gt(my_start, other_start)){ return false;}
-      }
-      else if (other_start){
+      if (my_start && other_start) {
+        if (RoughDate.gt(my_start, other_start)) {
+          return false;
+        }
+      } else if (other_start) {
         return false;
       }
 
       const my_end = this.getLatestEnd();
       const other_end = date.getLatestEnd();
 
-      if (my_end && other_end){
-        if (RoughDate.lt(my_end, other_end)){ return false;}
-      }
-      else if (my_end){
+      if (my_end && other_end) {
+        if (RoughDate.lt(my_end, other_end)) {
+          return false;
+        }
+      } else if (my_end) {
         return false;
       }
 
       return true;
-    }
-    else {
+    } else {
       throw new ValueError(`Invalid Date ${date}`);
     }
   }
 
-  intersect(other){
+  intersect(other) {
     other = _clean(other);
 
-    if (!other){
+    if (!other) {
       return this;
     }
 
-    if (!other.hasBounds()){
+    if (!other.hasBounds()) {
       return this;
-    }
-    else if (!this.hasBounds()){
+    } else if (!this.hasBounds()) {
       return other;
     }
 
     const start = RoughDate.max(this.getStart(), other.getStart());
 
-    if (!this.contains(start)){
+    if (!this.contains(start)) {
       return null;
     }
 
     const end = RoughDate.min(this.getEnd(), other.getEnd());
 
-    if (!this.contains(end)){
+    if (!this.contains(end)) {
       return null;
     }
 
-    if (RoughDate.eq(start, end)){
-      return new DateRange({both:start});
-    }
-    else{
-      return new DateRange({start:start, end:end});
+    if (RoughDate.eq(start, end)) {
+      return new DateRange({ both: start });
+    } else {
+      return new DateRange({ start: start, end: end });
     }
   }
 
-  union(other){
+  union(other) {
     other = _clean(other);
-    if (!other){
+    if (!other) {
       return this;
-    }
-    else if (!(other._isADateRangeObject)){
-      other = new DateRange({value:other});
+    } else if (!other._isADateRangeObject) {
+      other = new DateRange({ value: other });
     }
 
     const start = RoughDate.min(this.getStart(), other.getStart());
     const end = RoughDate.max(this.getEnd(), other.getEnd());
 
-    if (RoughDate.eq(start, end)){
-      return new DateRange({both:start});
-    }
-    else{
-      return new DateRange({start:start, end:end});
+    if (RoughDate.eq(start, end)) {
+      return new DateRange({ both: start });
+    } else {
+      return new DateRange({ start: start, end: end });
     }
   }
 
-  getDelta(){
-    if (this.hasStart() && this.hasEnd()){
-      try{
+  getDelta() {
+    if (this.hasStart() && this.hasEnd()) {
+      try {
         return this.getLatestEnd().toDate() - this.getEarliestStart().toDate();
-      }
-      catch(error){
+      } catch (error) {
         console.log(error);
         console.log(this.hasStart(), this.hasEnd());
         console.log(this.getStart(), this.getEnd());
         console.log(this.getLatestEnd(), this.getEarliestStart());
         throw error;
       }
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  zoomIn(scale=1){
+  zoomIn(scale = 1) {
     let state = lodash.cloneDeep(this.state);
 
     let delta = null;
 
-    if (state.start !== null && state.end !== null){
-      delta = this.getDelta() / (2.0+scale);
-    }
-    else{
+    if (state.start !== null && state.end !== null) {
+      delta = this.getDelta() / (2.0 + scale);
+    } else {
       delta = 3600000;
     }
 
-    if (state.start){
+    if (state.start) {
       state.start.add(delta, "ms");
     }
 
-    if (state.end){
+    if (state.end) {
       state.end.add(-delta, "ms");
     }
 
     return new DateRange(state);
   }
 
-  zoomOut(scale=1){
+  zoomOut(scale = 1) {
     let state = lodash.cloneDeep(this.state);
 
     let delta = null;
 
-    if (state.start !== null && state.end !== null){
+    if (state.start !== null && state.end !== null) {
       delta = this.getDelta() * scale;
-    }
-    else{
+    } else {
       delta = 3600000;
     }
 
-    if (state.start){
+    if (state.start) {
       state.start.add(-delta, "ms");
     }
 
-    if (state.end){
+    if (state.end) {
       state.end.add(delta, "ms");
     }
 
     return new DateRange(state);
   }
 
-  shiftEarlier(delta=null){
+  shiftEarlier(delta = null) {
     let state = lodash.cloneDeep(this.state);
 
-    if (delta === null){
-      if (state.start !== null && state.end !== null){
-        delta = -(this.getDelta());     //milliseconds
-      }
-      else{
-        delta = -3600000;     //milliseconds
+    if (delta === null) {
+      if (state.start !== null && state.end !== null) {
+        delta = -this.getDelta(); //milliseconds
+      } else {
+        delta = -3600000; //milliseconds
       }
     }
 
-    if (state.start){
+    if (state.start) {
       state.start.add(delta, "ms");
     }
 
-    if (state.end){
+    if (state.end) {
       state.end.add(delta, "ms");
     }
 
     return new DateRange(state);
   }
 
-  shiftLater(delta=null){
+  shiftLater(delta = null) {
     let state = lodash.cloneDeep(this.state);
 
-    if (delta === null){
-      if (state.start !== null && state.end !== null){
-        delta = this.getDelta();     //milliseconds
-      }
-      else{
-        delta = 3600000;     //milliseconds
+    if (delta === null) {
+      if (state.start !== null && state.end !== null) {
+        delta = this.getDelta(); //milliseconds
+      } else {
+        delta = 3600000; //milliseconds
       }
     }
 
-    if (state.start){
+    if (state.start) {
       state.start.add(delta, "ms");
     }
 
-    if (state.end){
+    if (state.end) {
       state.end.add(delta, "ms");
     }
 
     return new DateRange(state);
   }
 
-  getStart(){
+  getStart() {
     return this.state.start;
   }
 
-  getEnd(){
+  getEnd() {
     return this.state.end;
   }
 
-  getEarliestStart(){
-    if (this.hasStart()){
+  getEarliestStart() {
+    if (this.hasStart()) {
       return this.getStart().getEarliest();
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  getLatestEnd(){
-    if (this.hasEnd()){
+  getLatestEnd() {
+    if (this.hasEnd()) {
       return this.getEnd().getLatest();
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  getStartDate(){
+  getStartDate() {
     let e = this.getEarliestStart();
-    if (e){
+    if (e) {
       return e.toDate();
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  getEndDate(){
+  getEndDate() {
     let e = this.getLatestEnd();
-    if (e){
+    if (e) {
       return e.toDate();
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  getStartString(){
-    if (this.state.start){
+  getStartString() {
+    if (this.state.start) {
       return this.state.start.toString();
-    }
-    else{
+    } else {
       return "unbounded";
     }
   }
 
-  getEndString(){
-    if (this.state.end){
+  getEndString() {
+    if (this.state.end) {
       return this.state.end.toString();
-    }
-    else{
+    } else {
       return "unbounded";
     }
   }
 
-  setState(state){
-    if (state){
-      if (state === "null" || state === null){
-        this.state = {"start":null, "end":null};
+  setState(state) {
+    if (state) {
+      if (state === "null" || state === null) {
+        this.state = { start: null, end: null };
         return;
-      }
-      else if (state._isADateRangeObject){
-        this.state = {...state.state};
-      }
-      else if (state._isARoughDateObject){
-        this.state = {"start":state, "end": state};
-      }
-      else if (state.hasOwnProperty("value")){
+      } else if (state._isADateRangeObject) {
+        this.state = { ...state.state };
+      } else if (state._isARoughDateObject) {
+        this.state = { start: state, end: state };
+      } else if (state.hasOwnProperty("value")) {
         this.setState(state.value);
         return;
-      }
-      else if (state.hasOwnProperty("both")){
+      } else if (state.hasOwnProperty("both")) {
         this.state.start = new RoughDate(state.both);
         this.state.end = this.state.start;
-      }
-      else if (typeof state === "string"){
+      } else if (typeof state === "string") {
         this.state.start = new RoughDate(state);
         this.state.end = this.state.start;
-      }
-      else {
+      } else {
         let start = null;
 
-        if (state.start){
+        if (state.start) {
           start = new RoughDate(state.start);
 
-          if (start.isNull()){
+          if (start.isNull()) {
             start = null;
           }
         }
 
         let end = null;
 
-        if (state.end){
+        if (state.end) {
           end = new RoughDate(state.end);
 
-          if (end.isNull()){
+          if (end.isNull()) {
             end = null;
           }
         }
 
-        if (start && end){
-          if (RoughDate.gt(start, end)){
+        if (start && end) {
+          if (RoughDate.gt(start, end)) {
             let tmp = start;
             start = end;
             end = tmp;
           }
 
-          if (RoughDate.gt(start, end)){
+          if (RoughDate.gt(start, end)) {
             let tmp = RoughDate.min(start, end);
             end = RoughDate.max(start, end);
             start = tmp;
@@ -511,21 +473,20 @@ class DateRange{
         this.state.start = start;
         this.state.end = end;
       }
-    }
-    else{
+    } else {
       this.state.start = null;
       this.state.end = null;
     }
   }
 
-  toDry(){
+  toDry() {
     return this.state;
   }
 }
 
-DateRange.unDry = function(value){
+DateRange.unDry = function (value) {
   return new DateRange(value);
-}
+};
 
 Dry.registerClass("DateRange", DateRange);
 

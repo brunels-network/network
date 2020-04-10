@@ -1,40 +1,55 @@
+import React from "react";
+import PropTypes from "prop-types";
 
-import React from 'react';
+import DefaultButton from "./DefaultButton";
 
-import DefaultButton from './DefaultButton';
+function _null_function() {}
 
-function _null_function(date){};
-
-function DateRangeButton(props){
+function DateRangeButton(props) {
   let d = props.value;
 
-  if (!d){
+  if (!d) {
     return null;
   }
 
-  if (!(d._isARoughDateObject || d._isADateRangeObject)){
+  if (!(d._isARoughDateObject || d._isADateRangeObject)) {
     return null;
   }
 
-  if (d.isNull()){
+  if (d.isNull()) {
     return null;
   }
+
+
 
   let emitSelected = props.emitSelected;
 
-  if (!emitSelected){
+  if (!emitSelected) {
     emitSelected = _null_function;
   }
 
   let s = d.toSimpleString();
 
-  if (d._isARoughDateObject){
+  if (d._isARoughDateObject) {
     d = d.toDateRange();
   }
 
-  return <DefaultButton onClick={()=>{emitSelected(d)}} style={props.style}>
-           {s}
-         </DefaultButton>;
+  return (
+    <DefaultButton
+      onClick={() => {
+        emitSelected(d);
+      }}
+      style={props.style}
+    >
+      {s}
+    </DefaultButton>
+  );
 }
+
+  DateRangeButton.propTypes = {
+      value: PropTypes.func,
+      emitSelected: PropTypes.func,
+      style: PropTypes.string
+  };
 
 export default DateRangeButton;
