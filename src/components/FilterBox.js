@@ -99,8 +99,6 @@ function FilterBox(props) {
   let people = filterList(social.getPeople(false), props);
   let businesses = filterList(social.getBusinesses(false), props);
 
-  console.log(sources);
-
   return (
     <Accordion allowMultipleExpanded={false} allowZeroExpanded={true}>
       {filter_info}
@@ -137,5 +135,11 @@ function FilterBox(props) {
     </Accordion>
   );
 }
+
+FilterBox.propTypes = {
+  social: PropTypes.func,
+  emitSelected: PropTypes.func,
+  emitClearFilters: PropTypes.func,
+};
 
 export default FilterBox;
