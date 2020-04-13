@@ -163,7 +163,7 @@ class Social {
     this._rebuilding += 1;
     this.state.cache.node_filters = [];
 
-    // must do time first, as this can affect all of the other filters!
+    // Must do time first, as this can affect all of the other filters!
     let window = this.getWindow();
 
     if (window.hasStart() || window.hasEnd()) {
@@ -367,9 +367,7 @@ class Social {
       if (!this.state.cache.people) {
         console.log("REBUILD PEOPLE");
         this._rebuilding += 1;
-        this.state.cache.people = this.state.people.filter(
-          this.getNodeFilters()
-        );
+        this.state.cache.people = this.state.people.filter(this.getNodeFilters());
         this._rebuilding -= 1;
       }
 
@@ -388,9 +386,7 @@ class Social {
       if (!this.state.cache.businesses) {
         console.log("REBUILD BUSINESSES");
         this._rebuilding += 1;
-        this.state.cache.businesses = this.state.businesses.filter(
-          this.getNodeFilters()
-        );
+        this.state.cache.businesses = this.state.businesses.filter(this.getNodeFilters());
         this._rebuilding -= 1;
       }
 
@@ -409,9 +405,7 @@ class Social {
       if (!this.state.cache.connections) {
         console.log("REBUILD CONNECTIONS");
         this._rebuilding += 1;
-        this.state.cache.connections = this.state.connections.filter(
-          this.getEdgeFilters()
-        );
+        this.state.cache.connections = this.state.connections.filter(this.getEdgeFilters());
         this._rebuilding -= 1;
       }
 
@@ -718,9 +712,7 @@ class Social {
     });
 
     if (!added) {
-      throw new ValueError(
-        `Do not know how to add ${item} to this Social group`
-      );
+      throw new ValueError(`Do not know how to add ${item} to this Social group`);
     }
   }
 

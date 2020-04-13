@@ -362,11 +362,10 @@ class TimeLineView extends Component {
 TimeLineView.propTypes = {
   emitSelected: PropTypes.func.isRequired,
   emitWindowChanged: PropTypes.func.isRequired,
-  // TODO - fix these
-  getItems: PropTypes.any,
-  getMaxWindow: PropTypes.any,
-  getWindow: PropTypes.any,
-  is_active: PropTypes.bool
-}
+  getItems: PropTypes.array,
+  getMaxWindow: PropTypes.instanceOf(DateRange),
+  getWindow: PropTypes.instanceOf(DateRange),
+  is_active: PropTypes.bool,
+};
 
 export default TimeLineView;

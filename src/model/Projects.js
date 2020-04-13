@@ -49,15 +49,15 @@ class Projects {
   }
 
   getNames() {
-      return Object.keys(this._names);
+    return Object.keys(this._names);
   }
-  
+
   getIDs() {
-      return Object.values(this._names);
+    return Object.values(this._names);
   }
 
   getDetails() {
-      return this._names;
+    return this._names;
   }
 
   canAdd(item) {
@@ -144,9 +144,7 @@ class Projects {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(
-      `No project matches '${name}. Available projects ` + `are '${keys}'`
-    );
+    throw MissingError(`No project matches '${name}. Available projects ` + `are '${keys}'`);
   }
 
   get(id) {
@@ -162,7 +160,7 @@ class Projects {
   getTimeLine() {
     let items = [];
 
-    Object.keys(this.state.registry).forEach((key, index) => {
+    Object.keys(this.state.registry).forEach((key) => {
       let project = this.state.registry[key];
       if (project) {
         let timeline = project.getTimeLine();
