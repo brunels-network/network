@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { CSSTransition } from "react-transition-group";
 
@@ -46,17 +47,21 @@ function SlidingPanel({
   container = `${container} ${styles.container}`;
 
   return (
-    <CSSTransition
-      in={isOpen}
-      timeout={200}
-      classNames={transition}
-      unmountOnExit
-    >
+    <CSSTransition in={isOpen} timeout={200} classNames={transition} unmountOnExit>
       <div className={container} style={style}>
         {children}
       </div>
     </CSSTransition>
   );
 }
+
+SlidingPanel.propTypes = {
+  children: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool,
+  maxSize: PropTypes.string,
+  minSize: PropTypes.string,
+  position: PropTypes.string,
+  size: PropTypes.string,
+};
 
 export default SlidingPanel;

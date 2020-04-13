@@ -43,9 +43,7 @@ class SocialApp extends React.Component {
 
     // Special cases for Brunel project...
     social.setAnchor("Brunel");
-    social.setMaxWindow(
-      new DateRange({ start: "1800-01-01", end: "1860-12-31" })
-    );
+    social.setMaxWindow(new DateRange({ start: "1800-01-01", end: "1860-12-31" }));
 
     this.state = {
       social: social,
@@ -199,9 +197,8 @@ class SocialApp extends React.Component {
     let item = (
       <div>
         <div>
-          This is a demo of the application to view Brunel's temporal social
-          network. This is an incomplete application containing incomplete data
-          and should not be relied on or viewed as being accurate.
+          This is a demo of the application to view Brunel&apos;s temporal social network. This is an incomplete
+          application containing incomplete data and should not be relied on or viewed as being accurate.
         </div>
         <div>
           If you want more information, then please visit the{" "}
@@ -405,12 +402,7 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel
-          isOpen={this.state.isHamburgerMenuOpen}
-          position="left"
-          size="100px"
-          minSize="100px"
-        >
+        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" size="100px" minSize="100px">
           <BrunelMenu
             emitClose={() => {
               this.setState({ isHamburgerMenuOpen: false });
@@ -450,9 +442,7 @@ class SocialApp extends React.Component {
             </DefaultButton>
           </div>
           <div>
-            <DefaultButton onClick={() => this.toggleTimeLinePanel()}>
-              {"Timeline"}
-            </DefaultButton>
+            <DefaultButton onClick={() => this.toggleTimeLinePanel()}>{"Timeline"}</DefaultButton>
           </div>
           <div>
             <DefaultButton onClick={this.toggleWobble}>Wobble</DefaultButton>

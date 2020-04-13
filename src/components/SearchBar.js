@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import Spinner from "react-spinkit";
 
@@ -8,7 +9,7 @@ import styles from "./SearchBar.module.css";
 // This class is heavily inspired by react-search-field
 // from https://github.com/nutboltu/react-search-field
 
-function _null_function(item) {}
+function _null_function() {}
 
 function SearchResults(props) {
   let results = props.results;
@@ -25,6 +26,10 @@ function SearchResults(props) {
 
   return <ul>{items}</ul>;
 }
+
+SearchResults.propTypes = {
+  results: PropTypes.any,
+};
 
 class SearchBar extends React.Component {
   constructor(props) {
@@ -73,17 +78,12 @@ class SearchBar extends React.Component {
       emitSelected = _null_function;
     }
 
-    let emitToggleFilter = this.props.emitToggleFilter;
-
-    if (!emitToggleFilter) {
-      emitToggleFilter = _null_function;
-    }
-
     if (items) {
-      let results = items.map((item) => {
+      let results = items.map((item, index) => {
         let name = item.getName();
         return (
           <DefaultButton
+            key={name.concat("_", index)}
             onClick={() => {
               emitSelected(item);
             }}
@@ -104,7 +104,7 @@ class SearchBar extends React.Component {
     let social = this.props.social;
 
     if (!social) {
-      this.setResults([<div>No results!</div>]);
+      this.setResults([<div key="noresults">No results!</div>]);
       return;
     }
 
@@ -124,10 +124,11 @@ class SearchBar extends React.Component {
     }
 
     if (items) {
-      let results = items.map((item) => {
+      let results = items.map((item, index) => {
         let name = item.getName();
         return (
           <DefaultButton
+            key={name.concat("_", index)}
             onClick={() => {
               emitSelected(item);
             }}
@@ -140,7 +141,7 @@ class SearchBar extends React.Component {
 
       this.setResults(results);
     } else {
-      this.setResults([<div>Really no results!</div>]);
+      this.setResults([<div key="rnoresults">Really no results!</div>]);
     }
   }
 
@@ -195,8 +196,7 @@ class SearchBar extends React.Component {
     }
 
     const enterKey = 13;
-    const isEnterPressed =
-      event.which === enterKey || event.keyCode === enterKey;
+    const isEnterPressed = event.which === enterKey || event.keyCode === enterKey;
 
     if (isEnterPressed) {
       this.searchFor(event.target.value);
@@ -225,10 +225,7 @@ class SearchBar extends React.Component {
     return (
       <div className={styles.container}>
         <div className={styles.searchContainer}>
-          <button
-            className={styles.hamburgerButton}
-            onClick={this.props.emitHamburgerClicked}
-          >
+          <button className={styles.hamburgerButton} onClick={this.props.emitHamburgerClicked}>
             ☰
           </button>
           <input
@@ -264,7 +261,7 @@ class SearchBar extends React.Component {
                 X
               </div>
               <div className={styles.searchPending}>
-                <div>Searching for '{this.state.searching}'...</div>
+                <div>Searching for &quot;{this.state.searching}&quot;...</div>
                 <div style={{ display: "inline-block" }}>
                   <Spinner name="ball-grid-pulse" color="green" fadeIn="none" />
                 </div>
@@ -334,5 +331,15 @@ class SearchBar extends React.Component {
     );
   }
 }
+
+// TODO - finish this
+SearchBar.propTypes = {
+  emitHamburgerClicked: PropTypes.func.isRequired,
+  emitSelected: PropTypes.func.isRequired,
+  // This is currently unused
+  placeholder: PropTypes.any,
+  searchText: PropTypes.string.isRequired,
+  social: PropTypes.func.isRequired,
+};
 
 export default SearchBar;

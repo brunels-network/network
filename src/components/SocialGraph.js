@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import ForceGraph from "./ForceGraph";
 
@@ -37,6 +38,14 @@ class SocialGraph extends React.Component {
       return <div>No data to display!!!</div>;
     }
   }
+}
+
+SocialGraph.propTypes = {
+  emitClicked: PropTypes.func.isRequired,
+  highlighted: PropTypes.func.isRequired,
+  selected: PropTypes.func.isRequired,
+  social: PropTypes.func.isRequired,
+  wobble: PropTypes.bool.isRequired
 }
 
 export default SocialGraph;

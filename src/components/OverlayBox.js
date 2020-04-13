@@ -1,20 +1,20 @@
+import React from "react";
+import Spinner from "react-spinkit";
+import PropTypes from "prop-types";
 
-import React from 'react';
-import Spinner from 'react-spinkit';
-
-import styles from './OverlayBox.module.css';
+import styles from "./OverlayBox.module.css";
 
 class OverlayBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
     };
   }
 
   hideSpinner() {
     this.setState({
-      loading: false
+      loading: false,
     });
   }
 
@@ -23,20 +23,23 @@ class OverlayBox extends React.Component {
 
     let url = null;
 
-    if (item && item.getURL){
+    if (item && item.getURL) {
       url = item.getURL();
     }
 
-    if (!url){
-      return (<div className={styles.container}>
-                <div className={styles.centerContainer}>
-                  {item}
-                  <div>
-                    <button className={styles.button}
-                            onClick={this.props.emitClose}>Close</button>
-                  </div>
-                </div>
-              </div>);
+    if (!url) {
+      return (
+        <div className={styles.container}>
+          <div className={styles.centerContainer}>
+            {item}
+            <div>
+              <button className={styles.button} onClick={this.props.emitClose}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      );
     }
 
     return (
@@ -46,11 +49,7 @@ class OverlayBox extends React.Component {
           <div className={styles.centerContainer}>
             <div>Loading page...</div>
             <div>
-              <Spinner
-                name="ball-grid-pulse"
-                color="green"
-                fadeIn="none"
-              />
+              <Spinner name="ball-grid-pulse" color="green" fadeIn="none" />
             </div>
           </div>
         ) : null}
@@ -59,7 +58,9 @@ class OverlayBox extends React.Component {
           title={url}
           width="100%"
           height="95%"
-          onLoad={()=>{this.hideSpinner()}}
+          onLoad={() => {
+            this.hideSpinner();
+          }}
           frameBorder="0"
           marginHeight="0"
           marginWidth="0"
@@ -71,5 +72,8 @@ class OverlayBox extends React.Component {
   }
 }
 
-
+OverlayBox.propTypes = {
+  item: PropTypes.elementType.isRequired,
+  emitClose: PropTypes.func.isRequired,
+};
 export default OverlayBox;

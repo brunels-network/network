@@ -15,20 +15,22 @@ import Social from "../model/Social";
 
 import styles from "./InfoBox.module.css";
 
+import default_image from "../images/RHowlett_IKB.jpg";
+import person_image from "../images/IllustriteZeitung_SS_GreatBritain.png";
+import business_image from "../images/320px-SS_Great_Britain_diagram.jpg";
+import source_image from "../images/Sumerian_26th_c_Adab.jpg";
+import analysis_image from "../images/320px-SS_Great_Britain_transverse_section.jpg";
+
 let default_title = "Isambard's Social Network";
-// let default_image = "/public/RHowlett_IKB.jpg"
-
-// const default_image = require("./RHowlett_IKB.jpg");
-
-// const default_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Robert_Howlett_%28Isambard_Kingdom_Brunel_Standing_Before_the_Launching_Chains_of_the_Great_Eastern%29%2C_The_Metropolitan_Museum_of_Art_%28cropped%29.jpg/391px-Robert_Howlett_%28Isambard_Kingdom_Brunel_Standing_Before_the_Launching_Chains_of_the_Great_Eastern%29%2C_The_Metropolitan_Museum_of_Art_%28cropped%29.jpg";
 
 let default_text = (
   <div>
-    This is an interactive viewer of Isambard Kingdom Brunel's social network. Please click in the nodes and have fun!
+    This is an interactive viewer of Isambard Kingdom Brunel&apos;s social network. Please click in the nodes and have
+    fun!
   </div>
 );
 
-function null_function(item) {}
+function null_function() {}
 
 function getBiography({ item, social, emitSelected = null_function, emitToggleFilter = null_function }) {
   let pages = [];
@@ -79,7 +81,7 @@ function getBiography({ item, social, emitSelected = null_function, emitToggleFi
 
   pages.push([
     "Biography",
-    <div>
+    <div key="biography">
       <div>{bio}</div>
       <div>{alive}</div>
     </div>,
@@ -88,7 +90,7 @@ function getBiography({ item, social, emitSelected = null_function, emitToggleFi
   if (connections.length > 0) {
     pages.push([
       "Connections",
-      <div>
+      <div key="connections">
         <ConnectionList
           connections={connections}
           emitSelected={emitSelected}
@@ -104,7 +106,7 @@ function getBiography({ item, social, emitSelected = null_function, emitToggleFi
   if (Object.keys(positions).length > 0) {
     pages.push([
       "Positions",
-      <div>
+      <div key="positions">
         <GroupsList
           groups={positions}
           emitSelected={emitSelected}
@@ -120,7 +122,7 @@ function getBiography({ item, social, emitSelected = null_function, emitToggleFi
   if (Object.keys(affiliations).length > 0) {
     pages.push([
       "Affiliations",
-      <div>
+      <div key="affiliations">
         <GroupsList
           groups={affiliations}
           emitSelected={emitSelected}
@@ -136,13 +138,13 @@ function getBiography({ item, social, emitSelected = null_function, emitToggleFi
   if (Object.keys(sources).length > 0) {
     pages.push([
       "Sources",
-      <div>
+      <div key="sources">
         <GroupsList groups={sources} emitSelected={emitSelected} emitToggleFilter={emitToggleFilter} social={social} />
       </div>,
     ]);
   }
 
-  pages.push(["Analysis", <div>Here is space for graphs and analysis of {item.getName()}</div>]);
+  pages.push(["Analysis", <div key="analysis">Here is space for graphs and analysis of {item.getName()}</div>]);
 
   return pages;
 }
@@ -193,7 +195,8 @@ function extractData({ item, social, emitSelected = null_function, emitToggleFil
       emitSelected: emitSelected,
       emitToggleFilter: emitToggleFilter,
     });
-    data.image = "/public/IllustriteZeitung_SS_GreatBritain.png";
+
+    data.image = person_image;
   } else if (item._isABusinessObject) {
     data.title = (
       <DefaultButton
@@ -210,8 +213,8 @@ function extractData({ item, social, emitSelected = null_function, emitToggleFil
       emitSelected: emitSelected,
       emitToggleFilter: emitToggleFilter,
     });
-    data.image =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SS_Great_Britain_diagram.jpg/320px-SS_Great_Britain_diagram.jpg";
+
+    data.image = business_image;
   } else if (item._isASourceObject) {
     data.title = item.getName();
     let description = item.getDescription();
@@ -222,7 +225,7 @@ function extractData({ item, social, emitSelected = null_function, emitToggleFil
       ["Description", description],
       ["Analysis", "Analysis for this source - where else has it been cited?"],
     ];
-    data.image = "https://upload.wikimedia.org/wikipedia/commons/9/91/Sumerian_26th_c_Adab.jpg";
+    data.image = source_image;
   } else if (item._isAConnectionObject) {
     data.title = null;
 
@@ -303,7 +306,7 @@ function extractData({ item, social, emitSelected = null_function, emitToggleFil
     let pages = [];
     pages.push([
       "Connection",
-      <div style={{ textAlign: "center" }}>
+      <div key="connection" style={{ textAlign: "center" }}>
         {n0}
         <div>||</div>
         {n1}
@@ -312,11 +315,12 @@ function extractData({ item, social, emitSelected = null_function, emitToggleFil
       </div>,
     ]);
 
-    pages.push(["Sources", <div>{accordion}</div>]);
+    pages.push(["Sources", <div key="sources">{accordion}</div>]);
 
     pages.push([
       "Projects",
       <WeightsList
+        key="projects"
         weights={item.getWeights()}
         type={item.getType()}
         social={social}
@@ -327,8 +331,7 @@ function extractData({ item, social, emitSelected = null_function, emitToggleFil
 
     pages.push(["Analysis", "Space for analysis of this Connection"]);
 
-    data.image =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/SS_Great_Britain_transverse_section.jpg/320px-SS_Great_Britain_transverse_section.jpg";
+    data.image = analysis_image;
 
     data.pages = pages;
   }

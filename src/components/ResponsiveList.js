@@ -1,20 +1,26 @@
+import React from "react";
+import PropTypes from "prop-types";
+import styles from "./ResponsiveList.module.css";
 
-import React from 'react';
-
-import styles from './ResponsiveList.module.css';
-
-function ResponsiveList(props){
-  return <div className={styles.list}>
-           {props.children}
-         </div>;
+function ResponsiveList(props) {
+  return <div className={styles.list}>{props.children}</div>;
 }
 
-function ResponsiveListItem(props){
-  return <div className={styles.item} key={props.key}>
-           {props.children}
-         </div>;
+ResponsiveList.propTypes = {
+  children: PropTypes.elementType.isRequired,
+};
+
+function ResponsiveListItem(props) {
+  return (
+    <div className={styles.item} key={props.key}>
+      {props.children}
+    </div>
+  );
 }
 
-export {ResponsiveListItem,
-        ResponsiveList,
-        ResponsiveList as default};
+ResponsiveListItem.propTypes = {
+  key: PropTypes.string.isRequired,
+  children: PropTypes.elementType.isRequired,
+};
+
+export { ResponsiveListItem, ResponsiveList, ResponsiveList as default };
