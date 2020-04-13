@@ -1,51 +1,47 @@
+import Dry from "json-dry";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import lodash from 'lodash';
-
-
-class Biographies{
-  constructor(){
+class Biographies {
+  constructor() {
     this.state = {
-      bios: {}
+      bios: {},
     };
 
     this._getHook = null;
     this._isABiographiesObject = true;
   }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Biographies();
     c.state = lodash.cloneDeep(item.state);
     c._getHook = item._getHook;
     return c;
   }
 
-  get(node){
-    if (!node){
+  get(node) {
+    if (!node) {
       return null;
-    }
-    else if (node.getID){
+    } else if (node.getID) {
       node = node.getID();
     }
 
     return this.state.bios[node];
   }
 
-  getNode(id){
-    if (this._getHook){
+  getNode(id) {
+    if (this._getHook) {
       return this._getHook(id);
-    }
-    else{
+    } else {
       return id;
     }
   }
 
-  search(text){
-    if (!text){
+  search(text) {
+    if (!text) {
       return null;
     }
 
@@ -53,34 +49,31 @@ class Biographies{
 
     let results = [];
 
-    Object.keys(this.state.bios).forEach((key, index)=>{
-      if (this.state.bios[key].toLowerCase().indexOf(text) !== -1){
+    Object.keys(this.state.bios).forEach((key) => {
+      if (this.state.bios[key].toLowerCase().indexOf(text) !== -1) {
         results.push(this.getNode(key));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  add(node, biography){
-    if (!node || !biography){
+  add(node, biography) {
+    if (!node || !biography) {
       return null;
-    }
-    else if (node.getID){
+    } else if (node.getID) {
       node = node.getID();
     }
 
     let bio = this.state.bios[node];
 
-    if (bio){
+    if (bio) {
       console.log(`There is already a bio for ${this.getNode(node)}`);
       biography = `${bio}\n${biography}`;
     }
@@ -89,11 +82,11 @@ class Biographies{
   }
 }
 
-Biographies.unDry = function(value){
+Biographies.unDry = function (value) {
   let bios = new Biographies();
   bios.state = value;
   return bios;
-}
+};
 
 Dry.registerClass("Biographies", Biographies);
 

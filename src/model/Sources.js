@@ -1,34 +1,33 @@
+import Dry from "json-dry";
+import { v4 as uuidv4 } from "uuid";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import { v4 as uuidv4 } from 'uuid';
-import lodash from 'lodash';
+import Source from "./Source";
+import { KeyError, MissingError } from "./Errors";
 
-import Source from './Source';
-import { KeyError, MissingError } from './Errors';
-
-function _generate_source_uid(){
+function _generate_source_uid() {
   let uid = uuidv4();
-  return "S" + uid.substring(uid.length-7);
+  return "S" + uid.substring(uid.length - 7);
 }
 
 class Sources {
-  constructor(props){
+  constructor() {
     this.state = {
       registry: {},
     };
 
     this._names = {};
     this._isASourcesObject = true;
-  };
+  }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
-    for (let key in this.state.registry){
+    for (let key in this.state.registry) {
       this.state.registry[key]._updateHooks(hook);
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Sources();
     c.state = lodash.cloneDeep(item.state);
     c._names = lodash.cloneDeep(item._names);
@@ -36,34 +35,37 @@ class Sources {
     return c;
   }
 
-  values(){
+  values() {
     let names = Object.keys(this._names);
     names.sort();
 
     let output = [];
 
-    names.forEach((key, index)=>{
+    names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
 
     return output;
   }
 
-  canAdd(item){
-    return (item instanceof Source) || item._isASourceObject;
+  canAdd(item) {
+    return item instanceof Source || item._isASourceObject;
   }
 
-  add(source){
-    if (!this.canAdd(source)){ return null;}
+  add(source) {
+    if (!this.canAdd(source)) {
+      return null;
+    }
 
     let existing = null;
 
-    try{
+    try {
       existing = this.getByName(source.getName());
+    } catch (error) {
+        console.error(error);
     }
-    catch(error){}
 
-    if (existing){
+    if (existing) {
       existing = existing.merge(source);
       this.state.registry[existing.getID()] = existing;
       return existing;
@@ -73,18 +75,17 @@ class Sources {
 
     let id = source.getID();
 
-    if (id){
-      if (id in this.state.registry){
+    if (id) {
+      if (id in this.state.registry) {
         throw new KeyError(`Duplicate Source ID ${source}`);
       }
 
       source._updateHooks(this._getHook);
       this.state.registry[id] = source;
-    }
-    else{
+    } else {
       let uid = _generate_source_uid();
 
-      while (uid in this.state.registry){
+      while (uid in this.state.registry) {
         uid = _generate_source_uid();
       }
 
@@ -98,19 +99,18 @@ class Sources {
     return source;
   }
 
-  getByName(name){
+  getByName(name) {
     let id = this._names[name];
 
-    if (id){
+    if (id) {
       return this.get(id);
-    }
-    else{
+    } else {
       throw MissingError(`No source with name ${name}`);
     }
   }
 
-  search(name){
-    if (name instanceof Source || name._isASourceObject){
+  search(name) {
+    if (name instanceof Source || name._isASourceObject) {
       name = name.getName();
     }
 
@@ -118,41 +118,37 @@ class Sources {
 
     let results = [];
 
-    Object.keys(this.state.registry).forEach((key, index) => {
+    Object.keys(this.state.registry).forEach((key) => {
       let item = this.state.registry[key];
 
       let description = item.getDescription();
 
-      if (!description){
+      if (!description) {
         description = "";
       }
 
-      try{
-        if (item.getName().toLowerCase().indexOf(name) !== -1){
+      try {
+        if (item.getName().toLowerCase().indexOf(name) !== -1) {
+          results.push(item);
+        } else if (description.toLowerCase().indexOf(name) !== -1) {
           results.push(item);
         }
-        else if (description.toLowerCase().indexOf(name) !== -1){
-          results.push(item);
-        }
-      }
-      catch(error){
+      } catch (error) {
         console.log(error);
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
-    }
-    else{
+    } else {
       return null;
     }
   }
 
-  find(name){
-    if (name instanceof Source || name._isASourceObject){
+  find(name) {
+    if (name instanceof Source || name._isASourceObject) {
       return this.get(name.getID());
     }
 
@@ -160,52 +156,50 @@ class Sources {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
-      if (key.toLowerCase().indexOf(name) !== -1){
+    Object.keys(this._names).forEach((key) => {
+      if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
     }
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No source matches '${name}. Available sources ` +
-                       `are '${keys}'`);
+    throw MissingError(`No source matches '${name}. Available sources are '${keys}'`);
   }
 
-  get(id){
+  get(id) {
     let source = this.state.registry[id];
 
-    if (!source){
+    if (!source) {
       throw new MissingError(`No Source with ID ${id}`);
     }
 
     return source;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
+}
 
-Sources.unDry = function(value){
+Sources.unDry = function (value) {
   let sources = new Sources();
   sources.state = value;
-  sources._names = {}
+  sources._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     sources._names[v.getName()] = key;
   });
 
   return sources;
-}
+};
 
 Dry.registerClass("Sources", Sources);
 

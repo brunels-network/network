@@ -1,34 +1,33 @@
+import Dry from "json-dry";
+import { v4 as uuidv4 } from "uuid";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import { v4 as uuidv4 } from 'uuid';
-import lodash from 'lodash';
+import Note from "./Note";
+import { KeyError, MissingError } from "./Errors";
 
-import Note from './Note';
-import { KeyError, MissingError } from './Errors';
-
-function _generate_note_uid(){
+function _generate_note_uid() {
   let uid = uuidv4();
-  return "N" + uid.substring(uid.length-7);
+  return "N" + uid.substring(uid.length - 7);
 }
 
 class Notes {
-  constructor(props){
+  constructor() {
     this.state = {
       registry: {},
     };
 
     this._names = {};
     this._isANotesObject = true;
-  };
+  }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
-    for (let key in this.state.registry){
+    for (let key in this.state.registry) {
       this.state.registry[key]._updateHooks(hook);
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Notes();
     c.state = lodash.cloneDeep(item.state);
     c._names = lodash.cloneDeep(item._names);
@@ -36,21 +35,24 @@ class Notes {
     return c;
   }
 
-  canAdd(item){
-    return (item instanceof Note) || item._isANoteObject;
+  canAdd(item) {
+    return item instanceof Note || item._isANoteObject;
   }
 
-  add(note){
-    if (!this.canAdd(note)){ return null;}
+  add(note) {
+    if (!this.canAdd(note)) {
+      return null;
+    }
 
     let existing = null;
 
-    try{
+    try {
       existing = this.getByName(note.getName());
+    } catch (error) {
+      console.error(error);
     }
-    catch(error){}
 
-    if (existing){
+    if (existing) {
       existing = existing.merge(note);
       this.state.registry[existing.getID()] = existing;
       return existing;
@@ -60,18 +62,17 @@ class Notes {
 
     let id = note.getID();
 
-    if (id){
-      if (id in this.state.registry){
+    if (id) {
+      if (id in this.state.registry) {
         throw new KeyError(`Duplicate Note ID ${note}`);
       }
 
       note._updateHooks(this._getHook);
       this.state.registry[id] = Note;
-    }
-    else{
+    } else {
       let uid = _generate_note_uid();
 
-      while (uid in this.state.registry){
+      while (uid in this.state.registry) {
         uid = _generate_note_uid();
       }
 
@@ -85,19 +86,18 @@ class Notes {
     return note;
   }
 
-  getByName(name){
+  getByName(name) {
     let id = this._names[name];
 
-    if (id){
+    if (id) {
       return this.get(id);
-    }
-    else{
+    } else {
       throw MissingError(`No Note with name ${name}`);
     }
   }
 
-  find(name){
-    if (name instanceof Note || name._isANoteObject){
+  find(name) {
+    if (name instanceof Note || name._isANoteObject) {
       return this.get(name.getID());
     }
 
@@ -105,52 +105,50 @@ class Notes {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
-      if (key.toLowerCase().indexOf(name) !== -1){
+    Object.keys(this._names).forEach((key) => {
+      if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
     }
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No Note matches '${name}. Available Notes ` +
-                       `are '${keys}'`);
+    throw MissingError(`No Note matches '${name}. Available Notes are '${keys}'`);
   }
 
-  get(id){
+  get(id) {
     let Note = this.state.registry[id];
 
-    if (!Note){
+    if (!Note) {
       throw new MissingError(`No Note with ID ${id}`);
     }
 
     return Note;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
+}
 
-Notes.unDry = function(value){
+Notes.unDry = function (value) {
   let notes = new Notes();
   notes.state = value;
-  notes._names = {}
+  notes._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     notes._names[v.getName()] = key;
   });
 
   return notes;
-}
+};
 
 Dry.registerClass("Notes", Notes);
 

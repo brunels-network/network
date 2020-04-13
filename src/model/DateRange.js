@@ -10,10 +10,10 @@ function _clean(val) {
   } else if (val._isARoughDateObject) {
     return val.toDateRange();
   } else if (
-    val.hasOwnProperty("start") ||
-    val.hasOwnProperty("end") ||
-    val.hasOwnProperty("both") ||
-    val.hasOwnProperty("value")
+    Object.prototype.hasOwnProperty.call(val, "start") ||
+    Object.prototype.hasOwnProperty.call(val, "end") ||
+    Object.prototype.hasOwnProperty.call(val, "both") ||
+    Object.prototype.hasOwnProperty.call(val, "value")
   ) {
     return new DateRange(val);
   } else {
@@ -426,10 +426,10 @@ class DateRange {
         this.state = { ...state.state };
       } else if (state._isARoughDateObject) {
         this.state = { start: state, end: state };
-      } else if (state.hasOwnProperty("value")) {
+      } else if (Object.prototype.hasOwnProperty.call(state, "value")) {
         this.setState(state.value);
         return;
-      } else if (state.hasOwnProperty("both")) {
+      } else if (Object.prototype.hasOwnProperty.call(state, "both")) {
         this.state.start = new RoughDate(state.both);
         this.state.end = this.state.start;
       } else if (typeof state === "string") {

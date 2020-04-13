@@ -1,16 +1,16 @@
-import Dry from 'json-dry';
+import Dry from "json-dry";
 
-import Businesses from './Businesses';
-import Business from './Business';
+import Businesses from "./Businesses";
+import Business from "./Business";
 
-test("simple", ()=>{
+test("simple", () => {
   let name1 = "This is a business";
 
-  let p1 = new Business({name:name1});
+  let p1 = new Business({ name: name1 });
 
   let name2 = "This is another business";
 
-  let p2 = new Business({name:name2});
+  let p2 = new Business({ name: name2 });
 
   expect(p1.getName()).toStrictEqual(name1);
   expect(p2.getName()).toStrictEqual(name2);
@@ -32,10 +32,9 @@ test("simple", ()=>{
 
   expect(r.length).toStrictEqual(2);
 
-  if (r[0].getID() === p1.getID()){
+  if (r[0].getID() === p1.getID()) {
     expect(r[1].getID()).toStrictEqual(p2.getID());
-  }
-  else {
+  } else {
     expect(r[0].getID()).toStrictEqual(p2.getID());
     expect(r[1].getID()).toStrictEqual(p1.getID());
   }
@@ -51,10 +50,9 @@ test("simple", ()=>{
 
   expect(r.length).toStrictEqual(2);
 
-  if (r[0].getID() === p1.getID()){
+  if (r[0].getID() === p1.getID()) {
     expect(r[1].getID()).toStrictEqual(p2.getID());
-  }
-  else {
+  } else {
     expect(r[0].getID()).toStrictEqual(p2.getID());
     expect(r[1].getID()).toStrictEqual(p1.getID());
   }

@@ -11,7 +11,7 @@ function _generate_project_uid() {
 }
 
 class Projects {
-  constructor(props) {
+  constructor() {
     this.state = {
       registry: {},
     };
@@ -41,7 +41,7 @@ class Projects {
 
     let output = [];
 
-    names.forEach((key, index) => {
+    names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
 
@@ -130,7 +130,7 @@ class Projects {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
+    Object.keys(this._names).forEach((key) => {
       if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
@@ -144,7 +144,7 @@ class Projects {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No project matches '${name}. Available projects ` + `are '${keys}'`);
+    throw MissingError(`No project matches '${name}. Available projects are '${keys}'`);
   }
 
   get(id) {
@@ -183,7 +183,7 @@ Projects.unDry = function (value) {
   projects.state = value;
   projects._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     projects._names[v.getName()] = key;
   });

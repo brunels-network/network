@@ -415,27 +415,27 @@ class Social {
     }
   }
 
-  getBiographies(filtered = true) {
+  getBiographies() {
     return this.state.biographies;
   }
 
-  getAffiliations(filtered = true) {
+  getAffiliations() {
     return this.state.affiliations;
   }
 
-  getPositions(filtered = true) {
+  getPositions() {
     return this.state.positions;
   }
 
-  getSources(filtered = true) {
+  getSources() {
     return this.state.sources;
   }
 
-  getNotes(filtered = true) {
+  getNotes() {
     return this.state.notes;
   }
 
-  getProjects(filtered = true) {
+  getProjects() {
     return this.state.projects;
   }
 
@@ -459,7 +459,7 @@ class Social {
     if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index) => {
+      Object.keys(f).forEach((key) => {
         parts.push(this.get(key, false).getName());
       });
 
@@ -477,7 +477,7 @@ class Social {
     if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index) => {
+      Object.keys(f).forEach((key) => {
         parts.push(this.get(key, false).getName());
       });
 
@@ -495,7 +495,7 @@ class Social {
     if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index) => {
+      Object.keys(f).forEach((key) => {
         parts.push(this.get(key, false).getName());
       });
 
@@ -513,7 +513,7 @@ class Social {
     if (f) {
       let parts = [];
 
-      Object.keys(f).forEach((key, index) => {
+      Object.keys(f).forEach((key) => {
         parts.push(this.get(key, false).getName());
       });
 
@@ -573,32 +573,44 @@ class Social {
     try {
       let items = this.getPeople(false).find(text);
       _push(items, result);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     try {
       let items = this.getBusinesses(false).find(text);
       _push(items, result);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     try {
-      let items = this.getPositions(false).find(text);
+      let items = this.getPositions().find(text);
       _push(items, result);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     try {
-      let items = this.getAffiliations(false).find(text);
+      let items = this.getAffiliations().find(text);
       _push(items, result);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     try {
-      let items = this.getSources(false).search(text);
+      let items = this.getSources().search(text);
       _push(items, result);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     try {
-      let items = this.getBiographies(false).search(text);
+      let items = this.getBiographies().search(text);
       _push(items, result);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     return result;
   }
@@ -699,7 +711,7 @@ class Social {
 
     let added = false;
 
-    Object.keys(this.state).forEach((key, index) => {
+    Object.keys(this.state).forEach((key) => {
       if (!added) {
         let group = this.state[key];
         if (group && group.canAdd) {
@@ -735,15 +747,15 @@ class Social {
       } else if (id[0] === "B") {
         return this.getBusinesses(filtered).get(id);
       } else if (id[0] === "Q") {
-        return this.getPositions(filtered).get(id);
+        return this.getPositions().get(id);
       } else if (id[0] === "A") {
-        return this.getAffiliations(filtered).get(id);
+        return this.getAffiliations().get(id);
       } else if (id[0] === "S") {
-        return this.getSources(filtered).get(id);
+        return this.getSources().get(id);
       } else if (id[0] === "N") {
-        return this.getNotes(filtered).get(id);
+        return this.getNotes().get(id);
       } else if (id[0] === "J") {
-        return this.getProjects(filtered).get(id);
+        return this.getProjects().get(id);
       } else {
         return id;
       }

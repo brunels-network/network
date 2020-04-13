@@ -1,34 +1,33 @@
+import Dry from "json-dry";
+import { v4 as uuidv4 } from "uuid";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import { v4 as uuidv4 } from 'uuid';
-import lodash from 'lodash';
+import Affiliation from "./Affiliation";
+import { KeyError, MissingError } from "./Errors";
 
-import Affiliation from './Affiliation';
-import { KeyError, MissingError } from './Errors';
-
-function _generate_affiliation_uid(){
+function _generate_affiliation_uid() {
   let uid = uuidv4();
-  return "A" + uid.substring(uid.length-7);
+  return "A" + uid.substring(uid.length - 7);
 }
 
 class Affiliations {
-  constructor(props){
+  constructor() {
     this.state = {
       registry: {},
     };
 
     this._names = {};
     this._isAAffiliationsObject = true;
-  };
+  }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
-    for (let key in this.state.registry){
+    for (let key in this.state.registry) {
       this.state.registry[key]._updateHooks(hook);
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Affiliations();
     c.state = lodash.cloneDeep(item.state);
     c._names = lodash.cloneDeep(item._names);
@@ -36,34 +35,37 @@ class Affiliations {
     return c;
   }
 
-  values(){
+  values() {
     let names = Object.keys(this._names);
     names.sort();
 
     let output = [];
 
-    names.forEach((key, index)=>{
+    names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
 
     return output;
   }
 
-  canAdd(item){
-    return (item instanceof Affiliation) || item._isAAffiliationObject;
+  canAdd(item) {
+    return item instanceof Affiliation || item._isAAffiliationObject;
   }
 
-  add(affiliation){
-    if (!this.canAdd(affiliation)){ return null;}
+  add(affiliation) {
+    if (!this.canAdd(affiliation)) {
+      return null;
+    }
 
     let existing = null;
 
-    try{
+    try {
       existing = this.getByName(affiliation.getName());
+    } catch (error) {
+      console.error(error);
     }
-    catch(error){}
 
-    if (existing){
+    if (existing) {
       existing = existing.merge(affiliation);
       this.state.registry[existing.getID()] = existing;
       return existing;
@@ -73,18 +75,17 @@ class Affiliations {
 
     let id = affiliation.getID();
 
-    if (id){
-      if (id in this.state.registry){
+    if (id) {
+      if (id in this.state.registry) {
         throw new KeyError(`Duplicate Affiliation ID ${affiliation}`);
       }
 
       affiliation._updateHooks(this._getHook);
       this.state.registry[id] = affiliation;
-    }
-    else{
+    } else {
       let uid = _generate_affiliation_uid();
 
-      while (uid in this.state.registry){
+      while (uid in this.state.registry) {
         uid = _generate_affiliation_uid();
       }
 
@@ -98,19 +99,18 @@ class Affiliations {
     return affiliation;
   }
 
-  getByName(name){
+  getByName(name) {
     let id = this._names[name];
 
-    if (id){
+    if (id) {
       return this.get(id);
-    }
-    else{
+    } else {
       throw MissingError(`No affiliation with name ${name}`);
     }
   }
 
-  find(name){
-    if (name instanceof Affiliation || name._isAAffiliationObject){
+  find(name) {
+    if (name instanceof Affiliation || name._isAAffiliationObject) {
       return this.get(name.getID());
     }
 
@@ -118,52 +118,50 @@ class Affiliations {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
-      if (key.toLowerCase().indexOf(name) !== -1){
+    Object.keys(this._names).forEach((key) => {
+      if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
     }
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No affiliation matches '${name}. Available Affiliations ` +
-                       `are '${keys}'`);
+    throw MissingError(`No affiliation matches '${name}. Available Affiliations are '${keys}'`);
   }
 
-  get(id){
+  get(id) {
     let affiliation = this.state.registry[id];
 
-    if (!affiliation){
+    if (!affiliation) {
       throw new MissingError(`No Affiliation with ID ${id}`);
     }
 
     return affiliation;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
+}
 
-Affiliations.unDry = function(value){
+Affiliations.unDry = function (value) {
   let affiliations = new Affiliations();
   affiliations.state = value;
-  affiliations._names = {}
+  affiliations._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     affiliations._names[v.getName()] = key;
   });
 
   return affiliations;
-}
+};
 
 Dry.registerClass("Affiliations", Affiliations);
 

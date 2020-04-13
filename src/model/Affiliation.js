@@ -1,11 +1,10 @@
-
 import Dry from "json-dry";
-import lodash from 'lodash';
+import lodash from "lodash";
 
-import {ValueError} from './Errors';
+import { ValueError } from "./Errors";
 
-function setState(val, def=null){
-  if (val){
+function setState(val, def = null) {
+  if (val) {
     return val;
   } else {
     return def;
@@ -13,7 +12,7 @@ function setState(val, def=null){
 }
 
 class Affiliation {
-  constructor(props){
+  constructor(props) {
     this.state = {
       name: null,
       id: null,
@@ -27,28 +26,27 @@ class Affiliation {
     this._isAAffiliationObject = true;
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Affiliation();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
     return c;
   }
 
-  getID(){
+  getID() {
     return this.state.id;
   }
 
-  static makeCanonical(name){
-    if (!name){
+  static makeCanonical(name) {
+    if (!name) {
       return null;
-    }
-    else{
+    } else {
       return name.trim().toLowerCase();
     }
   }
 
-  setState(state){
-    if (state){
+  setState(state) {
+    if (state) {
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
       this.state.notes = setState(state.notes, []);
@@ -56,36 +54,36 @@ class Affiliation {
 
       this.state.canonical = Affiliation.makeCanonical(this.state.name);
 
-      if (!this.state.name){
+      if (!this.state.name) {
         throw ValueError("You cannot have an Affiliation without a name");
       }
     }
   }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
   }
 
-  merge(other){
+  merge() {
     return this;
   }
 
-  toString(){
+  toString() {
     return `Affiliation(${this.getName()})`;
   }
 
-  getName(){
+  getName() {
     return this.state.name;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
-
-Affiliation.unDry = function(value){
-  return new Affiliation(value);
 }
+
+Affiliation.unDry = function (value) {
+  return new Affiliation(value);
+};
 
 Dry.registerClass("Affiliation", Affiliation);
 

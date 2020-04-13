@@ -1,20 +1,16 @@
-import Dry from 'json-dry';
+import Dry from "json-dry";
 
-import People from './People';
-import Person from './Person';
+import People from "./People";
+import Person from "./Person";
 
-test("simple", ()=>{
-  let state1 = {orig_name: "John Smith",
-                firstnames: ["John"],
-                surnames: ["Smith"]};
+test("simple", () => {
+  let state1 = { orig_name: "John Smith", firstnames: ["John"], surnames: ["Smith"] };
 
   let name1 = "John Smith";
 
   let p1 = new Person(state1);
 
-  let state2 = {orig_name: "Brunel, Isambard",
-                firstnames: ["Isambard"],
-                surnames: ["Brunel"]}
+  let state2 = { orig_name: "Brunel, Isambard", firstnames: ["Isambard"], surnames: ["Brunel"] };
   let name2 = "Isambard Brunel";
 
   let p2 = new Person(state2);
@@ -39,10 +35,9 @@ test("simple", ()=>{
 
   expect(r.length).toStrictEqual(2);
 
-  if (r[0].getID() === p1.getID()){
+  if (r[0].getID() === p1.getID()) {
     expect(r[1].getID()).toStrictEqual(p2.getID());
-  }
-  else {
+  } else {
     expect(r[0].getID()).toStrictEqual(p2.getID());
     expect(r[1].getID()).toStrictEqual(p1.getID());
   }
@@ -58,10 +53,9 @@ test("simple", ()=>{
 
   expect(r.length).toStrictEqual(2);
 
-  if (r[0].getID() === p1.getID()){
+  if (r[0].getID() === p1.getID()) {
     expect(r[1].getID()).toStrictEqual(p2.getID());
-  }
-  else {
+  } else {
     expect(r[0].getID()).toStrictEqual(p2.getID());
     expect(r[1].getID()).toStrictEqual(p1.getID());
   }

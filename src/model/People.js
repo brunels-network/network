@@ -1,18 +1,17 @@
+import Dry from "json-dry";
+import { v4 as uuidv4 } from "uuid";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import { v4 as uuidv4 } from 'uuid';
-import lodash from 'lodash';
+import Person from "./Person";
+import { KeyError, MissingError } from "./Errors";
 
-import Person from './Person';
-import { KeyError, MissingError } from './Errors';
-
-function _generate_person_uid(){
+function _generate_person_uid() {
   let uid = uuidv4();
-  return "P" + uid.substring(uid.length-7);
+  return "P" + uid.substring(uid.length - 7);
 }
 
 class People {
-  constructor(props){
+  constructor(props) {
     this.state = {
       registry: {},
     };
@@ -20,16 +19,16 @@ class People {
     this._names = {};
     this._isAPeopleObject = true;
     this.load(props);
-  };
+  }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
-    for (let key in this.state.registry){
+    for (let key in this.state.registry) {
       this.state.registry[key]._updateHooks(hook);
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new People();
     c.state = lodash.cloneDeep(item.state);
     c._names = lodash.cloneDeep(item._names);
@@ -37,34 +36,37 @@ class People {
     return c;
   }
 
-  values(){
+  values() {
     let names = Object.keys(this._names);
     names.sort();
 
     let output = [];
 
-    names.forEach((key, index)=>{
+    names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
 
     return output;
   }
 
-  canAdd(item){
-    return (item instanceof Person) || item._isAPersonObject;
+  canAdd(item) {
+    return item instanceof Person || item._isAPersonObject;
   }
 
-  add(person){
-    if (!this.canAdd(person)){ return null;}
+  add(person) {
+    if (!this.canAdd(person)) {
+      return null;
+    }
 
     let existing = null;
 
-    try{
+    try {
       existing = this.getByName(person.getName());
+    } catch (error) {
+      console.error(error);
     }
-    catch(error){}
 
-    if (existing){
+    if (existing) {
       existing = existing.merge(person);
       this.state.registry[existing.getID()] = existing;
       return existing;
@@ -74,18 +76,17 @@ class People {
 
     let id = person.getID();
 
-    if (id){
-      if (id in this.state.registry){
+    if (id) {
+      if (id in this.state.registry) {
         throw new KeyError(`Duplicate Person ID ${person}`);
       }
 
       person._updateHooks(this._getHook);
       this.state.registry[id] = person;
-    }
-    else{
+    } else {
       let uid = _generate_person_uid();
 
-      while (uid in this.state.registry){
+      while (uid in this.state.registry) {
         uid = _generate_person_uid();
       }
 
@@ -99,19 +100,18 @@ class People {
     return person;
   }
 
-  getByName(name){
+  getByName(name) {
     let id = this._names[name];
 
-    if (id){
+    if (id) {
       return this.get(id);
-    }
-    else{
+    } else {
       throw new MissingError(`No Person with name ${name}`);
     }
   }
 
-  find(name){
-    if (name instanceof Person || name._isAPersonObject){
+  find(name) {
+    if (name instanceof Person || name._isAPersonObject) {
       return this.get(name.getID());
     }
 
@@ -119,45 +119,43 @@ class People {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
-      if (key.toLowerCase().indexOf(name) !== -1){
+    Object.keys(this._names).forEach((key) => {
+      if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
     }
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw new MissingError(`No Person matches '${name}. Available People ` +
-                           `are '${keys}'`);
+    throw new MissingError(`No Person matches '${name}. Available People are '${keys}'`);
   }
 
-  filter(funcs = []){
-    if (funcs.length === 0){
+  filter(funcs = []) {
+    if (funcs.length === 0) {
       return this;
     }
 
     let registry = {};
     let names = {};
 
-    Object.keys(this.state.registry).forEach((key, index)=>{
+    Object.keys(this.state.registry).forEach((key) => {
       let person = this.state.registry[key];
 
-      if (person){
-        for (let i=0; i<funcs.length; ++i){
+      if (person) {
+        for (let i = 0; i < funcs.length; ++i) {
           person = funcs[i](person);
-          if (!person){
+          if (!person) {
             break;
           }
         }
 
-        if (person){
+        if (person) {
           registry[key] = person;
           names[person.getName()] = key;
         }
@@ -172,14 +170,14 @@ class People {
     return people;
   }
 
-  getTimeLine(){
+  getTimeLine() {
     let items = [];
 
-    Object.keys(this.state.registry).forEach((key, index)=>{
+    Object.keys(this.state.registry).forEach((key) => {
       let person = this.state.registry[key];
-      if (person){
+      if (person) {
         let timeline = person.getTimeLine();
-        if (timeline){
+        if (timeline) {
           items.push(timeline);
         }
       }
@@ -188,26 +186,25 @@ class People {
     return items;
   }
 
-  getNodes({anchor=null} = {}){
+  getNodes({ anchor = null } = {}) {
     let nodes = [];
 
-    if (anchor.getID){
+    if (anchor.getID) {
       anchor = anchor.getID();
     }
 
-    Object.keys(this.state.registry).forEach((key, index)=>{
+    Object.keys(this.state.registry).forEach((key) => {
       let person = this.state.registry[key];
 
-      if (person){
+      if (person) {
         let node = null;
-        if (key === anchor){
-          node = person.getNode({is_anchor:true});
-        }
-        else{
+        if (key === anchor) {
+          node = person.getNode({ is_anchor: true });
+        } else {
           node = person.getNode();
         }
 
-        if (node){
+        if (node) {
           nodes.push(node);
         }
       }
@@ -216,43 +213,45 @@ class People {
     return nodes;
   }
 
-  get(id){
+  get(id) {
     let person = this.state.registry[id];
 
-    if (!person){
+    if (!person) {
       throw new MissingError(`No Person with ID ${id}`);
     }
 
     return person;
   }
 
-  load(data){
-    if (data){
-      if (data.array){ data = data.array; }
-      data.forEach(element => {
+  load(data) {
+    if (data) {
+      if (data.array) {
+        data = data.array;
+      }
+      data.forEach((element) => {
         let person = Person.load(element);
         this.add(person);
       });
     }
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
+}
 
-People.unDry = function(value){
+People.unDry = function (value) {
   let people = new People();
   people.state = value;
-  people._names = {}
+  people._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     people._names[v.getName()] = key;
   });
 
   return people;
-}
+};
 
 Dry.registerClass("People", People);
 

@@ -1,13 +1,12 @@
-
 import Dry from "json-dry";
-import lodash from 'lodash';
+import lodash from "lodash";
 
-import RoughDate from './RoughDate';
+import RoughDate from "./RoughDate";
 
-import {ValueError} from './Errors';
+import { ValueError } from "./Errors";
 
-function setState(val, def=null){
-  if (val){
+function setState(val, def = null) {
+  if (val) {
     return val;
   } else {
     return def;
@@ -15,7 +14,7 @@ function setState(val, def=null){
 }
 
 class Source {
-  constructor(props){
+  constructor(props) {
     this.state = {
       name: null,
       id: null,
@@ -30,51 +29,49 @@ class Source {
     this._isASourceObject = true;
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Source();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
     return c;
   }
 
-  getID(){
+  getID() {
     return this.state.id;
   }
 
-  getDate(){
+  getDate() {
     return this.state.date;
   }
 
-  updateDate(date, force=false){
-    if (!(date instanceof RoughDate || date._isARoughDateObject)){
+  updateDate(date, force = false) {
+    if (!(date instanceof RoughDate || date._isARoughDateObject)) {
       date = new RoughDate(date);
     }
 
-    if (date.isNull()){
+    if (date.isNull()) {
       return false;
     }
 
-    if (this.getDate().isNull()){
+    if (this.getDate().isNull()) {
       this.state.date = date;
       return true;
     }
 
-    if (RoughDate.ne(this.getDate(), date)){
-      if (force){
+    if (RoughDate.ne(this.getDate(), date)) {
+      if (force) {
         this.state.date = this.getDate().merge(date);
         return true;
-      }
-      else{
-        console.log(`Disagreement of date for ${this}: ` +
-                    `${this.getDate()} vs ${date}`);
+      } else {
+        console.log(`Disagreement of date for ${this}: ${this.getDate()} vs ${date}`);
       }
     }
 
     return false;
   }
 
-  setState(state){
-    if (state){
+  setState(state) {
+    if (state) {
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
       this.state.description = setState(state.description);
@@ -82,40 +79,40 @@ class Source {
       this.state.sources = setState(state.sources, []);
       this.state.date = setState(state.date, new RoughDate());
 
-      if (!this.state.name){
+      if (!this.state.name) {
         throw ValueError("You cannot have an Source without a name");
       }
     }
   }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
   }
 
-  merge(other){
+  merge() {
     return this;
   }
 
-  toString(){
+  toString() {
     return `Source(${this.getName()})`;
   }
 
-  getName(){
+  getName() {
     return this.state.name;
   }
 
-  getDescription(){
+  getDescription() {
     return this.state.description;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
-
-Source.unDry = function(value){
-  return new Source(value);
 }
+
+Source.unDry = function (value) {
+  return new Source(value);
+};
 
 Dry.registerClass("Source", Source);
 
