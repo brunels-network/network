@@ -16,6 +16,8 @@ class ShipSelector extends React.Component {
 
     if (shipName === this.state.lastShip) {
       this.props.resetFilters();
+      // Allows the ship to be selected again
+      this.setState({ lastShip: ""})
       return;
     }
 
