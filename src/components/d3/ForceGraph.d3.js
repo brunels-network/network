@@ -259,11 +259,13 @@ class ForceGraphD3 {
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
-      colors: {
-        color: d3.scaleOrdinal(d3.schemeCategory10),
-        last_color: -1,
-        group_to_color: {},
-      },
+      //   Fix the colours here
+      colors: { "J30ea52b:Jd0174de": "#FF0000", anchor: "#FFFFFF", Jd0174de: "#9a9a9a", J30ea52b: "#9f1d35" },
+      //   colors: {
+      //     color: d3.scaleOrdinal(d3.schemeCategory10),
+      //     last_color: -1,
+      //     group_to_color: {},
+      //   },
       uid: uid.slice(uid.length - 8),
     };
 
@@ -449,15 +451,29 @@ class ForceGraphD3 {
   }
 
   getGroupColor(group) {
-    let color = this.state.colors.group_to_color[group];
+    let color = this.state.colors[group];
 
     if (!color) {
-      this.state.colors.last_color += 1;
-      color = this.state.colors.last_color;
-      this.state.colors.group_to_color[group] = color;
+      console.error("No color for group : ", group);
+      color = "#FFFFFF";
     }
 
-    return this.state.colors.color(color);
+    // let color = this.state.colors.group_to_color[group];
+
+    // console.log("Keys : ", Object.keys(this.state.colors.group_to_color))
+
+    // if (!color) {
+    //   this.state.colors.last_color += 1;
+    //   color = this.state.colors.last_color;
+    //   this.state.colors.group_to_color[group] = color;
+    // }
+
+    // console.log("A color : ", color)
+
+    // console.log("From within color array : ", this.state.colors.color(color));
+    // this.state.colors.color(color);
+
+    return color;
   }
 
   _updateNode(data) {

@@ -40,7 +40,7 @@ class DateInput extends Component {
 DateInput.propTypes = {
   onClick: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
-}
+};
 
 class TimeLineView extends Component {
   constructor(props) {

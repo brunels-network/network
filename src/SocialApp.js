@@ -265,7 +265,6 @@ class SocialApp extends React.Component {
 
     return (
       <div>
-        <div className={styles.backgroundImage} />
         <ReactModal
           isOpen={this.state.isOverlayOpen}
           onRequestClose={() => {
