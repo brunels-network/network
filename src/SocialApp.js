@@ -14,6 +14,7 @@ import SearchBar from "./components/SearchBar";
 import BrunelMenu from "./components/BrunelMenu";
 import DefaultButton from "./components/DefaultButton";
 import ShipSelector from "./components/ShipSelector";
+import ShipTitle from "./components/ShipTitle";
 
 // Brunel model
 import Social from "./model/Social";
@@ -57,6 +58,7 @@ class SocialApp extends React.Component {
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       wobbleEnabled: true,
+      selectedShip: null,
     };
 
     this.socialGraph = null;
@@ -65,7 +67,7 @@ class SocialApp extends React.Component {
   resetFilters() {
     let social = this.state.social;
     social.resetFilters();
-    this.setState({ social: social });
+    this.setState({ social: social, "selectedShip": null });
   }
 
   closePanels() {
@@ -106,6 +108,7 @@ class SocialApp extends React.Component {
   slotSetFilter(item) {
     this.resetFilters();
     this.slotToggleFilter(item);
+    this.setState({ selectedShip: item.getName() });
   }
 
   slotToggleFilter(item) {
@@ -192,6 +195,10 @@ class SocialApp extends React.Component {
   toggleWobble() {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
+
+//   changeShipTitle() {
+
+//   }
 
   viewAbout() {
     let item = (
@@ -420,6 +427,10 @@ class SocialApp extends React.Component {
             emitClicked={(id) => this.slotSelected(id)}
             wobble={this.state.wobbleEnabled}
           />
+        </div>
+
+        <div className={styles.shipNameContainer}>
+          <ShipTitle name={this.state.selectedShip} />
         </div>
 
         <div className={styles.bottomContainer}>

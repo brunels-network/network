@@ -1,0 +1,23 @@
+.button {
+  display: inline-block;
+  background-color: white;
+  font-size: small;
+  border-radius: 8px;
+  color: black;
+  border: 2px solid rgb(3, 99, 32);
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+}
+
+.button:active {
+  box-shadow: 0 2px rgba(0,0,0,0.2);
+}
+
+@media(hover: hover) and (pointer: fine){
+  .button:hover {
+    background-color: rgb(3, 99, 32);
+    opacity: 1.0;
+    color: white;
+  }
+}
