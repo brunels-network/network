@@ -338,8 +338,8 @@ SearchBar.propTypes = {
   emitSelected: PropTypes.func.isRequired,
   // This is currently unused
   placeholder: PropTypes.any,
-  searchText: PropTypes.string.isRequired,
-  social: PropTypes.func.isRequired,
+  searchText: PropTypes.string,
+  social: PropTypes.object.isRequired,
 };
 
 export default SearchBar;

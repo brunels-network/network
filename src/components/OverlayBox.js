@@ -73,7 +73,7 @@ class OverlayBox extends React.Component {
 }
 
 OverlayBox.propTypes = {
-  item: PropTypes.elementType.isRequired,
+  item: PropTypes.elementType,
   emitClose: PropTypes.func.isRequired,
 };
 export default OverlayBox;

@@ -56,7 +56,7 @@ function SlidingPanel({
 }
 
 SlidingPanel.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   isOpen: PropTypes.bool,
   maxSize: PropTypes.string,
   minSize: PropTypes.string,

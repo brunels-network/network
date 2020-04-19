@@ -46,7 +46,7 @@ class ShipSelector extends React.Component {
 }
 
 ShipSelector.propTypes = {
-  projects: PropTypes.func.isRequired,
+  projects: PropTypes.object.isRequired,
   resetFilters: PropTypes.func.isRequired,
   shipFilter: PropTypes.func.isRequired,
 };

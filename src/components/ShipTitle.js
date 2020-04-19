@@ -16,7 +16,7 @@ function ShipTitle(props) {
 }
 
 ShipTitle.propTypes = {
-  shipTitle: PropTypes.string.isRequired,
+  shipTitle: PropTypes.string,
   style: PropTypes.string,
 };
 
