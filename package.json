@@ -9,6 +9,7 @@
     "babel-jest": "^24.9.0",
     "bootstrap": "^4.4.0",
     "d3": "^5.15.0",
+    "jest-junit": "^10.0.0",
     "json-dry": "^1.0.12",
     "json-loader": "^0.5.7",
     "react": "^16.12.0",
@@ -35,7 +36,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "lint": "eslint src/",
+    "test": "jest",
+    "ci-test": "jest --ci --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -67,5 +70,15 @@
   },
   "prettier": {
     "printWidth": 120
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!json-dry).+\\.js$",
+      "/node_modules/(?!lodash).+\\.js$"
+    ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ]
   }
 }
