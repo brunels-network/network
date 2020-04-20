@@ -13,7 +13,7 @@ function DefaultButton(props) {
 
 DefaultButton.propTypes = {
     onClick: PropTypes.func,
-    style: PropTypes.string,
+    style: PropTypes.object,
     children: PropTypes.string
 }
 

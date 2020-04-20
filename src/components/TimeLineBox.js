@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 
 import TimeLineView from "./TimeLineView";
-import DateRange from "../model/DateRange";
 
 
 import styles from "./TimeLineBox.module.css";
@@ -134,11 +133,11 @@ TimeLineBox.propTypes = {
   emitSelected: PropTypes.func.isRequired,
   emitWindowChanged: PropTypes.func.isRequired,
   getItemTimeLine: PropTypes.func.isRequired,
-  getItemWindow: PropTypes.instanceOf(DateRange).isRequired,
-  getMaxWindow: PropTypes.instanceOf(DateRange).isRequired,
-  getProjectTimeLine: PropTypes.array.isRequired,
-  getProjectWindow: PropTypes.instanceOf(DateRange).isRequired,
-  selected: PropTypes.func.isRequired,
+  getItemWindow: PropTypes.func.isRequired,
+  getMaxWindow: PropTypes.func.isRequired,
+  getProjectTimeLine: PropTypes.func.isRequired,
+  getProjectWindow: PropTypes.func.isRequired,
+  selected: PropTypes.func,
 };
 
 export default TimeLineBox;

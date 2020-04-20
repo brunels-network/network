@@ -1,7 +1,7 @@
 {
   "name": "brunel",
   "version": "0.1.0",
-  "homepage": "http://chryswoods.github.io/brunel/",
+  "homepage": "http://gareth-j.github.io/brunel/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -63,12 +63,9 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.1",
-    "gh-pages": "^2.1.1",
-    "jest": "^25.3.0"
+    "gh-pages": "^2.1.1"
   },
   "prettier": {
     "printWidth": 120
-  },
-  "jest": {
-    "transformIgnorePatterns": ["/node_modules/(?!json-dry).+\\.js$", "/node_modules/(?!lodash).+\\.js$" ]}
+  }
 }

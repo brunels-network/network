@@ -54,7 +54,7 @@ function filterList(items, props) {
 }
 
 filterList.propTypes = {
-  social: PropTypes.func,
+  social: PropTypes.object.isRequired,
   emitSelected: PropTypes.func,
   emitToggleFilter: PropTypes.func,
 };
@@ -137,7 +137,7 @@ function FilterBox(props) {
 }
 
 FilterBox.propTypes = {
-  social: PropTypes.func,
+  social: PropTypes.object.isRequired,
   emitSelected: PropTypes.func,
   emitClearFilters: PropTypes.func,
 };

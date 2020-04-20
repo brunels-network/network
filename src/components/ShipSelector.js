@@ -16,6 +16,8 @@ class ShipSelector extends React.Component {
 
     if (shipName === this.state.lastShip) {
       this.props.resetFilters();
+      // Allows the ship to be selected again
+      this.setState({ lastShip: "" });
       return;
     }
 
@@ -26,6 +28,7 @@ class ShipSelector extends React.Component {
   render() {
     let projects = this.props.projects;
 
+    // TODO - rework this ?
     let output = projects.values().map((item) => {
       return (
         <DefaultButton
@@ -43,7 +46,7 @@ class ShipSelector extends React.Component {
 }
 
 ShipSelector.propTypes = {
-  projects: PropTypes.func.isRequired,
+  projects: PropTypes.object.isRequired,
   resetFilters: PropTypes.func.isRequired,
   shipFilter: PropTypes.func.isRequired,
 };

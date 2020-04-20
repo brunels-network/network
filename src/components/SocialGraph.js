@@ -42,9 +42,9 @@ class SocialGraph extends React.Component {
 
 SocialGraph.propTypes = {
   emitClicked: PropTypes.func.isRequired,
-  highlighted: PropTypes.func.isRequired,
-  selected: PropTypes.func.isRequired,
-  social: PropTypes.func.isRequired,
+  highlighted: PropTypes.func,
+  selected: PropTypes.func,
+  social: PropTypes.object.isRequired,
   wobble: PropTypes.bool.isRequired
 }
 
