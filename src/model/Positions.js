@@ -1,34 +1,33 @@
+import Dry from "json-dry";
+import { v4 as uuidv4 } from "uuid";
+import lodash from "lodash";
 
-import Dry from 'json-dry';
-import { v4 as uuidv4 } from 'uuid';
-import lodash from 'lodash';
+import Position from "./Position";
+import { KeyError, MissingError } from "./Errors";
 
-import Position from './Position';
-import { KeyError, MissingError } from './Errors';
-
-function _generate_position_uid(){
+function _generate_position_uid() {
   let uid = uuidv4();
-  return "Q" + uid.substring(uid.length-7);
+  return "Q" + uid.substring(uid.length - 7);
 }
 
 class Positions {
-  constructor(props){
+  constructor() {
     this.state = {
       registry: {},
     };
 
     this._names = {};
     this._isAPositionsObject = true;
-  };
+  }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
-    for (let key in this.state.registry){
+    for (let key in this.state.registry) {
       this.state.registry[key]._updateHooks(hook);
     }
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Positions();
     c.state = lodash.cloneDeep(item.state);
     c._names = lodash.cloneDeep(item._names);
@@ -36,34 +35,37 @@ class Positions {
     return c;
   }
 
-  values(){
+  values() {
     let names = Object.keys(this._names);
     names.sort();
 
     let output = [];
 
-    names.forEach((key, index)=>{
+    names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
 
     return output;
   }
 
-  canAdd(item){
-    return (item instanceof Position) || item._isAPositionObject;
+  canAdd(item) {
+    return item instanceof Position || item._isAPositionObject;
   }
 
-  add(position){
-    if (!this.canAdd(position)){ return null;}
+  add(position) {
+    if (!this.canAdd(position)) {
+      return null;
+    }
 
     let existing = null;
 
-    try{
+    try {
       existing = this.getByName(position.getName());
+    } catch (error) {
+        console.error(error);
     }
-    catch(error){}
 
-    if (existing){
+    if (existing) {
       existing = existing.merge(position);
       this.state.registry[existing.getID()] = existing;
       return existing;
@@ -73,18 +75,17 @@ class Positions {
 
     let id = position.getID();
 
-    if (id){
-      if (id in this.state.registry){
+    if (id) {
+      if (id in this.state.registry) {
         throw new KeyError(`Duplicate Position ID ${position}`);
       }
 
       position._updateHooks(this._getHook);
       this.state.registry[id] = position;
-    }
-    else{
+    } else {
       let uid = _generate_position_uid();
 
-      while (uid in this.state.registry){
+      while (uid in this.state.registry) {
         uid = _generate_position_uid();
       }
 
@@ -98,19 +99,18 @@ class Positions {
     return position;
   }
 
-  getByName(name){
+  getByName(name) {
     let id = this._names[name];
 
-    if (id){
+    if (id) {
       return this.get(id);
-    }
-    else{
+    } else {
       throw MissingError(`No position with name ${name}`);
     }
   }
 
-  find(name){
-    if (name instanceof Position || name._isApositionObject){
+  find(name) {
+    if (name instanceof Position || name._isApositionObject) {
       return this.get(name.getID());
     }
 
@@ -118,44 +118,42 @@ class Positions {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
-      if (key.toLowerCase().indexOf(name) !== -1){
+    Object.keys(this._names).forEach((key) => {
+      if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
     });
 
-    if (results.length === 1){
+    if (results.length === 1) {
       return results[0];
-    }
-    else if (results.length > 1){
+    } else if (results.length > 1) {
       return results;
     }
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No position matches '${name}. Available Positions ` +
-                       `are '${keys}'`);
+    throw MissingError(`No position matches '${name}. Available Positions ` + `are '${keys}'`);
   }
 
-  get(id){
+  get(id) {
     let position = this.state.registry[id];
 
-    if (!position){
+    if (!position) {
       throw new MissingError(`No Position with ID ${id}`);
     }
 
     return position;
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
+}
 
-Positions.unDry = function(value){
+Positions.unDry = function (value) {
   let positions = new Positions();
   positions.state = value;
-  positions._names = {}
+  positions._names = {};
 
   Object.keys(value.registry).forEach((key, index) => {
     let v = value.registry[key];
@@ -163,7 +161,7 @@ Positions.unDry = function(value){
   });
 
   return positions;
-}
+};
 
 Dry.registerClass("Positions", Positions);
 
