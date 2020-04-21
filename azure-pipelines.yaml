@@ -20,10 +20,10 @@ steps:
     npm build
   displayName: 'Install and build'
 
-- script: npm lint
+- script: npm run lint
   displayName: 'Lint code'
 
-- script: npm test
+- script: npm run test
   displayName: 'Run tests'
 
 - task: PublishTestResults@2
