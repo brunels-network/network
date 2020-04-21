@@ -365,7 +365,7 @@ class RoughDate {
     } else if (this.isExact()) {
       return this.state.start;
     } else {
-      throw ValueError(`Cannot extract a single date from an inexact date ${this}`);
+      throw new ValueError(`Cannot extract a single date from an inexact date ${this}`);
     }
   }
 

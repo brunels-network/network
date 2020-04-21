@@ -105,7 +105,7 @@ class Sources {
     if (id) {
       return this.get(id);
     } else {
-      throw MissingError(`No source with name ${name}`);
+      throw new MissingError(`No source with name ${name}`);
     }
   }
 
@@ -170,7 +170,7 @@ class Sources {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No source matches '${name}. Available sources are '${keys}'`);
+    throw new MissingError(`No source matches '${name}. Available sources are '${keys}'`);
   }
 
   get(id) {

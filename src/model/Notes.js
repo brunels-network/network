@@ -92,7 +92,7 @@ class Notes {
     if (id) {
       return this.get(id);
     } else {
-      throw MissingError(`No Note with name ${name}`);
+      throw new MissingError(`No Note with name ${name}`);
     }
   }
 
@@ -119,7 +119,7 @@ class Notes {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No Note matches '${name}. Available Notes are '${keys}'`);
+    throw new MissingError(`No Note matches '${name}. Available Notes are '${keys}'`);
   }
 
   get(id) {

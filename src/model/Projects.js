@@ -117,7 +117,7 @@ class Projects {
     if (id) {
       return this.get(id);
     } else {
-      throw MissingError(`No project with name ${name}`);
+      throw new MissingError(`No project with name ${name}`);
     }
   }
 
@@ -144,7 +144,7 @@ class Projects {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No project matches '${name}. Available projects are '${keys}'`);
+    throw new MissingError(`No project matches '${name}. Available projects are '${keys}'`);
   }
 
   get(id) {

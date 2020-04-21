@@ -80,7 +80,7 @@ class Source {
       this.state.date = setState(state.date, new RoughDate());
 
       if (!this.state.name) {
-        throw ValueError("You cannot have an Source without a name");
+        throw new ValueError("You cannot have an Source without a name");
       }
     }
   }

@@ -55,7 +55,7 @@ class Affiliation {
       this.state.canonical = Affiliation.makeCanonical(this.state.name);
 
       if (!this.state.name) {
-        throw ValueError("You cannot have an Affiliation without a name");
+        throw new ValueError("You cannot have an Affiliation without a name");
       }
     }
   }

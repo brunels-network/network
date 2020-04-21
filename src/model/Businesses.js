@@ -106,7 +106,7 @@ class Businesses {
     if (id) {
       return this.get(id);
     } else {
-      throw MissingError(`No Business with name ${name}`);
+      throw new MissingError(`No Business with name ${name}`);
     }
   }
 
@@ -133,7 +133,7 @@ class Businesses {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No Business matches '${name}. Available Businesses are '${keys}'`);
+    throw new MissingError(`No Business matches '${name}. Available Businesses are '${keys}'`);
   }
 
   filter(funcs = []) {

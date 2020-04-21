@@ -209,7 +209,7 @@ class Business {
       this.state.notes = setState(state.notes, []);
 
       if (!this.state.name) {
-        throw ValueError("You cannot have an Business without a name");
+        throw new ValueError("You cannot have an Business without a name");
       }
     }
   }

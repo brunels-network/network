@@ -105,7 +105,7 @@ class Positions {
     if (id) {
       return this.get(id);
     } else {
-      throw MissingError(`No position with name ${name}`);
+      throw new MissingError(`No position with name ${name}`);
     }
   }
 
@@ -132,7 +132,7 @@ class Positions {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No position matches '${name}. Available Positions ` + `are '${keys}'`);
+    throw new MissingError(`No position matches '${name}. Available Positions ` + `are '${keys}'`);
   }
 
   get(id) {

@@ -89,7 +89,7 @@ class Connections {
     if (id) {
       return this.get(id);
     } else {
-      throw MissingError(`No connection with name ${name}`);
+      throw new MissingError(`No connection with name ${name}`);
     }
   }
 
@@ -116,7 +116,7 @@ class Connections {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No connection matches '${name}. Available Connections are '${keys}'`);
+    throw new MissingError(`No connection matches '${name}. Available Connections are '${keys}'`);
   }
 
   get(id) {

@@ -49,7 +49,7 @@ class Project {
       this.state.duration = new DateRange({value:state.duration});
 
       if (!this.state.name){
-        throw ValueError("You cannot have a Project without a name");
+        throw new ValueError("You cannot have a Project without a name");
       }
     }
   }
