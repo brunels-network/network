@@ -1,4 +1,3 @@
-
 .container {
   position: fixed;
   top: 10px;
@@ -49,7 +48,7 @@
 }
 
 .hamburgerButton:active {
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
   color: black;
   transform: rotate(90deg);
 }
@@ -103,7 +102,7 @@
   padding: 2px 5px;
 }
 
-@media(hover: hover) and (pointer: fine){
+@media (hover: hover) and (pointer: fine) {
   .hamburgerButton:hover {
     background-color: green;
     color: white;

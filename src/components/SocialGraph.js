@@ -45,7 +45,7 @@ SocialGraph.propTypes = {
   highlighted: PropTypes.func,
   selected: PropTypes.func,
   social: PropTypes.object.isRequired,
-  wobble: PropTypes.bool.isRequired
-}
+  wobble: PropTypes.bool.isRequired,
+};
 
 export default SocialGraph;

@@ -1,4 +1,3 @@
-
 .module {
   all: unset;
 }
@@ -33,20 +32,19 @@
   flex-direction: column;
 }
 
-
 .controlButton {
   background-color: white;
   border-radius: 8px;
   color: black;
-  border: 2px solid #008CBA;
+  border: 2px solid #008cba;
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
   opacity: 0.8;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
 }
 
 .controlButton:active {
-  box-shadow: 0 2px rgba(0,0,0,0.2);
+  box-shadow: 0 2px rgba(0, 0, 0, 0.2);
   transform: translateY(2px);
 }
 
@@ -131,23 +129,23 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
   transition: opacity 200ms ease-in-out;
 }
 
-.modalOverlayAfterOpen{
+.modalOverlayAfterOpen {
   opacity: 1;
 }
 
-.modalOverlayBeforeClose{
+.modalOverlayBeforeClose {
   opacity: 0;
 }
 
-@media(hover: hover) and (pointer: fine){
+@media (hover: hover) and (pointer: fine) {
   .controlButton:hover {
-    background-color: #008CBA;
-    opacity: 1.0;
+    background-color: #008cba;
+    opacity: 1;
     color: white;
   }
   .closeOverlayButton:hover {

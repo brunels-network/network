@@ -36,6 +36,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "format": "prettier --write src/",
     "lint": "eslint src/",
     "test": "jest",
     "ci-test": "jest --ci --reporters=default --reporters=jest-junit",
@@ -66,7 +67,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.1",
-    "gh-pages": "^2.1.1"
+    "gh-pages": "^2.1.1",
+    "prettier": "2.0.4"
   },
   "prettier": {
     "printWidth": 120

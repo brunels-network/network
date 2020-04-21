@@ -1,18 +1,18 @@
-import Dry from 'json-dry';
+import Dry from "json-dry";
 
-import Positions from './Positions';
-import Position from './Position';
+import Positions from "./Positions";
+import Position from "./Position";
 
-test("simple", ()=>{
+test("simple", () => {
   let name1 = "This is a position";
   let url1 = "https://localhost/something";
 
-  let p1 = new Position({name:name1, url:url1});
+  let p1 = new Position({ name: name1, url: url1 });
 
   let name2 = "This is another position";
   let url2 = "https://localhost/other";
 
-  let p2 = new Position({name:name2, url:url2});
+  let p2 = new Position({ name: name2, url: url2 });
 
   expect(p1.getName()).toStrictEqual(name1);
   expect(p2.getName()).toStrictEqual(name2);
@@ -34,10 +34,9 @@ test("simple", ()=>{
 
   expect(r.length).toStrictEqual(2);
 
-  if (r[0].getID() === p1.getID()){
+  if (r[0].getID() === p1.getID()) {
     expect(r[1].getID()).toStrictEqual(p2.getID());
-  }
-  else {
+  } else {
     expect(r[0].getID()).toStrictEqual(p2.getID());
     expect(r[1].getID()).toStrictEqual(p1.getID());
   }
@@ -53,10 +52,9 @@ test("simple", ()=>{
 
   expect(r.length).toStrictEqual(2);
 
-  if (r[0].getID() === p1.getID()){
+  if (r[0].getID() === p1.getID()) {
     expect(r[1].getID()).toStrictEqual(p2.getID());
-  }
-  else {
+  } else {
     expect(r[0].getID()).toStrictEqual(p2.getID());
     expect(r[1].getID()).toStrictEqual(p1.getID());
   }

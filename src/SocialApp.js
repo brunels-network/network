@@ -67,7 +67,7 @@ class SocialApp extends React.Component {
   resetFilters() {
     let social = this.state.social;
     social.resetFilters();
-    this.setState({ social: social, "selectedShip": null });
+    this.setState({ social: social, selectedShip: null });
   }
 
   closePanels() {
@@ -196,9 +196,9 @@ class SocialApp extends React.Component {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
 
-//   changeShipTitle() {
+  //   changeShipTitle() {
 
-//   }
+  //   }
 
   viewAbout() {
     let item = (

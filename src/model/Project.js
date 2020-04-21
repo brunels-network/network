@@ -1,12 +1,11 @@
-
 import Dry from "json-dry";
-import lodash from 'lodash';
+import lodash from "lodash";
 
-import DateRange from './DateRange';
-import {ValueError} from './Errors';
+import DateRange from "./DateRange";
+import { ValueError } from "./Errors";
 
-function setState(val, def=null){
-  if (val){
+function setState(val, def = null) {
+  if (val) {
     return val;
   } else {
     return def;
@@ -14,7 +13,7 @@ function setState(val, def=null){
 }
 
 class Project {
-  constructor(props){
+  constructor(props) {
     this.state = {
       name: null,
       id: null,
@@ -29,78 +28,78 @@ class Project {
     this._isAProjectObject = true;
   }
 
-  static clone(item){
+  static clone(item) {
     let c = new Project();
     c._getHook = item._getHook;
     c.state = lodash.cloneDeep(item.state);
     return c;
   }
 
-  getID(){
+  getID() {
     return this.state.id;
   }
 
-  setState(state){
-    if (state){
+  setState(state) {
+    if (state) {
       this.state.name = setState(state.name);
       this.state.id = setState(state.id);
       this.state.notes = setState(state.notes, {});
       this.state.url = setState(state.url, null);
-      this.state.duration = new DateRange({value:state.duration});
+      this.state.duration = new DateRange({ value: state.duration });
 
-      if (!this.state.name){
+      if (!this.state.name) {
         throw ValueError("You cannot have a Project without a name");
       }
     }
   }
 
-  _updateHooks(hook){
+  _updateHooks(hook) {
     this._getHook = hook;
   }
 
-  merge(other){
+  merge() {
     return this;
   }
 
-  toString(){
+  toString() {
     return `Project(${this.getName()})`;
   }
 
-  getName(){
+  getName() {
     return this.state.name;
   }
 
-  getURL(){
-      return this.state.url;
+  getURL() {
+    return this.state.url;
   }
 
-  getDuration(){
+  getDuration() {
     return this.state.duration;
   }
 
-  getTimeLine(){
+  getTimeLine() {
     const duration = this.getDuration();
 
-    if (duration && duration.hasBounds()){
-      return {start: duration.getEarliestStart().toDate(),
-              end: duration.getLatestEnd().toDate(),
-              id: this.getID(),
-              content: this.getName(),
-             };
-    }
-    else{
+    if (duration && duration.hasBounds()) {
+      return {
+        start: duration.getEarliestStart().toDate(),
+        end: duration.getLatestEnd().toDate(),
+        id: this.getID(),
+        content: this.getName(),
+      };
+    } else {
       return null;
     }
   }
 
-  toDry(){
-    return {value: this.state};
+  toDry() {
+    return { value: this.state };
   }
-};
-
-Project.unDry = function(value){
-  return new Project(value);
 }
+
+Project.unDry = function (value) {
+  return new Project(value);
+};
 
 Dry.registerClass("Project", Project);
 

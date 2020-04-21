@@ -80,7 +80,7 @@ SourceList.propTypes = {
   emitSelected: PropTypes.func.isRequired,
   social: PropTypes.func.isRequired,
   sources: PropTypes.object.isRequired,
-  title: PropTypes.string
-}
+  title: PropTypes.string,
+};
 
 export default SourceList;

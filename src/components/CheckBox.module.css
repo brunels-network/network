@@ -32,12 +32,12 @@
   border: 2px solid rgb(3, 99, 32);
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 1px 3px 0 rgba(0,0,0,0.19);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* When the checkbox is checked, add a blue background */
 .checkBox input:checked ~ .checkMark {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -65,8 +65,7 @@
   transform: rotate(45deg);
 }
 
-
-@media(hover: hover) and (pointer: fine){
+@media (hover: hover) and (pointer: fine) {
   .checkBox:hover input ~ .checkMark {
     background-color: #ccc;
   }

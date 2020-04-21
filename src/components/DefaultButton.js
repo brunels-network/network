@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 import styles from "./DefaultButton.module.css";
 
@@ -12,9 +12,9 @@ function DefaultButton(props) {
 }
 
 DefaultButton.propTypes = {
-    onClick: PropTypes.func,
-    style: PropTypes.object,
-    children: PropTypes.string
-}
+  onClick: PropTypes.func,
+  style: PropTypes.object,
+  children: PropTypes.string,
+};
 
 export default DefaultButton;

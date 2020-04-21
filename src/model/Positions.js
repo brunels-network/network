@@ -61,7 +61,9 @@ class Positions {
 
     try {
       existing = this.getByName(position.getName());
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     if (existing) {
       existing = existing.merge(position);
@@ -116,7 +118,7 @@ class Positions {
 
     let results = [];
 
-    Object.keys(this._names).forEach((key, index) => {
+    Object.keys(this._names).forEach((key) => {
       if (key.toLowerCase().indexOf(name) !== -1) {
         results.push(this.get(this._names[key]));
       }
@@ -153,7 +155,7 @@ Positions.unDry = function (value) {
   positions.state = value;
   positions._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     positions._names[v.getName()] = key;
   });
