@@ -62,7 +62,7 @@ class Sources {
     try {
       existing = this.getByName(source.getName());
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
 
     if (existing) {

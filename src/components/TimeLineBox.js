@@ -4,7 +4,6 @@ import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 
 import TimeLineView from "./TimeLineView";
 
-
 import styles from "./TimeLineBox.module.css";
 
 class TimeLineBox extends Component {

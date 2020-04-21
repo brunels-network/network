@@ -65,7 +65,7 @@
 }
 
 .tab[aria-selected="true"]:after {
-  content: '';
+  content: "";
   position: absolute;
 }
 

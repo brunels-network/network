@@ -58,7 +58,6 @@ BAccordionTitle.propTypes = {
   children: PropTypes.string,
 };
 
-
 function BAccordionPanel(props) {
   return <AccordionItemPanel style={props.style}>{props.children}</AccordionItemPanel>;
 }

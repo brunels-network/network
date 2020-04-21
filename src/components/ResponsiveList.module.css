@@ -2,15 +2,15 @@
    https://www.fourkitchens.com/blog/article/responsive-multi-column-lists-flexbox/
 */
 
-.list{
-	display: flex;
-	flex-wrap: wrap;
+.list {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   text-align: center;
   align-content: center;
 }
 
-.item{
+.item {
   flex: 1 0 200px;
   box-sizing: border-box;
   align-items: center;
@@ -18,7 +18,7 @@
   align-content: center;
   color: #171e42;
   padding: 2px;
-	margin-left: 2px;
+  margin-left: 2px;
   margin-top: 2px;
   background-color: rgba(3, 99, 32, 0.103);
   border-radius: 5px;

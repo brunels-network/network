@@ -1,12 +1,12 @@
 .enter {
   opacity: 0;
-  transform: translateX(100%)
+  transform: translateX(100%);
 }
 
 .enterActive {
   opacity: 1;
   transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
-  transform: translateX(0)
+  transform: translateX(0);
 }
 
 .exit {

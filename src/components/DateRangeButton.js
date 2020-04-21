@@ -20,8 +20,6 @@ function DateRangeButton(props) {
     return null;
   }
 
-
-
   let emitSelected = props.emitSelected;
 
   if (!emitSelected) {
@@ -46,10 +44,10 @@ function DateRangeButton(props) {
   );
 }
 
-  DateRangeButton.propTypes = {
-      value: PropTypes.func,
-      emitSelected: PropTypes.func,
-      style: PropTypes.string
-  };
+DateRangeButton.propTypes = {
+  value: PropTypes.func,
+  emitSelected: PropTypes.func,
+  style: PropTypes.string,
+};
 
 export default DateRangeButton;

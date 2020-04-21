@@ -62,7 +62,7 @@ class Positions {
     try {
       existing = this.getByName(position.getName());
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
 
     if (existing) {
@@ -132,7 +132,11 @@ class Positions {
 
     let keys = Object.keys(this._names).join("', '");
 
+<<<<<<< HEAD
     throw new MissingError(`No position matches '${name}. Available Positions ` + `are '${keys}'`);
+=======
+    throw MissingError(`No position matches '${name}. Available Positions are '${keys}'`);
+>>>>>>> addJest
   }
 
   get(id) {
@@ -155,7 +159,7 @@ Positions.unDry = function (value) {
   positions.state = value;
   positions._names = {};
 
-  Object.keys(value.registry).forEach((key, index) => {
+  Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     positions._names[v.getName()] = key;
   });
