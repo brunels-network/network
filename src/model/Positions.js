@@ -132,7 +132,7 @@ class Positions {
 
     let keys = Object.keys(this._names).join("', '");
 
-    throw MissingError(`No position matches '${name}. Available Positions ` + `are '${keys}'`);
+    throw MissingError(`No position matches '${name}. Available Positions are '${keys}'`);
   }
 
   get(id) {
