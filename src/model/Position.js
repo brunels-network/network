@@ -54,13 +54,8 @@ class Position {
 
       this.state.canonical = Position.makeCanonical(this.state.name);
 
-<<<<<<< HEAD
       if (!this.state.name){
         throw new ValueError("You cannot have an Position without a name");
-=======
-      if (!this.state.name) {
-        throw ValueError("You cannot have an Position without a name");
->>>>>>> addJest
       }
     }
   }

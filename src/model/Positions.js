@@ -132,11 +132,7 @@ class Positions {
 
     let keys = Object.keys(this._names).join("', '");
 
-<<<<<<< HEAD
     throw new MissingError(`No position matches '${name}. Available Positions ` + `are '${keys}'`);
-=======
-    throw MissingError(`No position matches '${name}. Available Positions are '${keys}'`);
->>>>>>> addJest
   }
 
   get(id) {
