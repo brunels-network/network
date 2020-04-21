@@ -38,8 +38,7 @@
     "build": "react-scripts build",
     "format": "prettier --write src/",
     "lint": "eslint src/",
-    "test": "jest",
-    "ci-test": "jest --ci --reporters=default --reporters=jest-junit",
+    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -77,10 +76,6 @@
     "transformIgnorePatterns": [
       "/node_modules/(?!json-dry).+\\.js$",
       "/node_modules/(?!lodash).+\\.js$"
-    ],
-    "reporters": [
-      "default",
-      "jest-junit"
     ]
   }
 }

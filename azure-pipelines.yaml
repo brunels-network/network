@@ -21,9 +21,9 @@ steps:
   displayName: 'Install and build'
 
 - script: npm lint
-  displayName: 'Lint'
+  displayName: 'Lint code'
 
-- script: npm ci-test
+- script: npm test
   displayName: 'Run tests'
 
 - task: PublishTestResults@2
