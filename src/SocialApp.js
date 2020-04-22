@@ -196,10 +196,6 @@ class SocialApp extends React.Component {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
 
-  //   changeShipTitle() {
-
-  //   }
-
   viewAbout() {
     let item = (
       <div>

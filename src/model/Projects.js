@@ -37,7 +37,6 @@ class Projects {
 
   values() {
     let names = Object.keys(this._names);
-    names.sort();
 
     let output = [];
 
