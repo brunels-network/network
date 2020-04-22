@@ -39,6 +39,7 @@
     "format": "prettier --write src/",
     "lint": "./node_modules/.bin/eslint src/",
     "test": "react-scripts test --watchAll=false",
+    "test-ci": "react-scripts test --watchAll=false --coverage --coverageReporters=cobertura --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
