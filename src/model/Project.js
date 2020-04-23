@@ -100,7 +100,7 @@ class Project {
         start_time: duration.getEarliestStart().toDate(),
         end_time: duration.getLatestEnd().toDate(),
         project_id: this.getID(),
-        name: this.getName(),
+        title: this.getName(),
       };
     } else {
       return null;
