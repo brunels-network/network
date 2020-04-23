@@ -159,6 +159,7 @@ class DateRange {
     return this.hasStart() && this.state.start === this.state.end;
   }
 
+  // Returns a DateRange object
   toDate() {
     if (this.hasStart()) {
       if (this.hasEnd()) {
@@ -170,6 +171,11 @@ class DateRange {
       return this.getEnd();
     }
   }
+
+//   toUnixTimestamp() {
+//       return parseInt((new Date("2012.08.10").getTime() / 1000).toFixed(0));
+//   }
+
 
   contains(date) {
     date = _clean(date);

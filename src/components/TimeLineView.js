@@ -228,7 +228,7 @@ class TimeLineView extends Component {
 
     if (!window) {
       window = new DateRange({ start: "2000-01-31", end: "2020-12-31" });
-      console.log("NO WINDOW!?!");
+      console.log("NO WINDOW!");
     }
 
     let start = window.getEarliestStart();

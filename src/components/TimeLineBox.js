@@ -2,7 +2,10 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 
+
 import TimeLineView from "./TimeLineView";
+import NewTimeline from "./NewTimeline";
+
 
 import styles from "./TimeLineBox.module.css";
 
@@ -108,18 +111,7 @@ class TimeLineBox extends Component {
           </TabPanel>
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
-            <TimeLineView
-              ref={(el) => (this.tabs.items = el)}
-              name="items"
-              is_active={true}
-              selected={this.props.selected}
-              getMaxWindow={this.props.getMaxWindow}
-              getWindow={this.props.getItemWindow}
-              getItems={this.props.getItemTimeLine}
-              emitWindowChanged={this.props.emitWindowChanged}
-              emitSelected={this.props.emitSelected}
-              emitClicked={this.props.emitClicked}
-            />
+            <NewTimeline/>
           </TabPanel>
         </Tabs>
       </div>

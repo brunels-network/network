@@ -47,7 +47,7 @@ class Project {
       this.state.url = setState(state.url, null);
       this.state.duration = new DateRange({ value: state.duration });
 
-      if (!this.state.name){
+      if (!this.state.name) {
         throw new ValueError("You cannot have a Project without a name");
       }
     }
@@ -86,6 +86,21 @@ class Project {
         end: duration.getLatestEnd().toDate(),
         id: this.getID(),
         content: this.getName(),
+      };
+    } else {
+      return null;
+    }
+  }
+
+  getNewTimeLine() {
+    const duration = this.getDuration();
+
+    if (duration && duration.hasBounds()) {
+      return {
+        start_time: duration.getEarliestStart().toDate(),
+        end_time: duration.getLatestEnd().toDate(),
+        project_id: this.getID(),
+        name: this.getName(),
       };
     } else {
       return null;
