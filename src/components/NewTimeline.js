@@ -47,7 +47,11 @@ class NewTimeline extends React.Component {
     }
 
     this.setState({ lastShip: shipName });
-    this.props.shipFilterID(id, name);
+    this.props.onClick(id, name);
+  }
+
+  openOverview() {
+      return;
   }
 
   render() {
@@ -81,20 +85,22 @@ class NewTimeline extends React.Component {
       <Timeline
         groups={groups}
         items={timeline_items}
-        sidebarContent={<div>Above The Left</div>}
-        itemTouchSendsClick={false}
+        itemTouchSendsClick={true}
         stackItems
+        lineHeight={60}
         itemHeightRatio={0.8}
         showCursorLine
         canMove={false}
         canResize={false}
-        visibleTimeStart={this.state.defaultTimeStart}
-        visibleTimeEnd={this.state.defaultTimeEnd}
+        traditionalZoom={true}
+        timeSteps={{ year: 1 }}
+        defaultTimeStart={this.state.defaultTimeStart}
+        defaultTimeEnd={this.state.defaultTimeEnd}
       >
         <TimelineHeaders className="sticky">
           <SidebarHeader>
             {({ getRootProps }) => {
-              return <div {...getRootProps()}>Left</div>;
+              return <div {...getRootProps()} />;
             }}
           </SidebarHeader>
           <DateHeader unit="primaryHeader" />
@@ -107,7 +113,7 @@ class NewTimeline extends React.Component {
 
 NewTimeline.propTypes = {
   projects: PropTypes.func.isRequired,
-  shipFilterID: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   resetFilters: PropTypes.func.isRequired,
   //   emitWindowChanged: PropTypes.func.isRequired,
   //   getItems: PropTypes.array,
