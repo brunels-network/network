@@ -321,6 +321,7 @@ class SocialApp extends React.Component {
           </span>
           <TimeLineBox
             selected={selected}
+            projects={this.state.social.getProjects()}
             getMaxWindow={() => {
               return this.state.social.getMaxWindow();
             }}

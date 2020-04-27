@@ -2,10 +2,8 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 
-
 import TimeLineView from "./TimeLineView";
 import NewTimeline from "./NewTimeline";
-
 
 import styles from "./TimeLineBox.module.css";
 
@@ -13,9 +11,9 @@ class TimeLineBox extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      dimensions: { height: 300, width: 600 },
-    };
+      this.state = {
+        dimensions: { height: 300, width: 600 },
+      };
 
     this.tabs = {};
     this.container = null;
@@ -111,7 +109,7 @@ class TimeLineBox extends Component {
           </TabPanel>
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
-            <NewTimeline/>
+            <NewTimeline projects={this.props.projects} />
           </TabPanel>
         </Tabs>
       </div>
@@ -120,15 +118,16 @@ class TimeLineBox extends Component {
 }
 
 TimeLineBox.propTypes = {
-  emitClicked: PropTypes.func.isRequired,
-  emitSelected: PropTypes.func.isRequired,
-  emitWindowChanged: PropTypes.func.isRequired,
-  getItemTimeLine: PropTypes.func.isRequired,
-  getItemWindow: PropTypes.func.isRequired,
-  getMaxWindow: PropTypes.func.isRequired,
-  getProjectTimeLine: PropTypes.func.isRequired,
-  getProjectWindow: PropTypes.func.isRequired,
-  selected: PropTypes.func,
+  projects: PropTypes.object.isRequired,
+//   emitClicked: PropTypes.func.isRequired,
+//   emitSelected: PropTypes.func.isRequired,
+//   emitWindowChanged: PropTypes.func.isRequired,
+//   getItemTimeLine: PropTypes.func.isRequired,
+//   getItemWindow: PropTypes.func.isRequired,
+//   getMaxWindow: PropTypes.func.isRequired,
+//   getProjectTimeLine: PropTypes.func.isRequired,
+//   getProjectWindow: PropTypes.func.isRequired,
+//   selected: PropTypes.func,
 };
 
 export default TimeLineBox;

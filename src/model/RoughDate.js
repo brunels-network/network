@@ -359,9 +359,9 @@ class RoughDate {
     }
   }
 
-  toUnixTimestamp() {
-    return parseInt((this.toDate().getTime() / 1000).toFixed(0));
-  }
+//   toUnixTimestamp() {
+//     return parseInt((this.toDate().getTime() / 1000).toFixed(0));
+//   }
 
   toMoment() {
     if (this.isNull()) {
