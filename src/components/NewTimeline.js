@@ -24,65 +24,64 @@ class NewTimeline extends React.Component {
   constructor(props) {
     super(props);
 
-    var start_date = moment("1836-01-01");
-    var end_date = moment("1858-12-31");
+    this.setFilter = this.setFilter.bind(this);
 
     this.state = {
-      defaultTimeStart: start_date,
-      defaultTimeEnd: end_date,
+      defaultTimeStart: moment("1836-01-01"),
+      defaultTimeEnd: moment("1858-12-31"),
+      lastShip: null,
     };
+  }
+
+  setFilter(id, name) {
+    // First check if the ship is the same as the last one clicked
+    const shipName = name;
+
+    console.log(shipName, this.state.lastShip);
+
+    if (shipName === this.state.lastShip) {
+      this.props.resetFilters();
+      // Allows the ship to be selected again
+      this.setState({ lastShip: "" });
+      return;
+    }
+
+    this.setState({ lastShip: shipName });
+    this.props.shipFilterID(id, name);
   }
 
   render() {
     const projects = this.props.projects;
 
-    const timeline_items = projects.values().map((project) => {
-      let items = project.getNewTimeLine();
+    const timeline_items = projects.values().map((project, index) => {
+      let item = project.getNewTimeLine();
 
-      console.log(items["start_time"], items["end_time"], items["name"]);
-    
+      item["id"] = index;
+      item["group"] = 1;
 
-      items["group"] = 1;
+      item["itemProps"] = {
+        // these optional attributes are passed to the root <div /> of each item as <div {...itemProps} />
+        "data-custom-attribute": "Random content",
+        "aria-hidden": true,
+        onMouseDown: () => {
+          this.setFilter(item["project_id"], item["title"]);
+        },
+        className: "weekend",
+        style: {
+          //   background: "fuchsia",
+        },
+      };
 
-      return items;
+      return item;
     });
 
-    // const groups = [{ id: 1, title: "Projects" }];
-
-    const groups = [
-      { id: 1, title: "Projects" },
-    ];
-
-    const items = [
-      {
-        id: 1,
-        group: 1,
-        title: "SS Great Western",
-        start_time: moment("1836-06-26"),
-        end_time: moment("1838-03-31"),
-      },
-      {
-        id: 2,
-        group: 1,
-        title: "SS Great Britain",
-        start_time: moment("1839-07-01"),
-        end_time: moment("1843-07-19"),
-      },
-      {
-        id: 3,
-        group: 1,
-        title: "SS Great Eastern",
-        start_time: moment("1854-05-01"),
-        end_time: moment("1858-01-31"),
-      },
-    ];
+    const groups = [{ id: 1, title: "Projects" }];
 
     return (
       <Timeline
         groups={groups}
-        items={items}
+        items={timeline_items}
         sidebarContent={<div>Above The Left</div>}
-        // itemsSorted
         itemTouchSendsClick={false}
         stackItems
         itemHeightRatio={0.8}
@@ -108,6 +107,8 @@ class NewTimeline extends React.Component {
 
 NewTimeline.propTypes = {
   projects: PropTypes.func.isRequired,
+  shipFilterID: PropTypes.func.isRequired,
+  resetFilters: PropTypes.func.isRequired,
   //   emitWindowChanged: PropTypes.func.isRequired,
   //   getItems: PropTypes.array,
   //   is_active: PropTypes.bool,

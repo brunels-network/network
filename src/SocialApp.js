@@ -111,6 +111,12 @@ class SocialApp extends React.Component {
     this.setState({ selectedShip: item.getName() });
   }
 
+  slotSetFilterbyID(id, name) {
+    this.resetFilters();
+    this.slotToggleFilter(id);
+    this.setState({ selectedShip: name });
+  }
+
   slotToggleFilter(item) {
     if (!item) {
       return;
@@ -322,6 +328,10 @@ class SocialApp extends React.Component {
           <TimeLineBox
             selected={selected}
             projects={this.state.social.getProjects()}
+            shipSelect={(item) => {
+              this.slotSetFilterbyID(item);
+            }}
+            resetFilters={this.resetFilters}
             getMaxWindow={() => {
               return this.state.social.getMaxWindow();
             }}

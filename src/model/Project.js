@@ -97,8 +97,8 @@ class Project {
 
     if (duration && duration.hasBounds()) {
       return {
-        start_time: duration.getEarliestStart().toDate(),
-        end_time: duration.getLatestEnd().toDate(),
+        start_time: duration.getEarliestStart().toMoment(),
+        end_time: duration.getLatestEnd().toMoment(),
         project_id: this.getID(),
         title: this.getName(),
       };

@@ -11,9 +11,9 @@ class TimeLineBox extends Component {
   constructor(props) {
     super(props);
 
-      this.state = {
-        dimensions: { height: 300, width: 600 },
-      };
+    this.state = {
+      dimensions: { height: 300, width: 600 },
+    };
 
     this.tabs = {};
     this.container = null;
@@ -109,7 +109,11 @@ class TimeLineBox extends Component {
           </TabPanel>
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
-            <NewTimeline projects={this.props.projects} />
+            <NewTimeline
+              projects={this.props.projects}
+              shipFilterID={this.props.shipSelect}
+              resetFilters={this.props.resetFilters}
+            />
           </TabPanel>
         </Tabs>
       </div>
@@ -119,15 +123,17 @@ class TimeLineBox extends Component {
 
 TimeLineBox.propTypes = {
   projects: PropTypes.object.isRequired,
-//   emitClicked: PropTypes.func.isRequired,
-//   emitSelected: PropTypes.func.isRequired,
-//   emitWindowChanged: PropTypes.func.isRequired,
-//   getItemTimeLine: PropTypes.func.isRequired,
-//   getItemWindow: PropTypes.func.isRequired,
-//   getMaxWindow: PropTypes.func.isRequired,
-//   getProjectTimeLine: PropTypes.func.isRequired,
-//   getProjectWindow: PropTypes.func.isRequired,
-//   selected: PropTypes.func,
+  shipSelect: PropTypes.func.isRequired,
+  resetFilters: PropTypes.func.isRequired,
+  //   emitClicked: PropTypes.func.isRequired,
+  //   emitSelected: PropTypes.func.isRequired,
+  //   emitWindowChanged: PropTypes.func.isRequired,
+  //   getItemTimeLine: PropTypes.func.isRequired,
+  //   getItemWindow: PropTypes.func.isRequired,
+  //   getMaxWindow: PropTypes.func.isRequired,
+  //   getProjectTimeLine: PropTypes.func.isRequired,
+  //   getProjectWindow: PropTypes.func.isRequired,
+  //   selected: PropTypes.func,
 };
 
 export default TimeLineBox;
