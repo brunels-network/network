@@ -37,8 +37,6 @@ class NewTimeline extends React.Component {
     // First check if the ship is the same as the last one clicked
     const shipName = name;
 
-    console.log(shipName, this.state.lastShip);
-
     if (shipName === this.state.lastShip) {
       this.props.resetFilters();
       // Allows the ship to be selected again

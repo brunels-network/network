@@ -448,7 +448,7 @@ class SocialApp extends React.Component {
         </div>
 
         {/* Some side panel */}
-        <div className={styles.sidePanel}>
+        <div className={styles.rightSidePanel}>
           <div>
             <DefaultButton
               onClick={() => {
