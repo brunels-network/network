@@ -198,10 +198,10 @@ class SocialApp extends React.Component {
   }
 
   setOverlay(item) {
-      this.setState({
-          overlayItem: item,
-          isOverlayOpen: true
-      })
+    this.setState({
+      overlayItem: item,
+      isOverlayOpen: true,
+    });
   }
 
   resetAll() {
@@ -219,6 +219,8 @@ class SocialApp extends React.Component {
     let graphContainerClass = this.state.isHamburgerMenuOpen
       ? styles.graphContainerMenuOpen
       : styles.graphContainerMenuClosed;
+
+    // let sidebarClass = this.state.isHamburgerMenuOpen ? styles.sidebarVis : stules
 
     return (
       <div>
@@ -365,9 +367,9 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" size="100px" minSize="100px">
+        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left">
           <BrunelMenu
-            setOverlay={this.setOverlay}   
+            setOverlay={this.setOverlay}
             clickReset={() => {
               this.resetAll();
             }}

@@ -34,7 +34,7 @@ class BrunelMenu extends React.Component {
 
   render() {
     return (
-      <div className={styles.menu}>
+      <div className={styles.sidebar}>
         <button key="about" className={styles.menuItem} onClick={this.viewAbout}>
           About
         </button>

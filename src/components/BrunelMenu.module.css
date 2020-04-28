@@ -1,8 +1,9 @@
 .menu {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
   height: 100%;
+  width:10%;
+  background-color: #111; /* Black*/
+  padding-top: 60px; /* Place content 60px from the top */
+  overflow-x: hidden; /* Disable horizontal scroll */
 }
 
 .menuItem {
@@ -11,7 +12,7 @@
   color: white;
   text-align: center;
   font-size: x-large;
-  transition: 100ms ease-in-out;
+  /* transition: 100ms ease-in-out; */
 }
 
 .menuItem:active {
@@ -24,18 +25,19 @@
   }
 }
 
-
 /* The sidebar menu */
 .sidebar {
   height: 100%; /* 100% Full-height */
-  width: 10%; /* 0 width - change this with JavaScript */
+  width: 8%; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
   top: 0;
   left: 0;
   background-color: #111; /* Black*/
   padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
 }
+
+
+
 
 /* The sidebar links */
 .sidebar a {

@@ -181,3 +181,19 @@
     color: white;
   }
 }
+
+/* The sidebar menu */
+.sidebarVis {
+  height: 100%; /* 100% Full-height */
+  width: 8%; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  top: 0;
+  left: 0;
+  background-color: #111; /* Black*/
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+.sidebarInvis {
+  width: 0px
+}
