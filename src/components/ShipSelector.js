@@ -28,10 +28,6 @@ class ShipSelector extends React.Component {
   render() {
     let projects = this.props.projects;
 
-    // TODO - rework this ?
-    // We want them in chronological order
-    
-
     let output = projects.values().map((item) => {
       return (
         <DefaultButton

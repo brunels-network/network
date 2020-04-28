@@ -1,3 +1,14 @@
+@font-face {
+    font-family: "Playfair Display SC";
+    src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Bold.ttf) format("truetype")
+}
+
+@font-face {
+    font-family: "Playfair Display";
+    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype")
+}
+
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -20,7 +31,7 @@
 .button {
   background: none;
   border: none;
-  font-family: sans-serif;
+  font-family: "Playfair Display SC";
   color: #f1f1f1;
   cursor: pointer;
   font-size: 25px;
