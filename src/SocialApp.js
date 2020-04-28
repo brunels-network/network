@@ -367,7 +367,7 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left">
+        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" size="10%">
           <BrunelMenu
             setOverlay={this.setOverlay}
             clickReset={() => {

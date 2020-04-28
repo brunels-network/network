@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./BrunelMenu.module.css";
 
+import logo from "../images/ssgb_logo.png";
+
 class BrunelMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -35,15 +37,21 @@ class BrunelMenu extends React.Component {
   render() {
     return (
       <div className={styles.sidebar}>
-        <button key="about" className={styles.menuItem} onClick={this.viewAbout}>
+        <div className={styles.logo}>
+          <img src={logo}></img>
+        </div>
+        <a href="#"></a>
+        <a href="#"></a>
+        <a href="#"></a>
+        <a href="#" onClick={this.viewAbout}>
           About
-        </button>
-        <button key="about" className={styles.menuItem} onClick={this.viewSource}>
+        </a>
+        <a href="#" onClick={this.viewSource}>
           Source
-        </button>
-        <button key="about" className={styles.menuItem} onClick={this.props.clickReset}>
+        </a>
+        <a href="#" onClick={this.props.clickReset}>
           Reset
-        </button>
+        </a>
       </div>
     );
   }
