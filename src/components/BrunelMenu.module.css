@@ -23,3 +23,26 @@
     background-color: blue;
   }
 }
+
+
+/* The sidebar menu */
+.sidebar {
+  height: 100%; /* 100% Full-height */
+  width: 10%; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  top: 0;
+  left: 0;
+  background-color: #111; /* Black*/
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+/* The sidebar links */
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}

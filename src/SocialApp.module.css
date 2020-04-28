@@ -23,6 +23,28 @@
   background-color: white;
 }
 
+.graphContainerMenuClosed {
+  position: fixed;
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  transition: left 0.4s
+}
+
+.graphContainerMenuOpen {
+  position: fixed;
+  z-index: -1;
+  bottom: 0;
+  left: 100px;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  transition: left 0.4s
+}
+
 .shipNameContainer {
   position: fixed;
   top: 6%;
