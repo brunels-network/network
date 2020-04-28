@@ -38,20 +38,12 @@ class BrunelMenu extends React.Component {
     return (
       <div className={styles.sidebar}>
         <div className={styles.logo}>
-          <img src={logo}></img>
+          <img src={logo} alt="SS Great Britain logo"></img>
         </div>
-        <a href="#"></a>
-        <a href="#"></a>
-        <a href="#"></a>
-        <a href="#" onClick={this.viewAbout}>
-          About
-        </a>
-        <a href="#" onClick={this.viewSource}>
-          Source
-        </a>
-        <a href="#" onClick={this.props.clickReset}>
-          Reset
-        </a>
+        <div className={styles.verticalSpace}></div>
+        <button className={styles.button} onClick={this.viewAbout}>About</button>
+        <button className={styles.button} onClick={this.viewSource}>Source</button>
+        <button className={styles.button} onClick={this.props.clickReset}>Reset</button>
       </div>
     );
   }
