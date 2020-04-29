@@ -7,11 +7,7 @@ function ShipTitle(props) {
   if (props.name == null) {
     return null;
   } else {
-    return (
-      <button href="#" className={styles.button} style={props.style}>
-        {props.name}
-      </button>
-    );
+    return <button className={styles.shipTitle}>{props.name}</button>;
   }
 }
 

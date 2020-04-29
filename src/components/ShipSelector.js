@@ -32,7 +32,7 @@ class ShipSelector extends React.Component {
       return (
         <DefaultButton
           key={item.getName()}
-          style={{ position: "relative", maxWidth: "80%" }}
+        //   style={{ position: "relative", maxWidth: "80%" }}
           onClick={() => this.setFilter(item)}
         >
           {item.getName()}

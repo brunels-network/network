@@ -48,8 +48,8 @@
 .shipNameContainer {
   position: fixed;
   top: 6%;
-  left: 50%;
-  width: 5%;
+  left: 45%;
+  width: 8%;
   display: flex;
   flex-direction: column;
 }
