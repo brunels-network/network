@@ -1,25 +1,45 @@
-.menu {
+@font-face {
+    font-family: "Playfair Display SC";
+    src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Bold.ttf) format("truetype")
+}
+
+@font-face {
+    font-family: "Playfair Display";
+    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype")
+}
+
+
+.sidebar {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   height: 100%;
+  background-color: #808080;
+  
 }
 
-.menuItem {
-  background-color: green;
-  flex: 1;
-  color: white;
-  text-align: center;
-  font-size: x-large;
-  transition: 100ms ease-in-out;
+.logo {
+    text-align: center;
 }
 
-.menuItem:active {
-  transform: translateX(5px);
+.verticalSpace {
+    margin-bottom: 45%;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .menuItem:hover {
-    background-color: blue;
-  }
+/* This makes the buttons look like text */
+/* Based on https://stackoverflow.com/a/1368286 */
+.button {
+  background: none;
+  border: none;
+  font-family: "Playfair Display SC";
+  color: #f1f1f1;
+  cursor: pointer;
+  font-size: 25px;
+  padding: 8px 8px 8px 32px;
+  text-align: left;
+}
+
+.button:hover {
+    color: #111
+
 }

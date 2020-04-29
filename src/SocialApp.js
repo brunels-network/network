@@ -32,6 +32,7 @@ class SocialApp extends React.Component {
 
     this.toggleWobble = this.toggleWobble.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.setOverlay = this.setOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
@@ -50,7 +51,7 @@ class SocialApp extends React.Component {
       social: social,
       highlighted_item: null,
       selected_item: null,
-      overlay_item: null,
+      overlayItem: null,
       isInfoPanelOpen: false,
       isTimeLinePanelOpen: false,
       isFilterPanelOpen: false,
@@ -83,14 +84,14 @@ class SocialApp extends React.Component {
   closeOverlay() {
     this.setState({
       isOverlayOpen: false,
-      overlay_item: null,
+      overlayItem: null,
     });
   }
 
   showInfo(item) {
     if (item._isAProjectObject) {
       this.setState({
-        overlay_item: item,
+        overlayItem: item,
         isOverlayOpen: true,
       });
     } else {
@@ -202,29 +203,11 @@ class SocialApp extends React.Component {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
 
-  viewAbout() {
-    let item = (
-      <div>
-        <div>
-          This is a demo of the application to view Brunel&apos;s temporal social network. This is an incomplete
-          application containing incomplete data and should not be relied on or viewed as being accurate.
-        </div>
-        <div>
-          If you want more information, then please visit the{" "}
-          <a href="https://github.com/chryswoods/brunel">GitHub repository</a>
-        </div>
-      </div>
-    );
+  setOverlay(item) {
     this.setState({
-      overlay_item: item,
+      overlayItem: item,
       isOverlayOpen: true,
     });
-  }
-
-  viewSource() {
-    console.log("View source");
-    var win = window.open("https://github.com/chryswoods/brunel", "_blank");
-    win.focus();
   }
 
   resetAll() {
@@ -235,35 +218,15 @@ class SocialApp extends React.Component {
   render() {
     const selected = this.state.selected_item;
     const highlighted = this.state.highlighted_item;
-    const overlay_item = this.state.overlay_item;
+    const overlayItem = this.state.overlayItem;
     const social = this.state.social;
 
-    let menu = [];
+    // TODO - check if this is the correct way
+    let graphContainerClass = this.state.isHamburgerMenuOpen
+      ? styles.graphContainerMenuOpen
+      : styles.graphContainerMenuClosed;
 
-    // let timeline_text = "Timeline";
-
-    // if (social) {
-    //   timeline_text = `Timeline : ${social.getWindow().toSimpleString()}`;
-    // }
-
-    menu.push([
-      "About",
-      () => {
-        this.viewAbout();
-      },
-    ]);
-    menu.push([
-      "View Source",
-      () => {
-        this.viewSource();
-      },
-    ]);
-    menu.push([
-      "Reset",
-      () => {
-        this.resetAll();
-      },
-    ]);
+    // let sidebarClass = this.state.isHamburgerMenuOpen ? styles.sidebarVis : stules
 
     return (
       <div>
@@ -291,7 +254,7 @@ class SocialApp extends React.Component {
             X
           </div>
           <OverlayBox
-            item={overlay_item}
+            item={overlayItem}
             emitClose={() => {
               this.closeOverlay();
             }}
@@ -415,17 +378,24 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" size="100px" minSize="100px">
+        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" size="10%">
           <BrunelMenu
+            setOverlay={this.setOverlay}
+            clickReset={() => {
+              this.resetAll();
+            }}
+            clickSource={() => {
+              this.viewSource();
+            }}
             emitClose={() => {
               this.setState({ isHamburgerMenuOpen: false });
             }}
-            items={menu}
           />
         </SlidingPanel>
 
         {/* The social graph itself */}
-        <div className={styles.graphContainer}>
+
+        <div className={graphContainerClass}>
           <SocialGraph
             social={this.state.social}
             selected={selected}
