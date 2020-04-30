@@ -215,6 +215,77 @@ class SearchBar extends React.Component {
     return !(this.state.value && this.state.value.length > 0);
   }
 
+  isSearchingComponent() {
+    return (
+      <div className={styles.searchContainer}>
+        <div className={styles.resultContainer}>
+          <div
+            className={styles.closeResultButton}
+            onClick={() => {
+              this.stopSearch();
+            }}
+          >
+            X
+          </div>
+          <div className={styles.searchPending}>
+            <div>Searching for &quot;{this.state.searching}&quot;...</div>
+            <div style={{ display: "inline-block" }}>
+              <Spinner name="ball-grid-pulse" color="green" fadeIn="none" />
+            </div>
+          </div>
+          <div
+            className={styles.closeResultButton}
+            onClick={() => {
+              this.stopSearch();
+            }}
+          >
+            X
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  isSuggestingComponent() {
+    return (
+      <div className={styles.searchContainer}>
+        <div className={styles.resultContainer}>
+          <div className={styles.searchResult}>
+            <SearchResults results={this.state.suggestions} />
+          </div>
+          <div
+            className={styles.closeResultButton}
+            onClick={() => {
+              this.setState({ suggestions: null });
+            }}
+          >
+            X
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  resultsComponent() {
+    return (
+      <div className={styles.searchContainer}>
+        <div className={styles.resultContainer}>
+          <div className={styles.searchResult}>
+            <SearchResults results={this.state.results} />
+          </div>
+          <div
+            className={styles.closeResultButton}
+            onClick={() => {
+              this.setState({ results: null });
+            }}
+          >
+            X
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     let button_style = styles.searchButton;
 
@@ -249,84 +320,9 @@ class SearchBar extends React.Component {
             <div className={styles.magnifier}>⚲</div>
           </div>
         </div>
-        {this.isSearching() ? (
-          <div className={styles.searchContainer}>
-            <div className={styles.resultContainer}>
-              <div
-                className={styles.closeResultButton}
-                onClick={() => {
-                  this.stopSearch();
-                }}
-              >
-                X
-              </div>
-              <div className={styles.searchPending}>
-                <div>Searching for &quot;{this.state.searching}&quot;...</div>
-                <div style={{ display: "inline-block" }}>
-                  <Spinner name="ball-grid-pulse" color="green" fadeIn="none" />
-                </div>
-              </div>
-              <div
-                className={styles.closeResultButton}
-                onClick={() => {
-                  this.stopSearch();
-                }}
-              >
-                X
-              </div>
-            </div>
-          </div>
-        ) : null}
-        {this.isSuggesting() ? (
-          <div className={styles.searchContainer}>
-            <div className={styles.resultContainer}>
-              <div
-                className={styles.closeResultButton}
-                onClick={() => {
-                  this.setState({ suggestions: null });
-                }}
-              >
-                X
-              </div>
-              <div className={styles.searchResult}>
-                <SearchResults results={this.state.suggestions} />
-              </div>
-              <div
-                className={styles.closeResultButton}
-                onClick={() => {
-                  this.setState({ suggestions: null });
-                }}
-              >
-                X
-              </div>
-            </div>
-          </div>
-        ) : null}
-        {this.hasResults() ? (
-          <div className={styles.searchContainer}>
-            <div className={styles.resultContainer}>
-              <div
-                className={styles.closeResultButton}
-                onClick={() => {
-                  this.setState({ results: null });
-                }}
-              >
-                X
-              </div>
-              <div className={styles.searchResult}>
-                <SearchResults results={this.state.results} />
-              </div>
-              <div
-                className={styles.closeResultButton}
-                onClick={() => {
-                  this.setState({ results: null });
-                }}
-              >
-                X
-              </div>
-            </div>
-          </div>
-        ) : null}
+        {this.isSearching() ? this.isSearchingComponent() : null}
+        {this.isSuggesting() ? this.isSuggestingComponent() : null}
+        {this.hasResults() ? this.resultsComponent() : null}
       </div>
     );
   }
