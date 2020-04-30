@@ -24,18 +24,6 @@ class NewTimeline extends React.Component {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
     };
-
-    this.objectStyle = {
-      backgroundColor: "#808080",
-      selectedBgColor: "#008080",
-      color: "white",
-      borderColor: "#808080",
-      borderStyle: "solid",
-      fontSize: "14px",
-      fontFamily: "serif",
-      borderWidth: 1,
-      borderRadius: 0,
-    };
   }
 
   setFilter(id, name) {
@@ -60,13 +48,23 @@ class NewTimeline extends React.Component {
   itemRenderer({ item, timelineContext, itemContext, getItemProps, getResizeProps }) {
     const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 
+    const background = itemContext.selected ? (itemContext.dragging ? "#008080" : "#008080") : "#808080";
+    const border = itemContext.resizing ? "#008080" : "#808080"
+
     return (
       <div
+        // This expands getItemProps here
         {...getItemProps({
+          style: {
+            background,
+            border,
+            borderStyle: "solid",
+            fontSize: "14px",
+            fontFamily: "serif",
+          },
           onMouseDown: () => {
             this.setFilter(item["project_id"], item["title"]);
           },
-          style: this.objectStyle,
         })}
       >
         {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
@@ -104,8 +102,15 @@ class NewTimeline extends React.Component {
 
     const groups = [{ id: 1, title: "Projects" }];
 
+    // const selectedStyle = {
+    //         background: '#FA8FAB',
+    //         border: '1px solid #ff9800',
+    //         zIndex: 82
+    //         }
+
     return (
       <Timeline
+        selected={null}
         groups={groups}
         items={timeline_items}
         sidebarWidth={0}
