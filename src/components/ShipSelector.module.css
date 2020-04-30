@@ -1,8 +1,3 @@
-/* @font-face {
-    font-family: "Playfair Display SC";
-    src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Regular.ttf) format("truetype")
-} */
-
 @font-face {
     font-family: "Playfair Display SC";
     src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Regular.ttf) format("truetype")
@@ -13,18 +8,12 @@
     src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype")
 }
 
-
-@font-face {
-    font-family: "Cinzel";
-    src: local("Cinzel"), url(../fonts/Cinzel-Bold.ttf) format("truetype")
-}
-
 .button {
   display: inline-block;
   background-color: white;
   font-family: "Playfair Display SC";
   /* font-family: "Cinzel"; */
-  font-size: medium;
+  font-size: x-large;
   border-radius: 0px;
   color: black;
   border: 2px solid #808080;

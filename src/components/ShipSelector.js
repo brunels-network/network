@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import DefaultButton from "./DefaultButton";
+import styles from "./ShipSelector.module.css"
 
 class ShipSelector extends React.Component {
   constructor(props) {
@@ -28,15 +28,11 @@ class ShipSelector extends React.Component {
   render() {
     let projects = this.props.projects;
 
-    let output = projects.values().map((item) => {
+    let output = projects.values().map((item, index) => {
       return (
-        <DefaultButton
-          key={item.getName()}
-        //   style={{ position: "relative", maxWidth: "80%" }}
-          onClick={() => this.setFilter(item)}
-        >
+        <button href="#" key={index} className={styles.button} onClick={() => this.setFilter(item)}>
           {item.getName()}
-        </DefaultButton>
+        </button>
       );
     });
 
