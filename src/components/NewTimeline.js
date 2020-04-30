@@ -5,31 +5,36 @@ import moment from "moment";
 import Timeline, { TimelineHeaders, SidebarHeader, DateHeader } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
 
-// import generateFakeData from "./generate-fake-data";
-
-// var keys = {
-//   groupIdKey: "id",
-//   groupTitleKey: "title",
-//   groupRightTitleKey: "rightTitle",
-//   itemIdKey: "id",
-//   itemTitleKey: "title",
-//   itemDivTitleKey: "title",
-//   itemGroupKey: "group",
-//   itemTimeStartKey: "start",
-//   itemTimeEndKey: "end",
-//   groupLabelKey: "title",
-// };
-
 class NewTimeline extends React.Component {
   constructor(props) {
     super(props);
 
     this.setFilter = this.setFilter.bind(this);
+    this.itemRenderer = this.itemRenderer.bind(this);
 
     this.state = {
       defaultTimeStart: moment("1836-01-01"),
       defaultTimeEnd: moment("1858-12-31"),
       lastShip: null,
+    };
+
+    this.textStyle = {
+      overflow: "hidden",
+      paddingLeft: 3,
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+    };
+
+    this.objectStyle = {
+      backgroundColor: "#808080",
+      selectedBgColor: "#008080",
+      color: "white",
+      borderColor: "#808080",
+      borderStyle: "solid",
+      fontSize: "14px",
+      fontFamily: "serif",
+      borderWidth: 1,
+      borderRadius: 0,
     };
   }
 
@@ -49,7 +54,28 @@ class NewTimeline extends React.Component {
   }
 
   openOverview() {
-      return;
+    return;
+  }
+
+  itemRenderer({ item, timelineContext, itemContext, getItemProps, getResizeProps }) {
+    const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
+
+    return (
+      <div
+        {...getItemProps({
+          onMouseDown: () => {
+            this.setFilter(item["project_id"], item["title"]);
+          },
+          style: this.objectStyle,
+        })}
+      >
+        {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
+
+        <div style={this.textStyle}>{itemContext.title}</div>
+
+        {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
+      </div>
+    );
   }
 
   render() {
@@ -61,18 +87,17 @@ class NewTimeline extends React.Component {
       item["id"] = index;
       item["group"] = 1;
 
-      item["itemProps"] = {
-        // these optional attributes are passed to the root <div /> of each item as <div {...itemProps} />
-        "data-custom-attribute": "Random content",
-        "aria-hidden": true,
-        onMouseDown: () => {
-          this.setFilter(item["project_id"], item["title"]);
-        },
-        className: "weekend",
-        style: {
-          //   background: "fuchsia",
-        },
-      };
+      //   item["color"] = "rgb(158, 14, 206)";
+      //   item["selectedBgColor"] = "rgba(225, 166, 244, 1)";
+      //   item["bgColor"] = "rgba(225, 166, 244, 0.6)";
+
+      //   item["itemProps"] = {
+      //     "aria-hidden": true,
+      //     onMouseDown: () => {
+      //       this.setFilter(item["project_id"], item["title"]);
+      //     },
+      //     className: "weekend",
+      //   };
 
       return item;
     });
@@ -83,6 +108,7 @@ class NewTimeline extends React.Component {
       <Timeline
         groups={groups}
         items={timeline_items}
+        sidebarWidth={0}
         itemTouchSendsClick={true}
         stackItems
         lineHeight={60}
@@ -92,17 +118,12 @@ class NewTimeline extends React.Component {
         canResize={false}
         traditionalZoom={true}
         timeSteps={{ year: 1 }}
+        itemRenderer={this.itemRenderer}
         defaultTimeStart={this.state.defaultTimeStart}
         defaultTimeEnd={this.state.defaultTimeEnd}
       >
         <TimelineHeaders className="sticky">
-          <SidebarHeader>
-            {({ getRootProps }) => {
-              return <div {...getRootProps()} />;
-            }}
-          </SidebarHeader>
-          <DateHeader unit="primaryHeader" />
-          <DateHeader />
+          <DateHeader style={{ color: "#008080", backgroundColor: "#808080", fontFamily: "serif" }} />
         </TimelineHeaders>
       </Timeline>
     );

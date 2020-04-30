@@ -53,14 +53,14 @@
 .tab[aria-selected="false"]:hover,
 .tab:focus {
   outline: 0;
-  background-color: rgb(3, 99, 32);
+  background-color:#8d8c8c;
   color: white;
 }
 
 .tab[aria-selected="true"] {
   position: relative;
-  background-color: rgb(3, 99, 32);
-  border-bottom: 5px solid rgb(100, 255, 159);
+  background-color: #003366;
+  border-bottom: 5px solid white;
   color: white;
 }
 
@@ -85,6 +85,6 @@
 .tabPanel {
   background-color: inherit;
   width: 100%;
-  height: 200px;
+  height: 100px;
   margin: 5px;
 }

@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 
-import TimeLineView from "./TimeLineView";
 import NewTimeline from "./NewTimeline";
 
 import styles from "./TimeLineBox.module.css";
@@ -80,27 +79,13 @@ class TimeLineBox extends Component {
             <Tab className={styles.tab} key="items" tabFor="items">
               Timeline
             </Tab>
-            <Tab className={styles.tab} key="projects" tabFor="projects">
+            {/* <Tab className={styles.tab} key="projects" tabFor="projects">
               Projects
-            </Tab>
+            </Tab> */}
             <Tab className={styles.tab} key="analysis" tabFor="analysis">
               Analysis
             </Tab>
           </TabList>
-
-          <TabPanel key="projects" tabId="projects" className={styles.tabPanel}>
-            <NewTimeline
-              projects={this.props.projects}
-              onClick={this.props.shipSelect}
-              resetFilters={this.props.resetFilters}
-            />
-          </TabPanel>
-
-          <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
-            <div className={styles.centerContainer}>
-              <p>This will contain tools and graphs for temporal social network analysis.</p>
-            </div>
-          </TabPanel>
 
           <TabPanel key="items" tabId="items" className={styles.tabPanel}>
             <NewTimeline
@@ -108,6 +93,20 @@ class TimeLineBox extends Component {
               onClick={this.props.shipSelect}
               resetFilters={this.props.resetFilters}
             />
+          </TabPanel>
+
+          {/* <TabPanel key="projects" tabId="projects" className={styles.tabPanel}>
+            <NewTimeline
+              projects={this.props.projects}
+              onClick={this.props.shipSelect}
+              resetFilters={this.props.resetFilters}
+            />
+          </TabPanel> */}
+
+          <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
+            <div className={styles.centerContainer}>
+              <p>This will contain tools and graphs for temporal social network analysis.</p>
+            </div>
           </TabPanel>
         </Tabs>
       </div>

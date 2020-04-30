@@ -279,7 +279,7 @@ class SocialApp extends React.Component {
           }}
         />
 
-        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom">
+        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" size="20%">
           <span
             className={styles.closePanelButton}
             onClick={() => {
