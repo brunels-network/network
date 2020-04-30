@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import moment from "moment";
 
-import Timeline, { TimelineHeaders, SidebarHeader, DateHeader } from "react-calendar-timeline";
+import Timeline, { TimelineHeaders, DateHeader } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
 
 class NewTimeline extends React.Component {
@@ -23,6 +23,14 @@ class NewTimeline extends React.Component {
       paddingLeft: 3,
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
+    };
+
+    this.dateHeaderStyle = {
+      color: "#008080",
+      backgroundColor: "#008080",
+      fontFamily: "serif",
+      borderLeft: "#008080",
+      borderBottom: "#008080",
     };
   }
 
@@ -45,15 +53,14 @@ class NewTimeline extends React.Component {
     return;
   }
 
-  itemRenderer({ item, timelineContext, itemContext, getItemProps, getResizeProps }) {
+  itemRenderer({ item, itemContext, getItemProps, getResizeProps }) {
     const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 
     const background = itemContext.selected ? (itemContext.dragging ? "#008080" : "#008080") : "#808080";
-    const border = itemContext.resizing ? "#008080" : "#808080"
+    const border = itemContext.resizing ? "#008080" : "#808080";
 
     return (
       <div
-        // This expands getItemProps here
         {...getItemProps({
           style: {
             background,
@@ -61,6 +68,7 @@ class NewTimeline extends React.Component {
             borderStyle: "solid",
             fontSize: "14px",
             fontFamily: "serif",
+            borderWidth: 0,
           },
           onMouseDown: () => {
             this.setFilter(item["project_id"], item["title"]);
@@ -85,32 +93,13 @@ class NewTimeline extends React.Component {
       item["id"] = index;
       item["group"] = 1;
 
-      //   item["color"] = "rgb(158, 14, 206)";
-      //   item["selectedBgColor"] = "rgba(225, 166, 244, 1)";
-      //   item["bgColor"] = "rgba(225, 166, 244, 0.6)";
-
-      //   item["itemProps"] = {
-      //     "aria-hidden": true,
-      //     onMouseDown: () => {
-      //       this.setFilter(item["project_id"], item["title"]);
-      //     },
-      //     className: "weekend",
-      //   };
-
       return item;
     });
 
     const groups = [{ id: 1, title: "Projects" }];
 
-    // const selectedStyle = {
-    //         background: '#FA8FAB',
-    //         border: '1px solid #ff9800',
-    //         zIndex: 82
-    //         }
-
     return (
       <Timeline
-        selected={null}
         groups={groups}
         items={timeline_items}
         sidebarWidth={0}
@@ -128,7 +117,7 @@ class NewTimeline extends React.Component {
         defaultTimeEnd={this.state.defaultTimeEnd}
       >
         <TimelineHeaders className="sticky">
-          <DateHeader style={{ color: "#008080", backgroundColor: "#808080", fontFamily: "serif" }} />
+          <DateHeader unit="primaryHeader" style={{ color: "red", backgroundColor: "#008080", fontFamily: "serif" }} />
         </TimelineHeaders>
       </Timeline>
     );
@@ -139,9 +128,6 @@ NewTimeline.propTypes = {
   projects: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   resetFilters: PropTypes.func.isRequired,
-  //   emitWindowChanged: PropTypes.func.isRequired,
-  //   getItems: PropTypes.array,
-  //   is_active: PropTypes.bool,
 };
 
 export default NewTimeline;
