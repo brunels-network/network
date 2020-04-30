@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "Playfair Display";
+  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Playfair Display SemiBold";
+  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-SemiBold.ttf) format("truetype");
+}
+
 .container {
   padding: 0px;
   display: flex;
@@ -14,8 +24,8 @@
 }
 
 .node {
-  stroke: black;
-  stroke-width: 0.1%;
+  stroke: white;
+  stroke-width: 1px;
 }
 
 .node.highlight {
@@ -40,10 +50,11 @@
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
-
-  font-size: xx-small;
+  font-family: "Playfair Display SemiBold";
+  padding-left: 1cm;
+  font-size: small;
   stroke-width: 0;
-  fill: black;
+  fill: white;
 }
 
 .node_text.highlight {

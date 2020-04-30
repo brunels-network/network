@@ -80,7 +80,7 @@ class SearchBar extends React.Component {
 
     if (items) {
       let results = items.map((item, index) => {
-        let name = item.getName();
+        const name = item.getName();
         return (
           <DefaultButton
             key={name.concat("_", index)}
@@ -125,7 +125,7 @@ class SearchBar extends React.Component {
 
     if (items) {
       let results = items.map((item, index) => {
-        let name = item.getName();
+        const name = item.getName();
         return (
           <DefaultButton
             key={name.concat("_", index)}
@@ -219,14 +219,6 @@ class SearchBar extends React.Component {
     return (
       <div className={styles.searchContainer}>
         <div className={styles.resultContainer}>
-          <div
-            className={styles.closeResultButton}
-            onClick={() => {
-              this.stopSearch();
-            }}
-          >
-            X
-          </div>
           <div className={styles.searchPending}>
             <div>Searching for &quot;{this.state.searching}&quot;...</div>
             <div style={{ display: "inline-block" }}>

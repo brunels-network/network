@@ -20,7 +20,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: black;
 }
 
 .graphContainerMenuClosed {
@@ -30,7 +30,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: #222222;
   transition: left 0.4s
 }
 
@@ -41,7 +41,7 @@
   left: 100px;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: #222222;
   transition: left 0.4s
 }
 

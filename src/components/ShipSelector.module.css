@@ -10,13 +10,13 @@
 
 .button {
   display: inline-block;
-  background-color: white;
+  background-color: #9B1C31;
   font-family: "Playfair Display SC";
   /* font-family: "Cinzel"; */
   font-size: x-large;
   border-radius: 0px;
-  color: black;
-  border: 2px solid #808080;
+  color: white;
+  border: 1px solid white;
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
@@ -30,8 +30,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .button:hover {
-    background-color:#9B1C31;
+    background-color:white;
     opacity: 1;
-    color: white;
+    color: #444444;
   }
 }

@@ -15,12 +15,12 @@
 }
 
 .resultContainer {
-  background-color: white;
+  background-color: black;
   width: 80%;
   max-height: 200px;
   overflow-y: auto;
   border: 2px;
-  border-color: green;
+  border-color: black;
   display: flex;
   flex-direction: row;
 }
@@ -35,13 +35,13 @@
 }
 
 .hamburgerButton {
-  height: 35px;
+  height: 40px;
   width: 1.5em;
-  font-size: x-large;
+  font-size: xx-large;
   padding: 0;
   border: 0;
-  color: black;
-  vertical-align: middle;
+  color: white;
+  vertical-align: top;
   background: transparent;
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
@@ -69,9 +69,9 @@
 }
 
 .searchButton {
-  background-color: #7A888C;
+  background-color: #222222;
   color: white;
-  height: 35px;
+  height: 40px;
   width: 35px;
   -webkit-transition-duration: 0.2s;
   transition-duration: 0.2s;
