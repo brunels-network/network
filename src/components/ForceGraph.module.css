@@ -29,7 +29,7 @@
 }
 
 .node.highlight {
-  fill: cyan;
+  fill: #f6edd9;
 }
 
 .link {
@@ -58,8 +58,8 @@
 }
 
 .node_text.highlight {
-  stroke: black;
-  stroke-width: 1;
-  fill: black;
+  /* fill: #738566; */
+  /* fill: #07899d; */
+  fill: #ffd28b;
   font-size: large;
 }
