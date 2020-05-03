@@ -5,7 +5,7 @@ __all__ = ["getDefaultImporters", "extractPersonName",
            "importSources", "importType", "importNotes",
            "importProject", "importSource", "importBiography",
            "importEdgeSources", "importSharedLinks",
-           "importProjectDates"]
+           "importProjectDates", "importWeights"]
 
 
 def _clean_string(s):
@@ -138,6 +138,7 @@ def extractPersonName(name):
 def importProjectDates(node, importers=None):
     from ._daterange import DateRange as _DateRange
     from ._daterange import Date as _Date
+    import re as _re
 
     try:
         dates = str(node["Date (joined project: left project)"])
@@ -146,8 +147,6 @@ def importProjectDates(node, importers=None):
 
     if dates is None or dates == "0":
         return _DateRange.null()
-
-    import re as _re
 
     pattern = _re.compile(r":")
     raw = dates
@@ -167,7 +166,10 @@ def importProjectDates(node, importers=None):
         print(node)
         return _DateRange.null()
 
+
 def importPerson(node, project, importers=None):
+    from ._person import Person as _Person
+
     try:
         extractPersonName = importers["extractPersonName"]
     except KeyError:
@@ -203,10 +205,12 @@ def importPerson(node, project, importers=None):
     try:
         name = str(node.Label)
         state = extractPersonName(name)
+        # TODO - just make this a defaultdict(dict) ?
         state["positions"] = {}
         state["sources"] = {}
         state["affiliations"] = {}
         state["notes"] = {}
+        state["weight"] = {}
 
         state["positions"][pid] = importPositions(node, importers=importers)
         state["sources"][pid] = importSources(node, importers=importers)
@@ -215,8 +219,8 @@ def importPerson(node, project, importers=None):
         state["notes"][pid] = importNotes(node, importers=importers)
         state["projects"] = {pid: importProjectDates(node,
                                                      importers=importers)}
+        state["weight"][pid] = importWeights(node, importers=importers)
 
-        from ._person import Person as _Person
         return _Person(state)
     except Exception as e:
         print(f"Cannot load Person\n{node}\nError = {e}\n")
@@ -248,6 +252,11 @@ def importBusiness(node, project, importers=None):
         importNotes = importers["importNotes"]
     except KeyError:
         importNotes = importNotes
+
+    try:
+        importWeights = importers["importWeights"]
+    except KeyError:
+        importWeights = importWeights
 
     from ._daterange import DateRange as _DateRange
 
@@ -519,11 +528,10 @@ def extractSourceName(source):
 
 
 def importSources(node, importers=None):
-    sources = importers["sources"]
-
-    result = []
-
     import re as _re
+
+    sources = importers["sources"]
+    result = []
 
     pattern = _re.compile(r":")
 
@@ -535,6 +543,18 @@ def importSources(node, importers=None):
             result.append(source.getID())
 
     return result
+
+
+def importWeights(node, importers=None):
+    """ Import weights of each person from file
+
+        Args:
+            node (Pandas.Dataseries): Dataseries containing data
+            importers (dict, default=None): Dictionary of importer functions
+        Returns:
+            list: List of weights
+    """
+    return int(node["Weight"])
 
 
 def importNotes(node, importers=None, isEdge=False):
@@ -557,19 +577,20 @@ def importType(edge, importers=None):
 
 
 def importSource(data, importers=None):
+    from ._source import Source as _Source
+
     props = {"name": _clean_string(data.Source),
              "description": _clean_string(data.Description)}
 
-    from ._source import Source as _Source
     return _Source(props)
 
 
 def importProject(data, importers=None):
+    from ._project import Project as _Project
+
     props = {"name": _clean_string(data.Name),
              "duration": _get_daterange(data.Duration),
              "url": _get_url(data.URL)}
-
-    from ._project import Project as _Project
 
     return _Project(props)
 
@@ -585,7 +606,7 @@ def importBiography(data, importers=None):
 
     try:
         extractPersonName = importers["extractPersonName"]
-    except Exception:
+    except KeyError:
         extractPersonName = extractPersonName
 
     from ._person import Person as _Person
@@ -645,4 +666,5 @@ def getDefaultImporters():
             "importBiography": importBiography,
             "importEdgeSources": importEdgeSources,
             "importSharedLinks": importSharedLinks,
-            "importProjectDates": importProjectDates}
+            "importProjectDates": importProjectDates,
+            "importWeights": importWeights}

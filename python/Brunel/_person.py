@@ -57,12 +57,21 @@ class Person:
             "gender": None,
             "notes": [],
             "orig_name": None,
+            "weight": 1
         }
 
         self.setState(props)
 
     def merge(self, other):
+        """ Merge two people together
+
+            Args:
+                other (Person): Person to merge with this Person object
+            Returns:
+                Person: New Person object created from combined states
+        """
         import copy as _copy
+
         state = _copy.copy(self.state)
 
         _mergeNames(state, other.state)
@@ -219,9 +228,9 @@ class Person:
         self.state["gender"] = _setState(state, "gender")
         self.state["orig_name"] = _setState(state, "orig_name")
         self.state["notes"] = _setState(state, "notes", [])
+        self.state["weight"] = _setState(state, "weight")
 
-        if self.state["orig_name"] == "None" or \
-           self.state["orig_name"] is None:
+        if self.state["orig_name"] == "None" or self.state["orig_name"] is None:
             raise ValueError(f"No name for {self}?")
 
     def toDry(self):

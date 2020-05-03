@@ -2,19 +2,33 @@
 __all__ = ["Social"]
 
 
-def _read_data(data):
+def _read_data(data_filepath):
+    """ Read data from file
+        Args:
+            data (str): Filepath for data file
+        Returns:
+            pandas.DataFrame
+    """
     import pandas as _pd
 
     sep = ","
 
-    if data.endswith(".tsv"):
+    if data_filepath.endswith(".tsv"):
         sep = "\t"
 
-    return _pd.read_csv(data, sep=sep)
+    return _pd.read_csv(data_filepath, sep=sep)
 
 
 def _get_importers(importers):
+    """ Get importing functions for each process
+
+        Args:
+            importers (function): Functon allowing import of data
+        Returns:
+            dict: Dictionary of importer functions
+    """
     from ._importer import getDefaultImporters as _getDefaultImporters
+
     defaults = _getDefaultImporters()
 
     if importers is None:
@@ -28,6 +42,14 @@ def _get_importers(importers):
 
 
 def _get_modifiers(modifiers, name=None):
+    """ Get modifier functions for each type
+
+        Args:
+            modifiers (dict): Dictionary of modifier functions
+            name (str): Name of type
+        Return:
+            dict: Dictionary of modifier functions
+    """
     if modifiers is None:
         modifiers = {}
     elif name is not None:
@@ -111,58 +133,105 @@ class Social:
         else:
             return id
 
-    def load_projects(self, projects, importers=None, modifiers=None):
-        data = _read_data(projects)
+    def load_projects(self, projects_filepath, importers=None, modifiers=None):
+        """ Load in projects from file
 
+            Args:
+                projects_filepath (str): Path to file holding sources
+                importers (dict, default=None): Dictionary of importer functions
+                modifiers (dict, default=None): Dictionary of modifier functions
+            Returns:
+                None
+        """
+        data = _read_data(projects_filepath)
+        
         importers = _get_importers(importers)
         modifiers = _get_modifiers(modifiers, "project")
 
         projects = self.projects()
 
         for _, project in data.iterrows():
-            project = importers["importProject"](project, importers=importers)
+            # Get the import function
+            import_project = importers["importProject"]
+
+            project = import_project(project, importers=importers)
+
             if project:
                 project = modifiers["project"](project)
                 projects.add(project)
 
-    def load_sources(self, sources, importers=None, modifiers=None):
-        data = _read_data(sources)
+    def load_sources(self, sources_filepath, importers=None, modifiers=None):
+        """ Load in sources from file
 
+            Args:
+                sources_filepath (str): Path to file holding sources
+                importers (dict, default=None): Dictionary of importer functions
+                modifiers (dict, default=None): Dictionary of modifier functions
+            Returns:
+                None
+        """
+        data = _read_data(sources_filepath)
+
+        # Get the impoerter and modifier functions
         importers = _get_importers(importers)
         modifiers = _get_modifiers(modifiers, "source")
 
         sources = self.sources()
 
+        # Get the function from the dictionary
+        import_source = importers["importSource"]
+
         for _, source in data.iterrows():
-            source = importers["importSource"](source, importers=importers)
+            source = import_source(source, importers=importers)
             if source:
-                source = modifiers["source"](source)
+                source = modifiers["source"](source) 
                 sources.add(source)
 
-    def load_biographies(self, bios, importers=None, modifiers=None):
-        bios = _read_data(bios)
+    def load_biographies(self, bios_filepath, importers=None, modifiers=None):
+        """ Load in biographies from file
+
+            Args:
+                bios_filepath (str): Path to file holding bios
+                importers (dict, default=None): Dictionary of importer functions
+                modifiers (dict, default=None): Dictionary of modifier functions
+            Returns:
+                None
+        """
+        bios = _read_data(bios_filepath)
 
         importers = _get_importers(importers)
         importers["social"] = self
         modifiers = _get_modifiers(modifiers, "biography")
 
         biographies = self.biographies()
+        import_bio = importers["importBiography"]
 
         for _, bio in bios.iterrows():
-            node, biography = importers["importBiography"](bio,
-                                                           importers=importers)
+            node, biography = import_bio(bio, importers=importers)
 
             if biography:
                 biography = modifiers["biography"](biography)
                 biographies.add(node, biography)
 
-    def load_graph(self, project, nodes, edges,
-                   importers=None, modifiers=None):
+    def load_graph(self, project, nodes_filepath, edges_filepath, importers=None, modifiers=None):
+        """ Load graph data in from file
+
+            Args:
+                project (str): Name of project
+                nodes_filepath (str): Path of nodes data file
+                edges_filepath (str): Path of edges data file
+                importers (dict, default=None): Dictionary of importer functions
+                modifiers (dict, default=None): Dictionary of modifier functions
+            Returns:
+                None
+        """
         project = self.projects().find(project)
 
-        nodes = _read_data(nodes)
-        edges = _read_data(edges)
+        # Read in the data from file
+        nodes = _read_data(nodes_filepath)
+        edges = _read_data(edges_filepath)
 
+        # Get the importer and modifier functions
         importers = _get_importers(importers)
         modifiers = _get_modifiers(modifiers)
 
@@ -177,29 +246,44 @@ class Social:
         importers["sources"] = self.sources()
         importers["notes"] = self.notes()
 
+        # Assign the functions from the importer dictionary
+        # for easier reading
+        is_person = importers["isPerson"]
+        is_business = importers["isBusiness"]
+        import_person = importers["importPerson"]
+        import_business = importers["importBusiness"]
+        import_connection = importers["importConnection"]
+
+        # Loop over the Pandas Dataframe to create nodes
         for _, node in nodes.iterrows():
-            if importers["isPerson"](node, importers=importers):
-                person = importers["importPerson"](node, project,
-                                                   importers=importers)
+            if is_person(node, importers=importers):
+                person = import_person(node, project, importers=importers)
+                
                 if person:
+                    # Use the function from the modifiers dict to process this person
                     person = modifiers["person"](person)
                     person = people.add(person)
                     ids[node.ID] = person.getID()
-            elif importers["isBusiness"](node, importers=importers):
-                business = importers["importBusiness"](node, project,
-                                                       importers=importers)
+            elif is_business(node, importers=importers):
+                business = import_business(node, project, importers=importers)
+                
                 if business:
                     business = modifiers["business"](business)
                     business = businesses.add(business)
                     ids[node.ID] = business.getID()
 
+        # Look over dataframe to import connections between nodes
         for _, edge in edges.iterrows():
-            connection = importers["importConnection"](edge, project,
-                                                       mapping=ids,
-                                                       importers=importers)
+            connection = import_connection(edge, project, mapping=ids, importers=importers)
+            
             if connection:
                 connection = modifiers["connection"](connection)
                 connections.add(connection)
 
     def toDry(self):
+        """ Return the state of this object
+
+            Returns:
+                dict: Dictionary of state ready for "drying"
+        """
         return self.state
