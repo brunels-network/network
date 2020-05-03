@@ -80,6 +80,7 @@ class Person {
       gender: null,
       notes: [],
       orig_name: null,
+      weight: 1,
     };
 
     this.setState(props);
@@ -238,6 +239,7 @@ class Person {
       this.state.gender = setState(state.gender);
       this.state.orig_name = setState(state.orig_name);
       this.state.notes = setState(state.notes, []);
+      this.state.weight = setState(state.weight);
 
       if (!this.state.orig_name || this.state.orig_name === "None") {
         throw new ValueError(`No name for ${this}`);
@@ -370,6 +372,17 @@ class Person {
     }
   }
 
+  getWeight() {
+    // Get key from weight
+    if (this.state.weight) {
+      const key = Object.keys(this.state.weight);
+      return this.state.weight[key];
+    } else {
+      console.error("No weight for ", this.getName(), this.getID());
+      return 0;
+    }
+  }
+
   getNode(is_anchor = false) {
     let node = {
       id: this.getID(),
@@ -379,15 +392,8 @@ class Person {
       shape: "circle",
     };
 
-    let weight = 10.0;
-
-    if (weight < 5.0) {
-      weight = 5.0;
-    } else if (weight > 20.0) {
-      weight = 20.0;
-    }
-
-    node["size"] = weight;
+    // Change the weights otherwise there's a huge differnce in scale
+    node["size"] = 0.5 * this.getWeight();
 
     let keys = Object.keys(this.state.projects);
 

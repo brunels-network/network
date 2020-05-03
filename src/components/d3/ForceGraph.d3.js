@@ -277,6 +277,9 @@ class ForceGraphD3 {
     this._target_decay = 0.4;
     this._target_alpha = 0.3;
 
+    // this.updateGraph = this.updateGraph.bind(this);
+    // this.update = this.update.bind(this);
+
     this.update(props);
   }
 
@@ -285,6 +288,7 @@ class ForceGraphD3 {
     let h = this.state.height;
 
     this.state.social = social;
+    // this.setState({ social: social });
 
     if (!w || !h) {
       return;
@@ -296,16 +300,17 @@ class ForceGraphD3 {
       graph = social.getGraph();
     }
 
-    // the social object will cache the 'getGraph' result, meaning
+    // The social object will cache the 'getGraph' result, meaning
     // that any change in this object signals that the graph needs
     // to be redrawn
     if (graph !== this.state.graph) {
       //save the cached graph
       this.state.graph = graph;
+      //   this.setState({ graph: graph });
 
-      //this view needs to clone its own copy of the graph, as
-      //D3 will update the graph object. We need to clone in case
-      //two ForceGraph.d3 views are viewing the same Social graph
+      // This view needs to clone its own copy of the graph, as
+      // D3 will update the graph object. We need to clone in case
+      // two ForceGraph.d3 views are viewing the same Social graph
       graph = lodash.cloneDeep(this.state.graph);
 
       // need to update IDs so that the edges refer to the index
@@ -378,17 +383,21 @@ class ForceGraphD3 {
     }
 
     let hasWidth = Object.prototype.hasOwnProperty.call(props, "width");
+
     if (hasWidth) {
       if (this.state.width !== props.width) {
         this.state.width = props.width;
+        // this.setState({ width: props.width });
         size_changed = true;
       }
     }
 
     let hasHeight = Object.prototype.hasOwnProperty.call(props, "height");
+
     if (hasHeight) {
       if (this.state.height !== props.height) {
         this.state.height = props.height;
+        // this.setState({ height: props.height });
         size_changed = true;
       }
     }
@@ -402,8 +411,10 @@ class ForceGraphD3 {
     if (hasSignalClicked) {
       if (this.state.signalClicked) {
         this.state.signalClicked = props.signalClicked;
+        // this.setState({ signalClicked: props.signalClicked });
       } else {
         this.state.signalClicked = _null_function;
+        // this.setState({ signalClicked: _null_function });
       }
     }
 
@@ -412,8 +423,10 @@ class ForceGraphD3 {
     if (hasSignalMouseOut) {
       if (this.state.signalMouseOut) {
         this.state.signalMouseOut = props.signalMouseOut;
+        // this.setState({ signalMouseOut: props.signalMouseOut });
       } else {
         this.state.signalMouseOut = _null_function;
+        // this.setState({ signalMouseOut: _null_function });
       }
     }
 
@@ -422,8 +435,10 @@ class ForceGraphD3 {
     if (hasSignalMouseOver) {
       if (this.state.signalMouseOver) {
         this.state.signalMouseOver = props.signalMouseOver;
+        // this.setState({ signalMouseOver: props.signalMouseOver });
       } else {
         this.state.signalMouseOver = _null_function;
+        // this.setState({ signalMouseOver: _null_function });
       }
     }
 
@@ -437,12 +452,14 @@ class ForceGraphD3 {
 
     if (hasSelected) {
       this.state.selected = _resolve(props.selected);
+      //   this.setState({ selected: _resolve(props.selected) });
     }
 
     let hasHighlighted = Object.prototype.hasOwnProperty.call(props, "highlighted");
 
     if (hasHighlighted) {
       this.state.highlighted = _resolve(props.highlighted);
+      //   this.setState({ highlighted: _resolve(props.highlighted) });
     }
   }
 

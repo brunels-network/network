@@ -20,7 +20,7 @@ import ShipTitle from "./components/ShipTitle";
 import Social from "./model/Social";
 
 // Data for import
-import graph_data from "./data.json";
+import graph_data from "./data_weights.json";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
