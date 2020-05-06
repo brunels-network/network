@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import styles from "../ForceGraph.module.css";
 
+import positionGroups from "../../position_groups.json";
+
 function _null_function() {}
 
 function constrain(x, w, r = 20) {
@@ -246,6 +248,7 @@ function _resolve(item) {
 /** The main class that renders the graph in the ForceGraph */
 class ForceGraphD3 {
   constructor(props) {
+    this._updateSimulation = this._updateSimulation.bind(this);
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
     let uid = uuidv4();
@@ -260,7 +263,8 @@ class ForceGraphD3 {
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
       //   Fix the colours here
-      colors: { "J30ea52b:Jd0174de": "#FF0000", anchor: "#FFFFFF", Jd0174de: "#9a9a9a", J30ea52b: "#9f1d35" },
+      //   colors: { "J30ea52b:Jd0174de": "#FF0000", anchor: "#FFFFFF", Jd0174de: "#9a9a9a", J30ea52b: "#9f1d35" },
+      colors: {},
       //   colors: {
       //     color: d3.scaleOrdinal(d3.schemeCategory10),
       //     last_color: -1,
@@ -448,6 +452,9 @@ class ForceGraphD3 {
       this.updateGraph(props.social);
     }
 
+    // We can setup the colours object
+    this.setPositionColors();
+
     let hasSelected = Object.prototype.hasOwnProperty.call(props, "selected");
 
     if (hasSelected) {
@@ -467,30 +474,44 @@ class ForceGraphD3 {
     return `ForceGraphD3-${this.state.uid}`;
   }
 
-  getGroupColor(group) {
-    let color = this.state.colors[group];
+  getPositionColor(positionUID) {
+    let color;
+    if (!positionUID) {
+      color = "blue";
+      console.error("Color in getpost : ", color);
+    } else {
+      console.log(positionUID);
+      //   color = this.state.colors[positionUID.toLowerCase()];
+      color = "blue";
+    }
+    return color;
+  }
 
-    if (!color) {
-      console.error("No color for group : ", group);
-      color = "#FFFFFF";
+  setPositionColors() {
+    // Read all the positions for this graph
+    const namedPositions = this.state.social.getPositions().items();
+
+    let colorTable = {};
+    // Read the positions and colours from a JSON file that can be easily updated
+    // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
+    for (let [position, uid] of Object.entries(namedPositions)) {
+      uid = uid.toLowerCase();
+      let trimPosition = position
+        .replace(/\s/g, "")
+        .toLowerCase()
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+
+      for (let members of Object.values(positionGroups)) {
+        if (members["members"].includes(trimPosition)) {
+          colorTable[uid] = members["color"];
+          break;
+        } else {
+          colorTable[uid] = "blue";
+        }
+      }
     }
 
-    // let color = this.state.colors.group_to_color[group];
-
-    // console.log("Keys : ", Object.keys(this.state.colors.group_to_color))
-
-    // if (!color) {
-    //   this.state.colors.last_color += 1;
-    //   color = this.state.colors.last_color;
-    //   this.state.colors.group_to_color[group] = color;
-    // }
-
-    // console.log("A color : ", color)
-
-    // console.log("From within color array : ", this.state.colors.color(color));
-    // this.state.colors.color(color);
-
-    return color;
+    this.state.colors = colorTable;
   }
 
   _updateNode(data) {
@@ -509,7 +530,18 @@ class ForceGraphD3 {
         return d.id;
       })
       .attr("fill", (d) => {
-        return this.getGroupColor(d.group);
+        let p = d["positions"][d["group"]];
+
+        console.log(p);
+
+        // if (!d["positions"]) {
+        //   console.error("Cannot find positions yahh");
+        return "blue";
+        // } else {
+        //   console.log(p);
+        //   console.log(p[0]);
+        //   return this.getPositionColor(p);
+        // }
       })
       .on("click", handleMouseClick(this))
       .on("mouseover", handleMouseOver(this))

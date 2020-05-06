@@ -48,6 +48,7 @@ class Sources:
         id = source.getID()
 
         if id:
+            print(self.state["registry"])
             if id in self.state["registry"]:
                 raise KeyError(f"Duplicate Source ID {source}")
 
@@ -59,6 +60,7 @@ class Sources:
                 uid = _generate_source_uid()
 
             source.state["id"] = uid
+            # source.state["id"] = {"id": uid, "name": source.getName()}
             self.state["registry"][uid] = source
 
         source._getHook = self._getHook

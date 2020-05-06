@@ -31,7 +31,7 @@ class Projects:
             if len(project) == 0:
                 return None
 
-            # try to find an existing project with this name
+            # Try to find an existing project with this name
             try:
                 return self.getByName(project)
             except Exception:
@@ -97,8 +97,7 @@ class Projects:
 
         keys = "', '".join(self._names.keys())
 
-        raise KeyError(f"No project matches '{value}'. Available projects " +
-                       f"are '{keys}'")
+        raise KeyError(f"No project matches '{value}'. Available projects are '{keys}'")
 
     def get(self, id):
         try:

@@ -15,6 +15,7 @@ import BrunelMenu from "./components/BrunelMenu";
 import DefaultButton from "./components/DefaultButton";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
+import SweetComponent from "./components/SweetComponent";
 
 // Brunel model
 import Social from "./model/Social";
@@ -36,7 +37,6 @@ class SocialApp extends React.Component {
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
-    console.log(social);
 
     if (!(social instanceof Social)) {
       console.log("Could not parse!");
@@ -402,6 +402,10 @@ class SocialApp extends React.Component {
             shipFilter={(item) => this.slotSetFilter(item)}
             resetFilters={this.resetFilters}
           />
+        </div>
+
+        <div>
+          <SweetComponent social={this.state.social} />
         </div>
 
         {/* Some side panel */}

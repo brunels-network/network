@@ -455,7 +455,7 @@ def importConnection(edge, project, mapping=None, importers=None):
                             })
 
     except Exception as e:
-        print(f"\nFailed to add connection!\n{e}\n{edge}\n\n")
+        raise(f"\nFailed to add connection!\n{e}\n{edge}\n\n")
         return None
 
 

@@ -373,17 +373,16 @@ class Person {
   }
 
   getWeight() {
-    // Get key from weight
     if (this.state.weight) {
       const key = Object.keys(this.state.weight);
       return this.state.weight[key];
     } else {
       console.error("No weight for ", this.getName(), this.getID());
-      return 0;
+      return 1;
     }
   }
 
-  getNode(is_anchor = false) {
+  getNode(isAnchor = false) {
     let node = {
       id: this.getID(),
       label: this.getName(),
@@ -392,8 +391,11 @@ class Person {
       shape: "circle",
     };
 
-    // Change the weights otherwise there's a huge differnce in scale
     node["size"] = 0.5 * this.getWeight();
+
+    // Position will be used to set the colour used
+    // for the node representing this person
+    node["positions"] = this.getPositions();
 
     let keys = Object.keys(this.state.projects);
 
@@ -403,7 +405,7 @@ class Person {
       node["group"] = "unknown";
     }
 
-    if (is_anchor) {
+    if (isAnchor) {
       node["shape"] = "rect";
       node["fixed"] = true;
       node["group"] = "anchor";

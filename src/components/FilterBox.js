@@ -99,10 +99,12 @@ function FilterBox(props) {
   let people = filterList(social.getPeople(false), props);
   let businesses = filterList(social.getBusinesses(false), props);
 
+  console.log(social.getPositions(false).values());
+
   return (
     <Accordion allowMultipleExpanded={false} allowZeroExpanded={true}>
       {filter_info}
-
+      {/* 
       <AccordionItem uuid="projects">
         <AccordionTitle>Projects</AccordionTitle>
         <AccordionPanel>{projects}</AccordionPanel>
@@ -121,17 +123,17 @@ function FilterBox(props) {
       <AccordionItem uuid="businesses">
         <AccordionTitle>Businesses</AccordionTitle>
         <AccordionPanel>{businesses}</AccordionPanel>
-      </AccordionItem>
+      </AccordionItem> */}
 
       <AccordionItem uuid="positions">
         <AccordionTitle>Positions</AccordionTitle>
         <AccordionPanel>{positions}</AccordionPanel>
       </AccordionItem>
-
+      {/* 
       <AccordionItem uuid="affiliations">
         <AccordionTitle>Affiliations</AccordionTitle>
         <AccordionPanel>{affiliations}</AccordionPanel>
-      </AccordionItem>
+      </AccordionItem> */}
     </Accordion>
   );
 }

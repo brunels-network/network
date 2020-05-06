@@ -44,8 +44,13 @@ class Positions {
     names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
+    console.log("Output : ", output);
 
     return output;
+  }
+
+  items() {
+    return this._names;
   }
 
   canAdd(item) {

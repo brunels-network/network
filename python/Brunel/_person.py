@@ -25,6 +25,7 @@ def _mergeNames(old, new):
     if old["orig_name"] != new["orig_name"]:
         old["orig_name"] = f"{old['orig_name']} or {new['orig_name']}"
 
+
 def _mergeProjects(old, new, key):
     old = old[key]
     new = new[key]
