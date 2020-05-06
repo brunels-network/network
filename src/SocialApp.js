@@ -404,10 +404,6 @@ class SocialApp extends React.Component {
           />
         </div>
 
-        <div>
-          <SweetComponent social={this.state.social} />
-        </div>
-
         {/* Some side panel */}
         <div className={styles.rightSidePanel}>
           <div>

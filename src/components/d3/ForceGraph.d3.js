@@ -249,6 +249,16 @@ function _resolve(item) {
 class ForceGraphD3 {
   constructor(props) {
     this._updateSimulation = this._updateSimulation.bind(this);
+    this._updateLink = this._updateLink.bind(this);
+    this._updateNodeText = this._updateNodeText.bind(this);
+    this._updateNode = this._updateNode.bind(this);
+    this.draw = this.draw.bind(this);
+    this.drawFromScratch = this.drawFromScratch.bind(this);
+    this.setPositionColors = this.setPositionColors.bind(this);
+    this.getPositionColor = this.getPositionColor.bind(this);
+    this.update = this.update.bind(this);
+    this.updateGraph = this.updateGraph.bind(this);
+
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
     let uid = uuidv4();
@@ -265,17 +275,13 @@ class ForceGraphD3 {
       //   Fix the colours here
       //   colors: { "J30ea52b:Jd0174de": "#FF0000", anchor: "#FFFFFF", Jd0174de: "#9a9a9a", J30ea52b: "#9f1d35" },
       colors: {},
-      //   colors: {
-      //     color: d3.scaleOrdinal(d3.schemeCategory10),
-      //     last_color: -1,
-      //     group_to_color: {},
-      //   },
       uid: uid.slice(uid.length - 8),
     };
 
     this._size_changed = true;
     this._graph_changed = true;
     this._is_running = false;
+    this._is_drawn = false;
 
     // Set parameters for the force simulation
     this._target_decay = 0.4;
@@ -474,17 +480,36 @@ class ForceGraphD3 {
     return `ForceGraphD3-${this.state.uid}`;
   }
 
-  getPositionColor(positionUID) {
-    let color;
-    if (!positionUID) {
-      color = "blue";
-      console.error("Color in getpost : ", color);
-    } else {
-      console.log(positionUID);
-      //   color = this.state.colors[positionUID.toLowerCase()];
-      color = "blue";
+  getPositionColor(positions, group) {
+    // If we get an undefined position return white
+    if (!positions) {
+      return "#00AA00";
     }
-    return color;
+
+    if (group == "anchor") {
+      return "#F00F00";
+    }
+
+    // Split string by colon, for now just use the first value
+    let positionCode;
+    // Split the string and try both
+    const splitGroup = group.split(":");
+    // As some of the positions objects don't have a value for both
+    // projects (called groups here) we have to check both
+    try {
+      try {
+        positionCode = positions[splitGroup[0]][0];
+      } catch (error) {
+        positionCode = positions[splitGroup[1]][0];
+      }
+    } catch (error) {
+      console.error("Error with position ", positions, " with splitGroup ", splitGroup, error);
+      positionCode = "unknown";
+    }
+
+    positionCode = positionCode.toLowerCase();
+
+    return this.state.colors[positionCode];
   }
 
   setPositionColors() {
@@ -492,24 +517,32 @@ class ForceGraphD3 {
     const namedPositions = this.state.social.getPositions().items();
 
     let colorTable = {};
+
     // Read the positions and colours from a JSON file that can be easily updated
-    // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
     for (let [position, uid] of Object.entries(namedPositions)) {
       uid = uid.toLowerCase();
+      // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
       let trimPosition = position
         .replace(/\s/g, "")
         .toLowerCase()
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 
+      // Here positionGroups is the import JSON object containing
+      // which positions are in which group and the colour assigned to them
       for (let members of Object.values(positionGroups)) {
         if (members["members"].includes(trimPosition)) {
           colorTable[uid] = members["color"];
           break;
         } else {
+          // Assign bright blue to any we don't recognize, but this
+          // shouldn't (hopefully) happen if the JSON is correct
           colorTable[uid] = "blue";
         }
       }
     }
+
+    // Set the colour for the anchor
+    colorTable["anchor"] = positionGroups["anchor"]["color"];
 
     this.state.colors = colorTable;
   }
@@ -530,18 +563,7 @@ class ForceGraphD3 {
         return d.id;
       })
       .attr("fill", (d) => {
-        let p = d["positions"][d["group"]];
-
-        console.log(p);
-
-        // if (!d["positions"]) {
-        //   console.error("Cannot find positions yahh");
-        return "blue";
-        // } else {
-        //   console.log(p);
-        //   console.log(p[0]);
-        //   return this.getPositionColor(p);
-        // }
+        return this.getPositionColor(d.positions, d.group);
       })
       .on("click", handleMouseClick(this))
       .on("mouseover", handleMouseOver(this))
@@ -609,30 +631,6 @@ class ForceGraphD3 {
     let w = this.state.width;
     let h = this.state.height;
 
-    let THIS = this;
-
-    function ended() {
-      THIS._is_running = false;
-    }
-
-    function ticked() {
-      THIS._link
-        .attr("x1", (d) => d.source.x)
-        .attr("y1", (d) => d.source.y)
-        .attr("x2", (d) => d.target.x)
-        .attr("y2", (d) => d.target.y);
-
-      THIS._node
-        .attr("cx", (d) => {
-          return (d.x = constrain(d.x, w, d.r));
-        })
-        .attr("cy", (d) => {
-          return (d.y = constrain(d.y, h, d.r));
-        });
-
-      THIS._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
-    }
-
     let simulation = d3
       .forceSimulation(this._graph.nodes)
       .force("charge", d3.forceManyBody().strength(-150).distanceMin(1).distanceMax(100))
@@ -656,12 +654,30 @@ class ForceGraphD3 {
           .strength(1.0)
           .iterations(5)
       )
-      .on("tick", ticked)
-      .on("end", ended);
+      .on("tick", () => {
+        this._link
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y);
+
+        this._node
+          .attr("cx", (d) => {
+            return (d.x = constrain(d.x, w, d.r));
+          })
+          .attr("cy", (d) => {
+            return (d.y = constrain(d.y, h, d.r));
+          });
+
+        this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+      })
+      .on("end", () => {
+        this._is_running = false;
+      });
 
     this._is_running = true;
 
-    // save the simulation so that we can update it later...
+    // Save the simulation so that we can update it later...
     this._simulation = simulation;
   }
 
