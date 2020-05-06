@@ -1,0 +1,34 @@
+{
+  "commercial": {
+    "members": [
+      "auditor",
+      "commercialrepresentative",
+      "director",
+      "shareholder",
+      "trustee",
+      "solicitors",
+      "missing",
+      "investor",
+      "supplier",
+      "trustee"
+    ],
+    "color": "#DB0000"
+  },
+  "engineering": {
+    "members": [
+      "buildertier1",
+      "buildertier2",
+      "consultingengineer",
+      "contributingengineer",
+      "designer",
+      "noncontributingengineer",
+      "suppliertier1",
+      "suppliertier2"
+    ],
+    "color": "#808080"
+  },
+  "other": { "members": ["externalpatronage", "navalofficer"], "color": "#800000" },
+  "anchor": { "members": [], "color": "#FFFFFF" },
+  "business": { "members": [], "color": "#367588" },
+  "unknown": { "members": [], "color": "#0000FF" }
+}

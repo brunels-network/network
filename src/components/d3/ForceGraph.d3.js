@@ -480,10 +480,19 @@ class ForceGraphD3 {
     return `ForceGraphD3-${this.state.uid}`;
   }
 
-  getPositionColor(positions, group) {
+  getPositionColor(person) {
+    const positions = person["positions"];
+    const group = person["group"];
+    const name = person["name"];
+
     // If we get an undefined position return white
     if (!positions) {
-      return "#00AA00";
+      if (person["id"].toLowerCase().startsWith("b")) {
+        return positionGroups["business"]["color"];
+      } else {
+        console.error("No position for person : ", person);
+        return "#FFFFFF";
+      }
     }
 
     if (group == "anchor") {
@@ -563,7 +572,7 @@ class ForceGraphD3 {
         return d.id;
       })
       .attr("fill", (d) => {
-        return this.getPositionColor(d.positions, d.group);
+        return this.getPositionColor(d);
       })
       .on("click", handleMouseClick(this))
       .on("mouseover", handleMouseOver(this))
