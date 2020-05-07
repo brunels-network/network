@@ -15,7 +15,6 @@ import BrunelMenu from "./components/BrunelMenu";
 import DefaultButton from "./components/DefaultButton";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
-import SweetComponent from "./components/SweetComponent";
 
 // Brunel model
 import Social from "./model/Social";
