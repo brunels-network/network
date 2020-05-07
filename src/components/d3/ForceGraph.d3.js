@@ -272,8 +272,6 @@ class ForceGraphD3 {
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
-      //   Fix the colours here
-      //   colors: { "J30ea52b:Jd0174de": "#FF0000", anchor: "#FFFFFF", Jd0174de: "#9a9a9a", J30ea52b: "#9f1d35" },
       colors: {},
       uid: uid.slice(uid.length - 8),
     };
@@ -480,32 +478,37 @@ class ForceGraphD3 {
     return `ForceGraphD3-${this.state.uid}`;
   }
 
-  getPositionColor(person) {
-    const positions = person["positions"];
-    const group = person["group"];
-    const name = person["name"];
+  getPositionColor(entity) {
+    // This takes an entity (a person or a business) and finds the
+    // colour that's given in the positions_groups.json file
+    const positions = entity["positions"];
+    const group = entity["group"];
+
+    // TODO - rework and simplify this
+    if (group == "anchor") {
+      return positionGroups["anchor"]["color"];
+    }
 
     // If we get an undefined position return white
     if (!positions) {
-      if (person["id"].toLowerCase().startsWith("b")) {
+      const entity_id = entity["id"].toLowerCase();
+
+      if (entity_id.startsWith("b")) {
         return positionGroups["business"]["color"];
       } else {
-        console.error("No position for person : ", person);
+        console.error("No colour available for this entity : ", entity);
         return "#FFFFFF";
       }
-    }
-
-    if (group == "anchor") {
-      return "#F00F00";
     }
 
     // Split string by colon, for now just use the first value
     let positionCode;
     // Split the string and try both
     const splitGroup = group.split(":");
-    // As some of the positions objects don't have a value for both
-    // projects (called groups here) we have to check both
+
     try {
+      // As some of the positions objects don't have a value for both
+      // projects (called groups here) we have to check both
       try {
         positionCode = positions[splitGroup[0]][0];
       } catch (error) {

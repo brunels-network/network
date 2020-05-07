@@ -21,7 +21,7 @@ import SweetComponent from "./components/SweetComponent";
 import Social from "./model/Social";
 
 // Data for import
-import graph_data from "./data_weights.json";
+import graph_data from "./data_weights_gwgb.json";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
