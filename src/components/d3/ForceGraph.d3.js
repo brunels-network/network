@@ -14,6 +14,137 @@ function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));
 }
 
+function handleMouseClick(THIS) {
+  function handle() {
+    let svg = THIS._mainGroup;
+    if (!svg) {
+      return;
+    }
+
+    let node = d3.select(this);
+    node.raise();
+
+    let id = node.attr("id");
+
+    if (!id) {
+      return;
+    }
+
+    let items = svg.selectAll(`#${id}`);
+
+    items.classed(styles.highlight, true);
+
+    items = svg.selectAll(`[source_id=${id}]`);
+    items.classed(styles.highlight, true);
+
+    items = svg.selectAll(`[target_id=${id}]`);
+    items.classed(styles.highlight, true);
+
+    THIS.state.signalClicked(id);
+    d3.event.stopPropagation();
+  }
+
+  return handle;
+}
+
+function handleMouseOver(THIS) {
+  function handle() {
+    let svg = THIS._mainGroup;
+    if (!svg) {
+      return;
+    }
+
+    let node = d3.select(this);
+    node.raise();
+
+    let id = node.attr("id");
+
+    if (!id) {
+      return;
+    }
+
+    //highlight the node
+    let items = svg.selectAll(`#${id}`);
+    items.classed(styles.highlight, true);
+
+    //highlight the connection lines with this node as a source
+    items = svg.selectAll(`[source_id=${id}]`);
+    items.classed(styles.highlight, true);
+
+    //highlight the nodes with this node as a target
+    items.each((d) => {
+      let target_id = d.target.id;
+      svg.selectAll(`#${target_id}`).classed(styles.highlight, true);
+    });
+
+    //highlight the connection lines with this node as a target
+    items = svg.selectAll(`[target_id=${id}]`);
+    items.classed(styles.highlight, true);
+
+    //highlight the nodes with this node as a source
+    items.each((d) => {
+      let source_id = d.source.id;
+      svg.selectAll(`#${source_id}`).classed(styles.highlight, true);
+    });
+
+    if (node.attr("source_id")) {
+      svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, true);
+
+      svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, true);
+    }
+
+    THIS.state.signalMouseOver(id);
+  }
+
+  return handle;
+}
+
+function handleMouseOut(THIS) {
+  function handle() {
+    let svg = THIS._mainGroup;
+    if (!svg) {
+      return;
+    }
+
+    let node = d3.select(this);
+    let id = node.attr("id");
+
+    let items = svg.selectAll(`#${id}`);
+
+    items.classed(styles.highlight, false);
+
+    //highlight the connection lines with this node as a source
+    items = svg.selectAll(`[source_id=${id}]`);
+    items.classed(styles.highlight, false);
+
+    //highlight the nodes with this node as a target
+    items.each((d) => {
+      let target_id = d.target.id;
+      svg.selectAll(`#${target_id}`).classed(styles.highlight, false);
+    });
+
+    //highlight the connection lines with this node as a target
+    items = svg.selectAll(`[target_id=${id}]`);
+    items.classed(styles.highlight, false);
+
+    //highlight the nodes with this node as a source
+    items.each((d) => {
+      let source_id = d.source.id;
+      svg.selectAll(`#${source_id}`).classed(styles.highlight, false);
+    });
+
+    if (node.attr("source_id")) {
+      svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, false);
+
+      svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, false);
+    }
+
+    THIS.state.signalMouseOut(id);
+  }
+
+  return handle;
+}
+
 function _resolve(item) {
   if (!item) {
     return null;
@@ -27,7 +158,6 @@ function _resolve(item) {
 /** The main class that renders the graph in the ForceGraph */
 class ForceGraphD3 {
   constructor(props) {
-    // TODO - Check the need for these bindings
     this._updateSimulation = this._updateSimulation.bind(this);
     this._updateLink = this._updateLink.bind(this);
     this._updateNodeText = this._updateNodeText.bind(this);
@@ -67,6 +197,9 @@ class ForceGraphD3 {
     // Set parameters for the force simulation
     this._target_decay = 0.4;
     this._target_alpha = 0.3;
+
+    // this.updateGraph = this.updateGraph.bind(this);
+    // this.update = this.update.bind(this);
 
     this.update(props);
   }
@@ -339,131 +472,6 @@ class ForceGraphD3 {
     this.state.colors = colorTable;
   }
 
-  handleMouseClick() {
-    return () => {
-      let svg = this._mainGroup;
-      if (!svg) {
-        return;
-      }
-
-      let node = d3.select(this);
-      node.raise();
-
-      let id = node.attr("id");
-
-      if (!id) {
-        return;
-      }
-
-      let items = svg.selectAll(`#${id}`);
-
-      items.classed(styles.highlight, true);
-
-      items = svg.selectAll(`[source_id=${id}]`);
-      items.classed(styles.highlight, true);
-
-      items = svg.selectAll(`[target_id=${id}]`);
-      items.classed(styles.highlight, true);
-
-      this.state.signalClicked(id);
-      d3.event.stopPropagation();
-    };
-  }
-
-  handleMouseOver() {
-    return () => {
-      let svg = this._mainGroup;
-      if (!svg) {
-        return;
-      }
-
-      let node = d3.select(this);
-      node.raise();
-
-      let id = node.attr("id");
-
-      if (!id) {
-        return;
-      }
-
-      //highlight the node
-      let items = svg.selectAll(`#${id}`);
-      items.classed(styles.highlight, true);
-
-      //highlight the connection lines with this node as a source
-      items = svg.selectAll(`[source_id=${id}]`);
-      items.classed(styles.highlight, true);
-
-      //highlight the nodes with this node as a target
-      items.each((d) => {
-        let target_id = d.target.id;
-        svg.selectAll(`#${target_id}`).classed(styles.highlight, true);
-      });
-
-      //highlight the connection lines with this node as a target
-      items = svg.selectAll(`[target_id=${id}]`);
-      items.classed(styles.highlight, true);
-
-      //highlight the nodes with this node as a source
-      items.each((d) => {
-        let source_id = d.source.id;
-        svg.selectAll(`#${source_id}`).classed(styles.highlight, true);
-      });
-
-      if (node.attr("source_id")) {
-        svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, true);
-
-        svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, true);
-      }
-
-      this.state.signalMouseOver(id);
-    };
-  }
-
-  handleMouseOut() {
-    return () => {
-      let svg = this._mainGroup;
-      if (!svg) {
-        return;
-      }
-
-      let node = d3.select(this);
-      let id = node.attr("id");
-
-      let items = svg.selectAll(`#${id}`);
-
-      items.classed(styles.highlight, false);
-
-      //highlight the connection lines with this node as a source
-      items = svg.selectAll(`[source_id=${id}]`);
-      items.classed(styles.highlight, false);
-
-      //highlight the nodes with this node as a target
-      items.each((d) => {
-        let target_id = d.target.id;
-        svg.selectAll(`#${target_id}`).classed(styles.highlight, false);
-      });
-
-      //highlight the connection lines with this node as a target
-      items = svg.selectAll(`[target_id=${id}]`);
-      items.classed(styles.highlight, false);
-
-      //highlight the nodes with this node as a source
-      items.each((d) => {
-        let source_id = d.source.id;
-        svg.selectAll(`#${source_id}`).classed(styles.highlight, false);
-      });
-
-      if (node.attr("source_id")) {
-        svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, false);
-
-        svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, false);
-      }
-
-      this.state.signalMouseOut(id);
-    };
-  }
-
   drag() {
     let simulation = this._simulation;
 
@@ -495,10 +503,12 @@ class ForceGraphD3 {
   }
 
   dragLink() {
+    let simulation = this._simulation;
+
     return d3
       .drag()
       .on("start", (d) => {
-        this._simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+        simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
 
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
@@ -512,9 +522,7 @@ class ForceGraphD3 {
         target.fy = target.y;
       })
       .on("drag", (d) => {
-        if (!this._is_running) {
-          this._simulation.restart();
-        }
+        if (!this._is_running) simulation.restart();
 
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
@@ -532,7 +540,7 @@ class ForceGraphD3 {
         target.fy = constrain(d3.event.y + dy, this.state.height, target.r);
       })
       .on("end", (d) => {
-        this._simulation.alphaTarget(0).restart();
+        simulation.alphaTarget(0).restart();
 
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
@@ -568,9 +576,9 @@ class ForceGraphD3 {
       .attr("fill", (d) => {
         return this.getPositionColor(d);
       })
-      .on("click", this.handleMouseClick())
-      .on("mouseover", this.handleMouseOver())
-      .on("mouseout", this.handleMouseOut())
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return node;
@@ -589,9 +597,9 @@ class ForceGraphD3 {
       .attr("id", (d) => {
         return d.id;
       })
-      .on("click", this.handleMouseClick())
-      .on("mouseover", this.handleMouseOver())
-      .on("mouseout", this.handleMouseOut())
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return text;
@@ -616,9 +624,9 @@ class ForceGraphD3 {
       .attr("target_id", (d) => {
         return d.target_id;
       })
-      .on("click", this.handleMouseClick())
-      .on("mouseover", this.handleMouseOver())
-      .on("mouseout", this.handleMouseOut())
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.dragLink());
 
     return link;
@@ -675,13 +683,17 @@ class ForceGraphD3 {
         this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
       })
       .on("end", () => {
-        this._is_running = false;
+        this.restartSimulation();
       });
 
     this._is_running = true;
 
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
+  }
+
+  restartSimulation() {
+    this._simulation.restart();
   }
 
   drawFromScratch() {
