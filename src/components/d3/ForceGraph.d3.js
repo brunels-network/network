@@ -8,15 +8,11 @@ import styles from "../ForceGraph.module.css";
 
 import positionGroups from "../../position_groups.json";
 
-function _null_function() { }
+function _null_function() {}
 
 function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));
 }
-
-
-
-
 
 function handleMouseClick(THIS) {
   function handle() {
@@ -477,94 +473,89 @@ class ForceGraphD3 {
   }
 
   drag() {
-  let simulation = this._simulation;
-
-  function dragstarted(d) {
-    simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
-
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-
-  function dragged(d) {
-    if (!this._is_running) simulation.restart();
-
-    let w = this.state.width;
-    let h = this.state.height;
-
-    d.fx = constrain(d3.event.x, w, d.r);
-    d.fy = constrain(d3.event.y, h, d.r);
-  }
-
-  function dragended(d) {
-    simulation.alphaTarget(0).restart();
-
-    if (!d.fixed) {
-      d.fx = null;
-      d.fy = null;
-    }
-  }
-
-  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
-}
-
-  dragLink() {
-
     let simulation = this._simulation;
 
-    function dragstarted(d) {
-      simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+    return d3
+      .drag()
+      .on("start", (d) => {
+        simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
 
-      //find the two nodes connected to this edge
-      let source = this._graph.nodes[d.source.index];
-      let target = this._graph.nodes[d.target.index];
+        d.fx = d.x;
+        d.fy = d.y;
+      })
+      .on("drag", (d) => {
+        if (!this._is_running) simulation.restart();
 
-      //fix those nodes in place
-      source.fx = source.x;
-      source.fy = source.y;
+        let w = this.state.width;
+        let h = this.state.height;
 
-      target.fx = target.x;
-      target.fy = target.y;
-    }
+        d.fx = constrain(d3.event.x, w, d.r);
+        d.fy = constrain(d3.event.y, h, d.r);
+      })
+      .on("end", (d) => {
+        simulation.alphaTarget(0).restart();
 
-    function dragged(d) {
-      if (!this._is_running) simulation.restart();
+        if (!d.fixed) {
+          d.fx = null;
+          d.fy = null;
+        }
+      });
+  }
 
-      //find the two nodes connected to this edge
-      let source = this._graph.nodes[d.source.index];
-      let target = this._graph.nodes[d.target.index];
+  dragLink() {
+    let simulation = this._simulation;
 
-      //moves those nodes with the event - move the center point of the
-      //line connecting these two nodes...
-      let dx = 0.5 * (target.x - source.x);
-      let dy = 0.5 * (target.y - source.y);
+    return d3
+      .drag()
+      .on("start", (d) => {
+        simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
 
-      source.fx = constrain(d3.event.x - dx, this.state.width, source.r);
-      source.fy = constrain(d3.event.y - dy, this.state.height, source.r);
+        //find the two nodes connected to this edge
+        let source = this._graph.nodes[d.source.index];
+        let target = this._graph.nodes[d.target.index];
 
-      target.fx = constrain(d3.event.x + dx, this.state.width, target.r);
-      target.fy = constrain(d3.event.y + dy, this.state.height, target.r);
-    }
+        //fix those nodes in place
+        source.fx = source.x;
+        source.fy = source.y;
 
-    function dragended(d) {
-      simulation.alphaTarget(0).restart();
+        target.fx = target.x;
+        target.fy = target.y;
+      })
+      .on("drag", (d) => {
+        if (!this._is_running) simulation.restart();
 
-      //find the two nodes connected to this edge
-      let source = this._graph.nodes[d.source.index];
-      let target = this._graph.nodes[d.target.index];
+        //find the two nodes connected to this edge
+        let source = this._graph.nodes[d.source.index];
+        let target = this._graph.nodes[d.target.index];
 
-      if (!source.fixed) {
-        source.fx = null;
-        source.fy = null;
-      }
+        //moves those nodes with the event - move the center point of the
+        //line connecting these two nodes...
+        let dx = 0.5 * (target.x - source.x);
+        let dy = 0.5 * (target.y - source.y);
 
-      if (!target.fixed) {
-        target.fx = null;
-        target.fy = null;
-      }
-    }
+        source.fx = constrain(d3.event.x - dx, this.state.width, source.r);
+        source.fy = constrain(d3.event.y - dy, this.state.height, source.r);
 
-    return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
+        target.fx = constrain(d3.event.x + dx, this.state.width, target.r);
+        target.fy = constrain(d3.event.y + dy, this.state.height, target.r);
+      })
+      .on("end", (d) => {
+        simulation.alphaTarget(0).restart();
+
+        //find the two nodes connected to this edge
+        let source = this._graph.nodes[d.source.index];
+        let target = this._graph.nodes[d.target.index];
+
+        if (!source.fixed) {
+          source.fx = null;
+          source.fy = null;
+        }
+
+        if (!target.fixed) {
+          target.fx = null;
+          target.fy = null;
+        }
+      });
   }
 
   _updateNode(data) {
