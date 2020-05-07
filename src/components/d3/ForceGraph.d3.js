@@ -8,101 +8,15 @@ import styles from "../ForceGraph.module.css";
 
 import positionGroups from "../../position_groups.json";
 
-function _null_function() {}
+function _null_function() { }
 
 function constrain(x, w, r = 20) {
   return Math.max(r, Math.min(w - r, x));
 }
 
-function dragLink(THIS) {
-  let simulation = THIS._simulation;
 
-  function dragstarted(d) {
-    simulation.alphaTarget(THIS._target_alpha).velocityDecay(THIS._target_decay).restart();
 
-    //find the two nodes connected to this edge
-    let source = THIS._graph.nodes[d.source.index];
-    let target = THIS._graph.nodes[d.target.index];
 
-    //fix those nodes in place
-    source.fx = source.x;
-    source.fy = source.y;
-
-    target.fx = target.x;
-    target.fy = target.y;
-  }
-
-  function dragged(d) {
-    if (!THIS._is_running) simulation.restart();
-
-    //find the two nodes connected to this edge
-    let source = THIS._graph.nodes[d.source.index];
-    let target = THIS._graph.nodes[d.target.index];
-
-    //moves those nodes with the event - move the center point of the
-    //line connecting these two nodes...
-    let dx = 0.5 * (target.x - source.x);
-    let dy = 0.5 * (target.y - source.y);
-
-    source.fx = constrain(d3.event.x - dx, THIS.state.width, source.r);
-    source.fy = constrain(d3.event.y - dy, THIS.state.height, source.r);
-
-    target.fx = constrain(d3.event.x + dx, THIS.state.width, target.r);
-    target.fy = constrain(d3.event.y + dy, THIS.state.height, target.r);
-  }
-
-  function dragended(d) {
-    simulation.alphaTarget(0).restart();
-
-    //find the two nodes connected to this edge
-    let source = THIS._graph.nodes[d.source.index];
-    let target = THIS._graph.nodes[d.target.index];
-
-    if (!source.fixed) {
-      source.fx = null;
-      source.fy = null;
-    }
-
-    if (!target.fixed) {
-      target.fx = null;
-      target.fy = null;
-    }
-  }
-
-  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
-}
-
-function drag(THIS) {
-  let simulation = THIS._simulation;
-
-  function dragstarted(d) {
-    simulation.alphaTarget(THIS._target_alpha).velocityDecay(THIS._target_decay).restart();
-
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-
-  function dragged(d) {
-    if (!THIS._is_running) simulation.restart();
-
-    let w = THIS.state.width;
-    let h = THIS.state.height;
-
-    d.fx = constrain(d3.event.x, w, d.r);
-    d.fy = constrain(d3.event.y, h, d.r);
-  }
-
-  function dragended(d) {
-    simulation.alphaTarget(0).restart();
-
-    if (!d.fixed) {
-      d.fx = null;
-      d.fy = null;
-    }
-  }
-
-  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
-}
 
 function handleMouseClick(THIS) {
   function handle() {
@@ -258,6 +172,9 @@ class ForceGraphD3 {
     this.getPositionColor = this.getPositionColor.bind(this);
     this.update = this.update.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
+
+    this.drag = this.drag.bind(this);
+    this.dragLink = this.dragLink.bind(this);
 
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
@@ -559,6 +476,97 @@ class ForceGraphD3 {
     this.state.colors = colorTable;
   }
 
+  drag() {
+  let simulation = this._simulation;
+
+  function dragstarted(d) {
+    simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(d) {
+    if (!this._is_running) simulation.restart();
+
+    let w = this.state.width;
+    let h = this.state.height;
+
+    d.fx = constrain(d3.event.x, w, d.r);
+    d.fy = constrain(d3.event.y, h, d.r);
+  }
+
+  function dragended(d) {
+    simulation.alphaTarget(0).restart();
+
+    if (!d.fixed) {
+      d.fx = null;
+      d.fy = null;
+    }
+  }
+
+  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
+}
+
+  dragLink() {
+
+    let simulation = this._simulation;
+
+    function dragstarted(d) {
+      simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+
+      //find the two nodes connected to this edge
+      let source = this._graph.nodes[d.source.index];
+      let target = this._graph.nodes[d.target.index];
+
+      //fix those nodes in place
+      source.fx = source.x;
+      source.fy = source.y;
+
+      target.fx = target.x;
+      target.fy = target.y;
+    }
+
+    function dragged(d) {
+      if (!this._is_running) simulation.restart();
+
+      //find the two nodes connected to this edge
+      let source = this._graph.nodes[d.source.index];
+      let target = this._graph.nodes[d.target.index];
+
+      //moves those nodes with the event - move the center point of the
+      //line connecting these two nodes...
+      let dx = 0.5 * (target.x - source.x);
+      let dy = 0.5 * (target.y - source.y);
+
+      source.fx = constrain(d3.event.x - dx, this.state.width, source.r);
+      source.fy = constrain(d3.event.y - dy, this.state.height, source.r);
+
+      target.fx = constrain(d3.event.x + dx, this.state.width, target.r);
+      target.fy = constrain(d3.event.y + dy, this.state.height, target.r);
+    }
+
+    function dragended(d) {
+      simulation.alphaTarget(0).restart();
+
+      //find the two nodes connected to this edge
+      let source = this._graph.nodes[d.source.index];
+      let target = this._graph.nodes[d.target.index];
+
+      if (!source.fixed) {
+        source.fx = null;
+        source.fy = null;
+      }
+
+      if (!target.fixed) {
+        target.fx = null;
+        target.fy = null;
+      }
+    }
+
+    return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
+  }
+
   _updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 
@@ -580,7 +588,7 @@ class ForceGraphD3 {
       .on("click", handleMouseClick(this))
       .on("mouseover", handleMouseOver(this))
       .on("mouseout", handleMouseOut(this))
-      .call(drag(this));
+      .call(this.drag());
 
     return node;
   }
@@ -601,7 +609,7 @@ class ForceGraphD3 {
       .on("click", handleMouseClick(this))
       .on("mouseover", handleMouseOver(this))
       .on("mouseout", handleMouseOut(this))
-      .call(drag(this));
+      .call(this.drag());
 
     return text;
   }
@@ -628,7 +636,7 @@ class ForceGraphD3 {
       .on("click", handleMouseClick(this))
       .on("mouseover", handleMouseOver(this))
       .on("mouseout", handleMouseOut(this))
-      .call(dragLink(this));
+      .call(this.dragLink());
 
     return link;
   }
