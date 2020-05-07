@@ -683,13 +683,17 @@ class ForceGraphD3 {
         this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
       })
       .on("end", () => {
-        this._is_running = false;
+        this.restartSimulation();
       });
 
     this._is_running = true;
 
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
+  }
+
+  restartSimulation() {
+    this._simulation.restart();
   }
 
   drawFromScratch() {
