@@ -9,33 +9,36 @@ trigger:
       - devel
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '13.x'
-  displayName: 'Install Node.js'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "13.x"
+    displayName: "Install Node.js"
 
-- script: |
-    npm ci
-    npm run build
-  displayName: 'Install and build'
+  - script: |
+      npm ci
+      npm run build
+    displayName: "Install and build"
 
-- script: npm run lint
-  displayName: 'Lint code'
+  - script: npm run lint
+    displayName: "Lint code"
 
-- script: npm run test-ci
-  displayName: 'Run tests'
+  - script: npm run test-ci
+    displayName: "Run tests"
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: JUnit
-    testResultsFiles: '**/junit.xml'
+  - script: npm run deploy
+    displayName: "Deploy to GitHub pages"
 
-- task: PublishCodeCoverageResults@1
-  inputs: 
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunner: JUnit
+      testResultsFiles: "**/junit.xml"
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/*coverage.xml"
+      reportDirectory: "$(System.DefaultWorkingDirectory)/**/coverage"
