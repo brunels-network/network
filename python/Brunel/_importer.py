@@ -465,11 +465,11 @@ def extractPositionName(position):
 
 
 def importPositions(node, importers=None):
+    import re as _re
+    
     positions = importers["positions"]
 
     result = []
-
-    import re as _re
 
     pattern = _re.compile(r":")
 

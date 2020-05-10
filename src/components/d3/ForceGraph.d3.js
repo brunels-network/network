@@ -186,6 +186,7 @@ class ForceGraphD3 {
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
       colors: {},
+      groupTable: {},
       uid: uid.slice(uid.length - 8),
     };
 
@@ -397,8 +398,7 @@ class ForceGraphD3 {
     const positions = entity["positions"];
     const group = entity["group"];
 
-    // TODO - rework and simplify this
-    if (group == "anchor") {
+    if (group === "anchor") {
       return positionGroups["anchor"]["color"];
     }
 
@@ -414,7 +414,18 @@ class ForceGraphD3 {
       }
     }
 
+    const positionCode = this.getPositionCode(positions, group);
+
+    return this.state.colors[positionCode];
+  }
+
+  getPositionCode(positions, group) {
     // Split string by colon, for now just use the first value
+    if (group === "anchor") {
+      console.error("We got an anchor here somehow", positions, group);
+      return "unkown";
+    }
+
     let positionCode;
     // Split the string and try both
     const splitGroup = group.split(":");
@@ -428,13 +439,11 @@ class ForceGraphD3 {
         positionCode = positions[splitGroup[1]][0];
       }
     } catch (error) {
-      console.error("Error with position ", positions, " with splitGroup ", splitGroup, error);
+      console.error("Error with position ", positions, " with group : ", group, "splitGroup : ", splitGroup, error);
       positionCode = "unknown";
     }
 
-    positionCode = positionCode.toLowerCase();
-
-    return this.state.colors[positionCode];
+    return positionCode.toLowerCase();
   }
 
   setPositionColors() {
@@ -442,6 +451,11 @@ class ForceGraphD3 {
     const namedPositions = this.state.social.getPositions().items();
 
     let colorTable = {};
+    let groupTable = {};
+
+    // TODO - a lot of this could be made easier by just assigning fixed UIDs to
+    // positions, could make a small object that did that and a notebook to output
+    // a JSON that's read in here for groups etc?
 
     // Read the positions and colours from a JSON file that can be easily updated
     for (let [position, uid] of Object.entries(namedPositions)) {
@@ -450,13 +464,15 @@ class ForceGraphD3 {
       let trimPosition = position
         .replace(/\s/g, "")
         .toLowerCase()
-        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+      // .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 
       // Here positionGroups is the import JSON object containing
       // which positions are in which group and the colour assigned to them
-      for (let members of Object.values(positionGroups)) {
+      for (let [group, members] of Object.entries(positionGroups)) {
         if (members["members"].includes(trimPosition)) {
           colorTable[uid] = members["color"];
+          groupTable[uid] = group;
           break;
         } else {
           // Assign bright blue to any we don't recognize, but this
@@ -470,6 +486,41 @@ class ForceGraphD3 {
     colorTable["anchor"] = positionGroups["anchor"]["color"];
 
     this.state.colors = colorTable;
+    this.state.groupTable = groupTable;
+  }
+
+  getGroupForce(entity) {
+    if (!entity.positions) {
+      const entity_id = entity["id"].toLowerCase();
+
+      // Need a better way of handling businesses
+      if (entity_id.startsWith("b")) {
+        return -0.11;
+      } else {
+        console.log("Undefined positions for entity ", entity);
+        return 0;
+      }
+    }
+
+    const leftForce = ["engineering"];
+    const rightForce = ["commercial"];
+    const noForce = ["other", "anchor", "business", "unknown"];
+
+    // Get the position codes for this entity
+    const positionCode = this.getPositionCode(entity.positions, entity.group);
+    // The groupTable tells us which group this entity belongs to and so determines its force
+    const positionGroup = this.state.groupTable[positionCode];
+
+    // TODO - clunky, fix
+    if (leftForce.includes(positionGroup)) {
+      return -0.17;
+    } else if (rightForce.includes(positionGroup)) {
+      return 0.1;
+    } else if (noForce.includes(positionGroup)) {
+      return 0.1;
+    }
+
+    return 0;
   }
 
   drag() {
@@ -568,6 +619,7 @@ class ForceGraphD3 {
         (update) => update.attr("class", `node ${styles.node}`)
       )
       .attr("r", (d) => {
+        // console.log(d);
         return d.size;
       })
       .attr("id", (d) => {
@@ -644,14 +696,17 @@ class ForceGraphD3 {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .force("charge", d3.forceManyBody().strength(-150).distanceMin(1).distanceMax(100))
+      .force("charge", d3.forceManyBody().strength(-150).distanceMin(5).distanceMax(40))
       .force(
         "link",
         d3
           .forceLink()
           .links(this._graph.edges)
+          .strength(() => {
+            return 0.2;
+          })
           .distance((d) => {
-            return 50 * (1 + d.value);
+            return 75 * (1 + d.value);
           })
           .iterations(5)
       )
@@ -664,6 +719,12 @@ class ForceGraphD3 {
           })
           .strength(1.0)
           .iterations(5)
+      )
+      .force(
+        "X",
+        d3.forceX().strength((d) => {
+          return this.getGroupForce(d);
+        })
       )
       .on("tick", () => {
         this._link
