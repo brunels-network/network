@@ -35,6 +35,7 @@
 .link {
   stroke: lightgray;
   stroke-width: 0.1em;
+  stroke-opacity: 50%;
 }
 
 .link.highlight {
@@ -51,15 +52,16 @@
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
   font-family: "Playfair Display SemiBold";
-  padding-left: 1cm;
-  font-size: small;
+  /* padding-left: 1cm; */
+  font-size: 14px;
   stroke-width: 0;
   fill: white;
+  /* justify-content: right; */
 }
 
 .node_text.highlight {
   /* fill: #738566; */
   /* fill: #07899d; */
   fill: #ffd28b;
-  font-size: large;
+  font-size: medium;
 }

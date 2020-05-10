@@ -619,7 +619,6 @@ class ForceGraphD3 {
         (update) => update.attr("class", `node ${styles.node}`)
       )
       .attr("r", (d) => {
-        // console.log(d);
         return d.size;
       })
       .attr("id", (d) => {
@@ -646,6 +645,11 @@ class ForceGraphD3 {
         (update) => update.attr("class", `node_text ${styles.node_text}`)
       )
       .text((d) => d.label)
+      .attr("dx", "0.5em")
+      .attr("dy", (d) => {
+        return -1 * (3 + d.size);
+      })
+      .attr("text-anchor", "start")
       .attr("id", (d) => {
         return d.id;
       })
@@ -696,15 +700,15 @@ class ForceGraphD3 {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .force("charge", d3.forceManyBody().strength(-150).distanceMin(5).distanceMax(40))
+      .force("charge", d3.forceManyBody().strength(-150).distanceMin(5).distanceMax(20))
       .force(
         "link",
         d3
           .forceLink()
           .links(this._graph.edges)
-          .strength(() => {
-            return 0.2;
-          })
+          //   .strength(() => {
+          //     return 0.2;
+          //   })
           .distance((d) => {
             return 75 * (1 + d.value);
           })
