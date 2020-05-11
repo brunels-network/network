@@ -38,7 +38,7 @@ class SocialApp extends React.Component {
     let social = Dry.parse(graph_data);
 
     if (!(social instanceof Social)) {
-      console.log("Could not parse!");
+      console.error("Could not parse!");
       social = new Social();
     }
 
@@ -59,7 +59,14 @@ class SocialApp extends React.Component {
       isOverlayOpen: false,
       wobbleEnabled: true,
       selectedShip: null,
+      selectedShipID: null,
     };
+
+    // TODO - work out a cleaner way of doing this
+    // Is set in ShipSelector correctly
+    const ssGW = social.getProjects().getByName("SS Great Western");
+    this.state.selectedShip = ssGW.getName();
+    this.state.selectedShipID = ssGW.getID();
 
     this.socialGraph = null;
   }
@@ -67,7 +74,7 @@ class SocialApp extends React.Component {
   resetFilters() {
     let social = this.state.social;
     social.resetFilters();
-    this.setState({ social: social, selectedShip: null });
+    this.setState({ social: social, selectedShip: null, selectedShipID: null });
   }
 
   closePanels() {
@@ -108,13 +115,14 @@ class SocialApp extends React.Component {
   slotSetFilter(item) {
     this.resetFilters();
     this.slotToggleFilter(item);
-    this.setState({ selectedShip: item.getName() });
+    console.log("Selected ship : ", item.getID());
+    this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
   }
 
   slotSetFilterbyID(id, name) {
     this.resetFilters();
     this.slotToggleFilter(id);
-    this.setState({ selectedShip: name });
+    this.setState({ selectedShip: name, selectedShipID: id });
   }
 
   slotToggleFilter(item) {
@@ -122,10 +130,12 @@ class SocialApp extends React.Component {
       return;
     }
 
+    console.log(item);
+
     let social = this.state.social;
     social.toggleFilter(item);
 
-    this.setState(social);
+    this.setState({ social: social });
   }
 
   slotHighlighted(id) {
@@ -379,18 +389,6 @@ class SocialApp extends React.Component {
           />
         </SlidingPanel>
 
-        {/* The social graph itself */}
-
-        <div className={graphContainerClass}>
-          <SocialGraph
-            social={this.state.social}
-            selected={selected}
-            highlighted={highlighted}
-            emitClicked={(id) => this.slotSelected(id)}
-            wobble={this.state.wobbleEnabled}
-          />
-        </div>
-
         <div className={styles.shipNameContainer}>
           <ShipTitle name={this.state.selectedShip} />
         </div>
@@ -400,6 +398,19 @@ class SocialApp extends React.Component {
             projects={this.state.social.getProjects()}
             shipFilter={(item) => this.slotSetFilter(item)}
             resetFilters={this.resetFilters}
+            selectedShip={this.state.selectedShip}
+          />
+        </div>
+
+        {/* The social graph itself */}
+        <div className={graphContainerClass}>
+          <SocialGraph
+            social={this.state.social}
+            selected={selected}
+            highlighted={highlighted}
+            emitClicked={(id) => this.slotSelected(id)}
+            wobble={this.state.wobbleEnabled}
+            selectedShipID={this.state.selectedShipID}
           />
         </div>
 

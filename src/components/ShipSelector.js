@@ -13,7 +13,7 @@ class ShipSelector extends React.Component {
     const ssGW = projects.getByName("SS Great Western");
     this.props.shipFilter(ssGW);
 
-    this.state = { lastShip: "SS Great Western" };
+    this.state = { lastShip: ssGW.getName() };
   }
 
   setFilter(item) {

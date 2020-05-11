@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 
+import React from "react";
 import lodash from "lodash";
 
 import { v4 as uuidv4 } from "uuid";
@@ -156,8 +157,9 @@ function _resolve(item) {
 }
 
 /** The main class that renders the graph in the ForceGraph */
-class ForceGraphD3 {
+class ForceGraphD3 extends React.Component {
   constructor(props) {
+    super(props);
     this._updateSimulation = this._updateSimulation.bind(this);
     this._updateLink = this._updateLink.bind(this);
     this._updateNodeText = this._updateNodeText.bind(this);
@@ -171,6 +173,8 @@ class ForceGraphD3 {
 
     this.drag = this.drag.bind(this);
     this.dragLink = this.dragLink.bind(this);
+
+    console.log("in ctor : ", this.props.selectedShipID);
 
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
@@ -220,7 +224,6 @@ class ForceGraphD3 {
 
     if (social) {
       graph = social.getGraph();
-      console.log(graph.edges);
     }
 
     // The social object will cache the 'getGraph' result, meaning
@@ -610,6 +613,25 @@ class ForceGraphD3 {
       });
   }
 
+  getWeight(item) {
+    const shipID = this.props.selectedShipID;
+
+    // Big weights make the size of circles too large
+    const sizeScale = 0.5;
+
+    let weight;
+    try {
+      weight = sizeScale * item["weight"][shipID];
+    } catch (error) {
+      console.log("No weight for item ID : " + item.id);
+      weight = 1;
+    }
+
+    console.log("Weight : ", weight, "shipID : ", shipID);
+
+    return weight;
+  }
+
   _updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 
@@ -619,8 +641,11 @@ class ForceGraphD3 {
         (enter) => enter.append("circle").attr("class", `node ${styles.node}`),
         (update) => update.attr("class", `node ${styles.node}`)
       )
+      // Here size is the weight given to that entity
       .attr("r", (d) => {
-        return d.size;
+        // If no project selected keep previous weight
+        // Otherwise update using the selected project code
+        return this.getWeight(d);
       })
       .attr("id", (d) => {
         return d.id;
@@ -680,7 +705,6 @@ class ForceGraphD3 {
         // Here we're using the weight of the edges between
         // nodes to  change the properties of the line drawn
         if (d.type === "direct") {
-          console.log(d.value);
           if (d.value > weightCutoff) {
             return `link ${styles.link}`;
           } else {

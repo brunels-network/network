@@ -31,6 +31,7 @@ class SocialGraph extends React.Component {
             highlighted={this.props.highlighted}
             selected={this.props.selected}
             wobble={this.props.wobble}
+            selectedShipID={this.props.selectedShipID}
           />
         </div>
       );
@@ -46,6 +47,7 @@ SocialGraph.propTypes = {
   selected: PropTypes.func,
   social: PropTypes.object.isRequired,
   wobble: PropTypes.bool.isRequired,
+  selectedShipID: PropTypes.string,
 };
 
 export default SocialGraph;

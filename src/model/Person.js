@@ -376,12 +376,23 @@ class Person {
   }
 
   getWeight() {
-    if (this.state.weight) {
-      const key = Object.keys(this.state.weight);
-      return this.state.weight[key];
-    } else {
-      console.error("No weight for ", this.getName(), this.getID());
-      return 1;
+    return this.state.weight;
+
+    // if (this.state.weight) {
+    //   const key = Object.keys(this.state.weight);
+    //   return this.state.weight[key];
+    // } else {
+    //   console.error("No weight for ", this.getName(), this.getID());
+    //   return 1;
+    // }
+  }
+
+  getProjectWeight(projectKey) {
+    try {
+      return this.state.weight[projectKey];
+    } catch (error) {
+      console.error("No weight for " + this.getName() + this.getID() + " for project with key " + projectKey, error);
+      return 0;
     }
   }
 
@@ -394,7 +405,10 @@ class Person {
       shape: "circle",
     };
 
-    node["size"] = 0.5 * this.getWeight();
+    const weight = this.getWeight();
+
+    node["size"] = 0.5 * weight;
+    node["weight"] = weight;
 
     // Position will be used to set the colour used
     // for the node representing this person
