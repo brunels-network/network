@@ -9,19 +9,18 @@ class ShipSelector extends React.Component {
 
     const projects = this.props.projects;
 
-    const ssGB = projects.getByName("SS Great Western");
-    this.props.shipFilter(ssGB);
+    // We want the graph to start with the GW selected
+    const ssGW = projects.getByName("SS Great Western");
+    this.props.shipFilter(ssGW);
 
     this.state = { lastShip: "SS Great Western" };
   }
 
   setFilter(item) {
-    // First check if the ship is the same as the last one clicked
     const shipName = item.getName();
 
     if (shipName === this.state.lastShip) {
       this.props.resetFilters();
-      // Allows the ship to be selected again
       this.setState({ lastShip: "" });
       return;
     }
