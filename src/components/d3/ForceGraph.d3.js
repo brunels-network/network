@@ -220,6 +220,7 @@ class ForceGraphD3 {
 
     if (social) {
       graph = social.getGraph();
+      console.log(graph.edges);
     }
 
     // The social object will cache the 'getGraph' result, meaning
@@ -703,14 +704,14 @@ class ForceGraphD3 {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .force("charge", d3.forceManyBody().strength(-150).distanceMin(5).distanceMax(20))
+      .force("charge", d3.forceManyBody().strength(-150).distanceMin(10).distanceMax(25))
       .force(
         "link",
         d3
           .forceLink()
           .links(this._graph.edges)
-          //   .strength(() => {
-          //     return 0.2;
+          //   .strength((d) => {
+          //     return 0.1 * (1 + d.value);
           //   })
           .distance((d) => {
             return 75 * (1 + d.value);
@@ -722,11 +723,12 @@ class ForceGraphD3 {
         d3
           .forceCollide()
           .radius((d) => {
-            return 1 + d.size;
+            return 3 * (1 + d.size);
           })
           .strength(1.0)
           .iterations(5)
       )
+      // This forces the groupings given in position_groups.json left/right
       .force(
         "X",
         d3.forceX().strength((d) => {

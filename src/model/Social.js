@@ -136,7 +136,7 @@ class Social {
       try {
         this.state[key]._updateHooks(getHook);
       } catch (error) {
-        console.error(error);
+        console.error("For key : ", key, "\nError: ", error);
       }
     }
   }
