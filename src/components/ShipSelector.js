@@ -1,13 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import styles from "./ShipSelector.module.css"
+import styles from "./ShipSelector.module.css";
 
 class ShipSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { lastShip: "" };
+    const projects = this.props.projects;
+
+    const ssGB = projects.getByName("SS Great Western");
+    this.props.shipFilter(ssGB);
+
+    this.state = { lastShip: "SS Great Western" };
   }
 
   setFilter(item) {

@@ -646,6 +646,9 @@ class ForceGraphD3 {
       )
       .text((d) => d.label)
       .attr("dx", "0.5em")
+      // This keeps the text from the centre of the circle
+      // TODO -  could get this to be within the circle if the
+      // circle is large enough?
       .attr("dy", (d) => {
         return -1 * (3 + d.size);
       })
