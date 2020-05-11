@@ -313,7 +313,8 @@ class Connection {
 
   toEdge() {
     let color = this.getColorFromType();
-    let weight = this.getWeightFromType();
+    // let weight = this.getWeightFromType();
+    let weight = this.getWeight();
 
     let edge = {
       id: this.getID(),

@@ -668,24 +668,28 @@ class ForceGraphD3 {
   _updateLink(data) {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
+    const weightCutoff = 4;
+
     link = link
       .data(data, (d) => d.id)
       .join(
         (enter) => enter.append("line").attr("class", `link ${styles.link}`),
         (update) => update.attr("class", `link ${styles.link}`)
       )
-      .attr("class", `link ${styles.link}`)
-      //    (d) => {
-      // if (d.type === "direct") {
-      //   if (d.value > 3) {
-      // return ;
-      //   } else {
-      //     return `link ${styles.link_weak}`;
-      //   }
-      // } else {
-      //   return `link ${styles.link_indirect}`;
-      // }
-      //   })
+      .attr("class", (d) => {
+        // Here we're using the weight of the edges between
+        // nodes to  change the properties of the line drawn
+        if (d.type === "direct") {
+          console.log(d.value);
+          if (d.value > weightCutoff) {
+            return `link ${styles.link}`;
+          } else {
+            return `link ${styles.link_weak}`;
+          }
+        } else {
+          return `link ${styles.link_indirect}`;
+        }
+      })
       .attr("id", (d) => {
         return d.id;
       })
