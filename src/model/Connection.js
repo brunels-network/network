@@ -320,6 +320,7 @@ class Connection {
       source: this.state.n0,
       target: this.state.n1,
       value: weight,
+      type: this.state.type,
       color: color,
     };
 

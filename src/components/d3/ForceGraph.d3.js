@@ -675,6 +675,17 @@ class ForceGraphD3 {
         (update) => update.attr("class", `link ${styles.link}`)
       )
       .attr("class", `link ${styles.link}`)
+      //    (d) => {
+      // if (d.type === "direct") {
+      //   if (d.value > 3) {
+      // return ;
+      //   } else {
+      //     return `link ${styles.link_weak}`;
+      //   }
+      // } else {
+      //   return `link ${styles.link_indirect}`;
+      // }
+      //   })
       .attr("id", (d) => {
         return d.id;
       })

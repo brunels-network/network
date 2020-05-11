@@ -38,6 +38,18 @@
   stroke-opacity: 50%;
 }
 
+.link_weak {
+  stroke: blue;
+  stroke-width: 0.1em;
+  stroke-opacity: 50%;
+}
+
+.link_indirect {
+  stroke: lightgrey;
+  stroke-width: 0.1em;
+  stroke-opacity: 20%;
+}
+
 .link.highlight {
   stroke: red;
   stroke-width: 0.2em;
