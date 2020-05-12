@@ -73,6 +73,7 @@ class Business {
       scores: {},
       affiliations: {},
       notes: [],
+      weight: 1,
     };
 
     this.setState(props);
@@ -207,6 +208,7 @@ class Business {
       this.state.scores = setState(state.scores, {});
       this.state.sources = setState(state.sources, {});
       this.state.notes = setState(state.notes, []);
+      this.state.weight = setState(state.weight);
 
       if (!this.state.name) {
         throw new ValueError("You cannot have an Business without a name");
@@ -220,6 +222,10 @@ class Business {
 
   merge() {
     return this;
+  }
+
+  getWeight() {
+    return this.state.weight;
   }
 
   toString() {
@@ -245,15 +251,10 @@ class Business {
   getNode(is_anchor = false) {
     let node = { id: this.getID(), label: this.getName(), title: this.getName(), shape: "circle" };
 
-    let weight = 10.0;
+    const weight = this.getWeight();
 
-    if (weight < 5.0) {
-      weight = 5.0;
-    } else if (weight > 20.0) {
-      weight = 20.0;
-    }
-
-    node["size"] = weight;
+    node["size"] = 0.5 * weight;
+    node["weight"] = weight;
 
     let keys = Object.keys(this.state.projects);
 

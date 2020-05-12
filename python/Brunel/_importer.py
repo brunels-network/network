@@ -268,6 +268,7 @@ def importBusiness(node, project, importers=None):
         sources = {pid: importSources(node, importers=importers)}
         affiliations = {pid: importAffiliations(node, importers=importers)}
         notes = {pid: importNotes(node, importers=importers)}
+        weight = {pid: importWeights(node, importers=importers)}
 
         from ._business import Business as _Business
         return _Business({"name": name,
@@ -275,7 +276,7 @@ def importBusiness(node, project, importers=None):
                           "sources": sources,
                           "affiliations": affiliations,
                           "projects": {project.getID(): _DateRange.null()},
-                          "notes": notes})
+                          "notes": notes, "weight": weight})
     except Exception as e:
         print(f"Cannot load Business {node}: {e}")
         return None

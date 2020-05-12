@@ -173,8 +173,7 @@ class ForceGraphD3 extends React.Component {
 
     this.drag = this.drag.bind(this);
     this.dragLink = this.dragLink.bind(this);
-
-    console.log("in ctor : ", this.props.selectedShipID);
+    this.getWeight = this.getWeight.bind(this);
 
     // generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
@@ -192,7 +191,14 @@ class ForceGraphD3 extends React.Component {
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
+      lastShip: "",
     };
+
+    console.log("Within the ForceGraph ctor : ", this.props.selectedShipID);
+
+    if (this.props.selectedShipID) {
+      this.state.lastShip = props.selectedShipID;
+    }
 
     this._size_changed = true;
     this._graph_changed = true;
@@ -306,6 +312,11 @@ class ForceGraphD3 extends React.Component {
     } else {
       this._target_decay = 0.4;
       this._target_alpha = 0;
+    }
+
+    if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
+      this.state.lastShip = props.selectedShipID;
+      this._graph_changed = true;
     }
 
     let hasWidth = Object.prototype.hasOwnProperty.call(props, "width");
@@ -615,19 +626,14 @@ class ForceGraphD3 extends React.Component {
 
   getWeight(item) {
     const shipID = this.props.selectedShipID;
-
     // Big weights make the size of circles too large
     const sizeScale = 0.5;
 
-    let weight;
-    try {
-      weight = sizeScale * item["weight"][shipID];
-    } catch (error) {
-      console.log("No weight for item ID : " + item.id);
-      weight = 1;
-    }
+    let weight = sizeScale * item["weight"][shipID];
 
-    console.log("Weight : ", weight, "shipID : ", shipID);
+    if (!weight) {
+      weight = 2;
+    }
 
     return weight;
   }
@@ -645,6 +651,7 @@ class ForceGraphD3 extends React.Component {
       .attr("r", (d) => {
         // If no project selected keep previous weight
         // Otherwise update using the selected project code
+        console.log("Weight :", this.getWeight(d), "for ship ID: ", this.props.selectedShipID);
         return this.getWeight(d);
       })
       .attr("id", (d) => {
@@ -664,6 +671,9 @@ class ForceGraphD3 extends React.Component {
   _updateNodeText(data) {
     let text = this._mainGroup.select(".node_text-group").selectAll(".node_text");
 
+    // Big weights make the size of circles too large
+    const sizeScale = 0.5;
+
     text = text
       .data(data, (d) => d.id)
       .join(
@@ -676,7 +686,9 @@ class ForceGraphD3 extends React.Component {
       // TODO -  could get this to be within the circle if the
       // circle is large enough?
       .attr("dy", (d) => {
-        return -1 * (3 + d.size);
+        const weight = this.getWeight(d);
+
+        return -1 * (3 + sizeScale * weight);
       })
       .attr("text-anchor", "start")
       .attr("id", (d) => {

@@ -23,6 +23,7 @@ class SocialGraph extends React.Component {
 
   render() {
     if (this.props.social) {
+      console.log("In SocialGraph shipID: ", this.props.selectedShipID);
       return (
         <div style={{ width: "100%", height: "100%" }}>
           <ForceGraph

@@ -26,6 +26,7 @@ class Business:
             "scores": {},
             "affiliations": {},
             "notes": [],
+            "weight": 1
         }
 
         self.setState(props)
@@ -61,6 +62,7 @@ class Business:
         self.state["scores"] = _setState(state, "scores", {})
         self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
+        self.state["weight"] = _setState(state, "weight")
 
         if self.state["name"] == "None" or self.state["name"] is None:
             raise ValueError(f"No name for {self}?")

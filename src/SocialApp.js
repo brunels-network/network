@@ -115,7 +115,6 @@ class SocialApp extends React.Component {
   slotSetFilter(item) {
     this.resetFilters();
     this.slotToggleFilter(item);
-    console.log("Selected ship : ", item.getID());
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
   }
 
