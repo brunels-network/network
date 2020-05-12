@@ -191,14 +191,7 @@ class ForceGraphD3 extends React.Component {
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
-      lastShip: "",
     };
-
-    console.log("Within the ForceGraph ctor : ", this.props.selectedShipID);
-
-    if (this.props.selectedShipID) {
-      this.state.lastShip = props.selectedShipID;
-    }
 
     this._size_changed = true;
     this._graph_changed = true;
@@ -215,12 +208,21 @@ class ForceGraphD3 extends React.Component {
     this.update(props);
   }
 
+  getSelectedShipID() {
+    const filter = this.state.social.getFilter();
+
+    if (filter["project"]) {
+      const projectCode = Object.keys(filter["project"])[0];
+
+      return projectCode;
+    }
+  }
+
   updateGraph(social) {
     let w = this.state.width;
     let h = this.state.height;
 
     this.state.social = social;
-    // this.setState({ social: social });
 
     if (!w || !h) {
       return;
@@ -625,7 +627,7 @@ class ForceGraphD3 extends React.Component {
   }
 
   getWeight(item) {
-    const shipID = this.props.selectedShipID;
+    const shipID = this.getSelectedShipID();
     // Big weights make the size of circles too large
     const sizeScale = 0.5;
 
@@ -651,7 +653,6 @@ class ForceGraphD3 extends React.Component {
       .attr("r", (d) => {
         // If no project selected keep previous weight
         // Otherwise update using the selected project code
-        console.log("Weight :", this.getWeight(d), "for ship ID: ", this.props.selectedShipID);
         return this.getWeight(d);
       })
       .attr("id", (d) => {

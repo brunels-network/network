@@ -129,8 +129,6 @@ class SocialApp extends React.Component {
       return;
     }
 
-    console.log(item);
-
     let social = this.state.social;
     social.toggleFilter(item);
 
