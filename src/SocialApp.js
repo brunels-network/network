@@ -412,7 +412,7 @@ class SocialApp extends React.Component {
         </div>
 
         {/* Some side panel */}
-        <div className={styles.rightSidePanel}>
+        {/* <div className={styles.rightSidePanel}>
           <div>
             <DefaultButton
               onClick={() => {
@@ -428,7 +428,7 @@ class SocialApp extends React.Component {
           <div>
             <DefaultButton onClick={this.toggleWobble}>Wobble</DefaultButton>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
