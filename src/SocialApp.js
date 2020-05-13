@@ -4,6 +4,7 @@ import Dry from "json-dry";
 import ReactModal from "react-modal";
 
 // Brunel components
+import AnalysisPanel from "./components/AnalysisPanel";
 import SocialGraph from "./components/SocialGraph";
 import InfoBox from "./components/InfoBox";
 import TimeLineBox from "./components/TimeLineBox";
@@ -57,6 +58,7 @@ class SocialApp extends React.Component {
       isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
+      isAnalysisOpen: false,
       wobbleEnabled: true,
       selectedShip: null,
       selectedShipID: null,
@@ -83,6 +85,7 @@ class SocialApp extends React.Component {
       isTimeLinePanelOpen: false,
       isHamburgerMenuOpen: false,
       isFilterPanelOpen: false,
+      isAnalysisOpen: false,
       highlighted_item: null,
     });
   }
@@ -192,6 +195,10 @@ class SocialApp extends React.Component {
     });
   }
 
+  toggleAnalysisPanel() {
+    this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
+  }
+
   toggleWobble() {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
@@ -220,6 +227,8 @@ class SocialApp extends React.Component {
       : styles.graphContainerMenuClosed;
 
     // let sidebarClass = this.state.isHamburgerMenuOpen ? styles.sidebarVis : stules
+
+    console.log(this.state.isHamburgerMenuOpen);
 
     return (
       <div>
@@ -272,7 +281,7 @@ class SocialApp extends React.Component {
           }}
         />
 
-        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" size="20%">
+        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="20%">
           <span
             className={styles.closePanelButton}
             onClick={() => {
@@ -344,7 +353,7 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* Filter on bottom of page */}
-        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom">
+        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="20%">
           <span
             className={styles.closePanelButton}
             onClick={() => {
@@ -371,7 +380,7 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" size="10%">
+        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" width="10%" height="100%">
           <BrunelMenu
             setOverlay={this.setOverlay}
             clickReset={() => {
@@ -411,24 +420,24 @@ class SocialApp extends React.Component {
           />
         </div>
 
-        {/* Some side panel */}
-        {/* <div className={styles.rightSidePanel}>
-          <div>
-            <DefaultButton
-              onClick={() => {
-                this.toggleFilterPanel();
-              }}
-            >
-              Filters
-            </DefaultButton>
-          </div>
-          <div>
-            <DefaultButton onClick={() => this.toggleTimeLinePanel()}>{"Timeline"}</DefaultButton>
-          </div>
-          <div>
-            <DefaultButton onClick={this.toggleWobble}>Wobble</DefaultButton>
-          </div>
-        </div> */}
+        <div className={styles.rightSidePanel}>
+          <button
+            onClick={() => {
+              this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
+            }}
+          >
+            Panel
+          </button>
+        </div>
+
+        <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
+          <AnalysisPanel
+            toggleFilterPanel={() => this.toggleFilterPanel()}
+            toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
+            toggleWobble={() => this.toggleWobble()}
+            togglePanel={() => this.toggleAnalysisPanel()}
+          />
+        </SlidingPanel>
       </div>
     );
   }

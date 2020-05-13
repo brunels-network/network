@@ -25,22 +25,29 @@ class SlidingPanel extends React.Component {
     let container = styles.rightContainer;
     let transition = SlideFromRight;
 
-    let size = this.props.size;
+    let width = this.props.width;
+    let height = this.props.height;
 
-    let horiz_size = { width: size };
-    let vert_size = { height: size };
-
-    if (!size) {
-      horiz_size = { width: this.state.defaultSize, minSize: this.state.minSize };
-      vert_size = { height: this.state.defaultSize, minSize: this.state.minSize };
+    if (height && !width) {
+      width = "100%";
     }
+
+    if (width && !height) {
+      console.log("Setting height 100%");
+      height = "100%";
+    }
+
+    let horiz_size = { width: width };
+    let vert_size = { height: height };
+
+    let style = { width: width, height: height, minSize: this.state.minSize };
 
     if (this.props.maxSize) {
       horiz_size.maxWidth = this.props.maxSize;
       vert_size.maxHeight = this.props.maxSize;
     }
 
-    let style = horiz_size;
+    // let style = horiz_size;
     // Get the passed in position
     let position = this.props.position;
 
@@ -50,11 +57,9 @@ class SlidingPanel extends React.Component {
     } else if (position === "bottom") {
       container = styles.bottomContainer;
       transition = SlideFromBottom;
-      style = vert_size;
     } else if (position === "top") {
       container = styles.topContainer;
       transition = SlideFromTop;
-      style = vert_size;
     } else if (position === "left") {
       container = styles.leftContainer;
       transition = SlideFromLeft;
@@ -78,7 +83,8 @@ SlidingPanel.propTypes = {
   maxSize: PropTypes.string,
   minSize: PropTypes.string,
   position: PropTypes.string,
-  size: PropTypes.string,
+  width: PropTypes.string,
+  height: PropTypes.string,
 };
 
 export default SlidingPanel;

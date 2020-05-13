@@ -1,0 +1,25 @@
+{
+  "commercial": [
+    "auditor",
+    "commercialrepresentative",
+    "director",
+    "shareholder",
+    "trustee",
+    "solicitors",
+    "missing",
+    "investor",
+    "supplier",
+    "trustee"
+  ],
+  "engineering": [
+    "buildertier1",
+    "buildertier2",
+    "consultingengineer",
+    "contributingengineer",
+    "designer",
+    "noncontributingengineer",
+    "suppliertier1",
+    "suppliertier2"
+  ],
+  "other": ["externalpatronage", "navalofficer"]
+}

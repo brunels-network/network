@@ -1,27 +1,22 @@
-@font-face {
-  font-family: "Playfair Display SC";
-  src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Bold.ttf) format("truetype");
-}
-
-@font-face {
-  font-family: "Playfair Display";
-  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
-}
-
-.sidebar {
+.titleText {
   display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  font-family: "Playfair Display SC";
+  font-size: calc(18px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
+  text-decoration: underline;
+}
+
+.wholePanel {
+  background: #9cb6a4;
   height: 100%;
-  background-color: #808080;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
-.logo {
-  text-align: center;
-}
-
-.verticalSpace {
-  margin-bottom: 45%;
+.buttonPanel {
+  margin-top: 250%;
+  height: 10%;
 }
 
 /* This makes the buttons look like text */
@@ -39,4 +34,12 @@
 
 .button:hover {
   color: #111;
+}
+
+.verticalSpaceTitle {
+  margin-bottom: 20%;
+}
+
+.verticalSpace {
+  margin-bottom: 45%;
 }
