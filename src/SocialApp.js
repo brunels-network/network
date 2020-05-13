@@ -223,9 +223,11 @@ class SocialApp extends React.Component {
     const social = this.state.social;
 
     // TODO - check if this is the correct way
-    let graphContainerClass = this.state.isHamburgerMenuOpen
-      ? styles.graphContainerMenuOpen
-      : styles.graphContainerMenuClosed;
+    // Removed the movement for now
+    let graphContainerClass = styles.graphContainerMenuClosed;
+    //  this.state.isHamburgerMenuOpen
+    //   ? styles.graphContainerMenuOpen
+    //   : styles.graphContainerMenuClosed;
 
     // let sidebarClass = this.state.isHamburgerMenuOpen ? styles.sidebarVis : stules
 

@@ -12,9 +12,19 @@
   height: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  /* Within the column so left is top, center is middle */
+  justify-content: left;
+  align-items: left;
 }
 
 .buttonPanel {
+  display: flex;
+  justify-content: left;
+  align-items: left;
   margin-top: 250%;
   height: 10%;
 }
