@@ -36,6 +36,7 @@
   stroke: white;
   stroke-width: 0.12em;
   stroke-opacity: 60%;
+  fill: none;
 }
 
 .link_weak {

@@ -710,23 +710,26 @@ class ForceGraphD3 extends React.Component {
 
     link = link
       .data(data, (d) => d.id)
-      .join(
-        (enter) => enter.append("line").attr("class", `link ${styles.link}`),
-        (update) => update.attr("class", `link ${styles.link}`)
-      )
-      .attr("class", (d) => {
-        // Here we're using the weight of the edges between
-        // nodes to  change the properties of the line drawn
-        if (d.type === "direct") {
-          if (d.value > weightCutoff) {
-            return `link ${styles.link}`;
-          } else {
-            return `link ${styles.link_weak}`;
-          }
-        } else {
-          return `link ${styles.link_indirect}`;
-        }
-      })
+      .enter()
+      .append("path")
+      .attr("class", `link ${styles.link}`)
+      //   .join(
+      // (enter) => enter.append("line").attr("class", `link ${styles.link}`),
+      // (update) => update.attr("class", `link ${styles.link}`)
+      //   )
+      //   .attr("class", (d) => {
+      //     // Here we're using the weight of the edges between
+      //     // nodes to  change the properties of the line drawn
+      //     if (d.type === "direct") {
+      //       if (d.value > weightCutoff) {
+      //         return `link ${styles.link}`;
+      //       } else {
+      //         return `link ${styles.link_weak}`;
+      //       }
+      //     } else {
+      //       return `link ${styles.link_indirect}`;
+      //     }
+      //   })
       .attr("id", (d) => {
         return d.id;
       })
@@ -787,13 +790,16 @@ class ForceGraphD3 extends React.Component {
           return this.getGroupForce(d);
         })
       )
+      // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
-        this._link
-          .attr("x1", (d) => d.source.x)
-          .attr("y1", (d) => d.source.y)
-          .attr("x2", (d) => d.target.x)
-          .attr("y2", (d) => d.target.y);
+        this._link.attr("d", (d) => {
+          const curveFactor = 2;
+          const dx = d.target.x - d.source.x;
+          const dy = d.target.y - d.source.x;
+          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
 
+          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+        });
         this._node
           .attr("cx", (d) => {
             return (d.x = constrain(d.x, w, d.r));
