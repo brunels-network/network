@@ -43,29 +43,34 @@
   stroke: #4a7b9d;
   stroke-width: 0.1em;
   stroke-opacity: 40%;
+  fill: none;
 }
 
 .link_indirect {
   stroke: #54577c;
   stroke-width: 0.1em;
   stroke-opacity: 50%;
+  fill: none;
 }
 
 .link_weak.highlight {
   stroke: red;
   stroke-width: 0.1em;
   stroke-opacity: 50%;
+  fill: none;
 }
 
 .link_indirect.highlight {
   stroke: red;
   stroke-width: 0.1em;
   stroke-opacity: 50%;
+  fill: none;
 }
 
 .link.highlight {
   stroke: red;
   stroke-width: 0.2em;
+  fill: none;
 }
 
 .node_text {

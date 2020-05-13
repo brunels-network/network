@@ -713,23 +713,19 @@ class ForceGraphD3 extends React.Component {
       .enter()
       .append("path")
       .attr("class", `link ${styles.link}`)
-      //   .join(
-      // (enter) => enter.append("line").attr("class", `link ${styles.link}`),
-      // (update) => update.attr("class", `link ${styles.link}`)
-      //   )
-      //   .attr("class", (d) => {
-      //     // Here we're using the weight of the edges between
-      //     // nodes to  change the properties of the line drawn
-      //     if (d.type === "direct") {
-      //       if (d.value > weightCutoff) {
-      //         return `link ${styles.link}`;
-      //       } else {
-      //         return `link ${styles.link_weak}`;
-      //       }
-      //     } else {
-      //       return `link ${styles.link_indirect}`;
-      //     }
-      //   })
+      .attr("class", (d) => {
+        // Here we're using the weight of the edges between
+        // nodes to  change the properties of the line drawn
+        if (d.type === "direct") {
+          if (d.value > weightCutoff) {
+            return `link ${styles.link}`;
+          } else {
+            return `link ${styles.link_weak}`;
+          }
+        } else {
+          return `link ${styles.link_indirect}`;
+        }
+      })
       .attr("id", (d) => {
         return d.id;
       })
