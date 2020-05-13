@@ -1,18 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
-import DefaultButton from "./DefaultButton";
-
-import logo from "../images/ssgb_logo.png";
 
 import styles from "./AnalysisPanel.module.css";
 
 class AnalysisPanel extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { ship: "SS Great Western" };
-  }
-
   render() {
     return (
       <div className={styles.wholePanel}>
@@ -45,6 +36,7 @@ class AnalysisPanel extends React.Component {
         >
           Wobble
         </button>
+        <div className={styles.verticalSpace}></div>
         <button
           className={styles.button}
           onClick={() => {

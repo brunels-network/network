@@ -5,6 +5,7 @@ import ReactModal from "react-modal";
 
 // Brunel components
 import AnalysisPanel from "./components/AnalysisPanel";
+import AnalysisButton from "./components/AnalysisButton";
 import SocialGraph from "./components/SocialGraph";
 import InfoBox from "./components/InfoBox";
 import TimeLineBox from "./components/TimeLineBox";
@@ -421,13 +422,7 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.rightSidePanel}>
-          <button
-            onClick={() => {
-              this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
-            }}
-          >
-            Panel
-          </button>
+          <AnalysisButton togglePanel={() => this.toggleAnalysisPanel()} />
         </div>
 
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">

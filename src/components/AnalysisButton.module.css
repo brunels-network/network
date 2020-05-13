@@ -1,0 +1,14 @@
+.button {
+  background: none;
+  border: none;
+  font-family: "Playfair Display SC";
+  color: #f1f1f1;
+  cursor: pointer;
+  font-size: calc(20px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
+  transform: rotate(-90deg);
+  padding-bottom: 30%;
+}
+
+.button:hover {
+  color: #b5c2b9;
+}
