@@ -284,7 +284,7 @@ class SocialApp extends React.Component {
           }}
         />
 
-        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="20%">
+        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
           <span
             className={styles.closePanelButton}
             onClick={() => {
@@ -300,33 +300,6 @@ class SocialApp extends React.Component {
               this.slotSetFilterbyID(item);
             }}
             resetFilters={this.resetFilters}
-            getMaxWindow={() => {
-              return this.state.social.getMaxWindow();
-            }}
-            getProjectWindow={() => {
-              return this.state.social.getWindow();
-            }}
-            getItemWindow={() => {
-              return this.state.social.getWindow();
-            }}
-            getProjectTimeLine={() => {
-              return this.state.social.getProjectTimeLine();
-            }}
-            getItemTimeLine={() => {
-              return this.state.social.getItemTimeLine();
-            }}
-            emitClicked={(item) => {
-              this.slotClicked(item);
-            }}
-            emitSelected={(item) => {
-              this.slotSelected(item);
-            }}
-            emitHighlighted={(item) => {
-              this.slotHighlighted(item);
-            }}
-            emitWindowChanged={(window) => {
-              this.slotWindowChanged(window);
-            }}
           />
         </SlidingPanel>
 

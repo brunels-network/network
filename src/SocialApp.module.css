@@ -99,8 +99,9 @@
 
 .closePanelButton {
   position: absolute;
-  background-color: black;
-  color: white;
+  background-color: transparent;
+  color: black;
+  font-size: large;
   text-align: center;
   text-decoration: none;
   border-radius: 10%;
@@ -166,7 +167,6 @@
   }
   .closePanelButton:hover {
     padding: 2px 5px;
-    background-color: red;
     color: white;
   }
 }

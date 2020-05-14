@@ -7,7 +7,8 @@
 }
 
 .centerContainer {
-  line-height: 200px;
+  /* line-height: 200px; */
+  font-family: "Playfair Display";
   width: 100%;
   height: 100%;
   text-align: center;
@@ -40,7 +41,7 @@
 .tab {
   border: 0;
   background-color: white;
-  font-family: inherit;
+  font-family: "Playfair Display SC";
   font-weight: bold;
   font-size: small;
   padding: 10px 20px;
@@ -60,8 +61,8 @@
 
 .tab[aria-selected="true"] {
   position: relative;
-  background-color: #003366;
-  border-bottom: 5px solid white;
+  /* background-color: #003366; */
+  background-color: #808080;
   color: white;
 }
 

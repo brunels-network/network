@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import moment from "moment";
 
-import Timeline, { TimelineHeaders, DateHeader, CustomHeader } from "react-calendar-timeline";
+import Timeline, { TimelineHeaders, CustomHeader } from "react-calendar-timeline";
 
 import "./TimelineCSSOverride.css";
 
@@ -30,6 +30,7 @@ class NewTimeline extends React.Component {
       color: "black",
       fontSize: "16px",
       backgroundColor: "#E8CEAA",
+      //   backgroundColor: "#E3D8A0",
       fontFamily: "Playfair Display SC",
       border: "white",
     };
@@ -54,8 +55,8 @@ class NewTimeline extends React.Component {
   itemRenderer({ item, itemContext, getItemProps }) {
     // const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 
-    const background = itemContext.selected ? (itemContext.dragging ? "#008080" : "#008080") : "#808080";
-    const border = itemContext.resizing ? "#008080" : "#808080";
+    const background = itemContext.selected ? (itemContext.dragging ? "#008080" : "#008080") : "#003366";
+    const border = itemContext.resizing ? "#008080" : "#003366";
 
     return (
       <div
