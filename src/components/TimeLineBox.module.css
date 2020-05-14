@@ -1,4 +1,5 @@
 .container {
+  background: #e8ceaa;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -53,7 +54,7 @@
 .tab[aria-selected="false"]:hover,
 .tab:focus {
   outline: 0;
-  background-color:#8d8c8c;
+  background-color: #8d8c8c;
   color: white;
 }
 

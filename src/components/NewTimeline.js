@@ -2,8 +2,9 @@ import PropTypes from "prop-types";
 import React from "react";
 import moment from "moment";
 
-import Timeline, { TimelineHeaders, DateHeader } from "react-calendar-timeline";
-import "react-calendar-timeline/lib/Timeline.css";
+import Timeline, { TimelineHeaders, DateHeader, CustomHeader } from "react-calendar-timeline";
+
+import "./TimelineCSSOverride.css";
 
 class NewTimeline extends React.Component {
   constructor(props) {
@@ -13,8 +14,8 @@ class NewTimeline extends React.Component {
     this.itemRenderer = this.itemRenderer.bind(this);
 
     this.state = {
-      defaultTimeStart: moment("1836-01-01"),
-      defaultTimeEnd: moment("1858-12-31"),
+      defaultTimeStart: moment("1829-01-01"),
+      defaultTimeEnd: moment("1846-12-31"),
       lastShip: null,
     };
 
@@ -26,11 +27,11 @@ class NewTimeline extends React.Component {
     };
 
     this.dateHeaderStyle = {
-      color: "#008080",
-      backgroundColor: "#008080",
-      fontFamily: "serif",
-      borderLeft: "#008080",
-      borderBottom: "#008080",
+      color: "black",
+      fontSize: "16px",
+      backgroundColor: "#E8CEAA",
+      fontFamily: "Playfair Display SC",
+      border: "white",
     };
   }
 
@@ -50,8 +51,8 @@ class NewTimeline extends React.Component {
     return;
   }
 
-  itemRenderer({ item, itemContext, getItemProps, getResizeProps }) {
-    const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
+  itemRenderer({ item, itemContext, getItemProps }) {
+    // const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 
     const background = itemContext.selected ? (itemContext.dragging ? "#008080" : "#008080") : "#808080";
     const border = itemContext.resizing ? "#008080" : "#808080";
@@ -63,8 +64,8 @@ class NewTimeline extends React.Component {
             background,
             border,
             borderStyle: "solid",
-            fontSize: "14px",
-            fontFamily: "serif",
+            fontSize: "18px",
+            fontFamily: "Playfair Display SC",
             borderWidth: 0,
           },
           onMouseDown: () => {
@@ -72,11 +73,7 @@ class NewTimeline extends React.Component {
           },
         })}
       >
-        {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
-
         <div style={this.textStyle}>{itemContext.title}</div>
-
-        {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
       </div>
     );
   }
@@ -113,8 +110,39 @@ class NewTimeline extends React.Component {
         defaultTimeStart={this.state.defaultTimeStart}
         defaultTimeEnd={this.state.defaultTimeEnd}
       >
-        <TimelineHeaders className="sticky">
-          <DateHeader unit="primaryHeader" style={{ color: "red", backgroundColor: "#008080", fontFamily: "serif" }} />
+        <TimelineHeaders>
+          {/* <DateHeader unit="primaryHeader" style={this.dateHeaderStyle} /> */}
+          <CustomHeader height={30} unit="year">
+            {({ headerContext: { intervals }, getRootProps, getIntervalProps }) => {
+              console.log(getIntervalProps);
+              return (
+                <div {...getRootProps()}>
+                  {intervals.map((interval, index) => {
+                    const intervalStyle = {
+                      lineHeight: "30px",
+                      textAlign: "center",
+                      borderLeft: "1px solid white",
+                      cursor: "pointer",
+                      backgroundColor: "#E9CEAB",
+                      color: "black",
+                      fontFamily: "Playfair Display SC",
+                    };
+                    return (
+                      <div
+                        key={index}
+                        {...getIntervalProps({
+                          interval,
+                          style: intervalStyle,
+                        })}
+                      >
+                        <div className="sticky">{interval.startTime.format("YYYY")}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            }}
+          </CustomHeader>
         </TimelineHeaders>
       </Timeline>
     );
