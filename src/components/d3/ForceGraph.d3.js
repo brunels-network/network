@@ -710,9 +710,10 @@ class ForceGraphD3 extends React.Component {
 
     link = link
       .data(data, (d) => d.id)
-      .enter()
-      .append("path")
-      .attr("class", `link ${styles.link}`)
+      .join(
+        (enter) => enter.append("path").attr("class", `link ${styles.link}`),
+        (update) => update.attr("class", `link ${styles.link}`)
+      )
       .attr("class", (d) => {
         // Here we're using the weight of the edges between
         // nodes to  change the properties of the line drawn
