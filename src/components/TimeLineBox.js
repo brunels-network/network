@@ -105,7 +105,7 @@ class TimeLineBox extends Component {
 
           <TabPanel key="analysis" tabId="analysis" className={styles.tabPanel}>
             <div className={styles.centerContainer}>
-              This will contain tools and graphs for temporal social network analysis
+              <p>This will contain tools and graphs for temporal social network analysis.</p>
             </div>
           </TabPanel>
         </Tabs>
