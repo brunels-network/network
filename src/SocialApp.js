@@ -54,7 +54,7 @@ class SocialApp extends React.Component {
       selected_item: null,
       overlayItem: null,
       isInfoPanelOpen: false,
-      isTimeLinePanelOpen: true,
+      isTimeLinePanelOpen: false,
       isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
       timeline: new TimeLineBox(),
