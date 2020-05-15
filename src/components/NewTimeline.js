@@ -53,10 +53,8 @@ class NewTimeline extends React.Component {
   }
 
   itemRenderer({ item, itemContext, getItemProps }) {
-    // const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
-
-    const background = itemContext.selected ? (itemContext.dragging ? "#008080" : "#008080") : "#003366";
-    const border = itemContext.resizing ? "#008080" : "#003366";
+    const background = itemContext.selected ? "#3F592F" : "#003366";
+    const border = itemContext.resizing ? "#3F592F" : "#003366";
 
     return (
       <div

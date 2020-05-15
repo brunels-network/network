@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Spinner from "react-spinkit";
 
-import DefaultButton from "./DefaultButton";
+import TextButton from "./TextButton";
 
 import styles from "./SearchBar.module.css";
 
@@ -58,6 +58,22 @@ class SearchBar extends React.Component {
     this.setState({ searching: null, suggestions: suggestions, results: null });
   }
 
+  createButton(item, index) {
+    const name = item.getName();
+    return (
+      <TextButton
+        key={name.concat("_", index)}
+        textColor="#f1f1f1"
+        hoverColor="#111"
+        onClick={() => {
+          this.props.emitSelected(item);
+        }}
+      >
+        {name}
+      </TextButton>
+    );
+  }
+
   startSuggestion(text) {
     let social = this.props.social;
     if (!social) {
@@ -80,18 +96,7 @@ class SearchBar extends React.Component {
 
     if (items) {
       let results = items.map((item, index) => {
-        const name = item.getName();
-        return (
-          <DefaultButton
-            key={name.concat("_", index)}
-            onClick={() => {
-              emitSelected(item);
-            }}
-            style={{ width: "100%" }}
-          >
-            {name}
-          </DefaultButton>
-        );
+        return this.createButton(item, index);
       });
 
       this.setSuggestions(results);
@@ -125,18 +130,7 @@ class SearchBar extends React.Component {
 
     if (items) {
       let results = items.map((item, index) => {
-        const name = item.getName();
-        return (
-          <DefaultButton
-            key={name.concat("_", index)}
-            onClick={() => {
-              emitSelected(item);
-            }}
-            style={{ width: "100%" }}
-          >
-            {name}
-          </DefaultButton>
-        );
+        return this.createButton(item, index);
       });
 
       this.setResults(results);
@@ -279,12 +273,6 @@ class SearchBar extends React.Component {
   }
 
   render() {
-    let button_style = styles.searchButton;
-
-    if (this.isSearching() || this.isEmpty()) {
-      button_style = styles.disabledButton;
-    }
-
     return (
       <div className={styles.container}>
         <div className={styles.searchContainer}>
@@ -303,14 +291,6 @@ class SearchBar extends React.Component {
             type="text"
             value={this.state.value}
           />
-          <div
-            className={button_style}
-            onClick={() => {
-              this.onSearch();
-            }}
-          >
-            <div className={styles.magnifier}>⚲</div>
-          </div>
         </div>
         {this.isSearching() ? this.isSearchingComponent() : null}
         {this.isSuggesting() ? this.isSuggestingComponent() : null}

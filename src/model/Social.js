@@ -363,8 +363,6 @@ class Social {
       filtered = false;
     }
 
-    console.log("Getting peoples...", this.state.people);
-
     if (filtered) {
       if (!this.state.cache.people) {
         console.log("REBUILD PEOPLE");

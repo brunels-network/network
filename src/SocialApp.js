@@ -14,7 +14,6 @@ import SlidingPanel from "./components/SlidingPanel";
 import OverlayBox from "./components/OverlayBox";
 import SearchBar from "./components/SearchBar";
 import BrunelMenu from "./components/BrunelMenu";
-import DefaultButton from "./components/DefaultButton";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
 

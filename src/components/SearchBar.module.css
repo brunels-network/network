@@ -5,6 +5,7 @@
   width: 30%;
   display: flex;
   flex-direction: column;
+  font-family: "Playfair Display SC";
 }
 
 .searchContainer {
@@ -15,7 +16,7 @@
 }
 
 .resultContainer {
-  background-color: black;
+  background-color: #9cb6a4;
   width: 80%;
   max-height: 200px;
   overflow-y: auto;
@@ -35,10 +36,16 @@
 }
 
 .hamburgerButton {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  /* Within the column so left is top, center is middle */
+  justify-content: center;
+  align-items: left;
   height: 40px;
   width: 1.5em;
   font-size: xx-large;
-  padding: 0;
+  bottom: 10px;
   border: 0;
   color: white;
   vertical-align: top;
@@ -50,14 +57,14 @@
 .hamburgerButton:active {
   background-color: rgba(0, 0, 0, 0);
   color: black;
-  transform: rotate(90deg);
 }
 
 .searchBox {
   width: 80%;
   background-color: white;
   color: black;
-  font-size: medium;
+  font-size: large;
+  font-family: "Playfair Display SC";
 }
 
 .disabledButton {
@@ -78,7 +85,6 @@
 }
 
 .searchButton:active {
-  transform: rotate(5deg);
   background-color: green;
 }
 
@@ -93,7 +99,7 @@
 
 .closeResultButton {
   width: 10px;
-  background: #457383;
+  background: none;
   color: white;
   display: flex;
   justify-content: center;
@@ -101,16 +107,17 @@
   flex-direction: column;
   left: 1cm;
   padding: 2px 5px;
+  font-family: "Playfair Display SC";
 }
 
 @media (hover: hover) and (pointer: fine) {
   .hamburgerButton:hover {
-    background-color: #7A888C;
+    background-color: #7a888c;
     color: white;
   }
   .closeResultButton:hover {
-    background: #457383;
-    color: white;
+    background: #9cb6a4;
+    color: #111;
   }
   .searchButton:hover {
     background-color: #457383;

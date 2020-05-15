@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 
+import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
 
 class AnalysisPanel extends React.Component {
@@ -10,7 +11,7 @@ class AnalysisPanel extends React.Component {
         <div className={styles.verticalSpaceTitle}></div>
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
-        <button
+        <TextButton
           className={styles.button}
           onClick={() => {
             this.props.toggleFilterPanel();
@@ -18,7 +19,7 @@ class AnalysisPanel extends React.Component {
           }}
         >
           Filters
-        </button>
+        </TextButton>
         <button
           className={styles.button}
           onClick={() => {
