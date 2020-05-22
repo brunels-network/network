@@ -98,15 +98,17 @@
 }
 
 .tooltip {
-  font-family: "Playfair Display SemiBold";
-  background-color: "#808080";
-  color: white;
   position: absolute;
   padding: 10px;
   z-index: 10;
-  width: 300px;
-  height: 200px;
-  stroke: steelblue;
-  border-radius: 5px;
+  width: 15vw;
+  height: 20vh;
+  font-family: "Playfair Display SemiBold";
+  font-size: max(12px, 0.8vw);
+  background-color: #808080;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 1px;
   visibility: visible;
 }

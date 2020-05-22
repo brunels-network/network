@@ -1,0 +1,8 @@
+.tooltipContainer {
+  background-color: white;
+  color: red;
+  position: absolute;
+  z-index: 10;
+  height: 10vh;
+  width: 10vw;
+}

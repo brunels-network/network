@@ -1,11 +1,15 @@
 import * as d3 from "d3";
 
 import React from "react";
-import lodash from "lodash";
+import ReactDOMServer from "react-dom/server";
 
+import lodash from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
+import BioPopover from "../BioPopover";
+
 import styles from "../ForceGraph.module.css";
+// import "../tooltip.css";
 
 import positionGroups from "../../position_groups.json";
 
@@ -646,41 +650,45 @@ class ForceGraphD3 extends React.Component {
     return weight;
   }
 
+  getTooltipHTML(node) {
+    // Use JSX to create a div for rendering in the tooltip
+
+    const name = node.label;
+    const allBio = this.getNodeBio(node.id).replace(node.label + ".", "");
+    const shortBio = allBio; // allBio.substring(0, 150) + "...";
+
+    let html = ReactDOMServer.renderToStaticMarkup(
+      <div className={styles.toolText}>
+        <div>
+          <h2>{name}</h2>
+          <br />
+          <p>{allBio}</p>
+        </div>
+      </div>
+    );
+
+    console.log(html);
+
+    return html;
+  }
+
+  mouseClickNode(d) {}
+
   mouseoverNode(d) {
     const divSelect = "#" + this.className();
     const uid = "tooltip_" + uuidv4();
-
-    console.log(d);
-
-    const name = d.label;
-    const allBio = this.getNodeBio(d.id).replace(d.label + ".", "");
-    const shortBio = allBio.substring(0, 150) + "...";
 
     let tooltip = d3
       .select(divSelect)
       .append("div")
       .attr("id", uid)
-      .attr("class", uid)
+      .classed(styles.tooltip, true)
+      //   .attr("class", uid)
       // Move this into CSS?
-      .html(() => {
-        return "<h4>" + name + "</h4></br><p>" + shortBio + "</p>";
-      })
-      .style("position", "absolute")
-      .style("padding", "10px")
-      .style("z-index", "10")
-      .style("width", "8%")
-      .style("height", "12%")
-      .style("font-family", "Playfair Display SemiBold")
-      .style("font-size", "14px")
-      .style("background-color", "#808080")
-      .style("color", "white")
-      .style("border-radius", "1px")
+      .html(this.getTooltipHTML(d))
       .style("top", d3.event.pageY - 10 + "px")
-      .style("left", d3.event.pageX + 10 + "px")
-      .style("visibility", "visible");
-    //   .text("<h4>Example tooltip for " + d.id + "</h4>");
+      .style("left", d3.event.pageX + 10 + "px");
 
-    this._tooltips.push(uid);
     // place tooltip where cursor was
     // # Can always change the x and y here is event is null
     return tooltip;
@@ -711,9 +719,9 @@ class ForceGraphD3 extends React.Component {
       .attr("fill", (d) => {
         return this.getPositionColor(d);
       })
-      //   .on("click", this.mouseoverNode)
-      .on("mouseover", (d) => this.mouseoverNode(d))
-      .on("mouseout", this.mouseoutNode)
+      .on("click", (d) => this.props.emitPopProps(d))
+      //   .on("mouseover", (d) => this.mouseoverNode(d))
+      //   .on("mouseout", this.mouseoutNode)
       .call(this.drag());
 
     return node;
