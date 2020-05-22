@@ -32,6 +32,12 @@ class Biographies {
     return this.state.bios[node];
   }
 
+  getByID(id) {
+    if (!id) return null;
+
+    return this.state.bios[id];
+  }
+
   getNode(id) {
     if (this._getHook) {
       return this._getHook(id);

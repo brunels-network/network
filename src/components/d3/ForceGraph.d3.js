@@ -170,6 +170,7 @@ class ForceGraphD3 extends React.Component {
     this.getPositionColor = this.getPositionColor.bind(this);
     this.update = this.update.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
+    // this.mouseoverNode = this.mouseoverNode.bind(this);
 
     this.drag = this.drag.bind(this);
     this.dragLink = this.dragLink.bind(this);
@@ -202,6 +203,7 @@ class ForceGraphD3 extends React.Component {
     this._target_decay = 0.4;
     this._target_alpha = 0.3;
 
+    this._tooltips = [];
     // this.updateGraph = this.updateGraph.bind(this);
     // this.update = this.update.bind(this);
 
@@ -216,6 +218,10 @@ class ForceGraphD3 extends React.Component {
 
       return projectCode;
     }
+  }
+
+  getNodeBio(id) {
+    return this.state.social.getBiographies().getByID(id);
   }
 
   updateGraph(social) {
@@ -640,6 +646,50 @@ class ForceGraphD3 extends React.Component {
     return weight;
   }
 
+  mouseoverNode(d) {
+    const divSelect = "#" + this.className();
+    const uid = "tooltip_" + uuidv4();
+
+    console.log(d);
+
+    const name = d.label;
+    const allBio = this.getNodeBio(d.id).replace(d.label + ".", "");
+    const shortBio = allBio.substring(0, 150) + "...";
+
+    let tooltip = d3
+      .select(divSelect)
+      .append("div")
+      .attr("id", uid)
+      .attr("class", uid)
+      // Move this into CSS?
+      .html(() => {
+        return "<h4>" + name + "</h4></br><p>" + shortBio + "</p>";
+      })
+      .style("position", "absolute")
+      .style("padding", "10px")
+      .style("z-index", "10")
+      .style("width", "8%")
+      .style("height", "12%")
+      .style("font-family", "Playfair Display SemiBold")
+      .style("font-size", "14px")
+      .style("background-color", "#808080")
+      .style("color", "white")
+      .style("border-radius", "1px")
+      .style("top", d3.event.pageY - 10 + "px")
+      .style("left", d3.event.pageX + 10 + "px")
+      .style("visibility", "visible");
+    //   .text("<h4>Example tooltip for " + d.id + "</h4>");
+
+    this._tooltips.push(uid);
+    // place tooltip where cursor was
+    // # Can always change the x and y here is event is null
+    return tooltip;
+  }
+
+  mouseoutNode() {
+    d3.selectAll("div[id^=tooltip_]").remove();
+  }
+
   _updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 
@@ -661,9 +711,9 @@ class ForceGraphD3 extends React.Component {
       .attr("fill", (d) => {
         return this.getPositionColor(d);
       })
-      .on("click", handleMouseClick(this))
-      .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this))
+      //   .on("click", this.mouseoverNode)
+      .on("mouseover", (d) => this.mouseoverNode(d))
+      .on("mouseout", this.mouseoutNode)
       .call(this.drag());
 
     return node;

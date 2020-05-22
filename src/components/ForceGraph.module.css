@@ -95,3 +95,17 @@
   fill: #ffd28b;
   font-size: medium;
 }
+
+.tooltip {
+  font-family: "Playfair Display SemiBold";
+  background-color: "#808080";
+  color: white;
+  position: absolute;
+  padding: 10px;
+  z-index: 10;
+  width: 300px;
+  height: 200px;
+  stroke: steelblue;
+  border-radius: 5px;
+  visibility: visible;
+}
