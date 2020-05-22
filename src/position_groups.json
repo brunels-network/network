@@ -12,7 +12,7 @@
       "supplier",
       "trustee"
     ],
-    "color": "#DB0000"
+    "color": "#B52222"
   },
   "engineering": {
     "members": [
@@ -27,7 +27,7 @@
     ],
     "color": "#808080"
   },
-  "other": { "members": ["externalpatronage", "navalofficer"], "color": "#800000" },
+  "other": { "members": ["externalpatronage", "navalofficer"], "color": "#7F3F41" },
   "anchor": { "members": [], "color": "#9CB6A4" },
   "business": { "members": [], "color": "#367588" },
   "unknown": { "members": [], "color": "#0000FF" }

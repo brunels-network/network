@@ -33,21 +33,22 @@
 }
 
 .link {
-  stroke: white;
-  stroke-width: 0.12em;
+  /* Was white */
+  stroke: #659dd8;
+  stroke-width: 0.1em;
   stroke-opacity: 60%;
   fill: none;
 }
 
 .link_weak {
-  stroke: #4a7b9d;
+  stroke: #659dd8;
   stroke-width: 0.1em;
-  stroke-opacity: 40%;
+  stroke-opacity: 20%;
   fill: none;
 }
 
 .link_indirect {
-  stroke: #54577c;
+  stroke: #808080;
   stroke-width: 0.1em;
   stroke-opacity: 50%;
   fill: none;
