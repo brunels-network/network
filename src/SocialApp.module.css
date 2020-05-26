@@ -127,8 +127,10 @@
 .modal {
   position: absolute;
   z-index: 201;
-  top: 20px;
-  left: 20px;
+  width: 66%;
+  height: 66%;
+  top: 17%;
+  left: 17%;
   right: 20px;
   bottom: 20px;
   background-color: white;

@@ -20,7 +20,6 @@ class OverlayBox extends React.Component {
 
   render() {
     let item = this.props.item;
-
     let url = null;
 
     if (item && item.getURL) {
@@ -49,24 +48,10 @@ class OverlayBox extends React.Component {
           <div className={styles.centerContainer}>
             <div>Loading page...</div>
             <div>
-              <Spinner name="ball-grid-pulse" color="green" fadeIn="none" />
+              <Spinner name="ball-grid-pulse" color="#003366" fadeIn="none" />
             </div>
           </div>
         ) : null}
-        <iframe
-          src={url}
-          title={url}
-          width="100%"
-          height="95%"
-          onLoad={() => {
-            this.hideSpinner();
-          }}
-          frameBorder="0"
-          marginHeight="0"
-          marginWidth="0"
-          sandbox="allow-scripts"
-          position="absolute"
-        />
       </div>
     );
   }

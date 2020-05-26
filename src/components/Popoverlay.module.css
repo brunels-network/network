@@ -1,0 +1,22 @@
+.overlay {
+  position: absolute;
+  background: rgba(34, 34, 34, 0.7);
+
+  /* opacity: 0.8; */
+  z-index: 10;
+  width: 99%;
+  height: 99%;
+  left: 0.5%;
+  top: 0.5%;
+}
+
+.container {
+  position: absolute;
+  background: white;
+  width: 75%;
+  height: 75%;
+  left: 12.5%;
+  top: 12.5%;
+  opacity: 1;
+  background-color: white;
+}

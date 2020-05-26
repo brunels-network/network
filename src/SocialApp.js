@@ -390,6 +390,7 @@ class SocialApp extends React.Component {
             selected={selected}
             highlighted={highlighted}
             emitClicked={(id) => this.slotSelected(id)}
+            setOverlay={this.setOverlay}
             wobble={this.state.wobbleEnabled}
             selectedShipID={this.state.selectedShipID}
           />

@@ -16,11 +16,10 @@ class TextButton extends React.Component {
       fontFamily: "Playfair Display SC",
       color: "#f1f1f1",
       cursor: "pointer",
-      /* Responsive text size */
-      fontSize: "calc(12px + (26 - 14) * ((100vw - 300px) / (1600 - 300)))",
+      fontSize: "3vh",
       padding: "8px 8px 8px 32px",
       textAlign: "left",
-      "&:hover": { color: "red" },
+      "&:hover": { color: "black" },
     };
   }
   render() {
@@ -35,17 +34,18 @@ class TextButton extends React.Component {
     }
 
     if (this.props.fontSize) {
-      css["fontSize"] = "calc(" + this.props.fontSize + "+ (26 - 14) * ((100vw - 300px) / (1600 - 300)))";
+      css["fontSize"] = this.props.fontSize;
+    }
+
+    let clickFn;
+    if (this.props.onClick) {
+      clickFn = this.props.onClick;
+    } else {
+      clickFn = () => null;
     }
 
     return (
-      <button
-        className={styles.button}
-        css={css}
-        onClick={() => {
-          this.props.onClick();
-        }}
-      >
+      <button className={styles.button} css={css} onClick={clickFn}>
         {this.props.children}
       </button>
     );

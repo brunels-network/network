@@ -648,54 +648,6 @@ class ForceGraphD3 extends React.Component {
     return weight;
   }
 
-  getTooltipHTML(node) {
-    // Use JSX to create a div for rendering in the tooltip
-
-    const name = node.label;
-    const allBio = this.getNodeBio(node.id).replace(node.label + ".", "");
-    const shortBio = allBio; // allBio.substring(0, 150) + "...";
-
-    let html = ReactDOMServer.renderToStaticMarkup(
-      <div className={styles.toolText}>
-        <div>
-          <h2>{name}</h2>
-          <br />
-          <p>{allBio}</p>
-        </div>
-      </div>
-    );
-
-    console.log(html);
-
-    return html;
-  }
-
-  mouseClickNode(d) {}
-
-  mouseoverNode(d) {
-    const divSelect = "#" + this.className();
-    const uid = "tooltip_" + uuidv4();
-
-    let tooltip = d3
-      .select(divSelect)
-      .append("div")
-      .attr("id", uid)
-      .classed(styles.tooltip, true)
-      //   .attr("class", uid)
-      // Move this into CSS?
-      .html(this.getTooltipHTML(d))
-      .style("top", d3.event.pageY - 10 + "px")
-      .style("left", d3.event.pageX + 10 + "px");
-
-    // place tooltip where cursor was
-    // # Can always change the x and y here is event is null
-    return tooltip;
-  }
-
-  mouseoutNode() {
-    d3.selectAll("div[id^=tooltip_]").remove();
-  }
-
   _updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 

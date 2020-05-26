@@ -1,4 +1,10 @@
+@font-face {
+  font-family: "Playfair Display Medium";
+  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Medium.ttf) format("truetype");
+}
+
 .container {
+  font-family: "Playfair Display Medium";
   position: relative;
   width: 100%;
   height: 100%;

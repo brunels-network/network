@@ -21,6 +21,7 @@ class ForceGraph extends React.Component {
 
     this.updateSize = this.updateSize.bind(this);
     this.emitPopProps = this.emitPopProps.bind(this);
+    this.clearPopups = this.clearPopups.bind(this);
     // This feels very clunky
     tempProps["emitPopProps"] = this.emitPopProps;
     this.graph = new ForceGraphD3(tempProps);
@@ -68,6 +69,10 @@ class ForceGraph extends React.Component {
     }
   }
 
+  clearPopups() {
+    this.setState({ popups: {} });
+  }
+
   render() {
     let s = this.graph.className();
 
@@ -82,6 +87,7 @@ class ForceGraph extends React.Component {
             node={node}
             social={this.props.social}
             selectedShipID={this.props.selectedShipID}
+            clearPopups={this.clearPopups}
           />
         );
         popups.push(p);
@@ -100,6 +106,7 @@ class ForceGraph extends React.Component {
 
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
+  setOverlay: PropTypes.func.isRequired,
   selectedShipID: PropTypes.string,
 };
 

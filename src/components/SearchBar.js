@@ -65,6 +65,7 @@ class SearchBar extends React.Component {
         key={name.concat("_", index)}
         textColor="#f1f1f1"
         hoverColor="#111"
+        fontSize="2vh"
         onClick={() => {
           this.props.emitSelected(item);
         }}
