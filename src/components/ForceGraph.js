@@ -1,8 +1,7 @@
 import React from "react";
-import ForceGraphD3 from "./d3/ForceGraph.d3.js";
-import styles from "./ForceGraph.module.css";
 
 import BioPopover from "./BioPopover";
+import ForceGraphD3 from "./d3/ForceGraph.d3.js";
 
 import lodash from "lodash";
 
@@ -11,8 +10,8 @@ class ForceGraph extends React.Component {
     super(props);
 
     this.state = {
-      popoverVisible: false,
-      currentNode: null,
+      popoversVisible: false,
+      popups: {},
     };
 
     // We want to add to the props so we need to clone the props
@@ -50,24 +49,40 @@ class ForceGraph extends React.Component {
     }
   }
 
+  updatePopupState(key, value) {
+    this.setState((prevState) => {
+      let popups = Object.assign({}, prevState.popups);
+      popups[key] = value;
+      return { popups };
+    });
+  }
+
   emitPopProps(node) {
-    this.setState({ currentNode: node, popoverVisible: !this.state.popoverVisible });
+    const id = node.id;
+
+    if (this.state.popups[id]) {
+      this.updatePopupState(id, false);
+    } else {
+      this.updatePopupState(id, node);
+    }
   }
 
   render() {
     let s = this.graph.className();
 
-    let popover;
-    if (this.state.popoverVisible) {
-      popover = <BioPopover node={this.state.currentNode} />;
-    } else {
-      popover = null;
+    let popups = [];
+
+    for (let [id, node] of Object.entries(this.state.popups)) {
+      if (node !== false) {
+        let p = <BioPopover key={id} togglePopover={this.emitPopProps} node={node} />;
+        popups.push(p);
+      }
     }
 
     return (
       <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>
         <div id={s} className={s}>
-          {popover}
+          {popups}
         </div>
       </div>
     );
