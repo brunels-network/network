@@ -1,6 +1,7 @@
+import PropTypes from "prop-types";
 import React from "react";
 
-import BioPopover from "./BioPopover";
+import Popover from "./Popover";
 import ForceGraphD3 from "./d3/ForceGraph.d3.js";
 
 import lodash from "lodash";
@@ -74,7 +75,7 @@ class ForceGraph extends React.Component {
 
     for (let [id, node] of Object.entries(this.state.popups)) {
       if (node !== false) {
-        let p = <BioPopover key={id} togglePopover={this.emitPopProps} node={node} />;
+        let p = <Popover key={id} togglePopover={this.emitPopProps} node={node} social={this.props.social} />;
         popups.push(p);
       }
     }
@@ -88,5 +89,9 @@ class ForceGraph extends React.Component {
     );
   }
 }
+
+ForceGraph.propTypes = {
+  social: PropTypes.object.isRequired,
+};
 
 export default ForceGraph;

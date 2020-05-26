@@ -6,8 +6,6 @@ import ReactDOMServer from "react-dom/server";
 import lodash from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-import BioPopover from "../BioPopover";
-
 import styles from "../ForceGraph.module.css";
 // import "../tooltip.css";
 

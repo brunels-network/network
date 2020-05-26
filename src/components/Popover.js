@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import styles from "./BioPopover.module.css";
+import styles from "./Popover.module.css";
+
+import tempImage from "../images/Great_Western_maiden_voyage.jpg";
 
 // The detection of outside clicks in this class taken from
 // https://stackoverflow.com/a/42234988
 
-class BioPopover extends React.Component {
+class Popover extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,33 +37,36 @@ class BioPopover extends React.Component {
   }
 
   render() {
-    // const isPopoverOpen = this.state.isPopoverOpen;
     const node = this.props.node;
     // The position of the popup
     const left = node.x + 10 + "px";
     const top = node.y - 10 + "px";
 
+    const name = node.label;
+
+    // Get biography for node
+    let bio = this.props.social.getBiographies().getByID(node.id);
+    bio = bio.replace(name + ".  ", "");
+
     return (
       <div ref={this.setWrapperRef}>
-        <div
-          id="popover"
-          className={styles.tooltipContainer}
-          style={{
-            top: top,
-            left: left,
-          }}
-        >
-          {node.label}
-          <br />
+        <div className={styles.popOver} style={{ top: top, left: left }}>
+          <div className={styles.imageSection}>
+            <img src={tempImage} alt="SS Great Western's maiden voyage" />
+          </div>
+          <div className={styles.nameSection}>{name}</div>
+          <div className={styles.bioSection}>{bio}</div>
+          <div className={styles.sourceSection}>Sources...</div>
         </div>
       </div>
     );
   }
 }
 
-BioPopover.propTypes = {
+Popover.propTypes = {
+  social: PropTypes.object.isRequired,
   node: PropTypes.object.isRequired,
   togglePopover: PropTypes.func.isRequired,
 };
 
-export default BioPopover;
+export default Popover;
