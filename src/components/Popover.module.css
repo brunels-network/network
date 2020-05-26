@@ -33,10 +33,11 @@ img {
   flex-direction: column;
 }
 
-.nameSection {
-  padding-top: 0.5vh;
+.header {
+  padding-top: 0.7vh;
   font-size: 1.7vh;
   height: 5%;
+  color: #003366;
 }
 
 .bioSection {
@@ -53,6 +54,7 @@ img {
 
 .sourceSection {
   padding-top: 1vh;
+  font-size: 1.3vh;
   height: 15%;
   width: 100%;
 }

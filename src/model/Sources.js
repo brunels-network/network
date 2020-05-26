@@ -105,7 +105,7 @@ class Sources {
     if (id) {
       return this.get(id);
     } else {
-      throw new MissingError(`No source with name ${name}`);
+      console.error(`No source with name ${name}`);
     }
   }
 

@@ -75,7 +75,15 @@ class ForceGraph extends React.Component {
 
     for (let [id, node] of Object.entries(this.state.popups)) {
       if (node !== false) {
-        let p = <Popover key={id} togglePopover={this.emitPopProps} node={node} social={this.props.social} />;
+        let p = (
+          <Popover
+            key={id}
+            togglePopover={this.emitPopProps}
+            node={node}
+            social={this.props.social}
+            selectedShipID={this.props.selectedShipID}
+          />
+        );
         popups.push(p);
       }
     }
@@ -92,6 +100,7 @@ class ForceGraph extends React.Component {
 
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
+  selectedShipID: PropTypes.string,
 };
 
 export default ForceGraph;
