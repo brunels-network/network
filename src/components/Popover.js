@@ -20,7 +20,7 @@ class Popover extends React.Component {
 
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
-    this.state = { isPopoverOpen: false, lastID: null, isOverlayOpen: false };
+    this.state = { isOverlayOpen: false };
   }
 
   componentDidMount() {
@@ -37,20 +37,21 @@ class Popover extends React.Component {
 
   handleClickOutside(event) {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      //   this.props.togglePopover(this.props.node);
+      console.log("Click outside");
       this.props.clearPopups();
     }
   }
 
   toggleOverlay() {
+    console.log("Toggling isOverlayOpen");
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
   }
 
-  createOverlay() {
+  createOverlay(sourceIDs) {
     let overlay = null;
 
     if (this.state.isOverlayOpen) {
-      overlay = <Popoverlay node={this.props.node}></Popoverlay>;
+      overlay = <Popoverlay social={this.props.social} sourceIDs={sourceIDs} toggleOverlay={this.toggleOverlay} />;
     }
 
     return overlay;
@@ -70,14 +71,14 @@ class Popover extends React.Component {
 
     // Sources this person was found in
     const personalSources = this.props.social.getPeople().get(node.id).getSources();
-    const projectSources = personalSources[selectedShipID];
+    const sourceIDs = personalSources[selectedShipID];
 
     let sources = [];
-    if (!projectSources) {
+    if (!sourceIDs) {
       console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", sources);
       sources.push("");
     } else {
-      for (const id of projectSources) {
+      for (const id of sourceIDs) {
         const source = socialSources.get(id);
 
         let button = (
@@ -105,7 +106,7 @@ class Popover extends React.Component {
           <div className={styles.header}>Sources</div>
           <div className={styles.sourceSection}>{sources}</div>
         </div>
-        {this.createOverlay()}
+        {this.createOverlay(sourceIDs)}
       </div>
     );
   }
@@ -116,7 +117,6 @@ Popover.propTypes = {
   node: PropTypes.object.isRequired,
   togglePopover: PropTypes.func.isRequired,
   selectedShipID: PropTypes.string,
-  setOverlay: PropTypes.func.isRequired,
   clearPopups: PropTypes.func.isRequired,
 };
 

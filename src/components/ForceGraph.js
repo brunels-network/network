@@ -106,7 +106,6 @@ class ForceGraph extends React.Component {
 
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
-  setOverlay: PropTypes.func.isRequired,
   selectedShipID: PropTypes.string,
 };
 

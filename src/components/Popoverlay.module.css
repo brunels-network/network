@@ -1,22 +1,42 @@
-.overlay {
-  position: absolute;
-  background: rgba(34, 34, 34, 0.7);
-
-  /* opacity: 0.8; */
-  z-index: 10;
-  width: 99%;
-  height: 99%;
-  left: 0.5%;
-  top: 0.5%;
-}
-
 .container {
   position: absolute;
   background: white;
+  font-family: "Playfair Display Medium";
   width: 75%;
   height: 75%;
   left: 12.5%;
   top: 12.5%;
   opacity: 1;
   background-color: white;
+  z-index: 11;
+  padding: 0.5vh 0.5vw 0.5vh 0.5vw;
+}
+
+img {
+  object-fit: contain;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.imageSection {
+  height: 25%;
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+}
+
+.header {
+  padding-top: 2vh;
+  font-size: 2vh;
+
+  color: #003366;
+  height: 10%;
+}
+
+.body {
+  padding-top: 2vh;
+  font-size: 1.5vh;
+  color: #222222;
 }
