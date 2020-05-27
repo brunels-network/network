@@ -20,11 +20,11 @@ img {
 }
 
 .imageSection {
-  height: 25%;
+  height: 50%;
   width: 100%;
   display: flex;
-  justify-content: left;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .header {
@@ -36,6 +36,7 @@ img {
 }
 
 .body {
+  height: 50%;
   padding-top: 2vh;
   font-size: 1.5vh;
   color: #222222;
