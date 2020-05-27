@@ -12,47 +12,55 @@ class Popoverlay extends React.Component {
     super(props);
 
     this.onChange = this.onChange.bind(this);
+    this.getElemCodes = this.getElemCodes.bind(this);
 
-    this.state = { isVisible: false, value: 0 };
+    this.state = { isVisible: false, currentImage: 0, elemCodes: null };
   }
 
-  onChange(value) {
-    this.setState({ value: value });
+  onChange(imageID) {
+    this.setState({ currentImage: imageID });
+  }
+
+  getElemCodes(codes) {
+    this.setState({ elemCodes: codes });
   }
 
   render() {
     const sources = this.props.social.getSources();
     const sourceIDs = this.props.sourceIDs;
 
-    let images = [
+    let imgs = [
       "../images/A_Specimen_by_William_Caslon.jpg",
       "../images/800px-Gutenberg_Bible.jpg",
       "../images/Brunel_letter_GWR.jpg",
     ];
 
-    // Create a carousel of images, read back the image selected with callback
-    // {sourceID: img} object
+    let i = 0;
+    let firstCode;
+    let images = {};
 
-    let carousel = <ImageCarousel images={images} onChange={this.onChange} />;
+    for (const id of sourceIDs) {
+      images[id] = imgs[i];
 
-    let sourceDesc = sourceIDs.map((id) => {
-      // TODO - scans of documents - small database of these?
-      const source = sources.get(id);
-      return (
-        <div key={id}>
-          <div className={styles.imageSection}>
-            <ImageCarousel images={images} />
-          </div>
-          <div className={styles.header}>{source.getName()}</div>
-          <div className={styles.body}>{source.getDescription()}</div>
-        </div>
-      );
-    });
+      if (i === 0) firstCode = id;
+
+      i++;
+    }
+
+    console.log("In popoverlay... ", images);
+
+    // Update the description and header shown
+    // const currentCode = this.state.elemCodes[this.state.currentImage];
+    let source = sources.get(firstCode);
 
     return (
       <Overlay toggleOverlay={this.props.toggleOverlay}>
         <div className={styles.container}>
-          <div className={styles.body}>{carousel}</div>
+          <div className={styles.header}>{source.getName()}</div>
+          <div className={styles.imageSection}>
+            <ImageCarousel images={images} onChange={this.onChange} getElemCodes={this.getElemCodes} />
+          </div>
+          <div className={styles.body}>{source.getDescription()}</div>
         </div>
       </Overlay>
     );
@@ -63,6 +71,7 @@ Popoverlay.propTypes = {
   social: PropTypes.object.isRequired,
   sourceIDs: PropTypes.array.isRequired,
   toggleOverlay: PropTypes.func.isRequired,
+  //   images: PropTypes.object.isRequired,
 };
 
 export default Popoverlay;

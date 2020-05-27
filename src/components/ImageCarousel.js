@@ -3,40 +3,45 @@ import React, { Component } from "react";
 import Carousel from "@brainhubeu/react-carousel";
 import "@brainhubeu/react-carousel/lib/style.css";
 
+import imagePaths from "../data/correspondence.json";
+
 class ImageCarousel extends Component {
   constructor(props) {
     super(props);
 
-    this.onChange = this.onChange.bind(this);
-
     this.state = {
-      value: 0,
+      value: this.props.currentImage,
+      elemCodes: null,
     };
   }
 
-  getImages() {
-    const imageList = this.props.images;
-
-    let imageElements = imageList.map((i, index) => {
-      const desc = "some description";
-      const key = index + "_" + i.replace(/^.*[\\/]/, "");
-
-      return <img key={key} src={i} alt={desc} />;
-    });
-
-    return imageElements;
-  }
-
   onChange(value) {
-    this.setState({ value: value });
+    this.props.onChange(value);
+    this.props.getElemCodes(this.state.elemCodes);
   }
 
   render() {
+    const images = this.props.images;
+
+    let imageElements = [];
+
+    let elemCodes = {};
+    let i = 0;
+
+    for (const [id, path] of Object.entries(images)) {
+      const imagePath = imagePaths[id];
+      imageElements.push(<img key={i} src={imagePath} alt="Manuscript" />);
+      elemCodes[i] = id;
+      i++;
+    }
+
+    if (!this.state.elemCodes) {
+      this.setState({ elemCodes: elemCodes });
+    }
+
     return (
       <Carousel value={this.state.value} onChange={this.onChange} slidesPerPage={1} arrows>
-        <img src={require("../images/A_Specimen_by_William_Caslon.jpg")} alt="1tow" />
-        <img src={require("../images/800px-Gutenberg_Bible.jpg")} alt="1tow" />
-        <img src={require("../images/Brunel_letter_GWR.jpg")} alt="1tow" />
+        {imageElements}
       </Carousel>
     );
   }
@@ -45,5 +50,8 @@ class ImageCarousel extends Component {
 export default ImageCarousel;
 
 ImageCarousel.propTypes = {
-  images: PropTypes.any,
+  getElemCodes: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  images: PropTypes.object.isRequired,
+  currentImage: PropTypes.number.isRequired,
 };

@@ -7,7 +7,6 @@ import lodash from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import styles from "../ForceGraph.module.css";
-// import "../tooltip.css";
 
 import positionGroups from "../../position_groups.json";
 
