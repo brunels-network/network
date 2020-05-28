@@ -15,21 +15,20 @@ class Popoverlay extends React.Component {
 
     this.onChange = this.onChange.bind(this);
 
-    this.state = { isVisible: false, currentImage: 0, elemCodes: null, imageElements: null };
+    this.state = { isVisible: false, currentImage: 0, elemCodes: [], imageElements: [] };
 
     const sources = this.props.sources;
 
-    let i = 0;
-    this.state.elemCodes = [];
-    this.state.imageElements = [];
-    // Create the elements from the IDs
-    for (const id of this.props.sourceIDs) {
+    this.state.imageElements = this.props.sourceIDs.map((id) => {
       const sourceName = sources.get(id).getName();
       const filename = imageFilenames[sourceName];
 
-      this.state.imageElements.push(<img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />);
-      this.state.elemCodes[i] = id;
-    }
+      this.state.elemCodes.push(id);
+
+      return <img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />;
+    });
+
+    console.log(this.state.imageElements);
   }
 
   onChange(imageID) {
@@ -40,10 +39,9 @@ class Popoverlay extends React.Component {
     const sources = this.props.sources;
     const person = this.props.person;
 
+    let showArrows = this.state.elemCodes.length > 1 ? true : false;
+
     const sourceID = this.state.elemCodes[this.state.currentImage];
-
-    let showArrors = this.state.elemCodes > 1 ? true : false;
-
     const source = sources.get(sourceID);
 
     return (
@@ -55,7 +53,7 @@ class Popoverlay extends React.Component {
             Source ID: {source.getName()}
           </div>
           <div className={styles.imageSection}>
-            <Carousel value={this.state.currentImage} onChange={this.onChange} slidesPerPage={1} arrows={showArrors}>
+            <Carousel value={this.state.currentImage} onChange={this.onChange} slidesPerPage={1} arrows={showArrows}>
               {this.state.imageElements}
             </Carousel>
           </div>

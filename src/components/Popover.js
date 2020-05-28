@@ -43,7 +43,6 @@ class Popover extends React.Component {
   }
 
   toggleOverlay() {
-    console.log("Toggling isOverlayOpen");
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
   }
 
@@ -64,23 +63,25 @@ class Popover extends React.Component {
     const personalSources = this.props.social.getPeople().get(node.id).getSources();
     const sourceIDs = personalSources[selectedShipID];
 
-    // TODO - here build into the toggleOverlay the ability to know which button was clicked?
+    let sourceButton;
     let sources = [];
+    const buttonStrings = [];
+
     if (!sourceIDs) {
       console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", sources);
-      sources.push("");
+      sourceButton = null;
     } else {
       for (const id of sourceIDs) {
-        const source = socialSources.get(id);
-
-        let button = (
-          <TextButton key={id} textColor="black" hoverColor="#808080" fontSize="1vh" onClick={this.toggleOverlay}>
-            {source.getName()}
-          </TextButton>
-        );
-
-        sources.push(button);
+        buttonStrings.push(socialSources.get(id).getName());
       }
+
+      const buttonText = buttonStrings.join(", ");
+
+      sourceButton = (
+        <TextButton textColor="black" hoverColor="#808080" fontSize="1vh" onClick={this.toggleOverlay}>
+          {buttonText}
+        </TextButton>
+      );
     }
 
     let overlay = null;
@@ -103,7 +104,7 @@ class Popover extends React.Component {
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
           <div className={styles.header}>Sources</div>
-          <div className={styles.sourceSection}>{sources}</div>
+          <div className={styles.sourceSection}>{sourceButton}</div>
         </div>
         {overlay}
       </div>
