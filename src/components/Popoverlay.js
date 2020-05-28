@@ -3,7 +3,6 @@ import React from "react";
 import Carousel from "@brainhubeu/react-carousel";
 
 import Overlay from "./Overlay";
-import Icon from "./Icon";
 
 import styles from "./Popoverlay.module.css";
 import "@brainhubeu/react-carousel/lib/style.css";
