@@ -7,3 +7,19 @@
   left: 0.5%;
   top: 0.5%;
 }
+
+.container {
+  position: absolute;
+  background: white;
+  font-family: "Playfair Display Medium";
+  width: 75%;
+  height: 75%;
+  left: 12.5%;
+  top: 12.5%;
+  opacity: 1;
+  background-color: white;
+  z-index: 11;
+  padding: 0.5vh 0.5vw 0.5vh 0.5vw;
+  display: flex;
+  flex-direction: row;
+}

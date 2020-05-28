@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Playfair Display Medium";
+  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Medium.ttf) format("truetype");
+}
+
 /* This makes the buttons look like text */
 /* Based on https://stackoverflow.com/a/1368286 */
 .button {

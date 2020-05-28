@@ -12,9 +12,6 @@
   z-index: 10;
   height: 30vh;
   width: 15vw;
-  display: flex;
-  justify-content: left;
-  flex-direction: column;
   font-family: "Playfair Display Medium";
 }
 
@@ -44,12 +41,11 @@ img {
   padding-top: 1vh;
   padding-bottom: 1.5vh;
   font-size: 1.5vh;
-  height: 55%;
+  height: 35%;
   width: 100%;
-  display: block;
-  white-space: normal;
-  text-overflow: ellipsis;
+  white-space: wrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sourceSection {

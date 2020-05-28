@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import TextButton from "./TextButton";
-import Popoverlay from "./Popoverlay";
+import BioOverlay from "./BioOverlay";
+import SourceOverlay from "./SourceOverlay";
+import Overlay from "./Overlay";
 
 import styles from "./Popover.module.css";
 
@@ -18,9 +20,12 @@ class Popover extends React.Component {
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
 
+    this.toggleSourceOverlay = this.toggleSourceOverlay.bind(this);
+    this.toggleBioOverlay = this.toggleBioOverlay.bind(this);
+
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
-    this.state = { isOverlayOpen: false };
+    this.state = { isOverlayOpen: false, isBioOverlayOpen: false, isSourceOverlayOpen: false, readMoreEnabled: true };
   }
 
   componentDidMount() {
@@ -44,6 +49,28 @@ class Popover extends React.Component {
 
   toggleOverlay() {
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
+  }
+
+  truncate(str, max = 10) {
+    const array = str.trim().split(" ");
+
+    let ellipsis;
+    if (array.length > max) {
+      ellipsis = "...";
+      //   this.setState({ readMoreEnabled: true });
+    } else {
+      ellipsis = "";
+    }
+
+    return array.slice(0, max).join(" ") + ellipsis;
+  }
+
+  toggleSourceOverlay() {
+    this.setState({ isOverlayOpen: true, isSourceOverlayOpen: true, isBioOverlayOpen: false });
+  }
+
+  toggleBioOverlay() {
+    this.setState({ isOverlayOpen: true, isSourceOverlayOpen: false, isBioOverlayOpen: true });
   }
 
   render() {
@@ -82,8 +109,8 @@ class Popover extends React.Component {
           textColor="black"
           hoverColor="#808080"
           fontSize="1.5vh"
-          padding={"4px 4px 4px 4px"}
-          onClick={this.toggleOverlay}
+          padding="4px 4px 4px 4px"
+          onClick={this.toggleSourceOverlay}
         >
           {buttonText}
         </TextButton>
@@ -91,15 +118,43 @@ class Popover extends React.Component {
     }
 
     let overlay = null;
-    if (this.state.isOverlayOpen) {
+    if (this.state.isOverlayOpen && this.state.isSourceOverlayOpen) {
       overlay = (
-        <Popoverlay sources={socialSources} person={person} sourceIDs={sourceIDs} toggleOverlay={this.toggleOverlay} />
+        <Overlay toggleOverlay={this.toggleOverlay}>
+          <SourceOverlay
+            sources={socialSources}
+            person={person}
+            sourceIDs={sourceIDs}
+            toggleOverlay={this.toggleOverlay}
+          />
+        </Overlay>
+      );
+    } else if (this.state.isOverlayOpen && this.state.isBioOverlayOpen) {
+      overlay = (
+        <Overlay toggleOverlay={this.toggleOverlay}>
+          <BioOverlay sources={socialSources} person={person} toggleOverlay={this.toggleOverlay} />
+        </Overlay>
       );
     }
+
+    let readMoreButton = (
+      <TextButton
+        textColor="black"
+        hoverColor="#808080"
+        fontSize="1.3vh"
+        padding="2px 2px 2px 2px"
+        fontFamily="Playfair Display Medium"
+        onClick={this.toggleBioOverlay}
+      >
+        Read more...
+      </TextButton>
+    );
 
     // Get biography for node
     let bio = social.getBiographies().getByID(node.id);
     bio = bio.replace(name + ".  ", "");
+
+    bio = this.truncate(bio, 40);
 
     return (
       <div ref={this.setWrapperRef}>
@@ -109,6 +164,7 @@ class Popover extends React.Component {
           </div>
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
+          <div className={styles.readMore}>{readMoreButton}</div>
           <div className={styles.header}>Sources</div>
           <div className={styles.sourceSection}>{sourceButton}</div>
         </div>
