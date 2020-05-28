@@ -47,16 +47,6 @@ class Popover extends React.Component {
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
   }
 
-  createOverlay(sourceIDs) {
-    let overlay = null;
-
-    if (this.state.isOverlayOpen) {
-      overlay = <Popoverlay social={this.props.social} sourceIDs={sourceIDs} toggleOverlay={this.toggleOverlay} />;
-    }
-
-    return overlay;
-  }
-
   render() {
     const node = this.props.node;
     const selectedShipID = this.props.selectedShipID;
@@ -70,9 +60,11 @@ class Popover extends React.Component {
     const socialSources = social.getSources();
 
     // Sources this person was found in
+    const person = this.props.social.getPeople().get(node.id);
     const personalSources = this.props.social.getPeople().get(node.id).getSources();
     const sourceIDs = personalSources[selectedShipID];
 
+    // TODO - here build into the toggleOverlay the ability to know which button was clicked?
     let sources = [];
     if (!sourceIDs) {
       console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", sources);
@@ -91,6 +83,13 @@ class Popover extends React.Component {
       }
     }
 
+    let overlay = null;
+    if (this.state.isOverlayOpen) {
+      overlay = (
+        <Popoverlay sources={socialSources} person={person} sourceIDs={sourceIDs} toggleOverlay={this.toggleOverlay} />
+      );
+    }
+
     // Get biography for node
     let bio = social.getBiographies().getByID(node.id);
     bio = bio.replace(name + ".  ", "");
@@ -106,7 +105,7 @@ class Popover extends React.Component {
           <div className={styles.header}>Sources</div>
           <div className={styles.sourceSection}>{sources}</div>
         </div>
-        {this.createOverlay(sourceIDs)}
+        {overlay}
       </div>
     );
   }

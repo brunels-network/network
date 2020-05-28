@@ -106,6 +106,20 @@ class Sources:
         raise KeyError(f"No source matches '{value}'. Available sources " +
                        f"are '{keys}'")
 
+    def getRegistry(self):
+        """ Outputs the state registry of UID: Source name pairs
+            for use in matching images of correspondence.
+
+            Returns:
+                dict: Source UID: source name pair
+                For example:
+                S4dffc36: DM162/10/2b-7, 58
+        """
+        return {uid: source.getName() for uid, source in self.state["registry"].items()}
+
+    def getSourceNames(self):
+        return sorted([source.getName() for source in self.state["registry"].values()])
+
     def get(self, id):
         try:
             return self.state["registry"][id]

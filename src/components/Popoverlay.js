@@ -7,7 +7,7 @@ import Overlay from "./Overlay.js";
 import styles from "./Popoverlay.module.css";
 import "@brainhubeu/react-carousel/lib/style.css";
 
-import imagePaths from "../data/correspondence.json";
+import imageFilenames from "../data/imageFilenames.json";
 
 class Popoverlay extends React.Component {
   constructor(props) {
@@ -17,12 +17,16 @@ class Popoverlay extends React.Component {
 
     this.state = { isVisible: false, currentImage: 0, elemCodes: null, imageElements: null };
 
+    const sources = this.props.sources;
+
     let i = 0;
     this.state.elemCodes = [];
     this.state.imageElements = [];
     // Create the elements from the IDs
     for (const id of this.props.sourceIDs) {
-      const filename = imagePaths[id];
+      const sourceName = sources.get(id).getName();
+      const filename = imageFilenames[sourceName];
+
       this.state.imageElements.push(<img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />);
       this.state.elemCodes[i] = id;
     }
@@ -33,7 +37,8 @@ class Popoverlay extends React.Component {
   }
 
   render() {
-    const sources = this.props.social.getSources();
+    const sources = this.props.sources;
+    const person = this.props.person;
 
     const sourceID = this.state.elemCodes[this.state.currentImage];
 
@@ -44,7 +49,11 @@ class Popoverlay extends React.Component {
     return (
       <Overlay toggleOverlay={this.props.toggleOverlay}>
         <div className={styles.container}>
-          <div className={styles.header}>{source.getName()}</div>
+          <div className={styles.header}>
+            {person.getName()}
+            <br />
+            Source ID: {source.getName()}
+          </div>
           <div className={styles.imageSection}>
             <Carousel value={this.state.currentImage} onChange={this.onChange} slidesPerPage={1} arrows={showArrors}>
               {this.state.imageElements}
@@ -58,10 +67,10 @@ class Popoverlay extends React.Component {
 }
 
 Popoverlay.propTypes = {
-  social: PropTypes.object.isRequired,
+  sources: PropTypes.object.isRequired,
   sourceIDs: PropTypes.array.isRequired,
   toggleOverlay: PropTypes.func.isRequired,
-  //   images: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
 };
 
 export default Popoverlay;
