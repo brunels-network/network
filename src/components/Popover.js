@@ -82,7 +82,7 @@ class Popover extends React.Component {
         const source = socialSources.get(id);
 
         let button = (
-          <TextButton textColor="black" hoverColor="#808080" fontSize="1vh" onClick={this.toggleOverlay}>
+          <TextButton key={id} textColor="black" hoverColor="#808080" fontSize="1vh" onClick={this.toggleOverlay}>
             {source.getName()}
           </TextButton>
         );

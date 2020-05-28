@@ -1,64 +1,54 @@
 import PropTypes from "prop-types";
 import React from "react";
+import Carousel from "@brainhubeu/react-carousel";
 
 import Overlay from "./Overlay.js";
-import ImageCarousel from "./ImageCarousel";
 
 import styles from "./Popoverlay.module.css";
-import tempImage from "../images/A_Specimen_by_William_Caslon.jpg";
+import "@brainhubeu/react-carousel/lib/style.css";
+
+import imagePaths from "../data/correspondence.json";
 
 class Popoverlay extends React.Component {
   constructor(props) {
     super(props);
 
     this.onChange = this.onChange.bind(this);
-    this.getElemCodes = this.getElemCodes.bind(this);
 
-    this.state = { isVisible: false, currentImage: 0, elemCodes: null };
+    this.state = { isVisible: false, currentImage: 0, elemCodes: null, imageElements: null };
+
+    let i = 0;
+    this.state.elemCodes = [];
+    this.state.imageElements = [];
+    // Create the elements from the IDs
+    for (const id of this.props.sourceIDs) {
+      const filename = imagePaths[id];
+      this.state.imageElements.push(<img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />);
+      this.state.elemCodes[i] = id;
+    }
   }
 
   onChange(imageID) {
     this.setState({ currentImage: imageID });
   }
 
-  getElemCodes(codes) {
-    this.setState({ elemCodes: codes });
-  }
-
   render() {
     const sources = this.props.social.getSources();
-    const sourceIDs = this.props.sourceIDs;
 
-    let imgs = [
-      "../images/A_Specimen_by_William_Caslon.jpg",
-      "../images/800px-Gutenberg_Bible.jpg",
-      "../images/Brunel_letter_GWR.jpg",
-    ];
+    const sourceID = this.state.elemCodes[this.state.currentImage];
 
-    let i = 0;
-    let firstCode;
-    let images = {};
+    let showArrors = this.state.elemCodes > 1 ? true : false;
 
-    for (const id of sourceIDs) {
-      images[id] = imgs[i];
-
-      if (i === 0) firstCode = id;
-
-      i++;
-    }
-
-    console.log("In popoverlay... ", images);
-
-    // Update the description and header shown
-    // const currentCode = this.state.elemCodes[this.state.currentImage];
-    let source = sources.get(firstCode);
+    const source = sources.get(sourceID);
 
     return (
       <Overlay toggleOverlay={this.props.toggleOverlay}>
         <div className={styles.container}>
           <div className={styles.header}>{source.getName()}</div>
           <div className={styles.imageSection}>
-            <ImageCarousel images={images} onChange={this.onChange} getElemCodes={this.getElemCodes} />
+            <Carousel value={this.state.currentImage} onChange={this.onChange} slidesPerPage={1} arrows={showArrors}>
+              {this.state.imageElements}
+            </Carousel>
           </div>
           <div className={styles.body}>{source.getDescription()}</div>
         </div>

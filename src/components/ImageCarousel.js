@@ -30,7 +30,7 @@ class ImageCarousel extends Component {
 
     for (const [id, path] of Object.entries(images)) {
       const imagePath = imagePaths[id];
-      imageElements.push(<img key={i} src={imagePath} alt="Manuscript" />);
+      imageElements.push(<img key={i} src={"../images/A_Specimen_by_William_Caslon.jpg"} alt="Manuscript" />);
       elemCodes[i] = id;
       i++;
     }
