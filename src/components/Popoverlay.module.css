@@ -10,6 +10,8 @@
   background-color: white;
   z-index: 11;
   padding: 0.5vh 0.5vw 0.5vh 0.5vw;
+  display: flex;
+  flex-direction: row;
 }
 
 img {
@@ -19,25 +21,34 @@ img {
   max-height: 100%;
 }
 
-.imageSection {
-  height: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.textSection {
+  padding-top: 2vh;
+  padding-left: 2vh;
+  width: 50%;
+  height: 100%;
+  font-size: 1.5vh;
+  color: #222222;
+  order: 1;
 }
 
 .header {
-  padding-top: 2vh;
   font-size: 2vh;
-
   color: #003366;
   height: 10%;
 }
 
+.dynamicHeader {
+  font-size: 2vh;
+  color: #003366;
+  height: 10%;
+}
+
+.imageSection {
+  height: 100%;
+  width: 50%;
+  order: 2;
+}
+
 .body {
-  height: 50%;
-  padding-top: 2vh;
-  font-size: 1.5vh;
-  color: #222222;
+  font-size: 1.6vh;
 }

@@ -8,6 +8,9 @@ import Icon from "./Icon";
 import styles from "./Popoverlay.module.css";
 import "@brainhubeu/react-carousel/lib/style.css";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleDoubleLeft, faAngleDoubleRight, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+
 import imageFilenames from "../data/imageFilenames.json";
 
 class Popoverlay extends React.Component {
@@ -48,10 +51,13 @@ class Popoverlay extends React.Component {
     return (
       <Overlay toggleOverlay={this.props.toggleOverlay}>
         <div className={styles.container}>
-          <div className={styles.header}>
-            {person.getName()}
-            <br />
-            Source ID: {source.getName()}
+          <div className={styles.textSection}>
+            <div className={styles.dynamicHeader}>
+              {person.getName()}
+              <br />
+              Source : {source.getName()}
+            </div>
+            <div className={styles.body}>{source.getDescription()}</div>
           </div>
           <div className={styles.imageSection}>
             <Carousel
@@ -59,16 +65,15 @@ class Popoverlay extends React.Component {
               onChange={this.onChange}
               slidesPerPage={1}
               arrows={showArrows}
-              arrowLeft={<Icon name="angle-double-left" />}
-              arrowLeftDisabled={<Icon name="angle-left" />}
-              arrowRight={<Icon name="angle-double-right" />}
-              arrowRightDisabled={<Icon name="angle-right" />}
+              arrowLeft={<FontAwesomeIcon icon={faAngleDoubleLeft} />}
+              arrowLeftDisabled={<FontAwesomeIcon icon={faAngleLeft} />}
+              arrowRight={<FontAwesomeIcon icon={faAngleDoubleRight} />}
+              arrowRightDisabled={<FontAwesomeIcon icon={faAngleRight} />}
               addArrowClickHandler
             >
               {this.state.imageElements}
             </Carousel>
           </div>
-          <div className={styles.body}>{source.getDescription()}</div>
         </div>
       </Overlay>
     );
