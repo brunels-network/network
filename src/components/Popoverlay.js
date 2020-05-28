@@ -2,7 +2,8 @@ import PropTypes from "prop-types";
 import React from "react";
 import Carousel from "@brainhubeu/react-carousel";
 
-import Overlay from "./Overlay.js";
+import Overlay from "./Overlay";
+import Icon from "./Icon";
 
 import styles from "./Popoverlay.module.css";
 import "@brainhubeu/react-carousel/lib/style.css";
@@ -53,7 +54,17 @@ class Popoverlay extends React.Component {
             Source ID: {source.getName()}
           </div>
           <div className={styles.imageSection}>
-            <Carousel value={this.state.currentImage} onChange={this.onChange} slidesPerPage={1} arrows={showArrows}>
+            <Carousel
+              value={this.state.currentImage}
+              onChange={this.onChange}
+              slidesPerPage={1}
+              arrows={showArrows}
+              arrowLeft={<Icon name="angle-double-left" />}
+              arrowLeftDisabled={<Icon name="angle-left" />}
+              arrowRight={<Icon name="angle-double-right" />}
+              arrowRightDisabled={<Icon name="angle-right" />}
+              addArrowClickHandler
+            >
               {this.state.imageElements}
             </Carousel>
           </div>

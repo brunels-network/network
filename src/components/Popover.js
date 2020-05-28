@@ -78,7 +78,13 @@ class Popover extends React.Component {
       const buttonText = buttonStrings.join(", ");
 
       sourceButton = (
-        <TextButton textColor="black" hoverColor="#808080" fontSize="1vh" onClick={this.toggleOverlay}>
+        <TextButton
+          textColor="black"
+          hoverColor="#808080"
+          fontSize="1.5vh"
+          padding={"4px 4px 4px 4px"}
+          onClick={this.toggleOverlay}
+        >
           {buttonText}
         </TextButton>
       );
