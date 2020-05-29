@@ -8,7 +8,7 @@ import "@brainhubeu/react-carousel/lib/style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleDoubleLeft, faAngleDoubleRight, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
-import imageFilenames from "../data/imageFilenames.json";
+import imageFilenames from "../data/sourceImageFilenames.json";
 
 class SourceOverlay extends React.Component {
   constructor(props) {
@@ -18,11 +18,8 @@ class SourceOverlay extends React.Component {
 
     this.state = { isVisible: false, currentImage: 0, elemCodes: [], imageElements: [] };
 
-    const sources = this.props.sources;
-
     this.state.imageElements = this.props.sourceIDs.map((id) => {
-      const sourceName = sources.get(id).getName();
-      const filename = imageFilenames[sourceName];
+      const filename = imageFilenames[id]["filename"];
 
       this.state.elemCodes.push(id);
 

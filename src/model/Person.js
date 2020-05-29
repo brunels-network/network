@@ -377,23 +377,17 @@ class Person {
 
   getWeight() {
     return this.state.weight;
-
-    // if (this.state.weight) {
-    //   const key = Object.keys(this.state.weight);
-    //   return this.state.weight[key];
-    // } else {
-    //   console.error("No weight for ", this.getName(), this.getID());
-    //   return 1;
-    // }
   }
 
   getProjectWeight(projectKey) {
-    try {
-      return this.state.weight[projectKey];
-    } catch (error) {
-      console.error("No weight for " + this.getName() + this.getID() + " for project with key " + projectKey, error);
-      return 0;
+    const weight = this.state.weight[projectKey];
+
+    if (!weight) {
+      console.error("No weight for " + this.getName() + this.getID() + " for project with key " + projectKey);
+      return 1;
     }
+
+    return weight;
   }
 
   getNode(isAnchor = false) {

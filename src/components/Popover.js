@@ -109,7 +109,7 @@ class Popover extends React.Component {
           textColor="black"
           hoverColor="#808080"
           fontSize="1.5vh"
-          padding="4px 4px 4px 4px"
+          padding="0px 4px 4px 4px"
           onClick={this.toggleSourceOverlay}
         >
           {buttonText}
@@ -132,7 +132,13 @@ class Popover extends React.Component {
     } else if (this.state.isOverlayOpen && this.state.isBioOverlayOpen) {
       overlay = (
         <Overlay toggleOverlay={this.toggleOverlay}>
-          <BioOverlay sources={socialSources} person={person} toggleOverlay={this.toggleOverlay} />
+          <BioOverlay
+            sources={socialSources}
+            sourceButton={sourceButton}
+            person={person}
+            social={social}
+            toggleOverlay={this.toggleOverlay}
+          />
         </Overlay>
       );
     }

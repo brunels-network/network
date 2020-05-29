@@ -117,6 +117,23 @@ class Sources:
         """
         return {uid: source.getName() for uid, source in self.state["registry"].items()}
 
+    def getRegistryForImages(self):
+        """ Outputs the state registry of UID: Source name pairs
+            for use in matching images of correspondence.
+
+            Returns:
+                dict: Source UID: source name pair
+                For example:
+                S4dffc36: DM162/10/2b-7, 58
+        """
+        imageDict = {}
+        for uid, source in self.state["registry"].items():
+            imageDict[uid] = {}
+            imageDict[uid]["name"] = source.getName()
+            imageDict[uid]["filename"] = "filename"
+
+        return imageDict
+
     def getSourceNames(self):
         return sorted([source.getName() for source in self.state["registry"].values()])
 
