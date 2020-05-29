@@ -21,7 +21,7 @@ function Overlay(props) {
             e.stopPropagation();
           }}
         >
-          <div className={styles.container}>{props.children}</div>
+          {props.children}
         </div>
       </div>
     );
