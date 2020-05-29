@@ -402,6 +402,7 @@ class Person {
     const weight = this.getWeight();
 
     node["weight"] = weight;
+    node["type"] = "person";
 
     // Position will be used to set the colour used
     // for the node representing this person

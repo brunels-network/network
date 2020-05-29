@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import imageFilenames from "../data/peopleImageFilenames.json";
+import imageFilenames from "../data/entityImageFilenames.json";
 
 import TextButton from "./TextButton";
 

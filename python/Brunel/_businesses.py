@@ -96,6 +96,28 @@ class Businesses:
         except Exception:
             raise KeyError(f"No Business with ID {id}")
 
+    def getAll(self):
+        """ Returns all the names stored in this object
+
+            Returns:
+                dict: Dictionary of people as name: ID pairs
+        """
+        return {v: k for k, v in self._names.items()}
+
+    def getAllForImages(self):
+        """ Returns all the names stored in this object
+
+            Returns:
+                dict: Dictionary of people as name: ID pairs
+        """
+        imageDict = {}
+        for id, name in self.getAll().items():
+            imageDict[id] = {}
+            imageDict[id]["name"] = name
+            imageDict[id]["filename"] = "filename"
+
+        return imageDict
+
     def values(self):
         return self.state["registry"].values()
 

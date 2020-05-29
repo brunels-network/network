@@ -255,6 +255,7 @@ class Business {
 
     node["size"] = 0.5 * weight;
     node["weight"] = weight;
+    node["type"] = "business";
 
     let keys = Object.keys(this.state.projects);
 

@@ -84,11 +84,23 @@ class Popover extends React.Component {
 
     const social = this.props.social;
     const socialSources = social.getSources();
+    // const person = this.props.social.getPeople().get(node.id);
 
-    // Sources this person was found in
-    const person = this.props.social.getPeople().get(node.id);
-    const personalSources = this.props.social.getPeople().get(node.id).getSources();
-    const sourceIDs = personalSources[selectedShipID];
+    let nodeType = node["type"];
+
+    let sourceIDs;
+    let entity;
+    if (nodeType === "person") {
+      entity = this.props.social.getPeople().get(node.id);
+      const personalSources = entity.getSources();
+      sourceIDs = personalSources[selectedShipID];
+    } else if (nodeType === "business") {
+      entity = this.props.social.getBusinesses().get(node.id);
+      const businessSources = entity.getSources();
+      sourceIDs = businessSources[selectedShipID];
+    } else {
+      throw new TypeError("Incorrect type or no type on node");
+    }
 
     let sourceButton;
     let sources = [];
@@ -124,7 +136,7 @@ class Popover extends React.Component {
         <Overlay toggleOverlay={this.toggleOverlay}>
           <SourceOverlay
             sources={socialSources}
-            person={person}
+            person={entity}
             sourceIDs={sourceIDs}
             toggleOverlay={this.toggleOverlay}
             toggleBioOverlay={this.toggleBioOverlay}
@@ -136,7 +148,7 @@ class Popover extends React.Component {
         <Overlay toggleOverlay={this.toggleOverlay}>
           <BioOverlay
             sources={socialSources}
-            person={person}
+            person={entity}
             social={social}
             toggleOverlay={this.toggleOverlay}
             toggleSourceOverlay={this.toggleSourceOverlay}
