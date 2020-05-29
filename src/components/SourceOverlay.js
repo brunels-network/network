@@ -8,6 +8,8 @@ import "@brainhubeu/react-carousel/lib/style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleDoubleLeft, faAngleDoubleRight, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
+import TextButton from "./TextButton";
+
 import imageFilenames from "../data/sourceImageFilenames.json";
 
 class SourceOverlay extends React.Component {
@@ -40,16 +42,29 @@ class SourceOverlay extends React.Component {
     const sourceID = this.state.elemCodes[this.state.currentImage];
     const source = sources.get(sourceID);
 
+    const bioButton = (
+      <TextButton
+        onClick={this.props.toggleBioOverlay}
+        textColor="black"
+        hoverColor="#808080"
+        fontSize="1.8vh"
+        padding="2px 2px 2px 2px"
+        fontFamily="Playfair Display Medium"
+      >
+        Open biography
+      </TextButton>
+    );
+
     return (
       <div className={styles.container}>
-        <div className={styles.textSection}>
-          <div className={styles.dynamicHeader}>
-            {person.getName()}
-            <br />
-            Source : {source.getName()}
-          </div>
-          <div className={styles.body}>{source.getDescription()}</div>
+        <div className={styles.nameHeader}>{person.getName()}</div>
+
+        <div className={styles.body}>
+          <div className={styles.sourceName}>{source.getName()}</div>
+          <div>{source.getDescription()}</div>
         </div>
+        <div className={styles.biography}>{bioButton}</div>
+        <div className={styles.divider} />
         <div className={styles.imageSection}>
           <Carousel
             value={this.state.currentImage}
@@ -74,6 +89,7 @@ SourceOverlay.propTypes = {
   sources: PropTypes.object.isRequired,
   sourceIDs: PropTypes.array.isRequired,
   toggleOverlay: PropTypes.func.isRequired,
+  toggleBioOverlay: PropTypes.func.isRequired,
   person: PropTypes.object.isRequired,
 };
 

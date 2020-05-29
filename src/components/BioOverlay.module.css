@@ -11,11 +11,19 @@
   z-index: 11;
   padding: 1.5vh 0.5vw 0.5vh 0.75vw;
   display: grid;
-  grid-template-columns: 50% 10% 30%;
+  grid-template-columns: 40% 10% 50%;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
 
   font-size: 1.5vh;
   color: #222222;
+}
+
+.divider {
+  background: linear-gradient(lightgrey, lightgrey) no-repeat center/1px 100%;
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 6;
 }
 
 .textSection {
@@ -54,9 +62,9 @@
 .bio {
   grid-column-start: 1;
   grid-column-end: 1;
-  grid-row-start: 3;
+  grid-row-start: 2;
   grid-row-end: 5;
-  font-size: 1.6vh;
+  font-size: 1.8vh;
 }
 
 .sources {
@@ -78,7 +86,7 @@
   grid-column-start: 3;
   grid-column-end: 3;
   grid-row-start: 1;
-  grid-row-end: 5;
+  grid-row-end: 6;
   font-style: italic;
   white-space: nowrap;
   overflow: hidden;

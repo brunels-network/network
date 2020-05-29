@@ -94,6 +94,7 @@ class Popover extends React.Component {
     let sources = [];
     const buttonStrings = [];
 
+    let buttonText = null;
     if (!sourceIDs) {
       console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", sources);
       sourceButton = null;
@@ -102,7 +103,7 @@ class Popover extends React.Component {
         buttonStrings.push(socialSources.get(id).getName());
       }
 
-      const buttonText = buttonStrings.join(", ");
+      buttonText = buttonStrings.join(", ");
 
       sourceButton = (
         <TextButton
@@ -126,6 +127,7 @@ class Popover extends React.Component {
             person={person}
             sourceIDs={sourceIDs}
             toggleOverlay={this.toggleOverlay}
+            toggleBioOverlay={this.toggleBioOverlay}
           />
         </Overlay>
       );
@@ -134,10 +136,11 @@ class Popover extends React.Component {
         <Overlay toggleOverlay={this.toggleOverlay}>
           <BioOverlay
             sources={socialSources}
-            sourceButton={sourceButton}
             person={person}
             social={social}
             toggleOverlay={this.toggleOverlay}
+            toggleSourceOverlay={this.toggleSourceOverlay}
+            sourceButtonText={buttonText}
           />
         </Overlay>
       );
@@ -147,12 +150,12 @@ class Popover extends React.Component {
       <TextButton
         textColor="black"
         hoverColor="#808080"
-        fontSize="1.3vh"
-        padding="2px 2px 2px 2px"
+        fontSize="1.5vh"
+        padding="0px 2px 2px 2px"
         fontFamily="Playfair Display Medium"
         onClick={this.toggleBioOverlay}
       >
-        Read more...
+        Read more
       </TextButton>
     );
 

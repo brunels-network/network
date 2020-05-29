@@ -41,6 +41,10 @@ class TextButton extends React.Component {
       css["padding"] = this.props.padding;
     }
 
+    if (this.props.fontFamily) {
+      css["fontFamily"] = this.props.fontFamily;
+    }
+
     let clickFn;
     if (this.props.onClick) {
       clickFn = this.props.onClick;

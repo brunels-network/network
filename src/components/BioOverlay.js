@@ -3,6 +3,8 @@ import React from "react";
 
 import imageFilenames from "../data/peopleImageFilenames.json";
 
+import TextButton from "./TextButton";
+
 import styles from "./BioOverlay.module.css";
 
 class BioOverlay extends React.Component {
@@ -27,6 +29,18 @@ class BioOverlay extends React.Component {
 
     const filename = imageFilenames[id]["filename"];
 
+    let sourceButton = (
+      <TextButton
+        textColor="black"
+        hoverColor="#808080"
+        fontSize="1.8vh"
+        padding="0px 4px 4px 4px"
+        onClick={this.props.toggleSourceOverlay}
+      >
+        {this.props.sourceButtonText}
+      </TextButton>
+    );
+
     // const filename = "The_Steamer_Great_Western_of_Bristol_RMG_A7626.jpg";
 
     return (
@@ -41,8 +55,9 @@ class BioOverlay extends React.Component {
             <br />
             <br />
           </div>
-          <div>{this.props.sourceButton}</div>
+          <div>{sourceButton}</div>
         </div>
+        <div className={styles.divider} />
         <div className={styles.imageSection}>
           <div>
             <img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />
@@ -56,9 +71,10 @@ class BioOverlay extends React.Component {
 
 BioOverlay.propTypes = {
   social: PropTypes.object.isRequired,
-  sourceButton: PropTypes.element.isRequired,
   toggleOverlay: PropTypes.func.isRequired,
   person: PropTypes.object.isRequired,
+  toggleSourceOverlay: PropTypes.func.isRequired,
+  sourceButtonText: PropTypes.string.isRequired,
 };
 
 export default BioOverlay;
