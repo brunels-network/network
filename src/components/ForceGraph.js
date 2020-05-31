@@ -51,11 +51,11 @@ class ForceGraph extends React.Component {
     }
   }
 
-  updatePopupState(key, value) {
+  updatePopupState(id, node) {
     this.setState((prevState) => {
       let popups = Object.assign({}, prevState.popups);
-      popups[key] = value;
-      return { popups };
+      popups[id] = node;
+      return { popups: popups };
     });
   }
 

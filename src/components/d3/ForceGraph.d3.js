@@ -702,9 +702,9 @@ class ForceGraphD3 extends React.Component {
       .attr("id", (d) => {
         return d.id;
       })
-      .on("click", handleMouseClick(this))
-      .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this))
+      //   .on("click", handleMouseClick(this))
+      //   .on("mouseover", handleMouseOver(this))
+      //   .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return text;
