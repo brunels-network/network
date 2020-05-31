@@ -2,13 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import TextButton from "./TextButton";
-import BioOverlay from "./BioOverlay";
-import SourceOverlay from "./SourceOverlay";
-import Overlay from "./Overlay";
 
 import styles from "./Popover.module.css";
 
 import tempImage from "../images/Great_Western_maiden_voyage.jpg";
+import OverlayWrapper from "./OverlayWrapper";
 
 // The detection of outside clicks in this class taken from
 // https://stackoverflow.com/a/42234988
@@ -79,79 +77,6 @@ class Popover extends React.Component {
 
     const name = node.label;
     const social = this.props.social;
-    const socialSources = social.getSources();
-
-    let nodeType = node["type"];
-
-    let sourceIDs;
-    let entity;
-    if (nodeType === "person") {
-      entity = this.props.social.getPeople().get(node.id);
-      const personalSources = entity.getSources();
-      sourceIDs = personalSources[selectedShipID];
-    } else if (nodeType === "business") {
-      entity = this.props.social.getBusinesses().get(node.id);
-      const businessSources = entity.getSources();
-      sourceIDs = businessSources[selectedShipID];
-    } else {
-      throw new TypeError("Incorrect type or no type on node");
-    }
-
-    let sourceButton;
-    let sources = [];
-    const buttonStrings = [];
-
-    let buttonText = null;
-    if (!sourceIDs) {
-      console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", sources);
-      sourceButton = null;
-    } else {
-      for (const id of sourceIDs) {
-        buttonStrings.push(socialSources.get(id).getName());
-      }
-
-      buttonText = buttonStrings.join(", ");
-
-      sourceButton = (
-        <TextButton
-          textColor="black"
-          hoverColor="#808080"
-          fontSize="1.5vh"
-          padding="0px 4px 4px 4px"
-          onClick={this.toggleSourceOverlay}
-        >
-          {buttonText}
-        </TextButton>
-      );
-    }
-
-    let overlay = null;
-    if (this.state.isOverlayOpen && this.state.isSourceOverlayOpen) {
-      overlay = (
-        <Overlay toggleOverlay={this.toggleOverlay}>
-          <SourceOverlay
-            sources={socialSources}
-            person={entity}
-            sourceIDs={sourceIDs}
-            toggleOverlay={this.toggleOverlay}
-            toggleBioOverlay={this.toggleBioOverlay}
-          />
-        </Overlay>
-      );
-    } else if (this.state.isOverlayOpen && this.state.isBioOverlayOpen) {
-      overlay = (
-        <Overlay toggleOverlay={this.toggleOverlay}>
-          <BioOverlay
-            sources={socialSources}
-            person={entity}
-            social={social}
-            toggleOverlay={this.toggleOverlay}
-            toggleSourceOverlay={this.toggleSourceOverlay}
-            sourceButtonText={buttonText}
-          />
-        </Overlay>
-      );
-    }
 
     let readMoreButton = (
       <TextButton
@@ -165,6 +90,20 @@ class Popover extends React.Component {
         Read more
       </TextButton>
     );
+
+    const buttonStrings = [];
+
+    let buttonText = null;
+    if (!sourceIDs) {
+      console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", sources);
+      buttonText = "";
+    } else {
+      for (const id of sourceIDs) {
+        buttonStrings.push(socialSources.get(id).getName());
+      }
+    }
+
+    buttonText = buttonStrings.join(", ");
 
     // Get biography for node
     let bio = social.getBiographies().getByID(node.id);
@@ -212,7 +151,14 @@ class Popover extends React.Component {
           <div className={styles.header}>Sources</div>
           <div className={styles.sourceSection}>{sourceButton}</div>
         </div>
-        {overlay}
+        <OverlayWrapper
+          isBioOverlayOpen={this.state.isBioOverlayOpen}
+          isOverlayOpen={this.state.isOverlayOpen}
+          isSourceOverlayOpen={this.state.isSourceOverlayOpen}
+          node={node}
+          social={social}
+          selectedShipID={selectedShipID}
+        />
       </div>
     );
   }
