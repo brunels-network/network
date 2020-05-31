@@ -23,7 +23,7 @@ class Popover extends React.Component {
 
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
-    this.state = { isOverlayOpen: false, isBioOverlayOpen: false, isSourceOverlayOpen: false, readMoreEnabled: true };
+    this.state = { isOverlayOpen: false };
   }
 
   componentDidMount() {
@@ -49,6 +49,14 @@ class Popover extends React.Component {
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
   }
 
+  toggleSourceOverlay() {
+    this.setState({ isOverlayOpen: true, isSourceOverlayOpen: true, isBioOverlayOpen: false });
+  }
+
+  toggleBioOverlay() {
+    this.setState({ isOverlayOpen: true, isSourceOverlayOpen: false, isBioOverlayOpen: true });
+  }
+
   truncate(str, max = 10) {
     const array = str.trim().split(" ");
 
@@ -61,14 +69,6 @@ class Popover extends React.Component {
     }
 
     return array.slice(0, max).join(" ") + ellipsis;
-  }
-
-  toggleSourceOverlay() {
-    this.setState({ isOverlayOpen: true, isSourceOverlayOpen: true, isBioOverlayOpen: false });
-  }
-
-  toggleBioOverlay() {
-    this.setState({ isOverlayOpen: true, isSourceOverlayOpen: false, isBioOverlayOpen: true });
   }
 
   render() {
@@ -110,17 +110,16 @@ class Popover extends React.Component {
       throw new TypeError("Incorrect type or no type on node");
     }
 
-    let buttonText = null;
+    let sourceButtonText = "";
     if (!sourceIDs) {
       console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", socialSources);
-      buttonText = "";
     } else {
       for (const id of sourceIDs) {
         buttonStrings.push(socialSources.get(id).getName());
       }
     }
 
-    buttonText = buttonStrings.join(", ");
+    sourceButtonText = buttonStrings.join(", ");
 
     // Get biography for node
     let bio = social.getBiographies().getByID(node.id);
@@ -166,12 +165,25 @@ class Popover extends React.Component {
           <div className={styles.bioSection}>{bio}</div>
           <div className={styles.readMore}>{readMoreButton}</div>
           <div className={styles.header}>Sources</div>
-          <div className={styles.sourceSection}>{sourceButton}</div>
+          <div className={styles.sourceSection}>
+            <TextButton
+              textColor="black"
+              hoverColor="#808080"
+              fontSize="1.5vh"
+              padding="0px 4px 4px 4px"
+              onClick={this.toggleSourceOverlay}
+            >
+              {sourceButtonText}
+            </TextButton>
+          </div>
         </div>
         <OverlayWrapper
           isBioOverlayOpen={this.state.isBioOverlayOpen}
           isOverlayOpen={this.state.isOverlayOpen}
           isSourceOverlayOpen={this.state.isSourceOverlayOpen}
+          toggleOverlay={this.toggleOverlay}
+          toggleBioOverlay={this.toggleBioOverlay}
+          toggleSourceOverlay={this.toggleSourceOverlay}
           node={node}
           social={social}
           entity={entity}
