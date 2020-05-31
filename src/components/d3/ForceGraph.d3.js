@@ -225,6 +225,18 @@ class ForceGraphD3 extends React.Component {
     return this.state.social.getBiographies().getByID(id);
   }
 
+  getNodeConnections(id) {
+    return this.state.social.getConnections().find(id);
+  }
+
+  gotConnections(id) {
+    if (this.getNodeConnections(id).length === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   updateGraph(social) {
     let w = this.state.width;
     let h = this.state.height;
@@ -291,8 +303,11 @@ class ForceGraphD3 extends React.Component {
           let o = old_nodes[i];
           node.x = o.x;
           node.y = o.y;
-        } else {
+        } else if (this.gotConnections(node.id)) {
           node.x = w * Math.random();
+          node.y = h * Math.random();
+        } else {
+          node.x = w - 0.15 * w;
           node.y = h * Math.random();
         }
 
@@ -526,6 +541,10 @@ class ForceGraphD3 extends React.Component {
       }
     }
 
+    if (!this.gotConnections(entity.id)) {
+      return 0;
+    }
+
     const leftForce = ["engineering"];
     const rightForce = ["commercial"];
     const noForce = ["other", "anchor", "business", "unknown"];
@@ -677,6 +696,7 @@ class ForceGraphD3 extends React.Component {
   }
 
   _updateNodeText(data) {
+    console.log("Updating node text");
     let text = this._mainGroup.select(".node_text-group").selectAll(".node_text");
 
     // Big weights make the size of circles too large
@@ -689,7 +709,16 @@ class ForceGraphD3 extends React.Component {
         (update) => update.attr("class", `node_text ${styles.node_text}`)
       )
       .text((d) => d.label)
-      .attr("dx", "0.5em")
+      .attr("dx", (d) => {
+        const insideWidth = window.insideWidth;
+
+        if (d.x > insideWidth - 100) {
+          return "-50px";
+        } else {
+          return "10px";
+        }
+        // ("0.5em");
+      })
       // This keeps the text from the centre of the circle
       // TODO -  could get this to be within the circle if the
       // circle is large enough?
@@ -702,9 +731,9 @@ class ForceGraphD3 extends React.Component {
       .attr("id", (d) => {
         return d.id;
       })
-      //   .on("click", handleMouseClick(this))
-      //   .on("mouseover", handleMouseOver(this))
-      //   .on("mouseout", handleMouseOut(this))
+      .on("click", handleMouseClick(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return text;
@@ -904,6 +933,7 @@ class ForceGraphD3 extends React.Component {
       container.selectAll("svg").attr("width", this.state.width).attr("height", this.state.height);
       this._size_changed = false;
       update_simulation = true;
+      this._label = this._updateNodeText(this._graph.nodes);
     }
 
     if (this._graph_changed) {

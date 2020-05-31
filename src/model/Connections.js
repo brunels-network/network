@@ -112,11 +112,13 @@ class Connections {
       return results[0];
     } else if (results.length > 1) {
       return results;
+    } else {
+      return results;
     }
 
-    let keys = Object.keys(this._names).join("', '");
+    // let keys = Object.keys(this._names).join("', '");
 
-    throw new MissingError(`No connection matches '${name}. Available Connections are '${keys}'`);
+    // throw new TypeError(`No connection matches '${name}. Available Connections are '${keys}'`);
   }
 
   get(id) {
