@@ -12,10 +12,10 @@ import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
 import SlidingPanel from "./components/SlidingPanel";
 import OverlayBox from "./components/OverlayBox";
-import SearchBar from "./components/SearchBar";
 import BrunelMenu from "./components/BrunelMenu";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
+import SearchOverlay from "./components/SearchOverlay";
 
 // Brunel model
 import Social from "./model/Social";
@@ -56,6 +56,7 @@ class SocialApp extends React.Component {
       isTimeLinePanelOpen: false,
       isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
+      isSearchOverlayOpen: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
@@ -199,6 +200,10 @@ class SocialApp extends React.Component {
     this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
   }
 
+  toggleSearchOverlay() {
+    this.setState({ isSearchOverlayOpen: !this.state.isSearchOverlayOpen });
+  }
+
   toggleWobble() {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
@@ -229,6 +234,12 @@ class SocialApp extends React.Component {
     //   : styles.graphContainerMenuClosed;
 
     // let sidebarClass = this.state.isHamburgerMenuOpen ? styles.sidebarVis : stules
+
+    let searchOverlay = null;
+    if (this.state.isSearchOverlayOpen) {
+      console.log("Search overlay is open");
+      searchOverlay = <SearchOverlay />;
+    }
 
     console.log(this.state.isHamburgerMenuOpen);
 
@@ -265,23 +276,18 @@ class SocialApp extends React.Component {
           />
         </ReactModal>
 
-        <SearchBar
-          social={social}
-          emitHamburgerClicked={() => {
-            this.setState({
-              isHamburgerMenuOpen: !this.state.isHamburgerMenuOpen,
-            });
-          }}
-          emitSelected={(item) => {
-            this.slotSelected(item);
-          }}
-          emitHighlighted={(item) => {
-            this.slotHighlighted(item);
-          }}
-          emitClicked={(item) => {
-            this.slotClicked(item);
-          }}
-        />
+        <div className={styles.hamburgerContainer}>
+          <button
+            className={styles.hamburgerButton}
+            onClick={() => {
+              this.setState({
+                isHamburgerMenuOpen: !this.state.isHamburgerMenuOpen,
+              });
+            }}
+          >
+            ☰
+          </button>
+        </div>
 
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
           <span
@@ -402,12 +408,14 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
           <AnalysisPanel
+            toggleSearchOverlay={() => this.toggleSearchOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
             toggleWobble={() => this.toggleWobble()}
             togglePanel={() => this.toggleAnalysisPanel()}
           />
         </SlidingPanel>
+        <div>{searchOverlay}</div>
       </div>
     );
   }

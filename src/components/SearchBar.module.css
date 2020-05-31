@@ -5,10 +5,10 @@
   width: 30%;
   display: flex;
   flex-direction: column;
-  font-family: "Playfair Display SC";
 }
 
 .searchContainer {
+  font-family: "Playfair Display SC";
   display: flex;
   flex-direction: row;
   justify-content: center;

@@ -41,6 +41,38 @@
   width: 8%;
 }
 
+.hamburgerContainer {
+  position: fixed;
+  top: 2%;
+  left: 2%;
+}
+
+.hamburgerButton {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  /* Within the column so left is top, center is middle */
+  justify-content: center;
+  align-items: left;
+  height: 40px;
+  width: 1.5em;
+  font-size: xx-large;
+  bottom: 10px;
+  border: 0;
+  color: white;
+  vertical-align: top;
+  background: transparent;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hamburgerButton:hover {
+    background-color: white;
+    color: black;
+  }
+}
+
 .controlButton {
   background-color: white;
   border-radius: 8px;

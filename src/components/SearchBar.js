@@ -275,11 +275,8 @@ class SearchBar extends React.Component {
 
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <div className={styles.searchContainer}>
-          <button className={styles.hamburgerButton} onClick={this.props.emitHamburgerClicked}>
-            ☰
-          </button>
           <input
             className={styles.searchBox}
             onChange={(event) => {

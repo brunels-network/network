@@ -14,6 +14,15 @@ class AnalysisPanel extends React.Component {
         <TextButton
           className={styles.button}
           onClick={() => {
+            this.props.toggleSearchOverlay();
+            this.props.togglePanel();
+          }}
+        >
+          Search
+        </TextButton>
+        <TextButton
+          className={styles.button}
+          onClick={() => {
             this.props.toggleFilterPanel();
             this.props.togglePanel();
           }}
@@ -52,6 +61,7 @@ class AnalysisPanel extends React.Component {
 }
 
 AnalysisPanel.propTypes = {
+  toggleSearchOverlay: PropTypes.func.isRequired,
   toggleFilterPanel: PropTypes.func.isRequired,
   toggleTimeLinePanel: PropTypes.func.isRequired,
   toggleWobble: PropTypes.func.isRequired,
