@@ -248,10 +248,9 @@ class SocialApp extends React.Component {
           emitClicked={(item) => {
             this.slotClicked(item);
           }}
+          selectedShipID={this.state.selectedShipID}
         />
       );
-
-      console.log(searchOverlay);
     }
 
     console.log(this.state.isHamburgerMenuOpen);

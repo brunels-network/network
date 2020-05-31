@@ -96,19 +96,16 @@ class Popover extends React.Component {
 
     let nodeType = node["type"];
 
-    let sourceIDs;
     let entity;
     if (nodeType === "person") {
       entity = this.props.social.getPeople().get(node.id);
-      const personalSources = entity.getSources();
-      sourceIDs = personalSources[selectedShipID];
     } else if (nodeType === "business") {
       entity = this.props.social.getBusinesses().get(node.id);
-      const businessSources = entity.getSources();
-      sourceIDs = businessSources[selectedShipID];
     } else {
       throw new TypeError("Incorrect type or no type on node");
     }
+
+    const sourceIDs = entity.getSources()[selectedShipID];
 
     let sourceButtonText = "";
     if (!sourceIDs) {
