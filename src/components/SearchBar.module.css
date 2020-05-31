@@ -1,5 +1,6 @@
 .searchContainer {
   font-family: "Playfair Display Medium";
+  transition: 0.3s;
 }
 
 .resultContainer {
@@ -11,6 +12,7 @@
   border-color: black;
   display: flex;
   flex-direction: row;
+  transition: 0.3s;
 }
 
 .searchPending {

@@ -1,5 +1,5 @@
 .overlay {
-  position: absolute;
+  position: fixed;
   background: rgba(34, 34, 34, 0.7);
   z-index: 10;
   width: 99%;
@@ -9,7 +9,7 @@
 }
 
 .container {
-  position: absolute;
+  position: fixed;
   background: white;
   font-family: "Playfair Display Medium";
   width: 75%;

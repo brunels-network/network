@@ -51,10 +51,12 @@ class SearchBar extends React.Component {
   }
 
   setResults(results) {
+    this.props.emitResults();
     this.setState({ searching: null, suggestions: null, results: results });
   }
 
   setSuggestions(suggestions) {
+    this.props.emitResults();
     this.setState({ searching: null, suggestions: suggestions, results: null });
   }
 

@@ -15,23 +15,27 @@ class SearchOverlay extends React.Component {
   }
 
   emitResults() {
-    this.setState({ haveResults: false });
+    this.setState({ haveResults: true });
   }
 
   render() {
+    // let searchStyle = this.state.haveResults ? styles.resultsContainer : styles.smallContainer;
+
     const placeholderText = "Search...";
 
     return (
       <Overlay toggleOverlay={this.props.toggleSearchOverlay}>
         <div className={styles.container}>
-          <SearchBar
-            social={this.props.social}
-            emitSelected={this.props.emitSelected}
-            emitHighlighted={this.props.emitHighlighted}
-            emitClicked={this.props.slotClicked}
-            emitResults={this.emitResults}
-            placeholder={placeholderText}
-          ></SearchBar>
+          <div className={styles.smallContainer}>
+            <SearchBar
+              social={this.props.social}
+              emitSelected={this.props.emitSelected}
+              emitHighlighted={this.props.emitHighlighted}
+              emitClicked={this.props.slotClicked}
+              emitResults={this.emitResults}
+              placeholder={placeholderText}
+            ></SearchBar>
+          </div>
         </div>
       </Overlay>
     );
