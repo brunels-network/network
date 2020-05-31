@@ -300,12 +300,10 @@ class SearchBar extends React.Component {
 
 // TODO - finish this
 SearchBar.propTypes = {
-  emitHamburgerClicked: PropTypes.func.isRequired,
   emitSelected: PropTypes.func.isRequired,
-  // This is currently unused
-  placeholder: PropTypes.any,
-  searchText: PropTypes.string,
   social: PropTypes.object.isRequired,
+  placeholder: PropTypes.string,
+  searchText: PropTypes.string,
 };
 
 export default SearchBar;

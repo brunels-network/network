@@ -1,0 +1,16 @@
+.container {
+  position: fixed;
+  background: white;
+  font-family: "Playfair Display Medium";
+  width: 30vw;
+  height: 20vh;
+  left: 37.5vw;
+  top: 20vh;
+  opacity: 1;
+  background-color: white;
+  z-index: 11;
+  padding: 1vh 1vw 1vh 0.5vw;
+
+  font-size: 1.5vh;
+  color: #222222;
+}

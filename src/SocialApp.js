@@ -56,7 +56,7 @@ class SocialApp extends React.Component {
       isTimeLinePanelOpen: false,
       isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
-      isSearchOverlayOpen: false,
+      isSearchOverlayOpen: true,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
@@ -233,12 +233,25 @@ class SocialApp extends React.Component {
     //   ? styles.graphContainerMenuOpen
     //   : styles.graphContainerMenuClosed;
 
-    // let sidebarClass = this.state.isHamburgerMenuOpen ? styles.sidebarVis : stules
-
     let searchOverlay = null;
     if (this.state.isSearchOverlayOpen) {
-      console.log("Search overlay is open");
-      searchOverlay = <SearchOverlay />;
+      searchOverlay = (
+        <SearchOverlay
+          social={social}
+          toggleSearchOverlay={() => this.toggleSearchOverlay()}
+          emitSelected={(item) => {
+            this.slotSelected(item);
+          }}
+          emitHighlighted={(item) => {
+            this.slotHighlighted(item);
+          }}
+          emitClicked={(item) => {
+            this.slotClicked(item);
+          }}
+        />
+      );
+
+      console.log(searchOverlay);
     }
 
     console.log(this.state.isHamburgerMenuOpen);
@@ -415,7 +428,7 @@ class SocialApp extends React.Component {
             togglePanel={() => this.toggleAnalysisPanel()}
           />
         </SlidingPanel>
-        <div>{searchOverlay}</div>
+        {searchOverlay}
       </div>
     );
   }

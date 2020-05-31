@@ -1,24 +1,11 @@
-.container {
-  position: fixed;
-  top: 10px;
-  left: 10%;
-  width: 30%;
-  display: flex;
-  flex-direction: column;
-}
-
 .searchContainer {
-  font-family: "Playfair Display SC";
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-content: center;
+  font-family: "Playfair Display Medium";
 }
 
 .resultContainer {
   background-color: #9cb6a4;
-  width: 80%;
-  max-height: 200px;
+  width: 100%;
+  max-height: 17vh;
   overflow-y: auto;
   border: 2px;
   border-color: black;
@@ -35,32 +22,8 @@
   width: 100%;
 }
 
-.hamburgerButton {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  /* Within the column so left is top, center is middle */
-  justify-content: center;
-  align-items: left;
-  height: 40px;
-  width: 1.5em;
-  font-size: xx-large;
-  bottom: 10px;
-  border: 0;
-  color: white;
-  vertical-align: top;
-  background: transparent;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-}
-
-.hamburgerButton:active {
-  background-color: rgba(0, 0, 0, 0);
-  color: black;
-}
-
 .searchBox {
-  width: 80%;
+  width: 100%;
   background-color: white;
   color: black;
   font-size: large;
