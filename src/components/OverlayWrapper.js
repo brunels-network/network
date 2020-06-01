@@ -14,6 +14,10 @@ class OverlayWrapper extends React.Component {
     const sourceButtonText = this.props.sourceButtonText;
     const socialSources = this.props.social.getSources();
 
+    if (!this.props.sourceIDs) {
+      return null;
+    }
+
     let overlay = null;
     if (this.props.isOverlayOpen && this.props.isSourceOverlayOpen) {
       overlay = (
