@@ -14,8 +14,8 @@ class SearchOverlay extends React.Component {
 
     this.emitResults = this.emitResults.bind(this);
     this.state = {
-      isOverlayOpen: false,
-      isBioOverlayOpen: false,
+      isOverlayOpen: true,
+      isBioOverlayOpen: true,
       isSourceOverlayOpen: false,
       haveResults: false,
       selectedEntity: null,
@@ -59,11 +59,13 @@ class SearchOverlay extends React.Component {
 
     let infoOverlay = null;
     if (this.state.selectedEntity) {
+      infoOverlay = <div style={{ background: "white", width: "75%", height: "75%", fontSize: "5vh" }}>Wooooo</div>;
       const entity = this.state.selectedEntity;
       const sourceIDs = entity.getSources()[selectedShipID];
 
       let buttonStrings = [];
       let sourceButtonText = "";
+
       if (!sourceIDs) {
         console.error("Cannot find sources for this project : ", selectedShipID, "\n Sources : ", socialSources);
       } else {
@@ -71,7 +73,6 @@ class SearchOverlay extends React.Component {
           buttonStrings.push(socialSources.get(id).getName());
         }
       }
-
       sourceButtonText = buttonStrings.join(", ");
 
       infoOverlay = (
@@ -89,6 +90,7 @@ class SearchOverlay extends React.Component {
         />
       );
     }
+
     return (
       <Overlay toggleOverlay={this.props.toggleSearchOverlay}>
         <div className={styles.container}>

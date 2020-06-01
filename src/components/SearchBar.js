@@ -70,6 +70,7 @@ class SearchBar extends React.Component {
         fontSize="2vh"
         onClick={() => {
           this.props.emitSelected(item);
+          console.log("Clicked! ", name);
         }}
       >
         {name}

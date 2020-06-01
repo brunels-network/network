@@ -1,28 +1,28 @@
 class KeyError extends Error {
   constructor(...args) {
     super(...args);
-    Error.captureStackTrace(this, KeyError);
+    Error(this, KeyError);
   }
 }
 
 class ValueError extends Error {
   constructor(...args) {
     super(...args);
-    Error.captureStackTrace(this, ValueError);
+    Error(this, ValueError);
   }
 }
 
 class DuplicateError extends Error {
   constructor(...args) {
     super(...args);
-    Error.captureStackTrace(this, DuplicateError);
+    Error(this, DuplicateError);
   }
 }
 
 class MissingError extends Error {
   constructor(...args) {
     super(...args);
-    Error.captureStackTrace(this, MissingError);
+    Error(this, MissingError);
   }
 }
 
