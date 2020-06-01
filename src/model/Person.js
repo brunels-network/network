@@ -3,6 +3,8 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
+import fixedNodes from "../data/fixedNodes.json";
+
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -400,6 +402,7 @@ class Person {
     };
 
     const weight = this.getWeight();
+    const name = this.getName();
 
     node["weight"] = weight;
     node["type"] = "person";
@@ -420,7 +423,11 @@ class Person {
       node["shape"] = "rect";
       node["fixed"] = true;
       node["group"] = "anchor";
-      node["size"] = 20.0;
+    }
+
+    if (name in fixedNodes) {
+      node["fixed"] = true;
+      node["fixedLocation"] = fixedNodes[name];
     }
 
     return node;

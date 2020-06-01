@@ -3,6 +3,8 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
+import fixedNodes from "../data/fixedNodes.json";
+
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -272,6 +274,9 @@ class Business {
       node["size"] = 20.0;
     }
 
+    if (this.getName() in fixedNodes) {
+      node["fixed"] = true;
+    }
     return node;
   }
 

@@ -8,7 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import styles from "../ForceGraph.module.css";
 
-import positionGroups from "../../position_groups.json";
+import positionGroups from "../../data/positionGroups.json";
+import fixedNodes from "../../data/fixedNodes.json";
 
 function _null_function() {}
 
@@ -311,13 +312,18 @@ class ForceGraphD3 extends React.Component {
           node.y = h * Math.random();
         }
 
+        // Brunel anchor point
         if (node.fixed) {
           if (i) {
             node.fx = node.x;
             node.fy = node.y;
+          } else if (node.fixedLocation) {
+            node.fx = w * node.fixedLocation["x"];
+            node.fy = h * node.fixedLocation["y"];
+            console.log("We have a fixed location!", node.label, node.fx, node.fy);
           } else {
-            node.fx = w / 2;
-            node.fy = h / 2;
+            node.fx = w * 0.66;
+            node.fy = h * 0.5;
           }
         }
       }
