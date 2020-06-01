@@ -17,7 +17,7 @@ class TextButton extends React.Component {
       color: "#f1f1f1",
       cursor: "pointer",
       fontSize: "3vh",
-      padding: "8px 8px 8px 32px",
+      padding: "1vh 1vw 1vh 1.4vw",
       textAlign: "left",
       "&:hover": { color: "black" },
     };

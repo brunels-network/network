@@ -32,12 +32,20 @@ class ShipSelector extends React.Component {
   render() {
     let projects = this.props.projects;
 
-    let output = projects.values().map((item, index) => {
-      return (
-        <button href="#" key={index} className={styles.button} onClick={() => this.setFilter(item)}>
-          {item.getName()}
-        </button>
-      );
+    let output = projects.values().map((item) => {
+      if (item.getName() === "SS Great Eastern") {
+        return (
+          <button href="#" key={item.getName()} className={styles.disabledButton}>
+            {item.getName()}
+          </button>
+        );
+      } else {
+        return (
+          <button href="#" key={item.getName()} className={styles.button} onClick={() => this.setFilter(item)}>
+            {item.getName()}
+          </button>
+        );
+      }
     });
 
     return output;

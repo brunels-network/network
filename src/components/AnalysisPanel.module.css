@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   font-family: "Playfair Display SC";
-  font-size: calc(18px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
+  font-size: 3.5vh;
   text-decoration: underline;
 }
 
@@ -37,8 +37,8 @@
   font-family: "Playfair Display SC";
   color: #f1f1f1;
   cursor: pointer;
-  font-size: calc(12px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
-  padding: 8px 8px 8px 32px;
+  font-size: 3vh;
+  padding: 1vh 1vw 1vh 1.4vw;
   text-align: left;
 }
 

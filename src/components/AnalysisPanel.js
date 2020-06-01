@@ -12,7 +12,6 @@ class AnalysisPanel extends React.Component {
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
         <TextButton
-          className={styles.button}
           onClick={() => {
             this.props.toggleSearchOverlay();
             this.props.togglePanel();
@@ -21,7 +20,6 @@ class AnalysisPanel extends React.Component {
           Search
         </TextButton>
         <TextButton
-          className={styles.button}
           onClick={() => {
             this.props.toggleFilterPanel();
             this.props.togglePanel();
@@ -29,32 +27,33 @@ class AnalysisPanel extends React.Component {
         >
           Filters
         </TextButton>
-        <button
-          className={styles.button}
+
+        <TextButton
           onClick={() => {
             this.props.toggleTimeLinePanel();
             this.props.togglePanel();
           }}
         >
           Timeline
-        </button>
-        <button
+        </TextButton>
+
+        <TextButton
           className={styles.button}
           onClick={() => {
             this.props.toggleWobble();
           }}
         >
           Wobble
-        </button>
+        </TextButton>
+
         <div className={styles.verticalSpace}></div>
-        <button
-          className={styles.button}
+        <TextButton
           onClick={() => {
             this.props.togglePanel();
           }}
         >
           Close
-        </button>
+        </TextButton>
       </div>
     );
   }

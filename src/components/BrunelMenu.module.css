@@ -12,12 +12,16 @@
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+  text-align: center;
+  align-items: left;
   height: 100%;
   background-color: #808080;
 }
 
 .logo {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: auto;
 }
 
@@ -33,8 +37,8 @@
   font-family: "Playfair Display SC";
   color: #f1f1f1;
   cursor: pointer;
-  font-size: calc(12px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
-  padding: 8px 8px 8px 32px;
+  font-size: 3vh;
+  padding: 1vh 1vw 1vh 1.4vw;
   text-align: left;
 }
 

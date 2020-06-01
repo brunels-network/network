@@ -4,9 +4,9 @@
   font-family: "Playfair Display SC";
   color: #f1f1f1;
   cursor: pointer;
-  font-size: calc(20px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
+  font-size: 4.5vh;
   transform: rotate(-90deg);
-  padding-bottom: 30%;
+  padding-bottom: 5vh;
 }
 
 .button:hover {

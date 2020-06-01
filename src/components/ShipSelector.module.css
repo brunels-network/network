@@ -14,7 +14,23 @@
   font-family: "Playfair Display SC";
   /* font-family: "Cinzel"; */
   /* font-size: 2vw; */
-  font-size: calc(14px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
+  font-size: 3.2vh;
+  border-radius: 0px;
+  color: white;
+  border: 1px solid white;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
+  margin: 10px;
+}
+
+.disabledButton {
+  display: inline-block;
+  background-color: grey;
+  font-family: "Playfair Display SC";
+  /* font-family: "Cinzel"; */
+  /* font-size: 2vw; */
+  font-size: 3.2vh;
   border-radius: 0px;
   color: white;
   border: 1px solid white;

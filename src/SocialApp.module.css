@@ -36,7 +36,7 @@
 
 .shipNameContainer {
   position: fixed;
-  top: 6%;
+  top: 2%;
   left: 45%;
   width: 8%;
 }
@@ -44,7 +44,7 @@
 .hamburgerContainer {
   position: fixed;
   top: 2%;
-  left: 2%;
+  left: 1%;
 }
 
 .hamburgerButton {
