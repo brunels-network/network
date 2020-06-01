@@ -14,7 +14,8 @@ import fixedNodes from "../../data/fixedNodes.json";
 function _null_function() {}
 
 function constrain(x, w, r = 20) {
-  return Math.max(r, Math.min(w - r, x));
+  let r2 = 6;
+  return Math.max(r, Math.min(w - r2, x));
 }
 
 function handleMouseClick(THIS) {
@@ -798,7 +799,7 @@ class ForceGraphD3 extends React.Component {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .force("charge", d3.forceManyBody().strength(-150).distanceMin(10).distanceMax(25))
+      .force("charge", d3.forceManyBody().strength(-5).distanceMin(4).distanceMax(25))
       .force(
         "link",
         d3
@@ -846,6 +847,8 @@ class ForceGraphD3 extends React.Component {
           .attr("cy", (d) => {
             return (d.y = constrain(d.y, h, d.r));
           });
+
+        //   .attr('cy', d => d.y = Math.min(d.y, height / 2))
 
         this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
       })
