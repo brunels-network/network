@@ -321,7 +321,6 @@ class ForceGraphD3 extends React.Component {
           } else if (node.fixedLocation) {
             node.fx = w * node.fixedLocation["x"];
             node.fy = h * node.fixedLocation["y"];
-            console.log("We have a fixed location!", node.label, node.fx, node.fy);
           } else {
             node.fx = w * 0.66;
             node.fy = h * 0.5;
@@ -543,7 +542,7 @@ class ForceGraphD3 extends React.Component {
       if (entity_id.startsWith("b")) {
         return -0.11;
       } else {
-        console.log("Undefined positions for entity ", entity);
+        console.error("Undefined positions for entity ", entity);
         return 0;
       }
     }
@@ -703,7 +702,6 @@ class ForceGraphD3 extends React.Component {
   }
 
   _updateNodeText(data) {
-    console.log("Updating node text");
     let text = this._mainGroup.select(".node_text-group").selectAll(".node_text");
 
     // Big weights make the size of circles too large
@@ -716,6 +714,9 @@ class ForceGraphD3 extends React.Component {
         (update) => update.attr("class", `node_text ${styles.node_text}`)
       )
       .text((d) => d.label)
+      .style("font-size", (d) => {
+        return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
+      })
       .attr("dx", (d) => {
         const insideWidth = window.insideWidth;
 
@@ -749,6 +750,9 @@ class ForceGraphD3 extends React.Component {
   _updateLink(data) {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
+    // Add prop here
+    let indirectStyle = true ? styles.linkIndirect : styles.linkInvisible;
+
     const weightCutoff = 4;
 
     link = link
@@ -764,10 +768,10 @@ class ForceGraphD3 extends React.Component {
           if (d.value > weightCutoff) {
             return `link ${styles.link}`;
           } else {
-            return `link ${styles.link_weak}`;
+            return `link ${styles.linkWeak}`;
           }
         } else {
-          return `link ${styles.link_indirect}`;
+          return `link ${indirectStyle}`;
         }
       })
       .attr("id", (d) => {

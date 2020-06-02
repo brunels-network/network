@@ -35,42 +35,47 @@
 .link {
   /* Was white */
   stroke: #659dd8;
-  stroke-width: 0.1em;
+  stroke-width: 0.05vw;
   stroke-opacity: 60%;
   fill: none;
 }
 
-.link_weak {
+.linkWeak {
   stroke: #659dd8;
-  stroke-width: 0.1em;
+  stroke-width: 0.05vw;
   stroke-opacity: 20%;
   fill: none;
 }
 
-.link_indirect {
+.linkIndirect {
   stroke: #808080;
-  stroke-width: 0.1em;
+  stroke-width: 0.05vw;
   stroke-opacity: 50%;
   fill: none;
 }
 
-.link_weak.highlight {
+.linkInvisible {
+  stroke: transparent;
+  fill: none;
+}
+
+.linkWeak.highlight {
   stroke: red;
-  stroke-width: 0.1em;
+  stroke-width: 0.05vw;
   stroke-opacity: 50%;
   fill: none;
 }
 
-.link_indirect.highlight {
+.linkIndirect.highlight {
   stroke: red;
-  stroke-width: 0.1em;
+  stroke-width: 0.05vw;
   stroke-opacity: 50%;
   fill: none;
 }
 
 .link.highlight {
   stroke: red;
-  stroke-width: 0.2em;
+  stroke-width: 0.1vw;
   fill: none;
 }
 
