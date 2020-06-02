@@ -40,13 +40,13 @@ class Popover extends React.Component {
 
   handleClickOutside(event) {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      console.log("Click outside");
       this.props.clearPopups();
     }
   }
 
   toggleOverlay() {
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
+    this.props.clearPopups();
   }
 
   toggleSourceOverlay() {
@@ -81,7 +81,7 @@ class Popover extends React.Component {
 
     let readMoreButton = (
       <TextButton
-        textColor="black"
+        textColor="#9B1C31"
         hoverColor="#808080"
         fontSize="1.5vh"
         padding="0px 2px 2px 2px"
@@ -155,13 +155,10 @@ class Popover extends React.Component {
           className={styles.popOver}
           style={{ top: top, left: left, height: popoverHeightVH + "vh", width: popoverWidthVW + "vw" }}
         >
-          <div className={styles.imageSection}>
-            <img src={tempImage} alt="SS Great Western's maiden voyage" />
-          </div>
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
           <div className={styles.readMore}>{readMoreButton}</div>
-          <div className={styles.header}>Sources</div>
+          <div className={styles.sourceHeader}>Sources</div>
           <div className={styles.sourceSection}>
             <TextButton
               textColor="black"

@@ -6,7 +6,13 @@ import styles from "./SourceOverlay.module.css";
 import "@brainhubeu/react-carousel/lib/style.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleDoubleLeft, faAngleDoubleRight, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleLeft,
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+  faAngleRight,
+  faWindowClose,
+} from "@fortawesome/free-solid-svg-icons";
 
 import TextButton from "./TextButton";
 
@@ -57,6 +63,11 @@ class SourceOverlay extends React.Component {
 
     return (
       <div className={styles.container}>
+        <div className={styles.closeButton}>
+          <button onClick={this.props.toggleOverlay} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+            x
+          </button>
+        </div>
         <div className={styles.nameHeader}>{person.getName()}</div>
 
         <div className={styles.body}>

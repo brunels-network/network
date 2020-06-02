@@ -45,6 +45,11 @@ class BioOverlay extends React.Component {
 
     return (
       <div className={styles.container}>
+        <div className={styles.closeButton}>
+          <button onClick={this.props.toggleOverlay} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+            x
+          </button>
+        </div>
         <div className={styles.nameHeader}>{person.getName()}</div>
         <div className={styles.positions}>{}</div>
         <div className={styles.bio}>{bio}</div>

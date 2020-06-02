@@ -18,6 +18,11 @@
   color: #222222;
 }
 
+.closeButton {
+  position: absolute;
+  right: 0.01vw;
+}
+
 .divider {
   background: linear-gradient(lightgrey, lightgrey) no-repeat center/1px 100%;
   grid-column-start: 2;
