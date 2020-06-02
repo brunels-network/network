@@ -22,6 +22,9 @@ class ForceGraph extends React.Component {
     this.updateSize = this.updateSize.bind(this);
     this.emitPopProps = this.emitPopProps.bind(this);
     this.clearPopups = this.clearPopups.bind(this);
+
+    // TODO - look up better way of doing this
+    // Bring this into the class above it?
     // This feels very clunky
     tempProps["emitPopProps"] = this.emitPopProps;
     this.graph = new ForceGraphD3(tempProps);
@@ -107,6 +110,7 @@ class ForceGraph extends React.Component {
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
   selectedShipID: PropTypes.string,
+  indirectLinksVisible: PropTypes.bool.isRequired,
 };
 
 export default ForceGraph;

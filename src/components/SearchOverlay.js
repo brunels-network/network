@@ -3,7 +3,6 @@ import React from "react";
 
 import SearchBar from "./SearchBar";
 import Overlay from "./Overlay";
-import OverlayWarapper from "./OverlayWrapper";
 
 import styles from "./SearchOverlay.module.css";
 import OverlayWrapper from "./OverlayWrapper";

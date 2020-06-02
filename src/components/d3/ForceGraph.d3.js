@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 
 import React from "react";
-import ReactDOMServer from "react-dom/server";
 
 import lodash from "lodash";
 import { v4 as uuidv4 } from "uuid";
@@ -9,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 import styles from "../ForceGraph.module.css";
 
 import positionGroups from "../../data/positionGroups.json";
-import fixedNodes from "../../data/fixedNodes.json";
 
 function _null_function() {}
 
@@ -192,6 +190,7 @@ class ForceGraphD3 extends React.Component {
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
+      indirectLinksVisible: false,
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
@@ -346,6 +345,11 @@ class ForceGraphD3 extends React.Component {
 
     if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
       this.state.lastShip = props.selectedShipID;
+      this._graph_changed = true;
+    }
+
+    if (props.indirectLinksVisible !== this.state.indirectLinksVisible) {
+      this.state.indirectLinksVisible = props.indirectLinksVisible;
       this._graph_changed = true;
     }
 
@@ -751,7 +755,7 @@ class ForceGraphD3 extends React.Component {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
     // Add prop here
-    let indirectStyle = true ? styles.linkIndirect : styles.linkInvisible;
+    let indirectStyle = this.state.indirectLinksVisible ? styles.linkIndirect : styles.linkInvisible;
 
     const weightCutoff = 4;
 
@@ -868,6 +872,13 @@ class ForceGraphD3 extends React.Component {
 
   restartSimulation() {
     this._simulation.restart();
+  }
+
+  updateLinks(indirectLinksVisible) {
+    if (this._graph.edges) {
+      this.setState({ indirectLinksVisible: indirectLinksVisible });
+      this._updateLink(this._graph.edges);
+    }
   }
 
   drawFromScratch() {

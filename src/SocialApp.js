@@ -16,6 +16,7 @@ import BrunelMenu from "./components/BrunelMenu";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
 import SearchOverlay from "./components/SearchOverlay";
+import OptionsOverlay from "./components/OptionsOverlay";
 
 // Brunel model
 import Social from "./model/Social";
@@ -57,6 +58,8 @@ class SocialApp extends React.Component {
       isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
       isSearchOverlayOpen: false,
+      isOptionsOverlayOpen: false,
+      indirectLinksVisible: false,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
@@ -208,6 +211,14 @@ class SocialApp extends React.Component {
     this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
   }
 
+  toggleOptionsOverlay() {
+    this.setState({ isOptionsOverlayOpen: !this.state.isOptionsOverlayOpen });
+  }
+
+  toggleIndirectLinksVisible() {
+    this.setState({ indirectLinksVisible: !this.state.indirectLinksVisible });
+  }
+
   setOverlay(item) {
     this.setState({
       overlayItem: item,
@@ -253,7 +264,18 @@ class SocialApp extends React.Component {
       );
     }
 
-    console.log(this.state.isHamburgerMenuOpen);
+    let optionsOverlay = null;
+    if (this.state.isOptionsOverlayOpen) {
+      optionsOverlay = (
+        <OptionsOverlay
+          indirectLinksVisible={this.state.indirectLinksVisible}
+          physicsEnabled={this.state.wobbleEnabled}
+          togglePhysicsEnabled={this.toggleWobble}
+          toggleIndirectLinksVisible={() => this.toggleIndirectLinksVisible()}
+          toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
+        />
+      );
+    }
 
     return (
       <div>
@@ -411,6 +433,7 @@ class SocialApp extends React.Component {
             setOverlay={this.setOverlay}
             wobble={this.state.wobbleEnabled}
             selectedShipID={this.state.selectedShipID}
+            indirectLinksVisible={this.state.indirectLinksVisible}
           />
         </div>
 
@@ -421,6 +444,7 @@ class SocialApp extends React.Component {
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
           <AnalysisPanel
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
+            toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
             toggleWobble={() => this.toggleWobble()}
@@ -428,6 +452,7 @@ class SocialApp extends React.Component {
           />
         </SlidingPanel>
         {searchOverlay}
+        {optionsOverlay}
       </div>
     );
   }

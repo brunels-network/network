@@ -22,8 +22,8 @@ class SocialGraph extends React.Component {
   }
 
   render() {
+    console.log("In social graph... ", this.props.indirectLinksVisible);
     if (this.props.social) {
-      console.log("In SocialGraph shipID: ", this.props.selectedShipID);
       return (
         <div style={{ width: "100%", height: "100%" }}>
           <ForceGraph
@@ -33,6 +33,7 @@ class SocialGraph extends React.Component {
             selected={this.props.selected}
             wobble={this.props.wobble}
             selectedShipID={this.props.selectedShipID}
+            indirectLinksVisible={this.props.indirectLinksVisible}
           />
         </div>
       );
@@ -48,6 +49,7 @@ SocialGraph.propTypes = {
   selected: PropTypes.func,
   social: PropTypes.object.isRequired,
   wobble: PropTypes.bool.isRequired,
+  indirectLinksVisible: PropTypes.bool.isRequired,
   selectedShipID: PropTypes.string,
 };
 

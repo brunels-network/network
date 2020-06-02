@@ -8,9 +8,15 @@ function Overlay(props) {
   const { useState } = React;
   const [open, setOpen] = useState(true);
   if (open) {
+    let style = styles.overlay;
+
+    if (!props.useBackground) {
+      style = styles.overylayNoBackground;
+    }
+
     return (
       <div
-        className={styles.overlay}
+        className={style}
         onClick={() => {
           props.toggleOverlay();
           setOpen(false);
@@ -29,9 +35,14 @@ function Overlay(props) {
   return null;
 }
 
+Overlay.defaultProps = {
+  useBackground: true,
+};
+
 export default Overlay;
 
 Overlay.propTypes = {
   toggleOverlay: PropTypes.func.isRequired,
   children: PropTypes.element.isRequired,
+  useBackground: PropTypes.bool,
 };

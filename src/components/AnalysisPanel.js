@@ -47,6 +47,17 @@ class AnalysisPanel extends React.Component {
           padding={buttonPadding}
           className={styles.button}
           onClick={() => {
+            this.props.toggleOptionsOverlay();
+            this.props.togglePanel();
+          }}
+        >
+          Options
+        </TextButton>
+
+        <TextButton
+          padding={buttonPadding}
+          className={styles.button}
+          onClick={() => {
             this.props.toggleWobble();
           }}
         >
@@ -73,6 +84,7 @@ AnalysisPanel.propTypes = {
   toggleTimeLinePanel: PropTypes.func.isRequired,
   toggleWobble: PropTypes.func.isRequired,
   togglePanel: PropTypes.func.isRequired,
+  toggleOptionsOverlay: PropTypes.func.isRequired,
 };
 
 export default AnalysisPanel;

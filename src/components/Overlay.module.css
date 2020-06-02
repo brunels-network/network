@@ -8,6 +8,11 @@
   top: 0.5%;
 }
 
+.overlay {
+  position: fixed;
+  background: transparent;
+}
+
 .container {
   position: fixed;
   background: white;
