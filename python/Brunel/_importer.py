@@ -555,6 +555,7 @@ def importWeights(node, importers=None):
         Returns:
             list: List of weights
     """
+    print(node, int(node["Weight"]))
     return int(node["Weight"])
 
 

@@ -722,22 +722,10 @@ class ForceGraphD3 extends React.Component {
         return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
       })
       .attr("dx", (d) => {
-        const insideWidth = window.insideWidth;
-
-        if (d.x > insideWidth - 100) {
-          return "-50px";
-        } else {
-          return "10px";
-        }
-        // ("0.5em");
+        return this.getWeight(d) + "px";
       })
-      // This keeps the text from the centre of the circle
-      // TODO -  could get this to be within the circle if the
-      // circle is large enough?
       .attr("dy", (d) => {
-        const weight = this.getWeight(d);
-
-        return -1 * (3 + sizeScale * weight);
+        return -1 * (3 + sizeScale * this.getWeight(d)) + "px";
       })
       .attr("text-anchor", "start")
       .attr("id", (d) => {

@@ -17,7 +17,7 @@ class AnalysisPanel extends React.Component {
         <TextButton
           padding={buttonPadding}
           onClick={() => {
-            // this.props.toggleSearchOverlay();
+            this.props.toggleSearchOverlay();
             this.props.togglePanel();
           }}
         >
