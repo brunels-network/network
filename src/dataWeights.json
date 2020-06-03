@@ -1560,7 +1560,8 @@
                 }
               },
               "sources": { "J726946f": ["Se0f48dc"] },
-              "orig_name": "Stepehnson, Robert"
+              "orig_name": "Stephenson, Robert",
+              "weight": { "J726946f": 1 }
             }
           },
           "P63a603e": {
