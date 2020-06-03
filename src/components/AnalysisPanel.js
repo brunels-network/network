@@ -54,16 +54,6 @@ class AnalysisPanel extends React.Component {
           Options
         </TextButton>
 
-        <TextButton
-          padding={buttonPadding}
-          className={styles.button}
-          onClick={() => {
-            this.props.toggleWobble();
-          }}
-        >
-          Wobble
-        </TextButton>
-
         <div className={styles.verticalSpace}></div>
         <TextButton
           padding={buttonPadding}
