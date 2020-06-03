@@ -32,7 +32,7 @@ class SocialApp extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggleWobble = this.toggleWobble.bind(this);
+    this.togglePhysicsEnabled = this.togglePhysicsEnabled.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
 
@@ -63,7 +63,7 @@ class SocialApp extends React.Component {
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
-      wobbleEnabled: true,
+      physicsEnabled: true,
       selectedShip: null,
       selectedShipID: null,
     };
@@ -207,8 +207,8 @@ class SocialApp extends React.Component {
     this.setState({ isSearchOverlayOpen: !this.state.isSearchOverlayOpen });
   }
 
-  toggleWobble() {
-    this.setState({ wobbleEnabled: !this.state.wobbleEnabled });
+  togglePhysicsEnabled() {
+    this.setState({ physicsEnabled: !this.state.physicsEnabled });
   }
 
   toggleOptionsOverlay() {
@@ -269,8 +269,8 @@ class SocialApp extends React.Component {
       optionsOverlay = (
         <OptionsOverlay
           indirectLinksVisible={this.state.indirectLinksVisible}
-          physicsEnabled={this.state.wobbleEnabled}
-          togglePhysicsEnabled={this.toggleWobble}
+          physicsEnabled={this.state.physicsEnabled}
+          togglePhysicsEnabled={this.togglePhysicsEnabled}
           toggleIndirectLinksVisible={() => this.toggleIndirectLinksVisible()}
           toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
         />
@@ -435,6 +435,7 @@ class SocialApp extends React.Component {
               wobble={this.state.wobbleEnabled}
               selectedShipID={this.state.selectedShipID}
               indirectLinksVisible={this.state.indirectLinksVisible}
+              physicsEnabled={this.state.physicsEnabled}
             />
           </div>
         </div>
@@ -449,7 +450,6 @@ class SocialApp extends React.Component {
             toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
-            toggleWobble={() => this.toggleWobble()}
             togglePanel={() => this.toggleAnalysisPanel()}
           />
         </SlidingPanel>

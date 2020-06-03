@@ -72,7 +72,6 @@ AnalysisPanel.propTypes = {
   toggleSearchOverlay: PropTypes.func.isRequired,
   toggleFilterPanel: PropTypes.func.isRequired,
   toggleTimeLinePanel: PropTypes.func.isRequired,
-  toggleWobble: PropTypes.func.isRequired,
   togglePanel: PropTypes.func.isRequired,
   toggleOptionsOverlay: PropTypes.func.isRequired,
 };

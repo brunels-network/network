@@ -33,7 +33,6 @@ class SlidingPanel extends React.Component {
     }
 
     if (width && !height) {
-      console.log("Setting height 100%");
       height = "100%";
     }
 

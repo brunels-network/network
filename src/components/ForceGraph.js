@@ -97,6 +97,12 @@ class ForceGraph extends React.Component {
       }
     }
 
+    if (!this.props.physicsEnabled) {
+      this.graph.slowPhysics();
+    } else {
+      this.graph.fastPhysics();
+    }
+
     return (
       <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>
         <div id={s} className={s}>
@@ -111,6 +117,7 @@ ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
   selectedShipID: PropTypes.string,
   indirectLinksVisible: PropTypes.bool.isRequired,
+  physicsEnabled: PropTypes.bool.isRequired,
 };
 
 export default ForceGraph;

@@ -333,13 +333,13 @@ class ForceGraphD3 extends React.Component {
   update(props) {
     let size_changed = false;
 
-    if (props.wobble) {
-      this._target_decay = 0.4;
-      this._target_alpha = 0.3;
-    } else {
-      this._target_decay = 0.4;
-      this._target_alpha = 0;
-    }
+    // if (props.wobble) {
+    //   this._target_decay = 0.4;
+    //   this._target_alpha = 0.3;
+    // } else {
+    //   this._target_decay = 0.4;
+    //   this._target_alpha = 0;
+    // }
 
     if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
       this.state.lastShip = props.selectedShipID;
@@ -844,8 +844,6 @@ class ForceGraphD3 extends React.Component {
             return (d.y = constrain(d.y, h, d.r));
           });
 
-        //   .attr('cy', d => d.y = Math.min(d.y, height / 2))
-
         this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
       })
       .on("end", () => {
@@ -858,8 +856,39 @@ class ForceGraphD3 extends React.Component {
     this._simulation = simulation;
   }
 
+  slowPhysics() {
+    console.log("Setting slow physics");
+    if (this._simulation) {
+      this._target_alpha = 0;
+      this._target_decay = 0.4;
+      this._simulation.restart();
+    }
+  }
+
+  fastPhysics() {
+    console.log("Setting fast physics");
+    if (this._simulation) {
+      this._target_decay = 0.4;
+      this._target_alpha = 0.3;
+      this._graph_changed = true;
+      this._simulation.restart();
+    }
+  }
+
   restartSimulation() {
-    this._simulation.restart();
+    if (this._simulation) {
+      this._simulation.restart();
+      this._is_running = true;
+    }
+  }
+
+  stopSimulation() {
+    this._simulation.stop();
+    this._is_running = false;
+  }
+
+  isRunning() {
+    return this._is_running;
   }
 
   updateLinks(indirectLinksVisible) {

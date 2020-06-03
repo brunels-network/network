@@ -33,6 +33,7 @@ class SocialGraph extends React.Component {
             wobble={this.props.wobble}
             selectedShipID={this.props.selectedShipID}
             indirectLinksVisible={this.props.indirectLinksVisible}
+            physicsEnabled={this.props.physicsEnabled}
           />
         </div>
       );
@@ -50,6 +51,7 @@ SocialGraph.propTypes = {
   wobble: PropTypes.bool.isRequired,
   indirectLinksVisible: PropTypes.bool.isRequired,
   selectedShipID: PropTypes.string,
+  physicsEnabled: PropTypes.bool.isRequired,
 };
 
 export default SocialGraph;
