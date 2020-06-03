@@ -58,13 +58,14 @@ class Person:
             "gender": None,
             "notes": [],
             "orig_name": None,
-            "weight": 1
+            "weight": {}
         }
 
         self.setState(props)
 
     def merge(self, other):
-        """ Merge two people together
+        """ Merge two people together. This function is used when merging in matching
+            people that are involved in another project.
 
             Args:
                 other (Person): Person to merge with this Person object
@@ -83,6 +84,9 @@ class Person:
 
         for project, dates in other.state["projects"].items():
             state["projects"][project] = dates
+
+        for id, weight in other.state["weight"].items():
+            state["weight"][id] = weight
 
         p = Person()
         p.state = state
@@ -194,6 +198,14 @@ class Person:
 
         return result
 
+    def getWeight(self):
+        """ Return the contributing weight of this person to each project
+
+            Returns:
+                dict: Dictionary keyed by project ID
+        """
+        return self.state["weight"]
+
     def getBorn(self):
         try:
             return self.state["alive"].getStart()
@@ -229,7 +241,7 @@ class Person:
         self.state["gender"] = _setState(state, "gender")
         self.state["orig_name"] = _setState(state, "orig_name")
         self.state["notes"] = _setState(state, "notes", [])
-        self.state["weight"] = _setState(state, "weight")
+        self.state["weight"] = _setState(state, "weight", {})
 
         if self.state["orig_name"] == "None" or self.state["orig_name"] is None:
             raise ValueError(f"No name for {self}?")

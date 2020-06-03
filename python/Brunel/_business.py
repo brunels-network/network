@@ -26,7 +26,7 @@ class Business:
             "scores": {},
             "affiliations": {},
             "notes": [],
-            "weight": 1
+            "weight": {}
         }
 
         self.setState(props)

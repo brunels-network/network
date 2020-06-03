@@ -258,7 +258,7 @@ class Social:
         for _, node in nodes.iterrows():
             if is_person(node, importers=importers):
                 person = import_person(node, project, importers=importers)
-                
+
                 if person:
                     # Use the function from the modifiers dict to process this person
                     person = modifiers["person"](person)
