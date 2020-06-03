@@ -424,17 +424,19 @@ class SocialApp extends React.Component {
         </div>
 
         {/* The social graph itself */}
-        <div className={graphContainerClass}>
-          <SocialGraph
-            social={this.state.social}
-            selected={selected}
-            highlighted={highlighted}
-            emitClicked={(id) => this.slotSelected(id)}
-            setOverlay={this.setOverlay}
-            wobble={this.state.wobbleEnabled}
-            selectedShipID={this.state.selectedShipID}
-            indirectLinksVisible={this.state.indirectLinksVisible}
-          />
+        <div className={styles.mainContainer}>
+          <div className={styles.graphContainer}>
+            <SocialGraph
+              social={this.state.social}
+              selected={selected}
+              highlighted={highlighted}
+              emitClicked={(id) => this.slotSelected(id)}
+              setOverlay={this.setOverlay}
+              wobble={this.state.wobbleEnabled}
+              selectedShipID={this.state.selectedShipID}
+              indirectLinksVisible={this.state.indirectLinksVisible}
+            />
+          </div>
         </div>
 
         <div className={styles.rightSidePanel}>

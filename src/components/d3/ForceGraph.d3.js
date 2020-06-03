@@ -12,8 +12,7 @@ import positionGroups from "../../data/positionGroups.json";
 function _null_function() {}
 
 function constrain(x, w, r = 20) {
-  let r2 = 6;
-  return Math.max(r, Math.min(w - r2, x));
+  return Math.max(3 * r, Math.min(w - r, x));
 }
 
 function handleMouseClick(THIS) {
@@ -157,7 +156,6 @@ function _resolve(item) {
   }
 }
 
-/** The main class that renders the graph in the ForceGraph */
 class ForceGraphD3 extends React.Component {
   constructor(props) {
     super(props);

@@ -22,7 +22,6 @@ class SocialGraph extends React.Component {
   }
 
   render() {
-    console.log("In social graph... ", this.props.indirectLinksVisible);
     if (this.props.social) {
       return (
         <div style={{ width: "100%", height: "100%" }}>
