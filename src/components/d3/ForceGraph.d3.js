@@ -185,6 +185,7 @@ class ForceGraphD3 extends React.Component {
       social: null,
       selected: null,
       highlighted: null,
+      lastPhysics: "fast",
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
@@ -200,7 +201,7 @@ class ForceGraphD3 extends React.Component {
     this._is_drawn = false;
 
     // Set parameters for the force simulation
-    this._target_decay = 0.4;
+    this._target_decay = 0.1;
     this._target_alpha = 0.3;
 
     this._tooltips = [];
@@ -580,7 +581,9 @@ class ForceGraphD3 extends React.Component {
     return d3
       .drag()
       .on("start", (d) => {
-        simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+        // simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+        // simulation.restart();
+        // simulation.alpha(1).alphaTarget(0.5).alphaMin(0.2).alphaDecay(0.001).restart();
 
         d.fx = d.x;
         d.fy = d.y;
@@ -595,7 +598,7 @@ class ForceGraphD3 extends React.Component {
         d.fy = constrain(d3.event.y, h, d.r);
       })
       .on("end", (d) => {
-        simulation.alphaTarget(0).restart();
+        // simulation.alphaTarget(0).restart();
 
         if (!d.fixed) {
           d.fx = null;
@@ -610,7 +613,8 @@ class ForceGraphD3 extends React.Component {
     return d3
       .drag()
       .on("start", (d) => {
-        simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
+        // simulation.alphaTarget(0.2).alphaDecay(0.001).restart();
+        // simulation.restart();
 
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
@@ -642,7 +646,7 @@ class ForceGraphD3 extends React.Component {
         target.fy = constrain(d3.event.y + dy, this.state.height, target.r);
       })
       .on("end", (d) => {
-        simulation.alphaTarget(0).restart();
+        // simulation.alphaTarget(0).restart();
 
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
@@ -775,9 +779,9 @@ class ForceGraphD3 extends React.Component {
       .attr("target_id", (d) => {
         return d.target_id;
       })
-      .on("click", handleMouseClick(this))
-      .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this))
+      //   .on("click", handleMouseClick(this))
+      //   .on("mouseover", handleMouseOver(this))
+      //   .on("mouseout", handleMouseOut(this))
       .call(this.dragLink());
 
     return link;
@@ -795,6 +799,10 @@ class ForceGraphD3 extends React.Component {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
+      .alpha(1)
+      .alphaTarget(0.5)
+      .alphaMin(0.2)
+      .alphaDecay(0.001)
       .force("charge", d3.forceManyBody().strength(-5).distanceMin(4).distanceMax(25))
       .force(
         "link",
@@ -857,21 +865,16 @@ class ForceGraphD3 extends React.Component {
   }
 
   slowPhysics() {
-    console.log("Setting slow physics");
-    if (this._simulation) {
-      this._target_alpha = 0;
-      this._target_decay = 0.4;
-      this._simulation.restart();
+    if (this._simulation && this.state.lastPhysics === "fast") {
+      this.state.lastPhysics = "slow";
+      this._simulation.alpha(0.1).alphaTarget(0).alphaDecay(0.05).velocityDecay(0.8).restart();
     }
   }
 
   fastPhysics() {
-    console.log("Setting fast physics");
-    if (this._simulation) {
-      this._target_decay = 0.4;
-      this._target_alpha = 0.3;
-      this._graph_changed = true;
-      this._simulation.restart();
+    if (this._simulation && this.state.lastPhysics === "slow") {
+      this.state.lastPhysics = "fast";
+      this._simulation.alpha(1).alphaTarget(0.5).alphaMin(0.2).alphaDecay(0.001).restart();
     }
   }
 
