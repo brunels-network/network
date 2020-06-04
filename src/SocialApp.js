@@ -63,7 +63,7 @@ class SocialApp extends React.Component {
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
-      physicsEnabled: true,
+      physicsEnabled: false,
       selectedShip: null,
       selectedShipID: null,
     };

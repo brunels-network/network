@@ -186,6 +186,7 @@ class ForceGraphD3 extends React.Component {
       selected: null,
       highlighted: null,
       lastPhysics: "fast",
+      physicsEnabled: null,
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
@@ -334,13 +335,9 @@ class ForceGraphD3 extends React.Component {
   update(props) {
     let size_changed = false;
 
-    // if (props.wobble) {
-    //   this._target_decay = 0.4;
-    //   this._target_alpha = 0.3;
-    // } else {
-    //   this._target_decay = 0.4;
-    //   this._target_alpha = 0;
-    // }
+    if (!this.state.physicsEnabled) {
+      this.state.physicsEnabled = this.props.physicsEnabled;
+    }
 
     if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
       this.state.lastShip = props.selectedShipID;
@@ -799,10 +796,10 @@ class ForceGraphD3 extends React.Component {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .alpha(1)
-      .alphaTarget(0.5)
-      .alphaMin(0.2)
-      .alphaDecay(0.001)
+      .alpha(0.4)
+      .alphaTarget(0)
+      .alphaDecay(0.05)
+      //   .velocityDecay(0.8)
       .force("charge", d3.forceManyBody().strength(-5).distanceMin(4).distanceMax(25))
       .force(
         "link",
@@ -865,15 +862,13 @@ class ForceGraphD3 extends React.Component {
   }
 
   slowPhysics() {
-    if (this._simulation && this.state.lastPhysics === "fast") {
-      this.state.lastPhysics = "slow";
+    if (this._simulation) {
       this._simulation.alpha(0.1).alphaTarget(0).alphaDecay(0.05).velocityDecay(0.8).restart();
     }
   }
 
   fastPhysics() {
-    if (this._simulation && this.state.lastPhysics === "slow") {
-      this.state.lastPhysics = "fast";
+    if (this._simulation) {
       this._simulation.alpha(1).alphaTarget(0.5).alphaMin(0.2).alphaDecay(0.001).restart();
     }
   }
