@@ -54,6 +54,7 @@ class ForceGraph extends React.Component {
     }
   }
 
+  // Used for multiple popups
   updatePopupState(id, node) {
     this.setState((prevState) => {
       let popups = Object.assign({}, prevState.popups);
@@ -65,11 +66,15 @@ class ForceGraph extends React.Component {
   emitPopProps(node) {
     const id = node.id;
 
-    if (this.state.popups[id]) {
-      this.updatePopupState(id, false);
-    } else {
-      this.updatePopupState(id, node);
-    }
+    // this.clearPopups();
+    this.setState({ popups: { id: node } });
+
+    // Keep code for multiple popups
+    // if (this.state.popups[id]) {
+    //   this.updatePopupState(id, false);
+    // } else {
+    //   this.updatePopupState(id, node);
+    // }
   }
 
   clearPopups() {

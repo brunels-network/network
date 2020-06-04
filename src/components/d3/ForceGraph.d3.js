@@ -186,7 +186,7 @@ class ForceGraphD3 extends React.Component {
       selected: null,
       highlighted: null,
       lastPhysics: "fast",
-      physicsEnabled: null,
+      physicsEnabled: this.props.physicsEnabled,
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
@@ -318,8 +318,8 @@ class ForceGraphD3 extends React.Component {
             node.fx = node.x;
             node.fy = node.y;
           } else if (node.fixedLocation) {
-            node.fx = w * node.fixedLocation["x"];
-            node.fy = h * node.fixedLocation["y"];
+            node.fx = w * node.fixedLocation["x"] * this.randomShift();
+            node.fy = h * node.fixedLocation["y"] * this.randomShift();
           } else {
             node.fx = w * 0.66;
             node.fy = h * 0.5;
@@ -330,6 +330,12 @@ class ForceGraphD3 extends React.Component {
       this._graph = graph;
       this._graph_changed = true;
     }
+  }
+
+  randomShift(min = 0.01, max = 0.15) {
+    // Adds a small bit of randomness to the placement of the fixed nodes so it
+    // doesn't look so fixed
+    return 1 - Math.random() * (max - min) + max;
   }
 
   update(props) {
@@ -862,13 +868,15 @@ class ForceGraphD3 extends React.Component {
   }
 
   slowPhysics() {
-    if (this._simulation) {
+    if (this._simulation && this.state.physicsEnabled === true) {
+      this.state.physicsEnabled = false;
       this._simulation.alpha(0.1).alphaTarget(0).alphaDecay(0.05).velocityDecay(0.8).restart();
     }
   }
 
   fastPhysics() {
-    if (this._simulation) {
+    if (this._simulation && this.state.physicsEnabled === false) {
+      this.state.physicsEnabled = true;
       this._simulation.alpha(1).alphaTarget(0.5).alphaMin(0.2).alphaDecay(0.001).restart();
     }
   }
