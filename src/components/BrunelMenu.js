@@ -36,14 +36,20 @@ class BrunelMenu extends React.Component {
 
   render() {
     return (
-      <div className={styles.sidebar}>
+      <div data-testid="BrunelMenu" className={styles.sidebar}>
         <div className={styles.logo}>
           <img src={logo} alt="SS Great Britain logo"></img>
         </div>
         <div className={styles.verticalSpace}></div>
-        <button className={styles.button} onClick={this.viewAbout}>About</button>
-        <button className={styles.button} onClick={this.viewSource}>Source</button>
-        <button className={styles.button} onClick={this.props.clickReset}>Reset</button>
+        <button className={styles.button} onClick={this.viewAbout}>
+          About
+        </button>
+        <button className={styles.button} onClick={this.viewSource}>
+          Source
+        </button>
+        <button className={styles.button} onClick={this.props.clickReset}>
+          Reset
+        </button>
       </div>
     );
   }

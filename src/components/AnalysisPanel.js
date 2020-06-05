@@ -9,7 +9,7 @@ class AnalysisPanel extends React.Component {
     const buttonPadding = "1vh 1vw 1vh 1vw";
 
     return (
-      <div className={styles.wholePanel}>
+      <div data-testid="AnalysisPanel" className={styles.wholePanel}>
         <div className={styles.verticalSpaceTitle}></div>
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>

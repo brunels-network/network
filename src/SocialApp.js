@@ -313,6 +313,7 @@ class SocialApp extends React.Component {
 
         <div className={styles.hamburgerContainer}>
           <button
+            data-testid="hamburgerButton"
             className={styles.hamburgerButton}
             onClick={() => {
               this.setState({

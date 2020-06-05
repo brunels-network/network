@@ -6,7 +6,7 @@ import styles from "./AnalysisButton.module.css";
 class AnalysisButon extends React.Component {
   render() {
     return (
-      <button className={styles.button} onClick={this.props.togglePanel}>
+      <button data-testid="AnalysisButton" className={styles.button} onClick={this.props.togglePanel}>
         Analysis
       </button>
     );

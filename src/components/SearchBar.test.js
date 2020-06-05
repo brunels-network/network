@@ -45,14 +45,5 @@ describe("SearchBar", () => {
 
     const searchResults = screen.queryByText(/searchResult/i);
     expect(searchResults).toBeNull();
-    // expect(searchResults.length).toBe(0);
   });
 });
-
-// test("test analysis buttons opens panel", () => {
-//   function handleClick() {
-//       console.log("Done");
-//   }
-
-//   const {getByText} = render(<)
-// });
