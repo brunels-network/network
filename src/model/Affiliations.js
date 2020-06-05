@@ -130,9 +130,9 @@ class Affiliations {
       return results;
     }
 
-    let keys = Object.keys(this._names).join("', '");
+    // let keys = Object.keys(this._names).join("', '");
 
-    throw new MissingError(`No affiliation matches '${name}. Available Affiliations are '${keys}'`);
+    // throw new MissingError(`No affiliation matches '${name}. Available Affiliations are '${keys}'`);
   }
 
   get(id) {

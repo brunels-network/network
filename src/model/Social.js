@@ -23,7 +23,7 @@ const slow_physics = { ...fast_physics };
 slow_physics.timestep = 0.1;
 
 function _push(values, list) {
-  if (!list) {
+  if (!list || !values) {
     return;
   }
 
@@ -136,7 +136,7 @@ class Social {
       try {
         this.state[key]._updateHooks(getHook);
       } catch (error) {
-        console.error("For key : ", key, "\nError: ", error);
+        // console.error("For key : ", key, "\nError: ", error);
       }
     }
   }

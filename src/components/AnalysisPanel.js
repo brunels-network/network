@@ -15,6 +15,7 @@ class AnalysisPanel extends React.Component {
         <div className={styles.verticalSpace}></div>
 
         <TextButton
+          data-testid="searchButton"
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleSearchOverlay();
@@ -24,6 +25,7 @@ class AnalysisPanel extends React.Component {
           Search
         </TextButton>
         <TextButton
+          data-testid="filtersButton"
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleFilterPanel();
@@ -34,6 +36,7 @@ class AnalysisPanel extends React.Component {
         </TextButton>
 
         <TextButton
+          data-testid="timelineButton"
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleTimeLinePanel();
@@ -44,6 +47,7 @@ class AnalysisPanel extends React.Component {
         </TextButton>
 
         <TextButton
+          data-testid="OptionsButton"
           padding={buttonPadding}
           className={styles.button}
           onClick={() => {
@@ -56,6 +60,7 @@ class AnalysisPanel extends React.Component {
 
         <div className={styles.verticalSpace}></div>
         <TextButton
+          data-testid="closeButton"
           padding={buttonPadding}
           onClick={() => {
             this.props.togglePanel();

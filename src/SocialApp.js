@@ -27,6 +27,7 @@ import graph_data from "./dataWeights.json";
 // Styling for the app
 import styles from "./SocialApp.module.css";
 import DateRange from "./model/DateRange";
+import ResetButton from "./components/ResetButton";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -323,6 +324,10 @@ class SocialApp extends React.Component {
           </button>
         </div>
 
+        <div className={styles.resetButton}>
+          <ResetButton resetGraph={() => this.resetAll()}>Sweet Button</ResetButton>
+        </div>
+
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
           <span
             className={styles.closePanelButton}
@@ -432,7 +437,6 @@ class SocialApp extends React.Component {
               highlighted={highlighted}
               emitClicked={(id) => this.slotSelected(id)}
               setOverlay={this.setOverlay}
-              wobble={this.state.wobbleEnabled}
               selectedShipID={this.state.selectedShipID}
               indirectLinksVisible={this.state.indirectLinksVisible}
               physicsEnabled={this.state.physicsEnabled}

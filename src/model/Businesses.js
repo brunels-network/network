@@ -131,9 +131,9 @@ class Businesses {
       return results;
     }
 
-    let keys = Object.keys(this._names).join("', '");
+    // let keys = Object.keys(this._names).join("', '");
 
-    throw new MissingError(`No Business matches '${name}. Available Businesses are '${keys}'`);
+    // throw new MissingError(`No Business matches '${name}. Available Businesses are '${keys}'`);
   }
 
   filter(funcs = []) {

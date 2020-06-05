@@ -318,6 +318,7 @@ class ForceGraphD3 extends React.Component {
             node.fx = node.x;
             node.fy = node.y;
           } else if (node.fixedLocation) {
+            // Add a small bit of randomness to the placement of the fixed nodes so it doesn't look so fixed
             node.fx = w * node.fixedLocation["x"] * this.randomShift();
             node.fy = h * node.fixedLocation["y"] * this.randomShift();
           } else {
@@ -333,8 +334,6 @@ class ForceGraphD3 extends React.Component {
   }
 
   randomShift(min = 0.01, max = 0.15) {
-    // Adds a small bit of randomness to the placement of the fixed nodes so it
-    // doesn't look so fixed
     return 1 - Math.random() * (max - min) + max;
   }
 
@@ -473,7 +472,7 @@ class ForceGraphD3 extends React.Component {
   getPositionCode(positions, group) {
     // Split string by colon, for now just use the first value
     if (group === "anchor") {
-      console.error("We got an anchor here somehow", positions, group);
+      console.warn("We got an anchor here somehow", positions, group);
       return "unkown";
     }
 

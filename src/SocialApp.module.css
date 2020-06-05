@@ -53,6 +53,12 @@
   transition-duration: 0.2s;
 }
 
+.resetButton {
+  position: fixed;
+  top: 3%;
+  left: 5%;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .hamburgerButton:hover {
     background-color: white;
