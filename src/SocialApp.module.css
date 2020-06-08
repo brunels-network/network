@@ -28,6 +28,18 @@
   width: 8%;
 }
 
+.resetButtonContainer {
+  position: fixed;
+  top: 2%;
+  left: 5%;
+}
+
+.resetButton {
+  position: fixed;
+  top: 1%;
+  left: 5%;
+}
+
 .hamburgerContainer {
   position: fixed;
   top: 2%;

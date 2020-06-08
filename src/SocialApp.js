@@ -17,6 +17,7 @@ import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
 import SearchOverlay from "./components/SearchOverlay";
 import OptionsOverlay from "./components/OptionsOverlay";
+import TextButton from "./components/TextButton";
 
 // Brunel model
 import Social from "./model/Social";
@@ -321,6 +322,12 @@ class SocialApp extends React.Component {
           >
             ☰
           </button>
+        </div>
+
+        <div className={styles.resetButtonContainer}>
+          <TextButton hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
+            Reset
+          </TextButton>
         </div>
 
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">

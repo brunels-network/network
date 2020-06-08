@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./BrunelMenu.module.css";
 
+import TextButton from "./TextButton";
+
+import styles from "./BrunelMenu.module.css";
 import logo from "../images/ssgb_logo.png";
 
 class BrunelMenu extends React.Component {
@@ -41,9 +43,15 @@ class BrunelMenu extends React.Component {
           <img src={logo} alt="SS Great Britain logo"></img>
         </div>
         <div className={styles.verticalSpace}></div>
-        <button className={styles.button} onClick={this.viewAbout}>About</button>
-        <button className={styles.button} onClick={this.viewSource}>Source</button>
-        <button className={styles.button} onClick={this.props.clickReset}>Reset</button>
+        <TextButton className={styles.button} onClick={this.viewAbout}>
+          About
+        </TextButton>
+        <TextButton className={styles.button} onClick={this.viewSource}>
+          Source
+        </TextButton>
+        <TextButton className={styles.button} onClick={this.props.clickReset}>
+          Reset
+        </TextButton>
       </div>
     );
   }
