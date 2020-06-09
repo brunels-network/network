@@ -668,13 +668,9 @@ class ForceGraphD3 extends React.Component {
     // Big weights make the size of circles too large
     const sizeScale = 0.5;
 
-    let weight;
-    try {
-      weight = sizeScale * item["weight"][shipID];
-    } catch (error) {
-      console.error("Can't get weight for item : ", item, error);
-      weight = 2;
-    }
+    let weight = sizeScale * item["weight"][shipID];
+
+    if (!weight) weight = 2;
 
     return weight;
   }
