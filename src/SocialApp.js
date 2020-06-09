@@ -61,6 +61,8 @@ class SocialApp extends React.Component {
       isSearchOverlayOpen: false,
       isOptionsOverlayOpen: false,
       indirectLinksVisible: false,
+      unconnectedNodesVisible: false,
+      unconnectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
@@ -182,6 +184,36 @@ class SocialApp extends React.Component {
     }
   }
 
+  gotConnections(id) {
+    return !this.state.social.getConnections().find(id).length === 0;
+  }
+
+  findUnconnectedNodes() {
+    // Loop through and find the unconnected nodes and create a list of them
+    let unconnectedNodes = [];
+
+    // People first
+    const people = this.state.social.getPeople().getNodes();
+
+    for (const p of people) {
+      const id = p.getID();
+      if (!this.gotConnections(id)) {
+        unconnectedNodes.push(id);
+      }
+    }
+
+    const businesses = this.state.social.getBusinesses().getNodes();
+
+    for (const b of businesses) {
+      const id = b.getID();
+      if (!this.gotConnections(id)) {
+        unconnectedNodes.push(id);
+      }
+    }
+
+    this.setState({ unconnectedNodes: unconnectedNodes });
+  }
+
   toggleInfoPanel() {
     this.setState({ isInfoPanelOpen: !this.state.isInfoPanelOpen });
   }
@@ -218,6 +250,10 @@ class SocialApp extends React.Component {
 
   toggleIndirectLinksVisible() {
     this.setState({ indirectLinksVisible: !this.state.indirectLinksVisible });
+  }
+
+  toggleUnconnectedNodesVisible() {
+    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
   setOverlay(item) {
@@ -443,6 +479,7 @@ class SocialApp extends React.Component {
               selectedShipID={this.state.selectedShipID}
               indirectLinksVisible={this.state.indirectLinksVisible}
               physicsEnabled={this.state.physicsEnabled}
+              unconnectedNodesVisible={this.state.unconnectedNodesVisible}
             />
           </div>
         </div>

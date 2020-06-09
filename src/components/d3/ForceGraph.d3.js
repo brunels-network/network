@@ -191,6 +191,7 @@ class ForceGraphD3 extends React.Component {
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
       indirectLinksVisible: false,
+      unconnectedNodesVisible: false,
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
@@ -339,6 +340,10 @@ class ForceGraphD3 extends React.Component {
 
     if (!this.state.physicsEnabled) {
       this.state.physicsEnabled = this.props.physicsEnabled;
+    }
+
+    if (!this.state.unconnectedNodesVisible) {
+      this.state.unconnectedNodesVisible = this.props.unconnectedNodesVisible;
     }
 
     if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
