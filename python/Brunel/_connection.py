@@ -50,7 +50,7 @@ class Connection:
             "type": None,
             "duration": None,
             "affiliations": None,
-            "correspondances": None,
+            "correspondences": None,
             "projects": None,
             "weights": None,
             "notes": None,
@@ -69,7 +69,7 @@ class Connection:
         self.state["type"] = _setState(state, "type")
         self.state["duration"] = _setState(state, "duration")
         self.state["affiliations"] = _setState(state, "affiliations", {})
-        self.state["correspondances"] = _setState(state, "correspondances", {})
+        self.state["correspondences"] = _setState(state, "correspondences", {})
         self.state["notes"] = _setState(state, "notes", [])
         self.state["projects"] = _setState(state, "projects", {})
         self.state["weights"] = _setState(state, "weights", {})
@@ -99,9 +99,11 @@ class Connection:
             state["notes"].append(n)
 
         _mergeSources(state, other.state, "affiliations")
-        _mergeSources(state, other.state, "correspondances")
-
+        _mergeSources(state, other.state, "correspondences")
         _mergeWeights(state, other.state, "weights")
+
+        for id, project in other.state["projects"].items():
+            state["projects"][id] = project
 
         state["duration"] = state["duration"].merge(other.state["duration"])
 
@@ -181,14 +183,32 @@ class Connection:
     def getAffiliationSources(self):
         return self.state["affiliations"]
 
-    def getCorrespondanceSources(self):
-        return self.state["correspondances"]
+    def getcorrespondencesources(self):
+        return self.state["correspondences"]
 
     def getID(self):
         return self.state["id"]
 
     def getWeights(self):
         return self.state["weights"]
+
+    def getProjects(self):
+        """ Get the projects this connection is a member of
+
+            Note: The daterange values returned are null
+
+            Returns:
+                dict: Dictionary of project_id: Daterange pairs
+        """
+        return self.state["projects"]
+
+    def inProject(self, project_id):
+        """ Is this connection a part of the project with project_id
+
+            Returns:
+                bool: True if part of project else False
+        """
+        return project_id in self.state["projects"]
 
     def toDry(self):
         state = {}

@@ -231,11 +231,7 @@ class ForceGraphD3 extends React.Component {
   }
 
   gotConnections(id) {
-    if (this.getNodeConnections(id).length === 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return !this.getNodeConnections(id).length === 0;
   }
 
   updateGraph(social) {

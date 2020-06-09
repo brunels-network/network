@@ -25,8 +25,6 @@ class BioOverlay extends React.Component {
     let bio = biographies.getByID(id);
     bio = bio.replace(name + ". ", "");
 
-    console.log(imageFilenames);
-
     const filename = imageFilenames[id]["filename"];
 
     let sourceButton = (

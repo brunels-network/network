@@ -114,7 +114,7 @@ class Businesses:
         for id, name in self.getAll().items():
             imageDict[id] = {}
             imageDict[id]["name"] = name
-            imageDict[id]["filename"] = "filename"
+            imageDict[id]["filename"] = "file.jpg"
 
         return imageDict
 

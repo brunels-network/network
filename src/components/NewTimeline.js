@@ -113,7 +113,6 @@ class NewTimeline extends React.Component {
           {/* <DateHeader unit="primaryHeader" style={this.dateHeaderStyle} /> */}
           <CustomHeader height={30} unit="year">
             {({ headerContext: { intervals }, getRootProps, getIntervalProps }) => {
-              console.log(getIntervalProps);
               return (
                 <div {...getRootProps()}>
                   {intervals.map((interval, index) => {

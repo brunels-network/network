@@ -18,6 +18,7 @@ from ._projects import *
 from ._social import *
 from ._daterange import *
 from ._dry import *
+from ._export import export_object, export_to_json
 
 
 try:

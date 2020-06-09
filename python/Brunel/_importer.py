@@ -168,6 +168,15 @@ def importProjectDates(node, importers=None):
 
 
 def importPerson(node, project, importers=None):
+    """ Create a person object from the passed node
+
+        Args:
+            node (pandas.Dataseries): Data from file
+            project (Project): Project object this person is a part of
+            importers (dict, default=None): Dictionary of importer functions
+        Returns:
+            Person: Person object populated with data from file
+    """
     from ._person import Person as _Person
 
     try:
@@ -447,7 +456,7 @@ def importConnection(edge, project, mapping=None, importers=None):
                             "n1": n1,
                             "notes": notes,
                             "affiliations": asources,
-                            "correspondances": csources,
+                            "correspondences": csources,
                             "duration": duration,
                             "shared": shared_links,
                             "projects": {project.getID(): _DateRange.null()},
