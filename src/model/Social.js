@@ -653,6 +653,28 @@ class Social {
     this.clearCache();
   }
 
+  toggleNodeFilter(nodes) {
+    let type = "node";
+
+    for (const item of nodes) {
+      if (!(type in this.state.filter)) {
+        this.state.filter[type] = {};
+      }
+
+      if (item in this.state.filter[type]) {
+        delete this.state.filter[type][item];
+
+        if (Object.keys(this.state.filter[type]).length === 0) {
+          delete this.state.filter[type];
+        }
+      } else {
+        this.state.filter[type][item] = 1;
+      }
+    }
+
+    this.clearCache();
+  }
+
   getProjectTimeLine() {
     if (this.state.cache.projectTimeLine !== null) {
       return this.state.cache.projectTimeLine;

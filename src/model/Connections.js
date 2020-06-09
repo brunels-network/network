@@ -121,6 +121,10 @@ class Connections {
     // throw new TypeError(`No connection matches '${name}. Available Connections are '${keys}'`);
   }
 
+  gotConnections(id) {
+    return !(this.find(id).length == 0);
+  }
+
   get(id) {
     let connection = this.state.registry[id];
 

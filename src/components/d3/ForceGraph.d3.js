@@ -232,7 +232,7 @@ class ForceGraphD3 extends React.Component {
   }
 
   gotConnections(id) {
-    return !this.getNodeConnections(id).length === 0;
+    return this.state.social.getConnections().gotConnections(id);
   }
 
   updateGraph(social) {

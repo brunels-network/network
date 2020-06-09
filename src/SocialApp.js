@@ -71,6 +71,9 @@ class SocialApp extends React.Component {
       selectedShipID: null,
     };
 
+    // Find the unconnected nodes for filtering
+    this.findUnconnectedNodes();
+
     // TODO - work out a cleaner way of doing this
     // Is set in ShipSelector correctly
     const ssGW = social.getProjects().getByName("SS Great Western");
@@ -145,6 +148,17 @@ class SocialApp extends React.Component {
     this.setState({ social: social });
   }
 
+  slotToggleNodeFilter(nodes) {
+    if (!nodes) {
+      return;
+    }
+
+    let social = this.state.social;
+    social.toggleNodeFilter(nodes);
+
+    this.setState({ social: social });
+  }
+
   slotHighlighted(id) {
     if (!id) {
       return;
@@ -185,33 +199,43 @@ class SocialApp extends React.Component {
   }
 
   gotConnections(id) {
-    return !this.state.social.getConnections().find(id).length === 0;
+    return this.state.social.getConnections().gotConnections(id);
   }
 
   findUnconnectedNodes() {
     // Loop through and find the unconnected nodes and create a list of them
     let unconnectedNodes = [];
 
-    // People first
-    const people = this.state.social.getPeople().getNodes();
+    const people = this.state.social.getPeople().getNodes("noanchor");
 
     for (const p of people) {
-      const id = p.getID();
-      if (!this.gotConnections(id)) {
-        unconnectedNodes.push(id);
+      if (this.gotConnections(p.id)) {
+        unconnectedNodes.push(p.id);
       }
     }
 
-    const businesses = this.state.social.getBusinesses().getNodes();
+    const businesses = this.state.social.getBusinesses().getNodes("noanchor");
 
     for (const b of businesses) {
-      const id = b.getID();
-      if (!this.gotConnections(id)) {
-        unconnectedNodes.push(id);
+      if (this.gotConnections(b.id)) {
+        unconnectedNodes.push(b.id);
       }
     }
 
-    this.setState({ unconnectedNodes: unconnectedNodes });
+    this.state.unconnectedNodes = unconnectedNodes;
+  }
+
+  toggleUnconnectedNodesVisible() {
+    if (!this.state.unconnectedNodesVisible) {
+      this.resetFilters();
+      this.slotToggleNodeFilter(this.state.unconnectedNodes);
+    } else {
+      this.resetFilters();
+    }
+
+    console.log("Unconnected nodes ", this.state.unconnectedNodes);
+
+    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
   toggleInfoPanel() {
@@ -250,10 +274,6 @@ class SocialApp extends React.Component {
 
   toggleIndirectLinksVisible() {
     this.setState({ indirectLinksVisible: !this.state.indirectLinksVisible });
-  }
-
-  toggleUnconnectedNodesVisible() {
-    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
   setOverlay(item) {
@@ -314,6 +334,8 @@ class SocialApp extends React.Component {
       );
     }
 
+    let onoff = this.state.unconnectedNodesVisible ? "ON" : "OFF";
+
     return (
       <div>
         <ReactModal
@@ -363,6 +385,20 @@ class SocialApp extends React.Component {
         <div className={styles.resetButtonContainer}>
           <TextButton hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
+          </TextButton>
+          <TextButton
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => this.toggleUnconnectedNodesVisible()}
+          >
+            Toggle
+          </TextButton>
+          <TextButton
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => this.toggleUnconnectedNodesVisible()}
+          >
+            {onoff}
           </TextButton>
         </div>
 
