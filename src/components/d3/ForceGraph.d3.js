@@ -347,6 +347,7 @@ class ForceGraphD3 extends React.Component {
     }
 
     if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
+      console.log("Changing to ", props.selectedShipID, " in force graph itself");
       this.state.lastShip = props.selectedShipID;
       this._graph_changed = true;
     }

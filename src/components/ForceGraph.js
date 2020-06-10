@@ -64,8 +64,6 @@ class ForceGraph extends React.Component {
   }
 
   emitPopProps(node) {
-    const id = node.id;
-
     // this.clearPopups();
     this.setState({ popups: { id: node } });
 

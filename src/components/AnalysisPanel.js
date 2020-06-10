@@ -13,7 +13,6 @@ class AnalysisPanel extends React.Component {
         <div className={styles.verticalSpaceTitle}></div>
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
-
         <TextButton
           padding={buttonPadding}
           onClick={() => {
@@ -32,8 +31,8 @@ class AnalysisPanel extends React.Component {
         >
           Filters
         </TextButton>
-
-        <TextButton
+        {/* // Remove timeline for now */}
+        {/* <TextButton
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleTimeLinePanel();
@@ -41,8 +40,7 @@ class AnalysisPanel extends React.Component {
           }}
         >
           Timeline
-        </TextButton>
-
+        </TextButton> */}
         <TextButton
           padding={buttonPadding}
           className={styles.button}
@@ -53,7 +51,6 @@ class AnalysisPanel extends React.Component {
         >
           Options
         </TextButton>
-
         <div className={styles.verticalSpace}></div>
         <TextButton
           padding={buttonPadding}

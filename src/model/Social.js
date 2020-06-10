@@ -640,8 +640,12 @@ class Social {
       this.state.filter[type] = {};
     }
 
+    console.log("Filtering item ", type, item);
+
     if (item in this.state.filter[type]) {
       delete this.state.filter[type][item];
+
+      console.log("Deleting filters for ", type, item);
 
       if (Object.keys(this.state.filter[type]).length === 0) {
         delete this.state.filter[type];
@@ -651,6 +655,22 @@ class Social {
     }
 
     this.clearCache();
+  }
+
+  clearProjectFilter() {
+    this.state.filter["project"] = {};
+  }
+
+  toggleProjectFilter(project) {
+    if (!("project" in this.state.filter)) {
+      this.state.filter["project"] = {};
+    }
+
+    if (project in this.state.filter["project"]) {
+      delete this.state.filter["project"][project];
+    } else {
+      this.state.filter["project"][project] = 1;
+    }
   }
 
   toggleNodeFilter(nodes) {

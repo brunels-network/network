@@ -86,7 +86,8 @@ class SocialApp extends React.Component {
   resetFilters() {
     let social = this.state.social;
     social.resetFilters();
-    this.setState({ social: social, selectedShip: null, selectedShipID: null });
+    this.setState({ social: social });
+    // this.setState({ social: social, selectedShip: null, selectedShipID: null });
   }
 
   closePanels() {
@@ -126,15 +127,26 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-    this.resetFilters();
+    // this.resetFilters();
     this.slotToggleFilter(item);
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
   }
 
+  clearShipSelection() {
+    this.setState({ selectedShip: null, selectedShipID: null });
+  }
+
   slotSetFilterbyID(id, name) {
-    this.resetFilters();
+    // this.resetFilters();
     this.slotToggleFilter(id);
     this.setState({ selectedShip: name, selectedShipID: id });
+  }
+
+  slotToggleProjectFilter(project) {
+    let social = this.state.social;
+    social.toggleProjectFilter(project);
+
+    this.setState({ social: social });
   }
 
   slotToggleFilter(item) {
@@ -143,6 +155,13 @@ class SocialApp extends React.Component {
     }
 
     let social = this.state.social;
+
+    // This feels clunky, is there a cleaner way of doing this?
+    // Currently we only want one ship selectable at a time
+    if (item._isAProjectObject) {
+      social.clearProjectFilter();
+    }
+
     social.toggleFilter(item);
 
     this.setState({ social: social });
@@ -229,13 +248,13 @@ class SocialApp extends React.Component {
     if (!this.state.unconnectedNodesVisible) {
       this.resetFilters();
       this.slotToggleNodeFilter(this.state.unconnectedNodes);
+      this.slotToggleFilter(this.state.selectedShipID);
+      this.setState({ unconnectedNodesVisible: true });
     } else {
       this.resetFilters();
+      this.slotToggleFilter(this.state.selectedShipID);
+      this.setState({ unconnectedNodesVisible: false });
     }
-
-    console.log("Unconnected nodes ", this.state.unconnectedNodes);
-
-    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
   toggleInfoPanel() {
@@ -294,14 +313,8 @@ class SocialApp extends React.Component {
     const overlayItem = this.state.overlayItem;
     const social = this.state.social;
 
-    // TODO - check if this is the correct way
-    // Removed the movement for now
-    let graphContainerClass = styles.graphContainerMenuClosed;
-    //  this.state.isHamburgerMenuOpen
-    //   ? styles.graphContainerMenuOpen
-    //   : styles.graphContainerMenuClosed;
-
     let searchOverlay = null;
+
     if (this.state.isSearchOverlayOpen) {
       searchOverlay = (
         <SearchOverlay
@@ -415,7 +428,7 @@ class SocialApp extends React.Component {
             selected={selected}
             projects={this.state.social.getProjects()}
             shipSelect={(item) => {
-              this.slotSetFilterbyID(item);
+              this.slotSetFilter(item);
             }}
             resetFilters={this.resetFilters}
           />
@@ -515,7 +528,7 @@ class SocialApp extends React.Component {
               selectedShipID={this.state.selectedShipID}
               indirectLinksVisible={this.state.indirectLinksVisible}
               physicsEnabled={this.state.physicsEnabled}
-              unconnectedNodesVisible={this.state.unconnectedNodesVisible}
+              //   unconnectedNodesVisible={this.state.unconnectedNodesVisible}
             />
           </div>
         </div>

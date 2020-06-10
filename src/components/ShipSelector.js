@@ -20,8 +20,8 @@ class ShipSelector extends React.Component {
     const shipName = item.getName();
 
     if (shipName === this.state.lastShip) {
-      this.props.resetFilters();
-      this.setState({ lastShip: "" });
+      //   this.props.resetFilters();
+      //   this.setState({ lastShip: "" });
       return;
     }
 
@@ -31,6 +31,8 @@ class ShipSelector extends React.Component {
 
   render() {
     let projects = this.props.projects;
+
+    console.log(this.state.lastShip);
 
     let output = projects.values().map((item) => {
       if (item.getName() === "SS Great Eastern") {
