@@ -34,7 +34,7 @@ class SocialGraph extends React.Component {
             selectedShipID={this.props.selectedShipID}
             indirectLinksVisible={this.props.indirectLinksVisible}
             physicsEnabled={this.props.physicsEnabled}
-            unconnectedNodesVisible={this.props.unconnectedNodesVisible}
+            hideUnconnectedNodes={this.props.hideUnconnectedNodes}
           />
         </div>
       );
@@ -53,7 +53,7 @@ SocialGraph.propTypes = {
   indirectLinksVisible: PropTypes.bool.isRequired,
   selectedShipID: PropTypes.string,
   physicsEnabled: PropTypes.bool.isRequired,
-  unconnectedNodesVisible: PropTypes.bool.isRequired,
+  hideUnconnectedNodes: PropTypes.bool.isRequired,
 };
 
 export default SocialGraph;

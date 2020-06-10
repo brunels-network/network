@@ -60,8 +60,8 @@ class SocialApp extends React.Component {
       isHamburgerMenuOpen: false,
       isSearchOverlayOpen: false,
       isOptionsOverlayOpen: false,
-      indirectLinksVisible: false,
-      unconnectedNodesVisible: false,
+      indirectConnectionsVisible: false,
+      hideUnconnectedNodes: false,
       unconnectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
@@ -73,6 +73,10 @@ class SocialApp extends React.Component {
 
     // Find the unconnected nodes for filtering
     this.findUnconnectedNodes();
+    // Hide the unconnected nodes
+    this.toggleUnconnectedNodesVisible();
+    // setState doesn't fire as called from ctor so change it here
+    this.state.hideUnconnectedNodes = true;
 
     // TODO - work out a cleaner way of doing this
     // Is set in ShipSelector correctly
@@ -245,16 +249,16 @@ class SocialApp extends React.Component {
   }
 
   toggleUnconnectedNodesVisible() {
-    if (!this.state.unconnectedNodesVisible) {
+    if (!this.state.hideUnconnectedNodes) {
       this.resetFilters();
       this.slotToggleNodeFilter(this.state.unconnectedNodes);
       this.slotToggleFilter(this.state.selectedShipID);
-      this.setState({ unconnectedNodesVisible: true });
     } else {
       this.resetFilters();
       this.slotToggleFilter(this.state.selectedShipID);
-      this.setState({ unconnectedNodesVisible: false });
     }
+
+    this.setState({ hideUnconnectedNodes: !this.state.hideUnconnectedNodes });
   }
 
   toggleInfoPanel() {
@@ -291,8 +295,8 @@ class SocialApp extends React.Component {
     this.setState({ isOptionsOverlayOpen: !this.state.isOptionsOverlayOpen });
   }
 
-  toggleIndirectLinksVisible() {
-    this.setState({ indirectLinksVisible: !this.state.indirectLinksVisible });
+  toggleindirectConnectionsVisible() {
+    this.setState({ indirectConnectionsVisible: !this.state.indirectConnectionsVisible });
   }
 
   setOverlay(item) {
@@ -338,16 +342,16 @@ class SocialApp extends React.Component {
     if (this.state.isOptionsOverlayOpen) {
       optionsOverlay = (
         <OptionsOverlay
-          indirectLinksVisible={this.state.indirectLinksVisible}
+          indirectConnectionsVisible={this.state.indirectConnectionsVisible}
           physicsEnabled={this.state.physicsEnabled}
           togglePhysicsEnabled={this.togglePhysicsEnabled}
-          toggleIndirectLinksVisible={() => this.toggleIndirectLinksVisible()}
+          toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
           toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
         />
       );
     }
 
-    let onoff = this.state.unconnectedNodesVisible ? "ON" : "OFF";
+    let onoff = this.state.hideUnconnectedNodes ? "ON" : "OFF";
 
     return (
       <div>
@@ -405,13 +409,6 @@ class SocialApp extends React.Component {
             onClick={() => this.toggleUnconnectedNodesVisible()}
           >
             Toggle
-          </TextButton>
-          <TextButton
-            hoverColor="#9CB6A4"
-            padding="2px 2px 2px 2px"
-            onClick={() => this.toggleUnconnectedNodesVisible()}
-          >
-            {onoff}
           </TextButton>
         </div>
 
@@ -526,9 +523,8 @@ class SocialApp extends React.Component {
               setOverlay={this.setOverlay}
               wobble={this.state.wobbleEnabled}
               selectedShipID={this.state.selectedShipID}
-              indirectLinksVisible={this.state.indirectLinksVisible}
+              indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
-              //   unconnectedNodesVisible={this.state.unconnectedNodesVisible}
             />
           </div>
         </div>
@@ -544,6 +540,12 @@ class SocialApp extends React.Component {
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
             togglePanel={() => this.toggleAnalysisPanel()}
+            toggleUnconnectedNodesVisible={() => {
+              this.toggleUnconnectedNodesVisible();
+            }}
+            toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
+            indirectConnectionsVisible={this.state.indirectConnectionsVisible}
+            hideUnconnectedNodes={this.state.hideUnconnectedNodes}
           />
         </SlidingPanel>
         {searchOverlay}
