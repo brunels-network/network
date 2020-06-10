@@ -18,6 +18,7 @@ import ShipTitle from "./components/ShipTitle";
 import SearchOverlay from "./components/SearchOverlay";
 import OptionsOverlay from "./components/OptionsOverlay";
 import TextButton from "./components/TextButton";
+import Overlay from "./components/Overlay";
 
 // Brunel model
 import Social from "./model/Social";
@@ -36,6 +37,7 @@ class SocialApp extends React.Component {
     this.togglePhysicsEnabled = this.togglePhysicsEnabled.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
+    this.toggleOverlay = this.toggleOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graph_data);
@@ -300,10 +302,15 @@ class SocialApp extends React.Component {
   }
 
   setOverlay(item) {
+    console.log("Setting overlay to ", item);
     this.setState({
       overlayItem: item,
       isOverlayOpen: true,
     });
+  }
+
+  toggleOverlay() {
+    this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
   }
 
   resetAll() {
@@ -353,41 +360,15 @@ class SocialApp extends React.Component {
       );
     }
 
+    let overlay = null;
+    if (this.state.isOverlayOpen) {
+      overlay = <Overlay toggleOverlay={this.toggleOverlay}>{this.state.overlayItem}</Overlay>;
+    }
+
     let onoff = this.state.hideUnconnectedNodes ? "ON" : "OFF";
 
     return (
       <div>
-        <ReactModal
-          isOpen={this.state.isOverlayOpen}
-          onRequestClose={() => {
-            this.closeOverlay();
-          }}
-          contentLabel="Information overlay"
-          className={styles.modal}
-          overlayClassName={{
-            base: styles.modalOverlay,
-            afterOpen: styles.modalOverlayAfterOpen,
-            beforeClose: styles.modalOverlayBeforeClose,
-          }}
-          closeTimeoutMS={200}
-          appElement={document.getElementById("root")}
-        >
-          <div
-            className={styles.closeOverlayButton}
-            onClick={() => {
-              this.closeOverlay();
-            }}
-          >
-            X
-          </div>
-          <OverlayBox
-            item={overlayItem}
-            emitClose={() => {
-              this.closeOverlay();
-            }}
-          />
-        </ReactModal>
-
         <div className={styles.hamburgerContainer}>
           <button
             className={styles.hamburgerButton}
@@ -402,15 +383,8 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.resetButtonContainer}>
-          <TextButton hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
+          <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
-          </TextButton>
-          <TextButton
-            hoverColor="#9CB6A4"
-            padding="2px 2px 2px 2px"
-            onClick={() => this.toggleUnconnectedNodesVisible()}
-          >
-            Toggle
           </TextButton>
         </div>
 
@@ -537,6 +511,7 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
           <AnalysisPanel
+            setOverlay={this.setOverlay}
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
             toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
@@ -553,7 +528,7 @@ class SocialApp extends React.Component {
           />
         </SlidingPanel>
         {searchOverlay}
-        {optionsOverlay}
+        {overlay}
       </div>
     );
   }
