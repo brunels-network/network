@@ -20,7 +20,7 @@ class OptionsOverlay extends React.Component {
             <input
               name="indirectVisible"
               type="checkbox"
-              checked={this.props.indirectLinksVisible}
+              checked={this.props.indirectConnectionsVisible}
               onChange={this.props.toggleIndirectLinksVisible}
             />
           </div>
@@ -43,7 +43,7 @@ OptionsOverlay.propTypes = {
   toggleOptionsOverlay: PropTypes.func.isRequired,
   toggleIndirectLinksVisible: PropTypes.func.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,
-  indirectLinksVisible: PropTypes.bool.isRequired,
+  indirectConnectionsVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
 };
 

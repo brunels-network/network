@@ -190,7 +190,7 @@ class ForceGraphD3 extends React.Component {
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
-      indirectLinksVisible: false,
+      indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
       colors: {},
       groupTable: {},
@@ -346,14 +346,14 @@ class ForceGraphD3 extends React.Component {
       this.state.hideUnconnectedNodes = this.props.hideUnconnectedNodes;
     }
 
-    if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
-      console.log("Changing to ", props.selectedShipID, " in force graph itself");
-      this.state.lastShip = props.selectedShipID;
-      this._graph_changed = true;
-    }
+    // if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
+    //   this.state.lastShip = props.selectedShipID;
+    //   this._graph_changed = true;
+    // }
 
-    if (props.indirectLinksVisible !== this.state.indirectLinksVisible) {
-      this.state.indirectLinksVisible = props.indirectLinksVisible;
+    if (props.indirectConnectionsVisible !== this.state.indirectConnectionsVisible) {
+      console.log("Updating indirect links ", props.indirectConnectionsVisible);
+      this.state.indirectConnectionsVisible = props.indirectConnectionsVisible;
       this._graph_changed = true;
     }
 
@@ -748,7 +748,7 @@ class ForceGraphD3 extends React.Component {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
     // Add prop here
-    let indirectStyle = this.state.indirectLinksVisible ? styles.linkIndirect : styles.linkInvisible;
+    let indirectStyle = this.state.indirectConnectionsVisible ? styles.linkIndirect : styles.linkInvisible;
 
     const weightCutoff = 4;
 
@@ -895,9 +895,9 @@ class ForceGraphD3 extends React.Component {
     return this._is_running;
   }
 
-  updateLinks(indirectLinksVisible) {
+  updateLinks(indirectConnectionsVisible) {
     if (this._graph.edges) {
-      this.setState({ indirectLinksVisible: indirectLinksVisible });
+      this.setState({ indirectConnectionsVisible: indirectConnectionsVisible });
       this._updateLink(this._graph.edges);
     }
   }

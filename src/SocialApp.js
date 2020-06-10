@@ -319,6 +319,8 @@ class SocialApp extends React.Component {
 
     let searchOverlay = null;
 
+    console.log(this.state.indirectConnectionsVisible);
+
     if (this.state.isSearchOverlayOpen) {
       searchOverlay = (
         <SearchOverlay
@@ -544,6 +546,8 @@ class SocialApp extends React.Component {
               this.toggleUnconnectedNodesVisible();
             }}
             toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
+            physicsEnabled={this.state.physicsEnabled}
+            togglePhysicsEnabled={this.togglePhysicsEnabled}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             hideUnconnectedNodes={this.state.hideUnconnectedNodes}
           />

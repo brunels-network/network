@@ -32,7 +32,7 @@ class SocialGraph extends React.Component {
             selected={this.props.selected}
             wobble={this.props.wobble}
             selectedShipID={this.props.selectedShipID}
-            indirectLinksVisible={this.props.indirectLinksVisible}
+            indirectConnectionsVisible={this.props.indirectConnectionsVisible}
             physicsEnabled={this.props.physicsEnabled}
             hideUnconnectedNodes={this.props.hideUnconnectedNodes}
           />
@@ -50,7 +50,7 @@ SocialGraph.propTypes = {
   selected: PropTypes.func,
   social: PropTypes.object.isRequired,
   wobble: PropTypes.bool.isRequired,
-  indirectLinksVisible: PropTypes.bool.isRequired,
+  indirectConnectionsVisible: PropTypes.bool.isRequired,
   selectedShipID: PropTypes.string,
   physicsEnabled: PropTypes.bool.isRequired,
   hideUnconnectedNodes: PropTypes.bool.isRequired,

@@ -5,8 +5,6 @@ import { CSSTransition } from "react-transition-group";
 import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
 
-import optionsTransitions from "./transitions/optionsTransitions.module.css";
-
 class AnalysisPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -21,8 +19,8 @@ class AnalysisPanel extends React.Component {
     const buttonPadding = "1vh 1vw 1vh 1vw";
 
     let indirectConnectionsText = this.props.indirectConnectionsVisible ? "Hide" : "Show";
-
     let unconnectedNodesText = this.props.hideUnconnectedNodes ? "Show" : "Hide";
+    let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
 
     let optionsButtons = null;
     if (this.state.optionsOpen) {
@@ -30,6 +28,8 @@ class AnalysisPanel extends React.Component {
         <div className={styles.optionButtons}>
           <TextButton
             fontSize="2.1vh"
+            textColor="#222222"
+            hoverColor="white"
             padding={buttonPadding}
             onClick={() => {
               this.props.toggleindirectConnectionsVisible();
@@ -40,6 +40,8 @@ class AnalysisPanel extends React.Component {
           </TextButton>
           <TextButton
             fontSize="2.1vh"
+            textColor="#222222"
+            hoverColor="white"
             padding={buttonPadding}
             onClick={() => {
               this.props.toggleUnconnectedNodesVisible();
@@ -47,6 +49,18 @@ class AnalysisPanel extends React.Component {
             }}
           >
             {unconnectedNodesText + " unconnected nodes"}
+          </TextButton>
+          <TextButton
+            fontSize="2.1vh"
+            textColor="#222222"
+            hoverColor="white"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.togglePhysicsEnabled();
+              // this.props.togglePanel();
+            }}
+          >
+            {physicsText + "physics"}
           </TextButton>
         </div>
       );
@@ -121,7 +135,7 @@ class AnalysisPanel extends React.Component {
         >
           Options
         </TextButton>
-        <CSSTransition in={this.state.optionsOpen} timeout={300} classNames={optionsTransitions} unmountOnExit>
+        <CSSTransition in={this.state.optionsOpen} timeout={300} classNames={styles} unmountOnExit>
           <div>{optionsButtons}</div>
         </CSSTransition>
         <div className={styles.verticalSpace}></div>
@@ -147,6 +161,8 @@ AnalysisPanel.propTypes = {
   toggleindirectConnectionsVisible: PropTypes.func.isRequired,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   hideUnconnectedNodes: PropTypes.bool.isRequired,
+  physicsEnabled: PropTypes.bool.isRequired,
+  togglePhysicsEnabled: PropTypes.func.isRequired,
 };
 
 export default AnalysisPanel;
