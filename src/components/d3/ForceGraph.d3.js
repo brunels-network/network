@@ -15,39 +15,6 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
-function handleMouseClick(THIS) {
-  function handle() {
-    let svg = THIS._mainGroup;
-    if (!svg) {
-      return;
-    }
-
-    let node = d3.select(this);
-    node.raise();
-
-    let id = node.attr("id");
-
-    if (!id) {
-      return;
-    }
-
-    let items = svg.selectAll(`#${id}`);
-
-    items.classed(styles.highlight, true);
-
-    items = svg.selectAll(`[source_id=${id}]`);
-    items.classed(styles.highlight, true);
-
-    items = svg.selectAll(`[target_id=${id}]`);
-    items.classed(styles.highlight, true);
-
-    THIS.state.signalClicked(id);
-    d3.event.stopPropagation();
-  }
-
-  return handle;
-}
-
 function handleMouseOver(THIS) {
   function handle() {
     let svg = THIS._mainGroup;
@@ -752,9 +719,8 @@ class ForceGraphD3 extends React.Component {
       .attr("target_id", (d) => {
         return d.target_id;
       })
-      //   .on("click", handleMouseClick(this))
-      //   .on("mouseover", handleMouseOver(this))
-      //   .on("mouseout", handleMouseOut(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.dragLink());
 
     return link;

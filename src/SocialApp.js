@@ -539,6 +539,7 @@ class SocialApp extends React.Component {
               this.toggleUnconnectedNodesVisible();
             }}
             toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
+            closeOverlay={() => this.closeOverlay()}
             filterEngineeringNodes={() => this.filterEngineeringNodes()}
             filterInvestorNodes={() => this.filterInvestorNodes()}
             physicsEnabled={this.state.physicsEnabled}

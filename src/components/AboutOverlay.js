@@ -28,6 +28,11 @@ class AboutOverlay extends React.Component {
 
     return (
       <div className={styles.container}>
+        <div className={styles.closeButton}>
+          <button onClick={this.props.close} style={{ background: "none", border: "none", fontSize: "2.4vh" }}>
+            x
+          </button>
+        </div>
         <div className={styles.textContainer}>
           <div className={styles.header}>About</div>
           <div className={styles.intro}>{aboutText["intro"]}</div>
@@ -39,5 +44,9 @@ class AboutOverlay extends React.Component {
     );
   }
 }
+
+AboutOverlay.propTypes = {
+  close: PropTypes.func.isRequired,
+};
 
 export default AboutOverlay;

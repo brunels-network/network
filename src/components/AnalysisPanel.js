@@ -22,7 +22,7 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.setOverlay(<AboutOverlay />);
+            this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
             this.props.togglePanel();
           }}
         >
@@ -130,6 +130,7 @@ AnalysisPanel.propTypes = {
   togglePanel: PropTypes.func,
   toggleSearchOverlay: PropTypes.func,
   toggleUnconnectedNodesVisible: PropTypes.func.isRequired,
+  closeOverlay: PropTypes.func.isRequired,
   toggleindirectConnectionsVisible: PropTypes.func.isRequired,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   filterEngineeringNodes: PropTypes.func.isRequired,
