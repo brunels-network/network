@@ -1,7 +1,6 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
-import ReactModal from "react-modal";
 
 // Brunel components
 import AnalysisPanel from "./components/AnalysisPanel";
@@ -11,11 +10,9 @@ import InfoBox from "./components/InfoBox";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
 import SlidingPanel from "./components/SlidingPanel";
-import BrunelMenu from "./components/BrunelMenu";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
 import SearchOverlay from "./components/SearchOverlay";
-import OptionsOverlay from "./components/OptionsOverlay";
 import TextButton from "./components/TextButton";
 import Overlay from "./components/Overlay";
 
@@ -266,10 +263,15 @@ class SocialApp extends React.Component {
           .replace(/\s/g, "")
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
+        // Here we need to check if they've already been saved to stop double counting
         if (positionGroups["commercial"]["members"].includes(namedPosition)) {
-          commercialNodes.push(id);
+          if (!commercialNodes.includes(id)) {
+            commercialNodes.push(id);
+          }
         } else if (positionGroups["engineering"]["members"].includes(namedPosition)) {
-          engineeringNodes.push(id);
+          if (!engineeringNodes.includes(id)) {
+            engineeringNodes.push(id);
+          }
         }
       }
     }
@@ -277,9 +279,6 @@ class SocialApp extends React.Component {
     // Called in ctor so setting directly to state here
     this.state.commercialNodes = commercialNodes;
     this.state.engineeringNodes = engineeringNodes;
-
-    console.log(commercialNodes);
-    console.log(engineeringNodes);
   }
 
   findUnconnectedNodes() {
@@ -380,7 +379,6 @@ class SocialApp extends React.Component {
   }
 
   resetAll() {
-    console.log("Reset all");
     window.location.reload(true);
   }
 
@@ -411,41 +409,13 @@ class SocialApp extends React.Component {
       );
     }
 
-    let optionsOverlay = null;
-    if (this.state.isOptionsOverlayOpen) {
-      optionsOverlay = (
-        <OptionsOverlay
-          indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-          physicsEnabled={this.state.physicsEnabled}
-          togglePhysicsEnabled={this.togglePhysicsEnabled}
-          toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
-          toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
-        />
-      );
-    }
-
     let overlay = null;
     if (this.state.isOverlayOpen) {
       overlay = <Overlay toggleOverlay={this.toggleOverlay}>{this.state.overlayItem}</Overlay>;
     }
 
-    let onoff = this.state.hideUnconnectedNodes ? "ON" : "OFF";
-
     return (
       <div>
-        <div className={styles.hamburgerContainer}>
-          <button
-            className={styles.hamburgerButton}
-            onClick={() => {
-              this.setState({
-                isHamburgerMenuOpen: !this.state.isHamburgerMenuOpen,
-              });
-            }}
-          >
-            ☰
-          </button>
-        </div>
-
         <div className={styles.resetButtonContainer}>
           <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
@@ -497,7 +467,7 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* Filter on bottom of page */}
-        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="20%">
+        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="25%">
           <span
             className={styles.closePanelButton}
             onClick={() => {
@@ -519,22 +489,6 @@ class SocialApp extends React.Component {
             }}
             emitClearFilters={() => {
               this.slotClearFilters();
-            }}
-          />
-        </SlidingPanel>
-
-        {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" width="10%" height="100%">
-          <BrunelMenu
-            setOverlay={this.setOverlay}
-            clickReset={() => {
-              this.resetAll();
-            }}
-            clickSource={() => {
-              this.viewSource();
-            }}
-            emitClose={() => {
-              this.setState({ isHamburgerMenuOpen: false });
             }}
           />
         </SlidingPanel>

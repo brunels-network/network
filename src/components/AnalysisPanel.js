@@ -1,40 +1,17 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { CSSTransition } from "react-transition-group";
 import AboutOverlay from "./AboutOverlay";
 
 import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
 
 class AnalysisPanel extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { optionsOpen: false };
-  }
-
-  toggleOptions() {
-    this.setState({ optionsOpen: !this.state.optionsOpen });
-  }
-
-  createAboutOverlay() {
-    return <AboutOverlay />;
-  }
-
   render() {
-    let aboutOverlay = null;
-    // if(this.)
-
     const buttonPadding = "1vh 1vw 1vh 1vw";
 
     let indirectConnectionsText = this.props.indirectConnectionsVisible ? "Hide" : "Show";
     let unconnectedNodesText = this.props.hideUnconnectedNodes ? "Show" : "Hide";
     let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
-
-    let optionsButtons = null;
-    if (this.state.optionsOpen) {
-      optionsButtons = <div className={styles.optionButtons}></div>;
-    }
 
     return (
       <div className={styles.wholePanel}>
@@ -45,7 +22,7 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.setOverlay(this.createAboutOverlay());
+            this.props.setOverlay(<AboutOverlay />);
             this.props.togglePanel();
           }}
         >
