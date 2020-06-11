@@ -629,54 +629,18 @@ class Social {
     this.clearCache();
   }
 
-  toggleFilter(item) {
-    if (item.getID) {
-      item = item.getID();
+  toggleFilter(items) {
+    if (!Array.isArray(items)) {
+      items = [items];
     }
 
-    let type = this._getType(item);
-
-    if (!(type in this.state.filter)) {
-      this.state.filter[type] = {};
-    }
-
-    console.log("Filtering item ", type, item);
-
-    if (item in this.state.filter[type]) {
-      delete this.state.filter[type][item];
-
-      console.log("Deleting filters for ", type, item);
-
-      if (Object.keys(this.state.filter[type]).length === 0) {
-        delete this.state.filter[type];
+    for (let item of items) {
+      if (item.getID) {
+        item = item.getID();
       }
-    } else {
-      this.state.filter[type][item] = 1;
-    }
 
-    this.clearCache();
-  }
+      let type = this._getType(item);
 
-  clearProjectFilter() {
-    this.state.filter["project"] = {};
-  }
-
-  toggleProjectFilter(project) {
-    if (!("project" in this.state.filter)) {
-      this.state.filter["project"] = {};
-    }
-
-    if (project in this.state.filter["project"]) {
-      delete this.state.filter["project"][project];
-    } else {
-      this.state.filter["project"][project] = 1;
-    }
-  }
-
-  toggleNodeFilter(nodes) {
-    let type = "node";
-
-    for (const item of nodes) {
       if (!(type in this.state.filter)) {
         this.state.filter[type] = {};
       }
@@ -693,6 +657,26 @@ class Social {
     }
 
     this.clearCache();
+  }
+
+  toggleNodeFilter(nodes) {
+    this.toggleFilter(nodes);
+  }
+
+  clearProjectFilter() {
+    this.state.filter["project"] = {};
+  }
+
+  toggleProjectFilter(project) {
+    if (!("project" in this.state.filter)) {
+      this.state.filter["project"] = {};
+    }
+
+    if (project in this.state.filter["project"]) {
+      delete this.state.filter["project"][project];
+    } else {
+      this.state.filter["project"][project] = 1;
+    }
   }
 
   getProjectTimeLine() {

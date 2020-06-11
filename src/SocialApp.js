@@ -175,17 +175,6 @@ class SocialApp extends React.Component {
     this.setState({ social: social });
   }
 
-  slotToggleNodeFilter(nodes) {
-    if (!nodes) {
-      return;
-    }
-
-    let social = this.state.social;
-    social.toggleNodeFilter(nodes);
-
-    this.setState({ social: social });
-  }
-
   slotHighlighted(id) {
     if (!id) {
       return;
@@ -307,7 +296,7 @@ class SocialApp extends React.Component {
   toggleUnconnectedNodesVisible() {
     if (!this.state.hideUnconnectedNodes) {
       this.resetFilters();
-      this.slotToggleNodeFilter(this.state.unconnectedNodes);
+      this.slotToggleFilter(this.state.unconnectedNodes);
       this.slotToggleFilter(this.state.selectedShipID);
     } else {
       this.resetFilters();
@@ -319,13 +308,13 @@ class SocialApp extends React.Component {
 
   filterEngineeringNodes() {
     this.resetFilters();
-    this.slotToggleNodeFilter(this.state.engineeringNodes);
+    this.slotToggleFilter(this.state.engineeringNodes);
     this.slotToggleFilter(this.state.selectedShipID);
   }
 
   filterInvestorNodes() {
     this.resetFilters();
-    this.slotToggleNodeFilter(this.state.commercialNodes);
+    this.slotToggleFilter(this.state.commercialNodes);
     this.slotToggleFilter(this.state.selectedShipID);
   }
 

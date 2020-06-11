@@ -31,13 +31,7 @@
 .resetButtonContainer {
   position: fixed;
   top: 2vh;
-  left: 5%;
-}
-
-.resetButton {
-  position: fixed;
-  top: 1%;
-  left: 5%;
+  left: 2%;
 }
 
 .hamburgerContainer {
