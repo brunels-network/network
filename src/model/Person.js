@@ -336,9 +336,6 @@ class Person {
   }
 
   getPositions() {
-    if (!this.state.positions) {
-      console.error("No positions for ", this.getName());
-    }
     return this.state.positions;
   }
 

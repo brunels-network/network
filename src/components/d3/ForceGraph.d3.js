@@ -217,9 +217,9 @@ class ForceGraphD3 extends React.Component {
     const filter = this.state.social.getFilter();
 
     if (filter["project"]) {
-      const projectCode = Object.keys(filter["project"])[0];
-
-      return projectCode;
+      return Object.keys(filter["project"])[0];
+    } else {
+      console.error("Error in finding project code from filter");
     }
   }
 
@@ -446,57 +446,29 @@ class ForceGraphD3 extends React.Component {
   }
 
   getPositionColor(entity) {
-    // This takes an entity (a person or a business) and finds the
-    // colour that's given in the positions_groups.json file
-    const positions = entity["positions"];
-    const group = entity["group"];
+    // Businesses have a single colour
+    if (entity["type"] === "business") {
+      return positionGroups["business"]["color"];
+    }
 
-    if (group === "anchor") {
+    // Anchor
+    if (entity["group"] === "anchor") {
       return positionGroups["anchor"]["color"];
     }
 
-    // If we get an undefined position return white
-    if (!positions) {
-      const entity_id = entity["id"].toLowerCase();
-
-      if (entity_id.startsWith("b")) {
-        return positionGroups["business"]["color"];
-      } else {
-        console.error("No colour available for this entity : ", entity);
-        return "#FFFFFF";
-      }
+    // This shouldn't happen, but all nodes must have a colour set
+    if (!entity["positions"]) {
+      console.error("No colour available for this entity : ", entity);
+      return "#FFFFFF";
     }
 
-    const positionCode = this.getPositionCode(positions, group);
+    const positionCode = this.getPositionCode(entity);
 
     return this.state.colors[positionCode];
   }
 
-  getPositionCode(positions, group) {
-    // Split string by colon, for now just use the first value
-    if (group === "anchor") {
-      console.error("We got an anchor here somehow", positions, group);
-      return "unkown";
-    }
-
-    let positionCode;
-    // Split the string and try both
-    const splitGroup = group.split(":");
-
-    try {
-      // As some of the positions objects don't have a value for both
-      // projects (called groups here) we have to check both
-      try {
-        positionCode = positions[splitGroup[0]][0];
-      } catch (error) {
-        positionCode = positions[splitGroup[1]][0];
-      }
-    } catch (error) {
-      console.error("Error with position ", positions, " with group : ", group, "splitGroup : ", splitGroup, error);
-      positionCode = "unknown";
-    }
-
-    return positionCode.toLowerCase();
+  getPositionCode(entity) {
+    return entity["positions"][this.getSelectedShipID()][0];
   }
 
   setPositionColors() {
@@ -512,13 +484,11 @@ class ForceGraphD3 extends React.Component {
 
     // Read the positions and colours from a JSON file that can be easily updated
     for (let [position, uid] of Object.entries(namedPositions)) {
-      uid = uid.toLowerCase();
       // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
       let trimPosition = position
-        .replace(/\s/g, "")
         .toLowerCase()
+        .replace(/\s/g, "")
         .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
-      // .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 
       // Here positionGroups is the import JSON object containing
       // which positions are in which group and the colour assigned to them
@@ -538,13 +508,14 @@ class ForceGraphD3 extends React.Component {
     // Set the colour for the anchor
     colorTable["anchor"] = positionGroups["anchor"]["color"];
 
+    // This is being called from within the ctor so we can't use setState here
     this.state.colors = colorTable;
     this.state.groupTable = groupTable;
   }
 
   getGroupForce(entity) {
     if (!entity.positions) {
-      const entity_id = entity["id"].toLowerCase();
+      const entity_id = entity["id"];
 
       // Need a better way of handling businesses
       if (entity_id.startsWith("b")) {
@@ -564,7 +535,7 @@ class ForceGraphD3 extends React.Component {
     const noForce = ["other", "anchor", "business", "unknown"];
 
     // Get the position codes for this entity
-    const positionCode = this.getPositionCode(entity.positions, entity.group);
+    const positionCode = this.getPositionCode(entity);
     // The groupTable tells us which group this entity belongs to and so determines its force
     const positionGroup = this.state.groupTable[positionCode];
 

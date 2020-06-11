@@ -11,7 +11,6 @@ import InfoBox from "./components/InfoBox";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
 import SlidingPanel from "./components/SlidingPanel";
-import OverlayBox from "./components/OverlayBox";
 import BrunelMenu from "./components/BrunelMenu";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
@@ -24,7 +23,8 @@ import Overlay from "./components/Overlay";
 import Social from "./model/Social";
 
 // Data for import
-import graph_data from "./dataWeights.json";
+import graphData from "./dataWeights.json";
+import positionGroups from "./data/positionGroups.json";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
@@ -40,7 +40,7 @@ class SocialApp extends React.Component {
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
-    let social = Dry.parse(graph_data);
+    let social = Dry.parse(graphData);
 
     if (!(social instanceof Social)) {
       console.error("Could not parse!");
@@ -224,7 +224,28 @@ class SocialApp extends React.Component {
   }
 
   gotConnections(id) {
+    // Does this have node have any connections, returns bool
     return this.state.social.getConnections().gotConnections(id);
+  }
+
+  //  findInvestors() {
+  //       // Creates a list of the IDs of all the nodes that belong to the commercial
+  //       // side of the projects
+  //       const commercial = positionGroups["commercial"];
+
+  //       let commercialNodes = []
+
+  //       const people = this.state.social.getPeople().getNodes("noanchor");
+  //       for (const p of people) {
+  //           (if p.)
+
+  //       }
+  //   }
+
+  findEngineers() {
+    // Creates a list of the IDs of all the nodes that belong to the engineering
+    // side of the projects
+    return;
   }
 
   findUnconnectedNodes() {
@@ -302,7 +323,6 @@ class SocialApp extends React.Component {
   }
 
   setOverlay(item) {
-    console.log("Setting overlay to ", item);
     this.setState({
       overlayItem: item,
       isOverlayOpen: true,
@@ -325,8 +345,6 @@ class SocialApp extends React.Component {
     const social = this.state.social;
 
     let searchOverlay = null;
-
-    console.log(this.state.indirectConnectionsVisible);
 
     if (this.state.isSearchOverlayOpen) {
       searchOverlay = (
