@@ -93,7 +93,8 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.togglePanel();
+            this.props.filterEngineeringNodes();
+            // this.props.togglePanel();
           }}
         >
           Filter by Engineers
@@ -102,7 +103,8 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.togglePanel();
+            this.props.filterInvestorNodes();
+            // this.props.togglePanel();
           }}
         >
           Filter by Investors
@@ -171,6 +173,8 @@ AnalysisPanel.propTypes = {
   toggleUnconnectedNodesVisible: PropTypes.func.isRequired,
   toggleindirectConnectionsVisible: PropTypes.func.isRequired,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
+  filterEngineeringNodes: PropTypes.func.isRequired,
+  filterInvestorNodes: PropTypes.func.isRequired,
   hideUnconnectedNodes: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,

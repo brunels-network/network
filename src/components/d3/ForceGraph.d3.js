@@ -515,7 +515,7 @@ class ForceGraphD3 extends React.Component {
 
   getGroupForce(entity) {
     if (!entity.positions) {
-      const entity_id = entity["id"];
+      const entity_id = entity["id"].toLowerCase();
 
       // Need a better way of handling businesses
       if (entity_id.startsWith("b")) {
@@ -645,6 +645,7 @@ class ForceGraphD3 extends React.Component {
     // Big weights make the size of circles too large
     const sizeScale = 0.5;
 
+    // let weight = sizeScale * item["weight"][shipID];
     let weight = sizeScale * item["weight"][shipID];
 
     if (!weight) weight = 2;
@@ -674,8 +675,8 @@ class ForceGraphD3 extends React.Component {
         return this.getPositionColor(d);
       })
       .on("click", (d) => this.props.emitPopProps(d))
-      //   .on("mouseover", (d) => this.mouseoverNode(d))
-      //   .on("mouseout", this.mouseoutNode)
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return node;
@@ -708,8 +709,8 @@ class ForceGraphD3 extends React.Component {
         return d.id;
       })
       .on("click", (d) => this.props.emitPopProps(d))
-      //   .on("mouseover", handleMouseOver(this))
-      //   .on("mouseout", handleMouseOut(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return text;

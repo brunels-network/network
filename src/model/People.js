@@ -213,6 +213,12 @@ class People {
     return nodes;
   }
 
+  registry() {
+    // Returns the registry of people
+    // key: value - uid: person
+    return this.state.registry;
+  }
+
   get(id) {
     let person = this.state.registry[id];
 

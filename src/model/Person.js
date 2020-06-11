@@ -336,7 +336,14 @@ class Person {
   }
 
   getPositions() {
+    // Returns the positions object for each project
     return this.state.positions;
+  }
+
+  getPosition(projectID) {
+    // Return the position for the associated projectID
+    // Returns an array of position IDs
+    return this.state.positions[projectID];
   }
 
   getScores() {

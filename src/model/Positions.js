@@ -113,6 +113,10 @@ class Positions {
     }
   }
 
+  getNameByID(id) {
+    return this.get(id).getName();
+  }
+
   find(name) {
     if (name instanceof Position || name._isApositionObject) {
       return this.get(name.getID());

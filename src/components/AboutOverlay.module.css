@@ -1,0 +1,72 @@
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"), url(../fonts/Montserrat-Regular.ttf) format("truetype");
+}
+
+.container {
+  position: absolute;
+  background: white;
+  font-family: "Playfair Display Medium";
+  width: 50%;
+  height: 75%;
+  left: 25%;
+  top: 12.5%;
+  opacity: 1;
+  background-color: white;
+  z-index: 12;
+  padding: 1.5vh 0.5vw 0.5vh 0.75vw;
+  display: flex;
+  flex-direction: row;
+
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 1fr;
+
+  font-size: 1.5vh;
+  color: #222222;
+  overflow: auto;
+}
+
+.textContainer {
+  padding: 1.5vh 1.5vw 1.5vh 1.5vw;
+  display: flex;
+  flex-direction: column;
+  line-height: 2.6vh;
+  grid-column-start: auto;
+}
+
+.header {
+  font-size: 3vh;
+  color: #003366;
+  padding: 0vh 0vw 1vh 0vw;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.intro {
+  font-size: 2vh;
+  padding: 1vh 0vw 1vh 0vw;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.introBody {
+  font-size: 1.8vh;
+  padding: 1vh 0vw 1vh 0vw;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.methodHeader {
+  font-size: 2.2vh;
+  padding: 1vh 0vw 1vh 0vw;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.body {
+  font-size: 1.8vh;
+  padding: 1vh 0vw 1vh 0vw;
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
