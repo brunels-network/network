@@ -33,46 +33,7 @@ class AnalysisPanel extends React.Component {
 
     let optionsButtons = null;
     if (this.state.optionsOpen) {
-      optionsButtons = (
-        <div className={styles.optionButtons}>
-          <TextButton
-            fontSize="2.1vh"
-            textColor="#222222"
-            hoverColor="white"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.toggleindirectConnectionsVisible();
-              // this.props.togglePanel();
-            }}
-          >
-            {indirectConnectionsText + " indirect connections"}
-          </TextButton>
-          <TextButton
-            fontSize="2.1vh"
-            textColor="#222222"
-            hoverColor="white"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.toggleUnconnectedNodesVisible();
-              // this.props.togglePanel();
-            }}
-          >
-            {unconnectedNodesText + " unconnected nodes"}
-          </TextButton>
-          <TextButton
-            fontSize="2.1vh"
-            textColor="#222222"
-            hoverColor="white"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.togglePhysicsEnabled();
-              // this.props.togglePanel();
-            }}
-          >
-            {physicsText + "physics"}
-          </TextButton>
-        </div>
-      );
+      optionsButtons = <div className={styles.optionButtons}></div>;
     }
 
     return (
@@ -81,6 +42,7 @@ class AnalysisPanel extends React.Component {
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
         <TextButton
+          fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.setOverlay(this.createAboutOverlay());
@@ -109,8 +71,39 @@ class AnalysisPanel extends React.Component {
         >
           Filter by Investors
         </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleindirectConnectionsVisible();
+            // this.props.togglePanel();
+          }}
+        >
+          {indirectConnectionsText + " indirect connections"}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleUnconnectedNodesVisible();
+            // this.props.togglePanel();
+          }}
+        >
+          {unconnectedNodesText + " unconnected nodes"}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.togglePhysicsEnabled();
+            // this.props.togglePanel();
+          }}
+        >
+          {physicsText + "physics"}
+        </TextButton>
 
         <TextButton
+          fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleSearchOverlay();
@@ -119,7 +112,7 @@ class AnalysisPanel extends React.Component {
         >
           Search
         </TextButton>
-        <TextButton
+        {/* <TextButton
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleFilterPanel();
@@ -127,7 +120,7 @@ class AnalysisPanel extends React.Component {
           }}
         >
           Filters
-        </TextButton>
+        </TextButton> */}
         {/* // Remove timeline for now */}
         {/* <TextButton
           padding={buttonPadding}
@@ -138,20 +131,9 @@ class AnalysisPanel extends React.Component {
         >
           Timeline
         </TextButton> */}
-        <TextButton
-          padding={buttonPadding}
-          className={styles.button}
-          onClick={() => {
-            this.toggleOptions();
-          }}
-        >
-          Options
-        </TextButton>
-        <CSSTransition in={this.state.optionsOpen} timeout={300} classNames={styles} unmountOnExit>
-          <div>{optionsButtons}</div>
-        </CSSTransition>
         <div className={styles.verticalSpace}></div>
         <TextButton
+          fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.togglePanel();
