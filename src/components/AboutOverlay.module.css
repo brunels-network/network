@@ -3,6 +3,11 @@
   src: local("Montserrat"), url(../fonts/Montserrat-Regular.ttf) format("truetype");
 }
 
+@font-face {
+  font-family: "Playfair Display Bold";
+  src: local("Montserrat"), url(../fonts/PlayfairDisplay-Bold.ttf) format("truetype");
+}
+
 .container {
   position: absolute;
   background: white;
@@ -57,7 +62,8 @@
   grid-column-end: 1;
 }
 
-.methodHeader {
+.sectionHeader {
+  font-family: "Playfair Display Bold";
   font-size: 2.2vh;
   padding: 1vh 0vw 1vh 0vw;
   grid-column-start: 1;
