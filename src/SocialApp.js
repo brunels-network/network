@@ -266,11 +266,13 @@ class SocialApp extends React.Component {
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
         // Here we need to check if they've already been saved to stop double counting
-        if (positionGroups["commercial"]["members"].includes(namedPosition)) {
+        if (!positionGroups["commercial"]["members"].includes(namedPosition)) {
           if (!commercialNodes.includes(id)) {
             commercialNodes.push(id);
           }
-        } else if (positionGroups["engineering"]["members"].includes(namedPosition)) {
+        }
+
+        if (!positionGroups["engineering"]["members"].includes(namedPosition)) {
           if (!engineeringNodes.includes(id)) {
             engineeringNodes.push(id);
           }
@@ -285,13 +287,13 @@ class SocialApp extends React.Component {
 
   findUnconnectedNodes() {
     // Loop through and find the unconnected nodes and create a list of them
-    let unconnectedNodes = [];
+    let connectedNodes = [];
 
     const people = this.state.social.getPeople().getNodes("noanchor");
 
     for (const p of people) {
       if (this.gotConnections(p.id)) {
-        unconnectedNodes.push(p.id);
+        connectedNodes.push(p.id);
       }
     }
 
@@ -299,49 +301,25 @@ class SocialApp extends React.Component {
 
     for (const b of businesses) {
       if (this.gotConnections(b.id)) {
-        unconnectedNodes.push(b.id);
+        connectedNodes.push(b.id);
       }
     }
 
-    this.state.unconnectedNodes = unconnectedNodes;
+    this.state.connectedNodes = connectedNodes;
   }
 
   toggleUnconnectedNodesVisible() {
-    if (!this.state.hideUnconnectedNodes) {
-      this.resetFilters();
-      this.slotToggleNodeFilter(this.state.unconnectedNodes);
-      this.slotToggleFilter(this.state.selectedShipID);
-    } else {
-      this.resetFilters();
-      this.slotToggleFilter(this.state.selectedShipID);
-    }
-
+    this.slotToggleNodeFilter(this.state.connectedNodes);
     this.setState({ hideUnconnectedNodes: !this.state.hideUnconnectedNodes });
   }
 
   filterEngineeringNodes() {
-    if (!this.state.engineersFiltered) {
-      this.resetFilters();
-      this.slotToggleNodeFilter(this.state.engineeringNodes);
-      this.slotToggleFilter(this.state.selectedShipID);
-    } else {
-      this.resetFilters();
-      this.slotToggleFilter(this.state.selectedShipID);
-    }
-
+    this.slotToggleNodeFilter(this.state.engineeringNodes);
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
   filterInvestorNodes() {
-    if (!this.state.investorsFiltered) {
-      this.resetFilters();
-      this.slotToggleNodeFilter(this.state.commercialNodes);
-      this.slotToggleFilter(this.state.selectedShipID);
-    } else {
-      this.resetFilters();
-      this.slotToggleFilter(this.state.selectedShipID);
-    }
-
+    this.slotToggleNodeFilter(this.state.commercialNodes);
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
   }
 
