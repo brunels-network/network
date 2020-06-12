@@ -11,7 +11,7 @@ import { render, cleanup, fireEvent, waitFor, getByText, screen, getByTestId } f
 import "@testing-library/jest-dom/extend-expect";
 // the component to test
 import SearchBar from "./SearchBar";
-import graph_data from "../dataWeights.json";
+import graphData from "../dataWeights.json";
 
 afterEach(cleanup);
 
@@ -22,7 +22,7 @@ describe("SearchBar", () => {
   });
 
   // Load in the Dried graph data from JSON
-  let social = Dry.parse(graph_data);
+  let social = Dry.parse(graphData);
 
   it("this input should should find entity", () => {
     render(<SearchBar emitSelected={jest.fn()} emitResults={jest.fn()} social={social} />);

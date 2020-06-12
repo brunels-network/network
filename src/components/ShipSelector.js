@@ -37,7 +37,7 @@ class ShipSelector extends React.Component {
     let output = projects.values().map((item) => {
       if (item.getName() === "SS Great Eastern") {
         return (
-          <button href="#" key={item.getName()} className={styles.disabledButton}>
+          <button href="#" key={item.getName()} className={styles.disabledButton} disabled={true}>
             {item.getName()}
           </button>
         );

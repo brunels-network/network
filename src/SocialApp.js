@@ -373,6 +373,7 @@ class SocialApp extends React.Component {
   }
 
   render() {
+    console.log(this.state.social.getProjects());
     const selected = this.state.selected_item;
     const highlighted = this.state.highlighted_item;
     const overlayItem = this.state.overlayItem;
@@ -411,11 +412,6 @@ class SocialApp extends React.Component {
             Reset
           </TextButton>
         </div>
-
-        <div className={styles.resetButton}>
-          <ResetButton resetGraph={() => this.resetAll()}>Sweet Button</ResetButton>
-        </div>
-
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
           <span
             className={styles.closePanelButton}

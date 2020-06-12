@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import styles from "./AnalysisButton.module.css";
 
-class AnalysisButon extends React.Component {
+class AnalysisButton extends React.Component {
   render() {
     return (
       <button data-testid="AnalysisButton" className={styles.button} onClick={this.props.togglePanel}>
@@ -13,8 +13,8 @@ class AnalysisButon extends React.Component {
   }
 }
 
-AnalysisButon.propTypes = {
+AnalysisButton.propTypes = {
   togglePanel: PropTypes.func.isRequired,
 };
 
-export default AnalysisButon;
+export default AnalysisButton;

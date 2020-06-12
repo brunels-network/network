@@ -31,24 +31,12 @@ describe("SocialApp", () => {
     // Check we find the buttons in the analysis panel
     expect(screen.queryByText("Search")).toBeTruthy();
     expect(screen.queryByText("Close")).toBeTruthy();
-    expect(screen.queryByText("Options")).toBeTruthy();
-  });
-
-  test("click on hamburger opens menu", () => {
-    render(<SocialApp />);
-
-    const hamburgerButton = screen.queryByTestId("hamburgerButton");
-
-    expect(screen.queryByTestId("BrunelMenu")).toBeNull();
-    expect(screen.queryByText("About")).toBeFalsy();
-    expect(screen.queryByText("Source")).toBeFalsy();
-
-    fireEvent.click(hamburgerButton);
-
-    expect(screen.queryByTestId("BrunelMenu")).toBeTruthy();
-
     expect(screen.queryByText("About")).toBeTruthy();
-    expect(screen.queryByText("Source")).toBeTruthy();
+    expect(screen.queryByText("Filter by Engineers")).toBeTruthy();
+    expect(screen.queryByText("Filter by Investors")).toBeTruthy();
+    expect(screen.queryByText("Show indirect connections")).toBeTruthy();
+    expect(screen.queryByText("Show unconnected nodes")).toBeTruthy();
+    expect(screen.queryByText("Enable physics")).toBeTruthy();
   });
 
   test("Ship selection buttons change ship title", () => {
@@ -67,5 +55,25 @@ describe("SocialApp", () => {
     render(<SocialApp />);
 
     expect(screen.queryByText("SS Great Eastern").closest("button")).toBeDisabled();
+  });
+
+  test("Reset button resets window", () => {
+    render(<SocialApp />);
+
+    let resetButton = screen.queryByText("Reset").closest("button");
+
+    const { reload } = window.location;
+
+    Object.defineProperty(window.location, "reload", {
+      configurable: true,
+    });
+
+    window.location.reload = jest.fn();
+
+    fireEvent.click(resetButton);
+
+    expect(window.location.reload).toHaveBeenCalledTimes(1);
+
+    window.location.reload = reload;
   });
 });

@@ -21,58 +21,92 @@ describe("AnalysisPanel", () => {
     expect(container.firstChild).toBeTruthy();
   });
 
-  it("should render all buttons", () => {
+  it("all buttons are clickable", () => {
+    const setOverlayFn = jest.fn();
+    const togglePanelFn = jest.fn();
+    const toggleSearchOverlayFn = jest.fn();
+    const toggleUnconnectedNodesVisibleFn = jest.fn();
+    const closeOverlayFn = jest.fn();
+    const toggleindirectConnectionsVisibleFn = jest.fn();
+
+    const filterEngineeringNodesFn = jest.fn();
+    const filterInvestorNodesFn = jest.fn();
+    const togglePhysicsFn = jest.fn();
+
     render(
       <AnalysisPanel
-        toggleSearchOverlay={jest.fn()}
-        toggleFilterPanel={jest.fn()}
-        toggleTimeLinePanel={jest.fn()}
-        togglePanel={jest.fn()}
-        toggleOptionsOverlay={jest.fn()}
+        setOverlay={setOverlayFn}
+        togglePanel={togglePanelFn}
+        toggleSearchOverlay={toggleSearchOverlayFn}
+        toggleUnconnectedNodesVisible={toggleUnconnectedNodesVisibleFn}
+        closeOverlay={closeOverlayFn}
+        toggleindirectConnectionsVisible={toggleindirectConnectionsVisibleFn}
+        indirectConnectionsVisible={true}
+        filterEngineeringNodes={filterEngineeringNodesFn}
+        filterInvestorNodes={filterInvestorNodesFn}
+        hideUnconnectedNodes={true}
+        physicsEnabled={true}
+        togglePhysicsEnabled={togglePhysicsFn}
       />
     );
 
-    expect(screen.getByText("Analysis")).toBeTruthy();
+    fireEvent.click(screen.queryByText("Search"));
+    fireEvent.click(screen.queryByText("Close"));
+    fireEvent.click(screen.queryByText("About"));
+    fireEvent.click(screen.queryByText(/engineer/i));
+    fireEvent.click(screen.queryByText(/investor/i));
+    fireEvent.click(screen.queryByText(/physics/i));
 
-    const searchButton = screen.getAllByText("Search");
-    const filtersButton = screen.getAllByText("Filters");
-    const optionsButton = screen.getAllByText("Options");
-    const closeButton = screen.getAllByText("Close");
-
-    expect(searchButton).toBeTruthy();
-    expect(filtersButton).toBeTruthy();
-    expect(optionsButton).toBeTruthy();
-    expect(closeButton).toBeTruthy();
-
-    expect(searchButton.length).toBe(1);
-    expect(filtersButton.length).toBe(1);
-    expect(optionsButton.length).toBe(1);
-    expect(closeButton.length).toBe(1);
+    expect(setOverlayFn).toHaveBeenCalled();
+    expect(togglePanelFn).toHaveBeenCalled();
+    expect(filterEngineeringNodesFn).toHaveBeenCalled();
+    expect(filterInvestorNodesFn).toHaveBeenCalled();
+    expect(togglePhysicsFn).toHaveBeenCalled();
   });
 
-  it("all buttons are clickable", () => {
-    const clickFn = jest.fn();
-
+  it("props change text button rendering all true", () => {
     render(
       <AnalysisPanel
-        toggleSearchOverlay={clickFn}
-        toggleFilterPanel={clickFn}
-        toggleTimeLinePanel={clickFn}
-        togglePanel={clickFn}
-        toggleOptionsOverlay={clickFn}
+        setOverlay={jest.fn()}
+        togglePanel={jest.fn()}
+        toggleSearchOverlay={jest.fn()}
+        toggleUnconnectedNodesVisible={jest.fn()}
+        closeOverlay={jest.fn()}
+        toggleindirectConnectionsVisible={jest.fn()}
+        indirectConnectionsVisible={true}
+        filterEngineeringNodes={jest.fn()}
+        filterInvestorNodes={jest.fn()}
+        hideUnconnectedNodes={true}
+        physicsEnabled={true}
+        togglePhysicsEnabled={jest.fn()}
       />
     );
 
-    const searchButton = screen.getByText("Search");
-    const filtersButton = screen.getByText("Filters");
-    const optionsButton = screen.getByText("Options");
-    const closeButton = screen.getByText("Close");
+    screen.queryByText("Hide indirect connections");
+    screen.queryByText("Show unconnected nodes");
+    screen.queryByText("Disable physics");
+  });
 
-    fireEvent.click(searchButton);
-    fireEvent.click(filtersButton);
-    fireEvent.click(optionsButton);
-    fireEvent.click(closeButton);
+  it("props change text button rendering all false", () => {
+    render(
+      <AnalysisPanel
+        setOverlay={jest.fn()}
+        togglePanel={jest.fn()}
+        toggleSearchOverlay={jest.fn()}
+        toggleUnconnectedNodesVisible={jest.fn()}
+        closeOverlay={jest.fn()}
+        toggleindirectConnectionsVisible={jest.fn()}
+        indirectConnectionsVisible={true}
+        filterEngineeringNodes={jest.fn()}
+        filterInvestorNodes={jest.fn()}
+        hideUnconnectedNodes={true}
+        physicsEnabled={true}
+        togglePhysicsEnabled={jest.fn()}
+      />
+    );
 
-    expect(clickFn).toHaveBeenCalled();
+    screen.queryByText("Show indirect connections");
+    screen.queryByText("Hide unconnected nodes");
+    screen.queryByText("Enable physics");
   });
 });
