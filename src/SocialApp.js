@@ -61,6 +61,8 @@ class SocialApp extends React.Component {
       isOptionsOverlayOpen: false,
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
+      investorsFiltered: false,
+      engineersFiltered: false,
       unconnectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
@@ -318,15 +320,29 @@ class SocialApp extends React.Component {
   }
 
   filterEngineeringNodes() {
-    this.resetFilters();
-    this.slotToggleNodeFilter(this.state.engineeringNodes);
-    this.slotToggleFilter(this.state.selectedShipID);
+    if (!this.state.engineersFiltered) {
+      this.resetFilters();
+      this.slotToggleNodeFilter(this.state.engineeringNodes);
+      this.slotToggleFilter(this.state.selectedShipID);
+    } else {
+      this.resetFilters();
+      this.slotToggleFilter(this.state.selectedShipID);
+    }
+
+    this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
   filterInvestorNodes() {
-    this.resetFilters();
-    this.slotToggleNodeFilter(this.state.commercialNodes);
-    this.slotToggleFilter(this.state.selectedShipID);
+    if (!this.state.investorsFiltered) {
+      this.resetFilters();
+      this.slotToggleNodeFilter(this.state.commercialNodes);
+      this.slotToggleFilter(this.state.selectedShipID);
+    } else {
+      this.resetFilters();
+      this.slotToggleFilter(this.state.selectedShipID);
+    }
+
+    this.setState({ investorsFiltered: !this.state.investorsFiltered });
   }
 
   toggleInfoPanel() {
@@ -540,6 +556,8 @@ class SocialApp extends React.Component {
             }}
             toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
             closeOverlay={() => this.closeOverlay()}
+            investorsFiltered={this.state.investorsFiltered}
+            engineersFiltered={this.state.engineersFiltered}
             filterEngineeringNodes={() => this.filterEngineeringNodes()}
             filterInvestorNodes={() => this.filterInvestorNodes()}
             physicsEnabled={this.state.physicsEnabled}
