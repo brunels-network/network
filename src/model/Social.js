@@ -646,6 +646,7 @@ class Social {
       }
 
       if (item in this.state.filter[type]) {
+        console.log("Deleting item....", item);
         delete this.state.filter[type][item];
 
         if (Object.keys(this.state.filter[type]).length === 0) {
@@ -655,6 +656,8 @@ class Social {
         this.state.filter[type][item] = 1;
       }
     }
+
+    console.log("Filter state : ", this.state.filter);
 
     this.clearCache();
   }

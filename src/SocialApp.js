@@ -136,18 +136,18 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-    this.slotToggleFilter(item);
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
+    this.slotToggleFilter(item);
   }
 
-  clearShipSelection() {
-    this.setState({ selectedShip: null, selectedShipID: null });
-  }
+  //   clearShipSelection() {
+  //     this.setState({ selectedShip: null, selectedShipID: null });
+  //   }
 
   slotSetFilterbyID(id, name) {
     // this.resetFilters();
-    this.slotToggleFilter(id);
     this.setState({ selectedShip: name, selectedShipID: id });
+    this.slotToggleFilter(id);
   }
 
   slotToggleProjectFilter(project) {
@@ -307,15 +307,15 @@ class SocialApp extends React.Component {
   }
 
   filterEngineeringNodes() {
-    this.resetFilters();
-    this.slotToggleFilter(this.state.engineeringNodes);
+    // this.resetFilters();
     this.slotToggleFilter(this.state.selectedShipID);
+    this.slotToggleFilter(this.state.engineeringNodes);
   }
 
   filterInvestorNodes() {
-    this.resetFilters();
-    this.slotToggleFilter(this.state.commercialNodes);
+    // this.resetFilters();
     this.slotToggleFilter(this.state.selectedShipID);
+    this.slotToggleFilter(this.state.commercialNodes);
   }
 
   toggleInfoPanel() {
