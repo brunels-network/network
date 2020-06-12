@@ -99,8 +99,6 @@ function FilterBox(props) {
   let people = filterList(social.getPeople(false), props);
   let businesses = filterList(social.getBusinesses(false), props);
 
-  console.log(social.getPositions(false).values());
-
   return (
     <Accordion allowMultipleExpanded={false} allowZeroExpanded={true}>
       {filter_info}

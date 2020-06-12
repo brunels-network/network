@@ -44,7 +44,6 @@ class Positions {
     names.forEach((key) => {
       output.push(this.get(this._names[key]));
     });
-    console.log("Output : ", output);
 
     return output;
   }
@@ -112,6 +111,10 @@ class Positions {
     } else {
       throw new MissingError(`No position with name ${name}`);
     }
+  }
+
+  getNameByID(id) {
+    return this.get(id).getName();
   }
 
   find(name) {

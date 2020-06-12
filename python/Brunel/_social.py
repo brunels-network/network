@@ -1,6 +1,9 @@
 
 __all__ = ["Social"]
 
+import collections
+import json
+
 
 def _read_data(data_filepath):
     """ Read data from file
@@ -36,6 +39,7 @@ def _get_importers(importers):
     else:
         for key in importers.keys():
             if key not in importers:
+                print(f"We have no importer for {key}")
                 importers[key] = defaults[key]
 
     return importers
@@ -172,7 +176,7 @@ class Social:
         """
         data = _read_data(sources_filepath)
 
-        # Get the impoerter and modifier functions
+        # Get the importer and modifier functions
         importers = _get_importers(importers)
         modifiers = _get_modifiers(modifiers, "source")
 
@@ -227,6 +231,13 @@ class Social:
         """
         project = self.projects().find(project)
 
+        # Load in the saved UIDs for items
+        # uid_file = "data/fixed_uids.json"
+        # with open(uid_file, "r") as f:
+        #     uid_records = json.load(f)
+
+        # uid_records = collections.defaultdict(dict)
+
         # Read in the data from file
         nodes = _read_data(nodes_filepath)
         edges = _read_data(edges_filepath)
@@ -266,7 +277,7 @@ class Social:
                     ids[node.ID] = person.getID()
             elif is_business(node, importers=importers):
                 business = import_business(node, project, importers=importers)
-                
+
                 if business:
                     business = modifiers["business"](business)
                     business = businesses.add(business)
@@ -275,7 +286,7 @@ class Social:
         # Look over dataframe to import connections between nodes
         for _, edge in edges.iterrows():
             connection = import_connection(edge, project, mapping=ids, importers=importers)
-            
+
             if connection:
                 connection = modifiers["connection"](connection)
                 connections.add(connection)

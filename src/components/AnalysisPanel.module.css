@@ -51,5 +51,23 @@
 }
 
 .verticalSpace {
-  margin-bottom: 45%;
+  margin-bottom: 30%;
+}
+
+.enter {
+  opacity: 0;
+}
+
+.enterActive {
+  opacity: 1;
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+.exit {
+  opacity: 1;
+}
+
+.exitActive {
+  opacity: 0;
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
 }

@@ -161,13 +161,14 @@ class Connection {
   }
 
   filterProject(project) {
+    // Filter this connection by project ID
     if (project.getID) {
       let id = project.getID();
       project = {};
       project[id] = 1;
     }
 
-    let nprojects = Object.keys(project).length;
+    let nProjects = Object.keys(project).length;
 
     let seen = {};
 
@@ -177,7 +178,7 @@ class Connection {
       }
     });
 
-    if (Object.keys(seen).length !== nprojects) {
+    if (Object.keys(seen).length !== nProjects) {
       return null;
     } else {
       return this;

@@ -84,6 +84,24 @@ class Connections:
         except Exception:
             raise KeyError(f"No Connection with name {name}")
 
+    def getByProject(self, project_id):
+        """ Return the connections that are valid for this project
+
+            Args:
+                project_id (str): UID for project
+            Returns:
+                list: List of connections
+        """
+        return [c for id, c in self.state["registry"].items() if c.inProject(project_id)]
+
+    def getNumberByProject(self, project_id):
+        """ Return the number of connections related to this project
+
+            Returns:
+                int: Number of connections
+        """
+        return len(self.getByProject(project_id))
+
     def getByNodes(self, n0, n1):
         try:
             n0 = n0.getID()

@@ -155,6 +155,11 @@ class Popover extends React.Component {
           className={styles.popOver}
           style={{ top: top, left: left, height: popoverHeightVH + "vh", width: popoverWidthVW + "vw" }}
         >
+          <div className={styles.closeButton}>
+            <button onClick={this.props.clearPopups} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+              x
+            </button>
+          </div>
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
           <div className={styles.readMore}>{readMoreButton}</div>

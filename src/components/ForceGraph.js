@@ -64,8 +64,6 @@ class ForceGraph extends React.Component {
   }
 
   emitPopProps(node) {
-    const id = node.id;
-
     // this.clearPopups();
     this.setState({ popups: { id: node } });
 
@@ -108,6 +106,8 @@ class ForceGraph extends React.Component {
       this.graph.fastPhysics();
     }
 
+    console.log(this.props.indirectConnectionsVisible);
+
     return (
       <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>
         <div id={s} className={s}>
@@ -121,8 +121,9 @@ class ForceGraph extends React.Component {
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
   selectedShipID: PropTypes.string,
-  indirectLinksVisible: PropTypes.bool.isRequired,
+  indirectConnectionsVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
+  hideUnconnectedNodes: PropTypes.bool.isRequired,
 };
 
 export default ForceGraph;

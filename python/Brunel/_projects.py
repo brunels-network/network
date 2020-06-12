@@ -105,7 +105,22 @@ class Projects:
         except Exception:
             raise KeyError(f"No Note with ID {id}")
 
+    def registry(self):
+        """ Return this objects project registry
+
+            Returns:
+                dict: Dictionary of projects
+        """
+        return self.state["registry"]
+
     def load(self, data):
+        """ Add Project to registry
+
+            Args:
+                data: Data from which to create project
+            Returns:
+                None
+        """
         if data:
             for item in data:
                 note = _Project.load(item)

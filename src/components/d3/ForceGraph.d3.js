@@ -15,39 +15,6 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
-function handleMouseClick(THIS) {
-  function handle() {
-    let svg = THIS._mainGroup;
-    if (!svg) {
-      return;
-    }
-
-    let node = d3.select(this);
-    node.raise();
-
-    let id = node.attr("id");
-
-    if (!id) {
-      return;
-    }
-
-    let items = svg.selectAll(`#${id}`);
-
-    items.classed(styles.highlight, true);
-
-    items = svg.selectAll(`[source_id=${id}]`);
-    items.classed(styles.highlight, true);
-
-    items = svg.selectAll(`[target_id=${id}]`);
-    items.classed(styles.highlight, true);
-
-    THIS.state.signalClicked(id);
-    d3.event.stopPropagation();
-  }
-
-  return handle;
-}
-
 function handleMouseOver(THIS) {
   function handle() {
     let svg = THIS._mainGroup;
@@ -190,7 +157,8 @@ class ForceGraphD3 extends React.Component {
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
-      indirectLinksVisible: false,
+      indirectConnectionsVisible: false,
+      hideUnconnectedNodes: false,
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
@@ -216,9 +184,9 @@ class ForceGraphD3 extends React.Component {
     const filter = this.state.social.getFilter();
 
     if (filter["project"]) {
-      const projectCode = Object.keys(filter["project"])[0];
-
-      return projectCode;
+      return Object.keys(filter["project"])[0];
+    } else {
+      console.error("Error in finding project code from filter");
     }
   }
 
@@ -231,11 +199,7 @@ class ForceGraphD3 extends React.Component {
   }
 
   gotConnections(id) {
-    if (this.getNodeConnections(id).length === 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return this.state.social.getConnections().gotConnections(id);
   }
 
   updateGraph(social) {
@@ -344,13 +308,18 @@ class ForceGraphD3 extends React.Component {
       this.state.physicsEnabled = this.props.physicsEnabled;
     }
 
-    if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
-      this.state.lastShip = props.selectedShipID;
-      this._graph_changed = true;
+    if (!this.state.hideUnconnectedNodes) {
+      this.state.hideUnconnectedNodes = this.props.hideUnconnectedNodes;
     }
 
-    if (props.indirectLinksVisible !== this.state.indirectLinksVisible) {
-      this.state.indirectLinksVisible = props.indirectLinksVisible;
+    // if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
+    //   this.state.lastShip = props.selectedShipID;
+    //   this._graph_changed = true;
+    // }
+
+    if (props.indirectConnectionsVisible !== this.state.indirectConnectionsVisible) {
+      console.log("Updating indirect links ", props.indirectConnectionsVisible);
+      this.state.indirectConnectionsVisible = props.indirectConnectionsVisible;
       this._graph_changed = true;
     }
 
@@ -443,57 +412,29 @@ class ForceGraphD3 extends React.Component {
   }
 
   getPositionColor(entity) {
-    // This takes an entity (a person or a business) and finds the
-    // colour that's given in the positions_groups.json file
-    const positions = entity["positions"];
-    const group = entity["group"];
+    // Businesses have a single colour
+    if (entity["type"] === "business") {
+      return positionGroups["business"]["color"];
+    }
 
-    if (group === "anchor") {
+    // Anchor
+    if (entity["group"] === "anchor") {
       return positionGroups["anchor"]["color"];
     }
 
-    // If we get an undefined position return white
-    if (!positions) {
-      const entity_id = entity["id"].toLowerCase();
-
-      if (entity_id.startsWith("b")) {
-        return positionGroups["business"]["color"];
-      } else {
-        console.error("No colour available for this entity : ", entity);
-        return "#FFFFFF";
-      }
+    // This shouldn't happen, but all nodes must have a colour set
+    if (!entity["positions"]) {
+      console.error("No colour available for this entity : ", entity);
+      return "#FFFFFF";
     }
 
-    const positionCode = this.getPositionCode(positions, group);
+    const positionCode = this.getPositionCode(entity);
 
     return this.state.colors[positionCode];
   }
 
-  getPositionCode(positions, group) {
-    // Split string by colon, for now just use the first value
-    if (group === "anchor") {
-      console.warn("We got an anchor here somehow", positions, group);
-      return "unkown";
-    }
-
-    let positionCode;
-    // Split the string and try both
-    const splitGroup = group.split(":");
-
-    try {
-      // As some of the positions objects don't have a value for both
-      // projects (called groups here) we have to check both
-      try {
-        positionCode = positions[splitGroup[0]][0];
-      } catch (error) {
-        positionCode = positions[splitGroup[1]][0];
-      }
-    } catch (error) {
-      console.error("Error with position ", positions, " with group : ", group, "splitGroup : ", splitGroup, error);
-      positionCode = "unknown";
-    }
-
-    return positionCode.toLowerCase();
+  getPositionCode(entity) {
+    return entity["positions"][this.getSelectedShipID()][0];
   }
 
   setPositionColors() {
@@ -509,13 +450,11 @@ class ForceGraphD3 extends React.Component {
 
     // Read the positions and colours from a JSON file that can be easily updated
     for (let [position, uid] of Object.entries(namedPositions)) {
-      uid = uid.toLowerCase();
       // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
       let trimPosition = position
-        .replace(/\s/g, "")
         .toLowerCase()
+        .replace(/\s/g, "")
         .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
-      // .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 
       // Here positionGroups is the import JSON object containing
       // which positions are in which group and the colour assigned to them
@@ -535,6 +474,7 @@ class ForceGraphD3 extends React.Component {
     // Set the colour for the anchor
     colorTable["anchor"] = positionGroups["anchor"]["color"];
 
+    // This is being called from within the ctor so we can't use setState here
     this.state.colors = colorTable;
     this.state.groupTable = groupTable;
   }
@@ -561,7 +501,7 @@ class ForceGraphD3 extends React.Component {
     const noForce = ["other", "anchor", "business", "unknown"];
 
     // Get the position codes for this entity
-    const positionCode = this.getPositionCode(entity.positions, entity.group);
+    const positionCode = this.getPositionCode(entity);
     // The groupTable tells us which group this entity belongs to and so determines its force
     const positionGroup = this.state.groupTable[positionCode];
 
@@ -615,9 +555,6 @@ class ForceGraphD3 extends React.Component {
     return d3
       .drag()
       .on("start", (d) => {
-        // simulation.alphaTarget(0.2).alphaDecay(0.001).restart();
-        // simulation.restart();
-
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
         let target = this._graph.nodes[d.target.index];
@@ -671,13 +608,10 @@ class ForceGraphD3 extends React.Component {
     // Big weights make the size of circles too large
     const sizeScale = 0.5;
 
-    let weight;
-    try {
-      weight = sizeScale * item["weight"][shipID];
-    } catch (error) {
-      console.error("Can't get weight for item : ", item, error);
-      weight = 2;
-    }
+    // let weight = sizeScale * item["weight"][shipID];
+    let weight = sizeScale * item["weight"][shipID];
+
+    if (!weight) weight = 2;
 
     return weight;
   }
@@ -704,8 +638,8 @@ class ForceGraphD3 extends React.Component {
         return this.getPositionColor(d);
       })
       .on("click", (d) => this.props.emitPopProps(d))
-      //   .on("mouseover", (d) => this.mouseoverNode(d))
-      //   .on("mouseout", this.mouseoutNode)
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return node;
@@ -738,8 +672,8 @@ class ForceGraphD3 extends React.Component {
         return d.id;
       })
       .on("click", (d) => this.props.emitPopProps(d))
-      //   .on("mouseover", handleMouseOver(this))
-      //   .on("mouseout", handleMouseOut(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return text;
@@ -749,7 +683,7 @@ class ForceGraphD3 extends React.Component {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
     // Add prop here
-    let indirectStyle = this.state.indirectLinksVisible ? styles.linkIndirect : styles.linkInvisible;
+    let indirectStyle = this.state.indirectConnectionsVisible ? styles.linkIndirect : styles.linkInvisible;
 
     const weightCutoff = 4;
 
@@ -781,9 +715,8 @@ class ForceGraphD3 extends React.Component {
       .attr("target_id", (d) => {
         return d.target_id;
       })
-      //   .on("click", handleMouseClick(this))
-      //   .on("mouseover", handleMouseOver(this))
-      //   .on("mouseout", handleMouseOut(this))
+      .on("mouseover", handleMouseOver(this))
+      .on("mouseout", handleMouseOut(this))
       .call(this.dragLink());
 
     return link;
@@ -839,7 +772,7 @@ class ForceGraphD3 extends React.Component {
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
         this._link.attr("d", (d) => {
-          const curveFactor = 2;
+          const curveFactor = 3;
           const dx = d.target.x - d.source.x;
           const dy = d.target.y - d.source.x;
           const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
@@ -896,9 +829,9 @@ class ForceGraphD3 extends React.Component {
     return this._is_running;
   }
 
-  updateLinks(indirectLinksVisible) {
+  updateLinks(indirectConnectionsVisible) {
     if (this._graph.edges) {
-      this.setState({ indirectLinksVisible: indirectLinksVisible });
+      this.setState({ indirectConnectionsVisible: indirectConnectionsVisible });
       this._updateLink(this._graph.edges);
     }
   }

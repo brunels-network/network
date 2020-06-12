@@ -28,20 +28,3 @@
 .verticalSpace {
   margin-bottom: 45%;
 }
-
-/* This makes the buttons look like text */
-/* Based on https://stackoverflow.com/a/1368286 */
-.button {
-  background: none;
-  border: none;
-  font-family: "Playfair Display SC";
-  color: #f1f1f1;
-  cursor: pointer;
-  font-size: 3vh;
-  padding: 1vh 1vw 1vh 1.4vw;
-  text-align: left;
-}
-
-.button:hover {
-  color: #111;
-}

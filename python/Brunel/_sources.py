@@ -130,7 +130,7 @@ class Sources:
         for uid, source in self.state["registry"].items():
             imageDict[uid] = {}
             imageDict[uid]["name"] = source.getName()
-            imageDict[uid]["filename"] = "filename"
+            imageDict[uid]["filename"] = "file.jpg"
 
         return imageDict
 

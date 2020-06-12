@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
+import AboutOverlay from "./AboutOverlay";
 
 import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
@@ -8,14 +9,82 @@ class AnalysisPanel extends React.Component {
   render() {
     const buttonPadding = "1vh 1vw 1vh 1vw";
 
+    let indirectConnectionsText = this.props.indirectConnectionsVisible ? "Hide" : "Show";
+    let unconnectedNodesText = this.props.hideUnconnectedNodes ? "Show" : "Hide";
+    let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
+
     return (
       <div data-testid="AnalysisPanel" className={styles.wholePanel}>
         <div className={styles.verticalSpaceTitle}></div>
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
-
         <TextButton
           data-testid="searchButton"
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
+            this.props.togglePanel();
+          }}
+        >
+          About
+        </TextButton>
+        <TextButton
+          data-testid="filtersButton"
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.filterEngineeringNodes();
+            // this.props.togglePanel();
+          }}
+        >
+          Filter by Engineers
+        </TextButton>
+        <TextButton
+          data-testid="timelineButton"
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.filterInvestorNodes();
+            // this.props.togglePanel();
+          }}
+        >
+          Filter by Investors
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleindirectConnectionsVisible();
+            // this.props.togglePanel();
+          }}
+        >
+          {indirectConnectionsText + " indirect connections"}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleUnconnectedNodesVisible();
+            // this.props.togglePanel();
+          }}
+        >
+          {unconnectedNodesText + " unconnected nodes"}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.togglePhysicsEnabled();
+            // this.props.togglePanel();
+          }}
+        >
+          {physicsText + "physics"}
+        </TextButton>
+
+        <TextButton
+          data-testid="OptionsButton"
+          fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleSearchOverlay();
@@ -24,8 +93,7 @@ class AnalysisPanel extends React.Component {
         >
           Search
         </TextButton>
-        <TextButton
-          data-testid="filtersButton"
+        {/* <TextButton
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleFilterPanel();
@@ -33,10 +101,9 @@ class AnalysisPanel extends React.Component {
           }}
         >
           Filters
-        </TextButton>
-
-        <TextButton
-          data-testid="timelineButton"
+        </TextButton> */}
+        {/* // Remove timeline for now */}
+        {/* <TextButton
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleTimeLinePanel();
@@ -44,23 +111,13 @@ class AnalysisPanel extends React.Component {
           }}
         >
           Timeline
-        </TextButton>
-
-        <TextButton
-          data-testid="OptionsButton"
-          padding={buttonPadding}
-          className={styles.button}
-          onClick={() => {
-            this.props.toggleOptionsOverlay();
-            this.props.togglePanel();
-          }}
-        >
-          Options
-        </TextButton>
-
+        </TextButton> */}
         <div className={styles.verticalSpace}></div>
         <TextButton
           data-testid="closeButton"
+          fontSize="2.4vh"
+          textColor="#222"
+          hoverColor="white"
           padding={buttonPadding}
           onClick={() => {
             this.props.togglePanel();
@@ -74,11 +131,20 @@ class AnalysisPanel extends React.Component {
 }
 
 AnalysisPanel.propTypes = {
-  toggleSearchOverlay: PropTypes.func.isRequired,
-  toggleFilterPanel: PropTypes.func.isRequired,
-  toggleTimeLinePanel: PropTypes.func.isRequired,
-  togglePanel: PropTypes.func.isRequired,
-  toggleOptionsOverlay: PropTypes.func.isRequired,
+  setOverlay: PropTypes.func,
+  toggleFilterPanel: PropTypes.func,
+  toggleOptionsOverlay: PropTypes.func,
+  togglePanel: PropTypes.func,
+  toggleSearchOverlay: PropTypes.func,
+  toggleUnconnectedNodesVisible: PropTypes.func.isRequired,
+  closeOverlay: PropTypes.func.isRequired,
+  toggleindirectConnectionsVisible: PropTypes.func.isRequired,
+  indirectConnectionsVisible: PropTypes.bool.isRequired,
+  filterEngineeringNodes: PropTypes.func.isRequired,
+  filterInvestorNodes: PropTypes.func.isRequired,
+  hideUnconnectedNodes: PropTypes.bool.isRequired,
+  physicsEnabled: PropTypes.bool.isRequired,
+  togglePhysicsEnabled: PropTypes.func.isRequired,
 };
 
 export default AnalysisPanel;

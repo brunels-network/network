@@ -1,7 +1,6 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
-import ReactModal from "react-modal";
 
 // Brunel components
 import AnalysisPanel from "./components/AnalysisPanel";
@@ -11,18 +10,18 @@ import InfoBox from "./components/InfoBox";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
 import SlidingPanel from "./components/SlidingPanel";
-import OverlayBox from "./components/OverlayBox";
-import BrunelMenu from "./components/BrunelMenu";
 import ShipSelector from "./components/ShipSelector";
 import ShipTitle from "./components/ShipTitle";
 import SearchOverlay from "./components/SearchOverlay";
-import OptionsOverlay from "./components/OptionsOverlay";
+import TextButton from "./components/TextButton";
+import Overlay from "./components/Overlay";
 
 // Brunel model
 import Social from "./model/Social";
 
 // Data for import
-import graph_data from "./dataWeights.json";
+import graphData from "./dataWeights.json";
+import positionGroups from "./data/positionGroups.json";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
@@ -36,9 +35,10 @@ class SocialApp extends React.Component {
     this.togglePhysicsEnabled = this.togglePhysicsEnabled.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
+    this.toggleOverlay = this.toggleOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
-    let social = Dry.parse(graph_data);
+    let social = Dry.parse(graphData);
 
     if (!(social instanceof Social)) {
       console.error("Could not parse!");
@@ -60,13 +60,17 @@ class SocialApp extends React.Component {
       isHamburgerMenuOpen: false,
       isSearchOverlayOpen: false,
       isOptionsOverlayOpen: false,
-      indirectLinksVisible: false,
+      indirectConnectionsVisible: false,
+      hideUnconnectedNodes: false,
+      unconnectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
       physicsEnabled: false,
       selectedShip: null,
       selectedShipID: null,
+      commercialNodes: null,
+      engineeringNodes: null,
     };
 
     // TODO - work out a cleaner way of doing this
@@ -75,13 +79,25 @@ class SocialApp extends React.Component {
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
 
+    // Find the investors and engineers for easy filtering
+    // This requires the
+    this.findInvestorsAndEngineers();
+
+    // Find the unconnected nodes for filtering
+    this.findUnconnectedNodes();
+    // Hide the unconnected nodes
+    this.toggleUnconnectedNodesVisible();
+    // setState doesn't fire as called from ctor so change it here
+    this.state.hideUnconnectedNodes = true;
+
     this.socialGraph = null;
   }
 
   resetFilters() {
     let social = this.state.social;
     social.resetFilters();
-    this.setState({ social: social, selectedShip: null, selectedShipID: null });
+    this.setState({ social: social });
+    // this.setState({ social: social, selectedShip: null, selectedShipID: null });
   }
 
   closePanels() {
@@ -121,15 +137,25 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-    this.resetFilters();
     this.slotToggleFilter(item);
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
   }
 
+  clearShipSelection() {
+    this.setState({ selectedShip: null, selectedShipID: null });
+  }
+
   slotSetFilterbyID(id, name) {
-    this.resetFilters();
+    // this.resetFilters();
     this.slotToggleFilter(id);
     this.setState({ selectedShip: name, selectedShipID: id });
+  }
+
+  slotToggleProjectFilter(project) {
+    let social = this.state.social;
+    social.toggleProjectFilter(project);
+
+    this.setState({ social: social });
   }
 
   slotToggleFilter(item) {
@@ -138,6 +164,13 @@ class SocialApp extends React.Component {
     }
 
     let social = this.state.social;
+
+    // This feels clunky, is there a cleaner way of doing this?
+    // Currently we only want one ship selectable at a time
+    if (item._isAProjectObject) {
+      social.clearProjectFilter();
+    }
+
     social.toggleFilter(item);
 
     this.setState({ social: social });
@@ -182,6 +215,110 @@ class SocialApp extends React.Component {
     }
   }
 
+  gotConnections(id) {
+    // Does this have node have any connections, returns bool
+    return this.state.social.getConnections().gotConnections(id);
+  }
+
+  findInvestorsAndEngineers() {
+    // TODO - this currently just splits engineers and commerical members
+    // update to take just investors?
+
+    // Creates a list of the IDs of all the nodes that belong to the commercial
+    // side of the projects
+    const social = this.state.social;
+    const shipIDs = social.getProjects().getIDs();
+
+    let commercialNodes = [];
+    let engineeringNodes = [];
+
+    const people = social.getPeople().registry();
+
+    for (const [id, person] of Object.entries(people)) {
+      // Should do this for each ship
+      for (const shipID of shipIDs) {
+        // Lookup named position, here we'll only use the first position
+        // As each person may not have a role in every ship catch the error here
+        let positionID;
+        try {
+          positionID = person.getPosition(shipID)[0];
+        } catch (error) {
+          continue;
+        }
+
+        const namedPosition = social
+          .getPositions()
+          .getNameByID(positionID)
+          .toLowerCase()
+          .replace(/\s/g, "")
+          .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+
+        // Here we need to check if they've already been saved to stop double counting
+        if (positionGroups["commercial"]["members"].includes(namedPosition)) {
+          if (!commercialNodes.includes(id)) {
+            commercialNodes.push(id);
+          }
+        } else if (positionGroups["engineering"]["members"].includes(namedPosition)) {
+          if (!engineeringNodes.includes(id)) {
+            engineeringNodes.push(id);
+          }
+        }
+      }
+    }
+
+    // Called in ctor so setting directly to state here
+    this.state.commercialNodes = commercialNodes;
+    this.state.engineeringNodes = engineeringNodes;
+  }
+
+  findUnconnectedNodes() {
+    // Loop through and find the unconnected nodes and create a list of them
+    let unconnectedNodes = [];
+
+    const people = this.state.social.getPeople().getNodes("noanchor");
+
+    for (const p of people) {
+      if (this.gotConnections(p.id)) {
+        unconnectedNodes.push(p.id);
+      }
+    }
+
+    const businesses = this.state.social.getBusinesses().getNodes("noanchor");
+
+    for (const b of businesses) {
+      if (this.gotConnections(b.id)) {
+        unconnectedNodes.push(b.id);
+      }
+    }
+
+    this.state.unconnectedNodes = unconnectedNodes;
+  }
+
+  toggleUnconnectedNodesVisible() {
+    if (!this.state.hideUnconnectedNodes) {
+      this.resetFilters();
+      this.slotToggleFilter(this.state.unconnectedNodes);
+      this.slotToggleFilter(this.state.selectedShipID);
+    } else {
+      this.resetFilters();
+      this.slotToggleFilter(this.state.selectedShipID);
+    }
+
+    this.setState({ hideUnconnectedNodes: !this.state.hideUnconnectedNodes });
+  }
+
+  filterEngineeringNodes() {
+    this.resetFilters();
+    this.slotToggleFilter(this.state.engineeringNodes);
+    this.slotToggleFilter(this.state.selectedShipID);
+  }
+
+  filterInvestorNodes() {
+    this.resetFilters();
+    this.slotToggleFilter(this.state.commercialNodes);
+    this.slotToggleFilter(this.state.selectedShipID);
+  }
+
   toggleInfoPanel() {
     this.setState({ isInfoPanelOpen: !this.state.isInfoPanelOpen });
   }
@@ -216,8 +353,8 @@ class SocialApp extends React.Component {
     this.setState({ isOptionsOverlayOpen: !this.state.isOptionsOverlayOpen });
   }
 
-  toggleIndirectLinksVisible() {
-    this.setState({ indirectLinksVisible: !this.state.indirectLinksVisible });
+  toggleindirectConnectionsVisible() {
+    this.setState({ indirectConnectionsVisible: !this.state.indirectConnectionsVisible });
   }
 
   setOverlay(item) {
@@ -227,8 +364,11 @@ class SocialApp extends React.Component {
     });
   }
 
+  toggleOverlay() {
+    this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
+  }
+
   resetAll() {
-    console.log("Reset all");
     window.location.reload(true);
   }
 
@@ -238,14 +378,8 @@ class SocialApp extends React.Component {
     const overlayItem = this.state.overlayItem;
     const social = this.state.social;
 
-    // TODO - check if this is the correct way
-    // Removed the movement for now
-    let graphContainerClass = styles.graphContainerMenuClosed;
-    //  this.state.isHamburgerMenuOpen
-    //   ? styles.graphContainerMenuOpen
-    //   : styles.graphContainerMenuClosed;
-
     let searchOverlay = null;
+
     if (this.state.isSearchOverlayOpen) {
       searchOverlay = (
         <SearchOverlay
@@ -265,64 +399,17 @@ class SocialApp extends React.Component {
       );
     }
 
-    let optionsOverlay = null;
-    if (this.state.isOptionsOverlayOpen) {
-      optionsOverlay = (
-        <OptionsOverlay
-          indirectLinksVisible={this.state.indirectLinksVisible}
-          physicsEnabled={this.state.physicsEnabled}
-          togglePhysicsEnabled={this.togglePhysicsEnabled}
-          toggleIndirectLinksVisible={() => this.toggleIndirectLinksVisible()}
-          toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
-        />
-      );
+    let overlay = null;
+    if (this.state.isOverlayOpen) {
+      overlay = <Overlay toggleOverlay={this.toggleOverlay}>{this.state.overlayItem}</Overlay>;
     }
 
     return (
       <div>
-        <ReactModal
-          isOpen={this.state.isOverlayOpen}
-          onRequestClose={() => {
-            this.closeOverlay();
-          }}
-          contentLabel="Information overlay"
-          className={styles.modal}
-          overlayClassName={{
-            base: styles.modalOverlay,
-            afterOpen: styles.modalOverlayAfterOpen,
-            beforeClose: styles.modalOverlayBeforeClose,
-          }}
-          closeTimeoutMS={200}
-          appElement={document.getElementById("root")}
-        >
-          <div
-            className={styles.closeOverlayButton}
-            onClick={() => {
-              this.closeOverlay();
-            }}
-          >
-            X
-          </div>
-          <OverlayBox
-            item={overlayItem}
-            emitClose={() => {
-              this.closeOverlay();
-            }}
-          />
-        </ReactModal>
-
-        <div className={styles.hamburgerContainer}>
-          <button
-            data-testid="hamburgerButton"
-            className={styles.hamburgerButton}
-            onClick={() => {
-              this.setState({
-                isHamburgerMenuOpen: !this.state.isHamburgerMenuOpen,
-              });
-            }}
-          >
-            ☰
-          </button>
+        <div className={styles.resetButtonContainer}>
+          <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
+            Reset
+          </TextButton>
         </div>
 
         <div className={styles.resetButton}>
@@ -342,7 +429,7 @@ class SocialApp extends React.Component {
             selected={selected}
             projects={this.state.social.getProjects()}
             shipSelect={(item) => {
-              this.slotSetFilterbyID(item);
+              this.slotSetFilter(item);
             }}
             resetFilters={this.resetFilters}
           />
@@ -374,7 +461,7 @@ class SocialApp extends React.Component {
         </SlidingPanel>
 
         {/* Filter on bottom of page */}
-        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="20%">
+        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="25%">
           <span
             className={styles.closePanelButton}
             onClick={() => {
@@ -396,22 +483,6 @@ class SocialApp extends React.Component {
             }}
             emitClearFilters={() => {
               this.slotClearFilters();
-            }}
-          />
-        </SlidingPanel>
-
-        {/* This creates the menu on the LHS opened by the hamburger */}
-        <SlidingPanel isOpen={this.state.isHamburgerMenuOpen} position="left" width="10%" height="100%">
-          <BrunelMenu
-            setOverlay={this.setOverlay}
-            clickReset={() => {
-              this.resetAll();
-            }}
-            clickSource={() => {
-              this.viewSource();
-            }}
-            emitClose={() => {
-              this.setState({ isHamburgerMenuOpen: false });
             }}
           />
         </SlidingPanel>
@@ -439,7 +510,7 @@ class SocialApp extends React.Component {
               emitClicked={(id) => this.slotSelected(id)}
               setOverlay={this.setOverlay}
               selectedShipID={this.state.selectedShipID}
-              indirectLinksVisible={this.state.indirectLinksVisible}
+              indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
             />
           </div>
@@ -451,15 +522,27 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
           <AnalysisPanel
+            setOverlay={this.setOverlay}
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
             toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
             togglePanel={() => this.toggleAnalysisPanel()}
+            toggleUnconnectedNodesVisible={() => {
+              this.toggleUnconnectedNodesVisible();
+            }}
+            toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
+            closeOverlay={() => this.closeOverlay()}
+            filterEngineeringNodes={() => this.filterEngineeringNodes()}
+            filterInvestorNodes={() => this.filterInvestorNodes()}
+            physicsEnabled={this.state.physicsEnabled}
+            togglePhysicsEnabled={this.togglePhysicsEnabled}
+            indirectConnectionsVisible={this.state.indirectConnectionsVisible}
+            hideUnconnectedNodes={this.state.hideUnconnectedNodes}
           />
         </SlidingPanel>
         {searchOverlay}
-        {optionsOverlay}
+        {overlay}
       </div>
     );
   }

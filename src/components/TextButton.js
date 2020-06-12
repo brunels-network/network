@@ -42,7 +42,13 @@ class TextButton extends React.Component {
     }
 
     if (this.props.fontFamily) {
-      css["fontFamily"] = this.props.fontFamily;
+      let fontSize = this.props.fontFamily;
+
+      if (this.props.fontFamily.slice(-2) != "vh") {
+        fontSize = this.defaultCSS["fontSize"];
+      }
+
+      css["fontFamily"] = fontSize;
     }
 
     let clickFn;
