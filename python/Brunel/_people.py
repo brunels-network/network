@@ -102,9 +102,6 @@ class People:
             raise KeyError(f"No Person with ID {id}")
 
     def getByFuzzyName(self, person):
-        # find all people with matching surname
-        surname = person.getSurname()
-
         for (pid, p) in self.state["registry"].items():
             if p.couldBe(person):
                 y = input(f"Is {person.getName()} the same person "

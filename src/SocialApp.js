@@ -230,8 +230,8 @@ class SocialApp extends React.Component {
     const social = this.state.social;
     const shipIDs = social.getProjects().getIDs();
 
-    let commercialNodes = [];
-    let engineeringNodes = [];
+    let notCommercialNodes = [];
+    let notEngineeringNodes = [];
 
     const people = social.getPeople().registry();
 
@@ -255,27 +255,33 @@ class SocialApp extends React.Component {
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
         // Here we need to check if they've already been saved to stop double counting
-
-        // Find the ones that are engineers and then remove these from the list of all nodes ?
-
         // This creates an array of all the nodes that aren't commercial and so should be engineering / other
         if (!positionGroups["commercial"]["members"].includes(namedPosition)) {
-          if (!commercialNodes.includes(id)) {
-            commercialNodes.push(id);
+          if (!notCommercialNodes.includes(id)) {
+            notCommercialNodes.push(id);
           }
         }
 
         if (!positionGroups["engineering"]["members"].includes(namedPosition)) {
-          if (!engineeringNodes.includes(id)) {
-            engineeringNodes.push(id);
+          if (!notEngineeringNodes.includes(id)) {
+            notEngineeringNodes.push(id);
           }
         }
       }
     }
 
+    // Now we can loop over the businesses
+
+    // Need to do businesses but atm these don't have positions, update the Python so
+    // these are read in correctly?
+
+    // // These are lists of all the nodes that aren't commerical / engineers
+    // let commericalNodeFilter = Object.keys(people).filter((p) => !commercialNodes.includes(p));
+    // let engineerNodeFilter = Object.keys(people).filter((p) => !engineeringNodes.includes(p));
+
     // Called in ctor so setting directly to state here
-    this.state.commercialNodes = commercialNodes;
-    this.state.engineeringNodes = engineeringNodes;
+    this.state.commericalNodeFilter = notCommercialNodes;
+    this.state.engineerNodeFilter = notEngineeringNodes;
   }
 
   findUnconnectedNodes() {
@@ -307,12 +313,12 @@ class SocialApp extends React.Component {
   }
 
   filterEngineeringNodes() {
-    this.slotToggleFilter(this.state.engineeringNodes);
+    this.slotToggleFilter(this.state.engineerNodeFilter);
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
   filterInvestorNodes() {
-    this.slotToggleFilter(this.state.commercialNodes);
+    this.slotToggleFilter(this.state.commericalNodeFilter);
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
   }
 
