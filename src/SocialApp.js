@@ -63,6 +63,8 @@ class SocialApp extends React.Component {
       hideUnconnectedNodes: false,
       investorsFiltered: false,
       engineersFiltered: false,
+      commericalNodeFilter: [],
+      engineerNodeFilter: [],
       unconnectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
@@ -222,31 +224,35 @@ class SocialApp extends React.Component {
   }
 
   findInvestorsAndEngineers() {
-    // TODO - this currently just splits engineers and commerical members
-    // update to take just investors?
-
     // Creates a list of the IDs of all the nodes that belong to the commercial
     // side of the projects
+    const people = this.state.social.getPeople(false).getRegistry();
+    const businesses = this.state.social.getBusinesses(false).getRegistry();
+
+    this.findAndGroupNodes(people);
+    this.findAndGroupNodes(businesses);
+  }
+
+  findAndGroupNodes(entities) {
+    // Add nodes to the commercial or engineering groups
+    let commericalNodeFilter = this.state.commericalNodeFilter;
+    let engineerNodeFilter = this.state.engineerNodeFilter;
+
     const social = this.state.social;
-    const shipIDs = social.getProjects().getIDs();
 
-    let notCommercialNodes = [];
-    let notEngineeringNodes = [];
-
-    const people = social.getPeople().registry();
-
-    for (const [id, person] of Object.entries(people)) {
+    for (const [id, entity] of Object.entries(entities)) {
       // Should do this for each ship
-      for (const shipID of shipIDs) {
+      for (const shipID of social.getProjects().getIDs()) {
         // Lookup named position, here we'll only use the first position
         // As each person may not have a role in every ship catch the error here
         let positionID;
         try {
-          positionID = person.getPosition(shipID)[0];
+          positionID = entity.getPosition(shipID)[0];
         } catch (error) {
           continue;
         }
 
+        // Trim any extra characters or whitespace from the position string
         const namedPosition = social
           .getPositions()
           .getNameByID(positionID)
@@ -255,33 +261,19 @@ class SocialApp extends React.Component {
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
         // Here we need to check if they've already been saved to stop double counting
-        // This creates an array of all the nodes that aren't commercial and so should be engineering / other
         if (!positionGroups["commercial"]["members"].includes(namedPosition)) {
-          if (!notCommercialNodes.includes(id)) {
-            notCommercialNodes.push(id);
+          if (!commericalNodeFilter.includes(id)) {
+            commericalNodeFilter.push(id);
           }
         }
 
         if (!positionGroups["engineering"]["members"].includes(namedPosition)) {
-          if (!notEngineeringNodes.includes(id)) {
-            notEngineeringNodes.push(id);
+          if (!engineerNodeFilter.includes(id)) {
+            engineerNodeFilter.push(id);
           }
         }
       }
     }
-
-    // Now we can loop over the businesses
-
-    // Need to do businesses but atm these don't have positions, update the Python so
-    // these are read in correctly?
-
-    // // These are lists of all the nodes that aren't commerical / engineers
-    // let commericalNodeFilter = Object.keys(people).filter((p) => !commercialNodes.includes(p));
-    // let engineerNodeFilter = Object.keys(people).filter((p) => !engineeringNodes.includes(p));
-
-    // Called in ctor so setting directly to state here
-    this.state.commericalNodeFilter = notCommercialNodes;
-    this.state.engineerNodeFilter = notEngineeringNodes;
   }
 
   findUnconnectedNodes() {
