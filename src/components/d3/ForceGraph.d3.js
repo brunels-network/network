@@ -181,13 +181,14 @@ class ForceGraphD3 extends React.Component {
   }
 
   getSelectedShipID() {
-    const filter = this.state.social.getFilter();
+    return this.props.selectedShipID;
+    // const filter = this.state.social.getFilter();
 
-    if (filter["project"]) {
-      return Object.keys(filter["project"])[0];
-    } else {
-      console.error("Error in finding project code from filter");
-    }
+    // if (filter["project"]) {
+    //   return Object.keys(filter["project"])[0];
+    // } else {
+    //   console.error("Error in finding project code from filter");
+    // }
   }
 
   getNodeBio(id) {

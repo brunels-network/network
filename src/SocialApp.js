@@ -138,18 +138,18 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-    this.slotToggleFilter(item);
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
+    this.slotToggleFilter(item);
   }
 
-  clearShipSelection() {
-    this.setState({ selectedShip: null, selectedShipID: null });
-  }
+  //   clearShipSelection() {
+  //     this.setState({ selectedShip: null, selectedShipID: null });
+  //   }
 
   slotSetFilterbyID(id, name) {
     // this.resetFilters();
-    this.slotToggleFilter(id);
     this.setState({ selectedShip: name, selectedShipID: id });
+    this.slotToggleFilter(id);
   }
 
   slotToggleProjectFilter(project) {
@@ -173,17 +173,6 @@ class SocialApp extends React.Component {
     }
 
     social.toggleFilter(item);
-
-    this.setState({ social: social });
-  }
-
-  slotToggleNodeFilter(nodes) {
-    if (!nodes) {
-      return;
-    }
-
-    let social = this.state.social;
-    social.toggleNodeFilter(nodes);
 
     this.setState({ social: social });
   }
@@ -309,17 +298,17 @@ class SocialApp extends React.Component {
   }
 
   toggleUnconnectedNodesVisible() {
-    this.slotToggleNodeFilter(this.state.connectedNodes);
+    this.slotToggleFilter(this.state.connectedNodes);
     this.setState({ hideUnconnectedNodes: !this.state.hideUnconnectedNodes });
   }
 
   filterEngineeringNodes() {
-    this.slotToggleNodeFilter(this.state.engineeringNodes);
+    this.slotToggleFilter(this.state.engineeringNodes);
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
   filterInvestorNodes() {
-    this.slotToggleNodeFilter(this.state.commercialNodes);
+    this.slotToggleFilter(this.state.commercialNodes);
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
   }
 

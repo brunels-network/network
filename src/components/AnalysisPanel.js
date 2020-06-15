@@ -114,6 +114,8 @@ class AnalysisPanel extends React.Component {
         <div className={styles.verticalSpace}></div>
         <TextButton
           fontSize="2.4vh"
+          textColor="#222"
+          hoverColor="white"
           padding={buttonPadding}
           onClick={() => {
             this.props.togglePanel();
