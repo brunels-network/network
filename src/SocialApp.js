@@ -255,6 +255,10 @@ class SocialApp extends React.Component {
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
         // Here we need to check if they've already been saved to stop double counting
+
+        // Find the ones that are engineers and then remove these from the list of all nodes ?
+
+        // This creates an array of all the nodes that aren't commercial and so should be engineering / other
         if (!positionGroups["commercial"]["members"].includes(namedPosition)) {
           if (!commercialNodes.includes(id)) {
             commercialNodes.push(id);
