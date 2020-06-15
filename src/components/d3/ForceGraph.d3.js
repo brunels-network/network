@@ -566,9 +566,6 @@ class ForceGraphD3 extends React.Component {
     return d3
       .drag()
       .on("start", (d) => {
-        // simulation.alphaTarget(0.2).alphaDecay(0.001).restart();
-        // simulation.restart();
-
         //find the two nodes connected to this edge
         let source = this._graph.nodes[d.source.index];
         let target = this._graph.nodes[d.target.index];
@@ -786,7 +783,7 @@ class ForceGraphD3 extends React.Component {
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
         this._link.attr("d", (d) => {
-          const curveFactor = 2;
+          const curveFactor = 3;
           const dx = d.target.x - d.source.x;
           const dy = d.target.y - d.source.x;
           const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
