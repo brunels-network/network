@@ -60,7 +60,7 @@ class SocialApp extends React.Component {
       isSearchOverlayOpen: false,
       isOptionsOverlayOpen: false,
       indirectConnectionsVisible: false,
-      hideUnconnectedNodes: false,
+      unconnectedNodesVisible: false,
       investorsFiltered: false,
       engineersFiltered: false,
       commericalNodeFilter: [],
@@ -85,15 +85,17 @@ class SocialApp extends React.Component {
     // Find the investors and engineers for easy filtering
     // This requires the
     this.findInvestorsAndEngineers();
-
     // Find the unconnected nodes for filtering
     this.findUnconnectedNodes();
+
     // Hide the unconnected nodes
-    this.toggleUnconnectedNodesVisible();
+    // this.toggleUnconnectedNodesVisible();
     // setState doesn't fire as called from ctor so change it here
-    this.state.hideUnconnectedNodes = true;
+    // this.state.unconnectedNodesVisible = true;
 
     this.socialGraph = null;
+
+    console.log("After ctor ", this.state.social.state.filter);
   }
 
   resetFilters() {
@@ -261,13 +263,13 @@ class SocialApp extends React.Component {
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
         // Here we need to check if they've already been saved to stop double counting
-        if (!positionGroups["commercial"]["members"].includes(namedPosition)) {
+        if (positionGroups["commercial"]["members"].includes(namedPosition)) {
           if (!commericalNodeFilter.includes(id)) {
             commericalNodeFilter.push(id);
           }
         }
 
-        if (!positionGroups["engineering"]["members"].includes(namedPosition)) {
+        if (positionGroups["engineering"]["members"].includes(namedPosition)) {
           if (!engineerNodeFilter.includes(id)) {
             engineerNodeFilter.push(id);
           }
@@ -278,13 +280,13 @@ class SocialApp extends React.Component {
 
   findUnconnectedNodes() {
     // Loop through and find the unconnected nodes and create a list of them
-    let connectedNodes = [];
+    let unconnectedNodes = [];
 
     const people = this.state.social.getPeople().getNodes("noanchor");
 
     for (const p of people) {
       if (this.gotConnections(p.id)) {
-        connectedNodes.push(p.id);
+        unconnectedNodes.push(p.id);
       }
     }
 
@@ -292,26 +294,34 @@ class SocialApp extends React.Component {
 
     for (const b of businesses) {
       if (this.gotConnections(b.id)) {
-        connectedNodes.push(b.id);
+        unconnectedNodes.push(b.id);
       }
     }
 
-    this.state.connectedNodes = connectedNodes;
+    this.state.unconnectedNodes = unconnectedNodes;
   }
 
   toggleUnconnectedNodesVisible() {
-    this.slotToggleFilter(this.state.connectedNodes);
-    this.setState({ hideUnconnectedNodes: !this.state.hideUnconnectedNodes });
+    this.slotToggleFilter(this.state.unconnectedNodes);
+    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
   filterEngineeringNodes() {
+    if (this.state.investorsFiltered) {
+      this.filterInvestorNodes();
+    }
+
     this.slotToggleFilter(this.state.engineerNodeFilter);
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
   filterInvestorNodes() {
+    if (this.state.engineersFiltered) {
+      this.filterEngineeringNodes();
+    }
+
     this.slotToggleFilter(this.state.commericalNodeFilter);
-    this.setState({ investorsFiltered: !this.state.investorsFiltered });
+    this.setState({ investorsFiltered: !this.state.investorsFiltered, engineersFiltered: false });
   }
 
   toggleInfoPanel() {
@@ -372,6 +382,9 @@ class SocialApp extends React.Component {
     const highlighted = this.state.highlighted_item;
     const overlayItem = this.state.overlayItem;
     const social = this.state.social;
+
+    // Check if we should be toggling the unconnected nodes
+    // if(!this.state.unconnectedNodesVisible)
 
     let searchOverlay = null;
 
@@ -532,7 +545,8 @@ class SocialApp extends React.Component {
             physicsEnabled={this.state.physicsEnabled}
             togglePhysicsEnabled={this.togglePhysicsEnabled}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-            hideUnconnectedNodes={this.state.hideUnconnectedNodes}
+            unconnectedNodesVisible={this.state.unconnectedNodesVisible}
+            resetFilters={() => this.resetFilters()}
           />
         </SlidingPanel>
         {searchOverlay}

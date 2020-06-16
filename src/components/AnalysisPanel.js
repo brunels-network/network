@@ -86,6 +86,17 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
+            this.props.resetFilters();
+            // this.props.togglePanel();
+          }}
+        >
+          Reset filters
+        </TextButton>
+
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
             this.props.toggleSearchOverlay();
             this.props.togglePanel();
           }}
@@ -145,6 +156,7 @@ AnalysisPanel.propTypes = {
   hideUnconnectedNodes: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,
+  resetFilters: PropTypes.func.isRequired,
 };
 
 export default AnalysisPanel;
