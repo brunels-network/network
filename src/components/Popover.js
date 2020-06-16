@@ -174,6 +174,7 @@ class Popover extends React.Component {
             >
               {sourceButtonText}
             </TextButton>
+            <div className={styles.edgeCount}>Number of connections: {node["edge_count"]["selectedShipID"]}</div>
           </div>
         </div>
         <OverlayWrapper

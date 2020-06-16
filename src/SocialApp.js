@@ -20,7 +20,7 @@ import Overlay from "./components/Overlay";
 import Social from "./model/Social";
 
 // Data for import
-import graphData from "./dataWeights.json";
+import graphData from "./socialNetwork.json";
 import positionGroups from "./data/positionGroups.json";
 
 // Styling for the app

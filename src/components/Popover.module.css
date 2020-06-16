@@ -58,6 +58,14 @@
   width: 100%;
 }
 
+.edgeCount {
+  font-family: "Playfair Display Medium";
+  padding-top: 1vh;
+  font-size: 1.3vh;
+  height: 15%;
+  width: 100%;
+}
+
 .readMore {
   display: flex;
   align-items: right;

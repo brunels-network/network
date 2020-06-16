@@ -52,7 +52,7 @@ class People:
         if existing is None:
             try:
                 existing = self.getByFuzzyName(person)
-            except Exception as e:
+            except Exception:
                 existing = None
 
             if existing:
@@ -136,7 +136,7 @@ class People:
         for id, name in self.getAll().items():
             imageDict[id] = {}
             imageDict[id]["name"] = name
-            imageDict[id]["filename"] = "file.jpg"
+            imageDict[id]["filename"] = "A_Specimen_by_William_Caslon.jpg"
 
         return imageDict
 

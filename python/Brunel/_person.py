@@ -100,8 +100,6 @@ class Person:
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
 
-        # These should just be able to be passed to the functions above
-
         _mergeStateItems(state, other.state, "projects")
         _mergeStateItems(state, other.state, "weight")
         _mergeStateItems(state, other.state, "edge_count")
