@@ -13,6 +13,9 @@ class AnalysisPanel extends React.Component {
     let unconnectedNodesText = this.props.hideUnconnectedNodes ? "Show" : "Hide";
     let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
 
+    let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
+    let filterInvestorsText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
+
     return (
       <div className={styles.wholePanel}>
         <div className={styles.verticalSpaceTitle}></div>
@@ -36,7 +39,7 @@ class AnalysisPanel extends React.Component {
             // this.props.togglePanel();
           }}
         >
-          Filter by Engineers
+          {filterEngineersText}
         </TextButton>
         <TextButton
           fontSize="2.4vh"
@@ -46,7 +49,7 @@ class AnalysisPanel extends React.Component {
             // this.props.togglePanel();
           }}
         >
-          Filter by Investors
+          {filterInvestorsText}
         </TextButton>
         <TextButton
           fontSize="2.4vh"
@@ -77,6 +80,17 @@ class AnalysisPanel extends React.Component {
           }}
         >
           {physicsText + "physics"}
+        </TextButton>
+
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.resetFilters();
+            // this.props.togglePanel();
+          }}
+        >
+          Reset filters
         </TextButton>
 
         <TextButton
@@ -137,9 +151,12 @@ AnalysisPanel.propTypes = {
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   filterEngineeringNodes: PropTypes.func.isRequired,
   filterInvestorNodes: PropTypes.func.isRequired,
+  engineersFiltered: PropTypes.bool.isRequired,
+  investorsFiltered: PropTypes.bool.isRequired,
   hideUnconnectedNodes: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,
+  resetFilters: PropTypes.func.isRequired,
 };
 
 export default AnalysisPanel;

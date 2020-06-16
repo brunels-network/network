@@ -13,6 +13,19 @@ def _setState(state, val, default=None):
         return default
 
 
+def _mergeProjects(old, new, key):
+    old = old[key]
+    new = new[key]
+
+    for project, values in new.items():
+        if project in old:
+            for value in values:
+                if value not in old[project]:
+                    old[project].append(value)
+        else:
+            old[project] = values
+
+
 class Business:
     """Holds information about a Business or Institution in the network"""
     def __init__(self, props=None, getHook=None):
@@ -24,6 +37,7 @@ class Business:
             "projects": {},
             "sources": [],
             "scores": {},
+            "positions": {},
             "affiliations": {},
             "notes": [],
             "weight": {},
@@ -47,8 +61,21 @@ class Business:
         affiliations = self.state["affiliations"]
 
         for affiliation in affiliations.keys():
-            result.append( (self._getHook(affiliation),
-                            affiliations[affiliation]) )
+            result.append((self._getHook(affiliation), affiliations[affiliation]))
+
+        return result
+    
+    def getPositions(self):
+        result = {}
+
+        positions = self.state["positions"]
+
+        for project in positions.keys():
+            if project not in result:
+                result[project] = []
+
+            for position in positions[project]:
+                result[project].append(self._getHook(position))
 
         return result
 
@@ -63,11 +90,41 @@ class Business:
         self.state["scores"] = _setState(state, "scores", {})
         self.state["sources"] = _setState(state, "sources", [])
         self.state["notes"] = _setState(state, "notes", [])
-        self.state["weight"] = _setState(state, "weight", {})
         self.state["edge_count"] = _setState(state, "edgeCount", {})
+        self.state["weight"] = _setState(state, "weight")
+        self.state["positions"] = _setState(state, "positions", {})
 
         if self.state["name"] == "None" or self.state["name"] is None:
             raise ValueError(f"No name for {self}?")
+
+    def merge(self, other):
+        """ Merge two businesses together. This function is used when merging in matching
+            people that are involved in another project.
+
+            Args:
+                other (Business): Business to merge with this Business object
+            Returns:
+                Business: New Business object created from combined states
+        """
+        import copy as _copy
+
+        state = _copy.copy(self.state)
+
+        _mergeProjects(state, other.state, "positions")
+        _mergeProjects(state, other.state, "affiliations")
+        _mergeProjects(state, other.state, "sources")
+
+        for project, dates in other.state["projects"].items():
+            state["projects"][project] = dates
+
+        for id, weight in other.state["weight"].items():
+            state["weight"][id] = weight
+
+        b = Business()
+        b.state = state
+        b._getHook = self._getHook
+
+        return b
 
     def toDry(self):
         return self.state

@@ -181,13 +181,14 @@ class ForceGraphD3 extends React.Component {
   }
 
   getSelectedShipID() {
-    const filter = this.state.social.getFilter();
+    return this.props.selectedShipID;
+    // const filter = this.state.social.getFilter();
 
-    if (filter["project"]) {
-      return Object.keys(filter["project"])[0];
-    } else {
-      console.error("Error in finding project code from filter");
-    }
+    // if (filter["project"]) {
+    //   return Object.keys(filter["project"])[0];
+    // } else {
+    //   console.error("Error in finding project code from filter");
+    // }
   }
 
   getNodeBio(id) {
@@ -435,7 +436,16 @@ class ForceGraphD3 extends React.Component {
   }
 
   getPositionCode(entity) {
-    return entity["positions"][this.getSelectedShipID()][0];
+    // There might not be a position for this project
+    let code;
+
+    try {
+      code = entity["positions"][this.props.selectedShipID][0];
+    } catch (error) {
+      code = "NA";
+    }
+
+    return code;
   }
 
   setPositionColors() {

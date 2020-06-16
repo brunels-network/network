@@ -60,7 +60,11 @@ class SocialApp extends React.Component {
       isSearchOverlayOpen: false,
       isOptionsOverlayOpen: false,
       indirectConnectionsVisible: false,
-      hideUnconnectedNodes: false,
+      unconnectedNodesVisible: false,
+      investorsFiltered: false,
+      engineersFiltered: false,
+      commericalNodeFilter: [],
+      engineerNodeFilter: [],
       unconnectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
@@ -81,15 +85,17 @@ class SocialApp extends React.Component {
     // Find the investors and engineers for easy filtering
     // This requires the
     this.findInvestorsAndEngineers();
-
     // Find the unconnected nodes for filtering
     this.findUnconnectedNodes();
+
     // Hide the unconnected nodes
-    this.toggleUnconnectedNodesVisible();
+    // this.toggleUnconnectedNodesVisible();
     // setState doesn't fire as called from ctor so change it here
-    this.state.hideUnconnectedNodes = true;
+    // this.state.unconnectedNodesVisible = true;
 
     this.socialGraph = null;
+
+    console.log("After ctor ", this.state.social.state.filter);
   }
 
   resetFilters() {
@@ -136,18 +142,18 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-    this.slotToggleFilter(item);
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
+    this.slotToggleFilter(item);
   }
 
-  clearShipSelection() {
-    this.setState({ selectedShip: null, selectedShipID: null });
-  }
+  //   clearShipSelection() {
+  //     this.setState({ selectedShip: null, selectedShipID: null });
+  //   }
 
   slotSetFilterbyID(id, name) {
     // this.resetFilters();
-    this.slotToggleFilter(id);
     this.setState({ selectedShip: name, selectedShipID: id });
+    this.slotToggleFilter(id);
   }
 
   slotToggleProjectFilter(project) {
@@ -220,31 +226,35 @@ class SocialApp extends React.Component {
   }
 
   findInvestorsAndEngineers() {
-    // TODO - this currently just splits engineers and commerical members
-    // update to take just investors?
-
     // Creates a list of the IDs of all the nodes that belong to the commercial
     // side of the projects
+    const people = this.state.social.getPeople(false).getRegistry();
+    const businesses = this.state.social.getBusinesses(false).getRegistry();
+
+    this.findAndGroupNodes(people);
+    this.findAndGroupNodes(businesses);
+  }
+
+  findAndGroupNodes(entities) {
+    // Add nodes to the commercial or engineering groups
+    let commericalNodeFilter = this.state.commericalNodeFilter;
+    let engineerNodeFilter = this.state.engineerNodeFilter;
+
     const social = this.state.social;
-    const shipIDs = social.getProjects().getIDs();
 
-    let commercialNodes = [];
-    let engineeringNodes = [];
-
-    const people = social.getPeople().registry();
-
-    for (const [id, person] of Object.entries(people)) {
+    for (const [id, entity] of Object.entries(entities)) {
       // Should do this for each ship
-      for (const shipID of shipIDs) {
+      for (const shipID of social.getProjects().getIDs()) {
         // Lookup named position, here we'll only use the first position
         // As each person may not have a role in every ship catch the error here
         let positionID;
         try {
-          positionID = person.getPosition(shipID)[0];
+          positionID = entity.getPosition(shipID)[0];
         } catch (error) {
           continue;
         }
 
+        // Trim any extra characters or whitespace from the position string
         const namedPosition = social
           .getPositions()
           .getNameByID(positionID)
@@ -254,20 +264,18 @@ class SocialApp extends React.Component {
 
         // Here we need to check if they've already been saved to stop double counting
         if (positionGroups["commercial"]["members"].includes(namedPosition)) {
-          if (!commercialNodes.includes(id)) {
-            commercialNodes.push(id);
+          if (!commericalNodeFilter.includes(id)) {
+            commericalNodeFilter.push(id);
           }
-        } else if (positionGroups["engineering"]["members"].includes(namedPosition)) {
-          if (!engineeringNodes.includes(id)) {
-            engineeringNodes.push(id);
+        }
+
+        if (positionGroups["engineering"]["members"].includes(namedPosition)) {
+          if (!engineerNodeFilter.includes(id)) {
+            engineerNodeFilter.push(id);
           }
         }
       }
     }
-
-    // Called in ctor so setting directly to state here
-    this.state.commercialNodes = commercialNodes;
-    this.state.engineeringNodes = engineeringNodes;
   }
 
   findUnconnectedNodes() {
@@ -294,28 +302,26 @@ class SocialApp extends React.Component {
   }
 
   toggleUnconnectedNodesVisible() {
-    if (!this.state.hideUnconnectedNodes) {
-      this.resetFilters();
-      this.slotToggleFilter(this.state.unconnectedNodes);
-      this.slotToggleFilter(this.state.selectedShipID);
-    } else {
-      this.resetFilters();
-      this.slotToggleFilter(this.state.selectedShipID);
-    }
-
-    this.setState({ hideUnconnectedNodes: !this.state.hideUnconnectedNodes });
+    this.slotToggleFilter(this.state.unconnectedNodes);
+    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
   filterEngineeringNodes() {
-    this.resetFilters();
-    this.slotToggleFilter(this.state.engineeringNodes);
-    this.slotToggleFilter(this.state.selectedShipID);
+    if (this.state.investorsFiltered) {
+      this.filterInvestorNodes();
+    }
+
+    this.slotToggleFilter(this.state.engineerNodeFilter);
+    this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
   filterInvestorNodes() {
-    this.resetFilters();
-    this.slotToggleFilter(this.state.commercialNodes);
-    this.slotToggleFilter(this.state.selectedShipID);
+    if (this.state.engineersFiltered) {
+      this.filterEngineeringNodes();
+    }
+
+    this.slotToggleFilter(this.state.commericalNodeFilter);
+    this.setState({ investorsFiltered: !this.state.investorsFiltered, engineersFiltered: false });
   }
 
   toggleInfoPanel() {
@@ -376,6 +382,9 @@ class SocialApp extends React.Component {
     const highlighted = this.state.highlighted_item;
     const overlayItem = this.state.overlayItem;
     const social = this.state.social;
+
+    // Check if we should be toggling the unconnected nodes
+    // if(!this.state.unconnectedNodesVisible)
 
     let searchOverlay = null;
 
@@ -529,12 +538,15 @@ class SocialApp extends React.Component {
             }}
             toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
             closeOverlay={() => this.closeOverlay()}
+            investorsFiltered={this.state.investorsFiltered}
+            engineersFiltered={this.state.engineersFiltered}
             filterEngineeringNodes={() => this.filterEngineeringNodes()}
             filterInvestorNodes={() => this.filterInvestorNodes()}
             physicsEnabled={this.state.physicsEnabled}
             togglePhysicsEnabled={this.togglePhysicsEnabled}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-            hideUnconnectedNodes={this.state.hideUnconnectedNodes}
+            unconnectedNodesVisible={this.state.unconnectedNodesVisible}
+            resetFilters={() => this.resetFilters()}
           />
         </SlidingPanel>
         {searchOverlay}

@@ -278,6 +278,7 @@ def importBusiness(node, project, importers=None):
         affiliations = {pid: importAffiliations(node, importers=importers)}
         notes = {pid: importNotes(node, importers=importers)}
         weight = {pid: importWeights(node, importers=importers)}
+        positions = {pid: importPositions(node, importers=importers)}
 
         from ._business import Business as _Business
         return _Business({"name": name,

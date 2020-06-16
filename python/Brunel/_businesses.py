@@ -38,9 +38,30 @@ class Businesses:
             raise TypeError("Can only add a Business to Businesses")
 
         try:
-            return self.getByName(business.getName())
+            existing = self.getByName(business.getName())
+            # return 
         except Exception:
-            pass
+            existing = None
+            # pass
+
+        # TODO - could add in proper fuzzy matcher here for couldBe?
+        # See https://github.com/seatgeek/fuzzywuzzy
+        # if existing is None:
+        #     try:
+        #         existing = self.getByFuzzyName(business)
+        #     except Exception:
+        #         existing = None
+
+        #     if existing:
+        #         self.addLog(f"Have fuzzy matched {business.getName()} "
+        #                     f"to {existing.getName()}")
+
+        if existing:
+            del self._names[existing.getName()]
+            existing = existing.merge(business)
+            self._names[existing.getName()] = existing.getID()
+            self.state["registry"][existing.getID()] = existing
+            return existing
 
         id = business.getID()
 
@@ -67,6 +88,17 @@ class Businesses:
             return self.get(self._names[name])
         except Exception:
             raise KeyError(f"No Business with name {name}")
+
+    # def getByFuzzyName(self, business):
+    #     for (pid, b) in self.state["registry"].items():
+    #         if b.couldBe(business):
+    #             y = input(f"Is {business.getName()} the same business "
+    #                       f"as {b.getName()}? (y/n) ")
+
+    #             if y and y.lower()[0] == "y":
+    #                 return b
+
+    #     return None
 
     def find(self, value):
         if isinstance(value, _Business):

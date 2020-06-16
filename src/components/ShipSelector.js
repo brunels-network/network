@@ -32,8 +32,6 @@ class ShipSelector extends React.Component {
   render() {
     let projects = this.props.projects;
 
-    console.log(this.state.lastShip);
-
     let output = projects.values().map((item) => {
       if (item.getName() === "SS Great Eastern") {
         return (
