@@ -19,14 +19,14 @@ class AnalysisPanel extends React.Component {
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
         <TextButton
-          fontSize="2.4vh"
+          fontSize="2.0vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
             this.props.togglePanel();
           }}
         >
-          About
+          What is Brunel's Network?
         </TextButton>
         <TextButton
           fontSize="2.4vh"
