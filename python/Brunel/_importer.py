@@ -223,6 +223,7 @@ def importPerson(node, project, importers=None):
         state["weight"] = {pid:  importWeights(node, importers=importers)}
         state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
 
+        p = _Person(state)
         return _Person(state)
     except Exception as e:
         print(f"Cannot load Person\n{node}\nError = {e}\n")
