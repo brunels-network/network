@@ -114,11 +114,24 @@ class Business:
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
 
-        for project, dates in other.state["projects"].items():
-            state["projects"][project] = dates
+        # for project, dates in other.state["projects"].items():
+        #     state["projects"][project] = dates
+
+        # for id, weight in other.state["weight"].items():
+        #     state["weight"][id] = weight
+
+        # _mergeProjects(state, other.state, "projects")
+        # _mergeProjects(state, other.state, "weight")
+        # _mergeProjects(state, other.state, "edge_count")
+
+        for id, dates in other.state["projects"].items():
+            state["projects"][id] = dates
 
         for id, weight in other.state["weight"].items():
             state["weight"][id] = weight
+
+        for id, edge_count in other.state["edge_count"].items():
+            state["edge_count"][id] = edge_count
 
         b = Business()
         b.state = state

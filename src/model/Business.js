@@ -76,7 +76,8 @@ class Business {
       scores: {},
       affiliations: {},
       notes: [],
-      weight: 1,
+      weight: {},
+      edge_count: {},
     };
 
     this.setState(props);
@@ -225,6 +226,7 @@ class Business {
       this.state.sources = setState(state.sources, {});
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
+      this.state.edge_count = setState(state.edge_count);
 
       if (!this.state.name) {
         throw new ValueError("You cannot have an Business without a name");
@@ -276,6 +278,10 @@ class Business {
     return this.state.scores;
   }
 
+  getEdgeCount() {
+    return this.state.edge_count;
+  }
+
   getNode(is_anchor = false) {
     let node = { id: this.getID(), label: this.getName(), title: this.getName(), shape: "circle" };
 
@@ -284,6 +290,8 @@ class Business {
     node["size"] = 0.5 * weight;
     node["weight"] = weight;
     node["type"] = "business";
+
+    node["edge_count"] = this.getEdgeCount();
 
     // Position will be used to set the colour used
     // for the node representing this person

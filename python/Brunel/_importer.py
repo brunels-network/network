@@ -5,7 +5,7 @@ __all__ = ["getDefaultImporters", "extractPersonName",
            "importSources", "importType", "importNotes",
            "importProject", "importSource", "importBiography",
            "importEdgeSources", "importSharedLinks",
-           "importProjectDates", "importWeights"]
+           "importProjectDates", "importWeights", "importEdgeCount"]
 
 
 def _clean_string(s):
@@ -214,21 +214,14 @@ def importPerson(node, project, importers=None):
     try:
         name = str(node.Label)
         state = extractPersonName(name)
-        # TODO - just make this a defaultdict(dict) ?
-        state["positions"] = {}
-        state["sources"] = {}
-        state["affiliations"] = {}
-        state["notes"] = {}
-        state["weight"] = {}
 
-        state["positions"][pid] = importPositions(node, importers=importers)
-        state["sources"][pid] = importSources(node, importers=importers)
-        state["affiliations"][pid] = importAffiliations(node,
-                                                        importers=importers)
-        state["notes"][pid] = importNotes(node, importers=importers)
-        state["projects"] = {pid: importProjectDates(node,
-                                                     importers=importers)}
-        state["weight"][pid] = importWeights(node, importers=importers)
+        state["positions"] = {pid:  importPositions(node, importers=importers)}
+        state["sources"] = {pid:  importSources(node, importers=importers)}
+        state["affiliations"] = {pid:  importAffiliations(node, importers=importers)}
+        state["notes"] = {pid:  importNotes(node, importers=importers)}
+        state["projects"] = {pid: importProjectDates(node, importers=importers)}
+        state["weight"] = {pid:  importWeights(node, importers=importers)}
+        state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
 
         return _Person(state)
     except Exception as e:
@@ -267,26 +260,29 @@ def importBusiness(node, project, importers=None):
     except KeyError:
         importWeights = importWeights
 
+    try:
+        importEdgeCount = importers["importEdgeCount"]
+    except KeyError:
+        importEdgeCount = importEdgeCount
+
     from ._daterange import DateRange as _DateRange
 
     pid = project.getID()
 
     try:
-        name = str(node.Label)
-        positions = {pid: importPositions(node, importers=importers)}
-        sources = {pid: importSources(node, importers=importers)}
-        affiliations = {pid: importAffiliations(node, importers=importers)}
-        notes = {pid: importNotes(node, importers=importers)}
-        weight = {pid: importWeights(node, importers=importers)}
-        positions = {pid: importPositions(node, importers=importers)}
+        state = {}
+        state["name"] = str(node.Label)
+        state["positions"] = {pid: importPositions(node, importers=importers)}
+        state["sources"] = {pid: importSources(node, importers=importers)}
+        state["affiliations"] = {pid: importAffiliations(node, importers=importers)}
+        state["notes"] = {pid: importNotes(node, importers=importers)}
+        state["weight"] = {pid: importWeights(node, importers=importers)}
+        state["positions"] = {pid: importPositions(node, importers=importers)}
+        state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
+        state["projects"] = {pid: _DateRange.null()}
 
         from ._business import Business as _Business
-        return _Business({"name": name,
-                          "positions": positions,
-                          "sources": sources,
-                          "affiliations": affiliations,
-                          "projects": {project.getID(): _DateRange.null()},
-                          "notes": notes, "weight": weight})
+        return _Business(state)
     except Exception as e:
         print(f"Cannot load Business {node}: {e}")
         return None
@@ -466,7 +462,7 @@ def importConnection(edge, project, mapping=None, importers=None):
                             })
 
     except Exception as e:
-        raise(f"\nFailed to add connection!\n{e}\n{edge}\n\n")
+        raise Exception(f"\nFailed to add connection!\n{e}\n{edge}\n\n")
         return None
 
 
@@ -563,9 +559,21 @@ def importWeights(node, importers=None):
             node (Pandas.Dataseries): Dataseries containing data
             importers (dict, default=None): Dictionary of importer functions
         Returns:
-            list: List of weights
+            int: Weight
     """
     return int(node["Weight"])
+
+
+def importEdgeCount(node, importers=None):
+    """ Import the edge counts of each person from file
+
+        Args:
+            node (Pandas.Dataseries): Dataseries containing data
+            importers (dict, default=None): Dictionary of importer functions
+        Returns:
+            int: Number of edges
+    """
+    return int(node["Edge Tally"])
 
 
 def importNotes(node, importers=None, isEdge=False):
@@ -678,4 +686,4 @@ def getDefaultImporters():
             "importEdgeSources": importEdgeSources,
             "importSharedLinks": importSharedLinks,
             "importProjectDates": importProjectDates,
-            "importWeights": importWeights}
+            "importWeights": importWeights, "importEdgeCount": importEdgeCount}

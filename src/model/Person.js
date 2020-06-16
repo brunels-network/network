@@ -82,7 +82,8 @@ class Person {
       gender: null,
       notes: [],
       orig_name: null,
-      weight: 1,
+      weight: {},
+      edge_count: {},
     };
 
     this.setState(props);
@@ -242,6 +243,7 @@ class Person {
       this.state.orig_name = setState(state.orig_name);
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
+      this.state.edge_count = setState(state.edge_count);
 
       if (!this.state.orig_name || this.state.orig_name === "None") {
         throw new ValueError(`No name for ${this}`);
@@ -385,6 +387,10 @@ class Person {
     return this.state.weight;
   }
 
+  getEdgeCount() {
+    return this.state.edge_count;
+  }
+
   getProjectWeight(projectKey) {
     const weight = this.state.weight[projectKey];
 
@@ -405,15 +411,16 @@ class Person {
       shape: "circle",
     };
 
-    const weight = this.getWeight();
     const name = this.getName();
 
-    node["weight"] = weight;
+    node["weight"] = this.getWeight();
     node["type"] = "person";
 
     // Position will be used to set the colour used
     // for the node representing this person
     node["positions"] = this.getPositions();
+
+    node["edge_count"] = this.getEdgeCount();
 
     let keys = Object.keys(this.state.projects);
 

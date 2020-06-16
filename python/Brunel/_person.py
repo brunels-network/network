@@ -85,18 +85,18 @@ class Person:
 
         # These should just be able to be passed to the functions above
 
-        _mergeProjects(state, other.state, "projects")
-        _mergeProjects(state, other.state, "weight")
-        _mergeProjects(state, other.state, "edge_count")
+        # _mergeProjects(state, other.state, "projects")
+        # _mergeProjects(state, other.state, "weight")
+        # _mergeProjects(state, other.state, "edge_count")
 
-        # for id, dates in other.state["projects"].items():
-        #     state["projects"][id] = dates
+        for id, dates in other.state["projects"].items():
+            state["projects"][id] = dates
 
-        # for id, weight in other.state["weight"].items():
-        #     state["weight"][id] = weight
+        for id, weight in other.state["weight"].items():
+            state["weight"][id] = weight
 
-        # for id, edge_count in other.state["edge_count"].items():
-        #     state["edge_count"][id] = edge_count
+        for id, edge_count in other.state["edge_count"].items():
+            state["edge_count"][id] = edge_count
 
         p = Person()
         p.state = state
