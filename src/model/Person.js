@@ -420,6 +420,8 @@ class Person {
     // for the node representing this person
     node["positions"] = this.getPositions();
 
+    console.log(name, this.getPositions());
+
     node["edge_count"] = this.getEdgeCount();
 
     let keys = Object.keys(this.state.projects);

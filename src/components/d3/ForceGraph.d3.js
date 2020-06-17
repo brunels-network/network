@@ -442,6 +442,7 @@ class ForceGraphD3 extends React.Component {
     try {
       code = entity["positions"][this.props.selectedShipID][0];
     } catch (error) {
+      console.log("No position for ", entity, this.props.selectedShipID);
       code = "NA";
     }
 

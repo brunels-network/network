@@ -94,8 +94,6 @@ class SocialApp extends React.Component {
     // this.state.unconnectedNodesVisible = true;
 
     this.socialGraph = null;
-
-    console.log("After ctor ", this.state.social.state.filter);
   }
 
   resetFilters() {
@@ -282,7 +280,7 @@ class SocialApp extends React.Component {
     // Loop through and find the unconnected nodes and create a list of them
     let unconnectedNodes = [];
 
-    const people = this.state.social.getPeople().getNodes("noanchor");
+    const people = this.state.social.getPeople(false).getNodes("noanchor");
 
     for (const p of people) {
       if (this.gotConnections(p.id)) {
@@ -290,7 +288,7 @@ class SocialApp extends React.Component {
       }
     }
 
-    const businesses = this.state.social.getBusinesses().getNodes("noanchor");
+    const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
 
     for (const b of businesses) {
       if (this.gotConnections(b.id)) {

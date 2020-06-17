@@ -98,9 +98,9 @@ class Popover extends React.Component {
 
     let entity;
     if (nodeType === "person") {
-      entity = this.props.social.getPeople().get(node.id);
+      entity = this.props.social.getPeople(false).get(node.id);
     } else if (nodeType === "business") {
-      entity = this.props.social.getBusinesses().get(node.id);
+      entity = this.props.social.getBusinesses(false).get(node.id);
     } else {
       throw new TypeError("Incorrect type or no type on node");
     }
