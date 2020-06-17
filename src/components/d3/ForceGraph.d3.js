@@ -183,7 +183,6 @@ class ForceGraphD3 extends React.Component {
   getSelectedShipID() {
     // As this isn't a standard React component relying on props here doesn't work
     // Will reimplement this when I move it into a proper component form
-
     // return this.props.selectedShipID;
 
     const filter = this.state.social.getFilter();
@@ -191,7 +190,7 @@ class ForceGraphD3 extends React.Component {
     if (filter["project"]) {
       return Object.keys(filter["project"])[0];
     } else {
-      console.error("Error in finding project code from filter");
+      console.error("Error finding project code from filter");
     }
   }
 
@@ -436,17 +435,20 @@ class ForceGraphD3 extends React.Component {
 
     const positionCode = this.getPositionCode(entity);
 
-    return this.state.colors[positionCode];
+    let color = this.state.colors[positionCode];
+
+    return color;
   }
 
   getPositionCode(entity) {
     // There might not be a position for this project
     let code;
 
+    const shipID = this.getSelectedShipID();
+
     try {
-      code = entity["positions"][this.props.selectedShipID][0];
+      code = entity["positions"][shipID][0];
     } catch (error) {
-      console.log("No position for ", entity, this.props.selectedShipID);
       code = "NA";
     }
 
@@ -482,7 +484,7 @@ class ForceGraphD3 extends React.Component {
         } else {
           // Assign bright blue to any we don't recognize, but this
           // shouldn't (hopefully) happen if the JSON is correct
-          colorTable[uid] = "blue";
+          colorTable[uid] = positionGroups["unknown"]["color"];
         }
       }
     }

@@ -140,8 +140,8 @@ class SocialApp extends React.Component {
   }
 
   slotSetFilter(item) {
-    this.slotToggleFilter(item);
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
+    this.slotToggleFilter(item);
   }
 
   //   clearShipSelection() {
@@ -150,8 +150,8 @@ class SocialApp extends React.Component {
 
   slotSetFilterbyID(id, name) {
     // this.resetFilters();
-    this.slotToggleFilter(id);
     this.setState({ selectedShip: name, selectedShipID: id });
+    this.slotToggleFilter(id);
   }
 
   slotToggleProjectFilter(project) {
