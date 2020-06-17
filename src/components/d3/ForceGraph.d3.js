@@ -181,14 +181,18 @@ class ForceGraphD3 extends React.Component {
   }
 
   getSelectedShipID() {
-    return this.props.selectedShipID;
-    // const filter = this.state.social.getFilter();
+    // As this isn't a standard React component relying on props here doesn't work
+    // Will reimplement this when I move it into a proper component form
 
-    // if (filter["project"]) {
-    //   return Object.keys(filter["project"])[0];
-    // } else {
-    //   console.error("Error in finding project code from filter");
-    // }
+    // return this.props.selectedShipID;
+
+    const filter = this.state.social.getFilter();
+
+    if (filter["project"]) {
+      return Object.keys(filter["project"])[0];
+    } else {
+      console.error("Error in finding project code from filter");
+    }
   }
 
   getNodeBio(id) {
