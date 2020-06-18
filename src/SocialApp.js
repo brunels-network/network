@@ -5,7 +5,7 @@ import Dry from "json-dry";
 // Brunel components
 import AnalysisPanel from "./components/AnalysisPanel";
 import AnalysisButton from "./components/AnalysisButton";
-import SocialGraph from "./components/SocialGraph";
+import ForceGraph from "./components/ForceGraph";
 import InfoBox from "./components/InfoBox";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
@@ -505,7 +505,7 @@ class SocialApp extends React.Component {
         {/* The social graph itself */}
         <div className={styles.mainContainer}>
           <div className={styles.graphContainer}>
-            <SocialGraph
+            <ForceGraph
               social={this.state.social}
               selected={selected}
               highlighted={highlighted}
