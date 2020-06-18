@@ -22,7 +22,7 @@ class AnalysisPanel extends React.Component {
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
         <TextButton
-          fontSize="2.0vh"
+          fontSize="2.3vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
