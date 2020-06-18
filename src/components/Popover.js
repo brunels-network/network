@@ -120,9 +120,13 @@ class Popover extends React.Component {
 
     // Get biography for node
     let bio = social.getBiographies().getByID(node.id);
-    bio = bio.replace(name + ".  ", "");
 
-    bio = this.truncate(bio, 40);
+    if (!bio) {
+      bio = "No biography found.";
+    } else {
+      bio = bio.replace(name + ".  ", "");
+      bio = this.truncate(bio, 40);
+    }
 
     // Get the location of the click within the viewport so we can open the popover
     // in the correct location

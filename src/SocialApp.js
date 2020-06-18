@@ -150,14 +150,15 @@ class SocialApp extends React.Component {
     }
   }
 
-  slotSetFilter(item) {
-    // this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
+  slotSetShip(item) {
+    if (!item._isAProjectObject) {
+      console.error("Cannot set item that is not a project.");
+      return;
+    }
+
+    this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
     this.slotToggleFilter(item);
   }
-
-  //   clearShipSelection() {
-  //     this.setState({ selectedShip: null, selectedShipID: null });
-  //   }
 
   slotSetFilterbyID(id, name) {
     // this.resetAllFilterss();
@@ -547,7 +548,7 @@ class SocialApp extends React.Component {
         <div className={styles.bottomContainer}>
           <ShipSelector
             projects={this.state.social.getProjects()}
-            shipFilter={(item) => this.slotSetFilter(item)}
+            shipFilter={(item) => this.slotSetShip(item)}
             resetFilters={this.resetAllFilters}
             selectedShip={this.state.selectedShip}
           />

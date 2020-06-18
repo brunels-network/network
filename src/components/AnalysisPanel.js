@@ -43,125 +43,104 @@ class AnalysisPanel extends React.Component {
     let filterInvestorsText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
 
     return (
-      <div ref={this.setWrapperRef}>
-        <div className={styles.wholePanel}>
-          <div className={styles.verticalSpaceTitle}></div>
-          <div className={styles.titleText}>Analysis</div>
-          <div className={styles.verticalSpace}></div>
-          <TextButton
-            fontSize="2.3vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
-              this.props.togglePanel();
-            }}
-          >
-            What is Brunel's Network?
-          </TextButton>
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.filterEngineeringNodes();
-              // this.props.togglePanel();
-            }}
-          >
-            {filterEngineersText}
-          </TextButton>
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.filterInvestorNodes();
-              // this.props.togglePanel();
-            }}
-          >
-            {filterInvestorsText}
-          </TextButton>
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.toggleindirectConnectionsVisible();
-              // this.props.togglePanel();
-            }}
-          >
-            {indirectConnectionsText + " indirect connections"}
-          </TextButton>
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.toggleUnconnectedNodesVisible();
-              // this.props.togglePanel();
-            }}
-          >
-            {unconnectedNodesText + " unconnected nodes"}
-          </TextButton>
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.togglePhysicsEnabled();
-              // this.props.togglePanel();
-            }}
-          >
-            {physicsText + "physics"}
-          </TextButton>
-
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.resetFilters();
-              // this.props.togglePanel();
-            }}
-          >
-            Reset filters
-          </TextButton>
-
-          <TextButton
-            fontSize="2.4vh"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.toggleSearchOverlay();
-              this.props.togglePanel();
-            }}
-          >
-            Search
-          </TextButton>
-          {/* <TextButton
+      <div ref={this.setWrapperRef} className={styles.wholePanel}>
+        <div className={styles.verticalSpaceTitle}></div>
+        <div className={styles.titleText}>Analysis</div>
+        <div className={styles.verticalSpace}></div>
+        <TextButton
+          fontSize="2.3vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.toggleFilterPanel();
+            this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
             this.props.togglePanel();
           }}
         >
-          Filters
-        </TextButton> */}
-          {/* // Remove timeline for now */}
-          {/* <TextButton
+          What is Brunel's Network?
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.toggleTimeLinePanel();
+            this.props.filterEngineeringNodes();
+            // this.props.togglePanel();
+          }}
+        >
+          {filterEngineersText}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.filterInvestorNodes();
+            // this.props.togglePanel();
+          }}
+        >
+          {filterInvestorsText}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleindirectConnectionsVisible();
+            // this.props.togglePanel();
+          }}
+        >
+          {indirectConnectionsText + " indirect connections"}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleUnconnectedNodesVisible();
+            // this.props.togglePanel();
+          }}
+        >
+          {unconnectedNodesText + " unconnected nodes"}
+        </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.togglePhysicsEnabled();
+            // this.props.togglePanel();
+          }}
+        >
+          {physicsText + "physics"}
+        </TextButton>
+
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.resetFilters();
+            // this.props.togglePanel();
+          }}
+        >
+          Reset filters
+        </TextButton>
+
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.toggleSearchOverlay();
             this.props.togglePanel();
           }}
         >
-          Timeline
-        </TextButton> */}
-          <div className={styles.verticalSpace}></div>
-          <TextButton
-            fontSize="2.4vh"
-            textColor="#222"
-            hoverColor="white"
-            padding={buttonPadding}
-            onClick={() => {
-              this.props.togglePanel();
-            }}
-          >
-            Close
-          </TextButton>
-        </div>
+          Search
+        </TextButton>
+        <div className={styles.verticalSpace}></div>
+        <TextButton
+          fontSize="2.4vh"
+          textColor="#222"
+          hoverColor="white"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.togglePanel();
+          }}
+        >
+          Close
+        </TextButton>
       </div>
     );
   }
