@@ -32,7 +32,7 @@ class SocialApp extends React.Component {
     super(props);
 
     this.togglePhysicsEnabled = this.togglePhysicsEnabled.bind(this);
-    this.resetFilters = this.resetFilters.bind(this);
+    this.resetAllFilters = this.resetAllFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
@@ -65,15 +65,13 @@ class SocialApp extends React.Component {
       engineersFiltered: false,
       commericalNodeFilter: [],
       engineerNodeFilter: [],
-      unconnectedNodes: null,
+      connectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
       isAnalysisOpen: false,
       physicsEnabled: false,
       selectedShip: null,
       selectedShipID: null,
-      commercialNodes: null,
-      engineeringNodes: null,
     };
 
     // TODO - work out a cleaner way of doing this
@@ -86,21 +84,38 @@ class SocialApp extends React.Component {
     // This requires the
     this.findInvestorsAndEngineers();
     // Find the unconnected nodes for filtering
-    this.findUnconnectedNodes();
+    this.findConnectedNodes();
 
-    // Hide the unconnected nodes
-    // this.toggleUnconnectedNodesVisible();
-    // setState doesn't fire as called from ctor so change it here
-    // this.state.unconnectedNodesVisible = true;
+    // // Hide the unconnected nodes
+    this.toggleUnconnectedNodesVisible();
+    // // setState doesn't fire as called from ctor so change it here
+    this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
   }
 
-  resetFilters() {
+  resetAllFilters() {
+    // This resets all filters including the ship filter
     let social = this.state.social;
-    social.resetFilters();
-    this.setState({ social: social });
-    // this.setState({ social: social, selectedShip: null, selectedShipID: null });
+    social.resetAllFilters();
+    this.setState({
+      social: social,
+      engineersFiltered: false,
+      investorsFiltered: false,
+      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
+    });
+  }
+
+  resetFiltersNotShip() {
+    // This resets all filters except the ship filter
+    let social = this.state.social;
+    social.resetFiltersNotShip();
+    this.setState({
+      social: social,
+      engineersFiltered: false,
+      investorsFiltered: false,
+      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
+    });
   }
 
   closePanels() {
@@ -135,12 +150,8 @@ class SocialApp extends React.Component {
     }
   }
 
-  slotClearFilters() {
-    this.resetFilters();
-  }
-
   slotSetFilter(item) {
-    this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
+    // this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
     this.slotToggleFilter(item);
   }
 
@@ -149,7 +160,7 @@ class SocialApp extends React.Component {
   //   }
 
   slotSetFilterbyID(id, name) {
-    // this.resetFilters();
+    // this.resetAllFilterss();
     this.setState({ selectedShip: name, selectedShipID: id });
     this.slotToggleFilter(id);
   }
@@ -176,6 +187,18 @@ class SocialApp extends React.Component {
 
     social.toggleFilter(item);
 
+    this.setState({ social: social });
+  }
+
+  slotSetFilters(...args) {
+    let social = this.state.social;
+    social.setFilters(...args);
+    this.setState({ social: social });
+  }
+
+  slotClearFilters(...args) {
+    let social = this.state.social;
+    social.clearFilters(...args);
     this.setState({ social: social });
   }
 
@@ -276,14 +299,17 @@ class SocialApp extends React.Component {
     }
   }
 
-  findUnconnectedNodes() {
-    // Loop through and find the unconnected nodes and create a list of them
+  findConnectedNodes() {
+    // Loop through and find the connected nodes and create a list of them
+    let connectedNodes = [];
     let unconnectedNodes = [];
 
     const people = this.state.social.getPeople(false).getNodes("noanchor");
 
     for (const p of people) {
       if (this.gotConnections(p.id)) {
+        connectedNodes.push(p.id);
+      } else {
         unconnectedNodes.push(p.id);
       }
     }
@@ -292,24 +318,39 @@ class SocialApp extends React.Component {
 
     for (const b of businesses) {
       if (this.gotConnections(b.id)) {
+        connectedNodes.push(b.id);
+      } else {
         unconnectedNodes.push(b.id);
       }
     }
 
+    this.state.connectedNodes = connectedNodes;
     this.state.unconnectedNodes = unconnectedNodes;
   }
 
   toggleUnconnectedNodesVisible() {
-    this.slotToggleFilter(this.state.unconnectedNodes);
+    this.slotToggleFilter(this.state.connectedNodes);
     this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
+
+  // If unconnected nodes are enabled add them to the filter, if they're not remove them
 
   filterEngineeringNodes() {
     if (this.state.investorsFiltered) {
       this.filterInvestorNodes();
     }
 
-    this.slotToggleFilter(this.state.engineerNodeFilter);
+    // If we have unconnected nodes as part of this filter set, get rid of them
+    let nodesToFilter = this.state.engineerNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
+
+    if (this.state.engineersFiltered) {
+      this.resetFiltersNotShip();
+      this.toggleUnconnectedNodesVisible();
+    } else {
+      this.resetFiltersNotShip();
+      this.slotToggleFilter(nodesToFilter);
+    }
+
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
@@ -318,8 +359,18 @@ class SocialApp extends React.Component {
       this.filterEngineeringNodes();
     }
 
-    this.slotToggleFilter(this.state.commericalNodeFilter);
-    this.setState({ investorsFiltered: !this.state.investorsFiltered, engineersFiltered: false });
+    // If we have unconnected nodes as part of this filter set, get rid of them
+    let nodesToFilter = this.state.commericalNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
+
+    if (this.state.investorsFiltered) {
+      this.resetFiltersNotShip();
+      this.toggleUnconnectedNodesVisible();
+    } else {
+      this.resetFiltersNotShip();
+      this.slotToggleFilter(nodesToFilter);
+    }
+
+    this.setState({ investorsFiltered: !this.state.investorsFiltered });
   }
 
   toggleInfoPanel() {
@@ -433,7 +484,7 @@ class SocialApp extends React.Component {
             shipSelect={(item) => {
               this.slotSetFilter(item);
             }}
-            resetFilters={this.resetFilters}
+            resetFilters={this.resetAllFilters}
           />
         </SlidingPanel>
 
@@ -484,7 +535,7 @@ class SocialApp extends React.Component {
               this.slotHighlighted(item);
             }}
             emitClearFilters={() => {
-              this.slotClearFilters();
+              this.resetAllFilters();
             }}
           />
         </SlidingPanel>
@@ -497,7 +548,7 @@ class SocialApp extends React.Component {
           <ShipSelector
             projects={this.state.social.getProjects()}
             shipFilter={(item) => this.slotSetFilter(item)}
-            resetFilters={this.resetFilters}
+            resetFilters={this.resetAllFilters}
             selectedShip={this.state.selectedShip}
           />
         </div>
@@ -544,7 +595,7 @@ class SocialApp extends React.Component {
             togglePhysicsEnabled={this.togglePhysicsEnabled}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             unconnectedNodesVisible={this.state.unconnectedNodesVisible}
-            resetFilters={() => this.resetFilters()}
+            resetFilters={() => this.resetAllFilters()}
           />
         </SlidingPanel>
         {searchOverlay}
