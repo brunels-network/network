@@ -87,7 +87,7 @@ class SocialApp extends React.Component {
     this.findConnectedNodes();
 
     // // Hide the unconnected nodes
-    this.toggleUnconnectedNodesVisible();
+    this.slotToggleFilter(this.state.connectedNodes);
     // // setState doesn't fire as called from ctor so change it here
     this.state.unconnectedNodesVisible = false;
 
@@ -596,7 +596,7 @@ class SocialApp extends React.Component {
             togglePhysicsEnabled={this.togglePhysicsEnabled}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             unconnectedNodesVisible={this.state.unconnectedNodesVisible}
-            resetFilters={() => this.resetAllFilters()}
+            resetFilters={() => this.resetFiltersNotShip()}
           />
         </SlidingPanel>
         {searchOverlay}

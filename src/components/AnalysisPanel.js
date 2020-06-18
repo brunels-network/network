@@ -36,7 +36,7 @@ class AnalysisPanel extends React.Component {
     const buttonPadding = "1vh 1vw 1vh 1vw";
 
     let indirectConnectionsText = this.props.indirectConnectionsVisible ? "Hide" : "Show";
-    let unconnectedNodesText = this.props.hideUnconnectedNodes ? "Show" : "Hide";
+    let unconnectedNodesText = this.props.unconnectedNodesVisible ? "Hide" : "Show";
     let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
 
     let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
@@ -160,7 +160,7 @@ AnalysisPanel.propTypes = {
   filterInvestorNodes: PropTypes.func.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
   investorsFiltered: PropTypes.bool.isRequired,
-  hideUnconnectedNodes: PropTypes.bool.isRequired,
+  unconnectedNodesVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,
   resetFilters: PropTypes.func.isRequired,
