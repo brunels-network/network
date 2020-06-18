@@ -1,4 +1,3 @@
-
 from ._source import Source as _Source
 
 __all__ = ["Sources"]
@@ -6,12 +5,14 @@ __all__ = ["Sources"]
 
 def _generate_source_uid():
     import uuid as _uuid
+
     uid = _uuid.uuid4()
     return "S" + str(uid)[:7]
 
 
 class Sources:
     """This holds a registry of individual Sources"""
+
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
@@ -103,8 +104,9 @@ class Sources:
 
         keys = "', '".join(self._names.keys())
 
-        raise KeyError(f"No source matches '{value}'. Available sources " +
-                       f"are '{keys}'")
+        raise KeyError(
+            f"No source matches '{value}'. Available sources " + f"are '{keys}'"
+        )
 
     def getRegistry(self):
         """ Outputs the state registry of UID: Source name pairs
@@ -130,7 +132,7 @@ class Sources:
         for uid, source in self.state["registry"].items():
             imageDict[uid] = {}
             imageDict[uid]["name"] = source.getName()
-            imageDict[uid]["filename"] = "file.jpg"
+            imageDict[uid]["filename"] = "A_Specimen_by_William_Caslon.jpg"
 
         return imageDict
 
