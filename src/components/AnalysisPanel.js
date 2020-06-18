@@ -6,6 +6,32 @@ import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
 
 class AnalysisPanel extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.wrapperRef = React.createRef();
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleClickOutside);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.props.togglePanel();
+    }
+  }
+
   render() {
     const buttonPadding = "1vh 1vw 1vh 1vw";
 
@@ -17,93 +43,94 @@ class AnalysisPanel extends React.Component {
     let filterInvestorsText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
 
     return (
-      <div className={styles.wholePanel}>
-        <div className={styles.verticalSpaceTitle}></div>
-        <div className={styles.titleText}>Analysis</div>
-        <div className={styles.verticalSpace}></div>
-        <TextButton
-          fontSize="2.3vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
-            this.props.togglePanel();
-          }}
-        >
-          What is Brunel's Network?
-        </TextButton>
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.filterEngineeringNodes();
-            // this.props.togglePanel();
-          }}
-        >
-          {filterEngineersText}
-        </TextButton>
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.filterInvestorNodes();
-            // this.props.togglePanel();
-          }}
-        >
-          {filterInvestorsText}
-        </TextButton>
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.toggleindirectConnectionsVisible();
-            // this.props.togglePanel();
-          }}
-        >
-          {indirectConnectionsText + " indirect connections"}
-        </TextButton>
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.toggleUnconnectedNodesVisible();
-            // this.props.togglePanel();
-          }}
-        >
-          {unconnectedNodesText + " unconnected nodes"}
-        </TextButton>
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.togglePhysicsEnabled();
-            // this.props.togglePanel();
-          }}
-        >
-          {physicsText + "physics"}
-        </TextButton>
+      <div ref={this.setWrapperRef}>
+        <div className={styles.wholePanel}>
+          <div className={styles.verticalSpaceTitle}></div>
+          <div className={styles.titleText}>Analysis</div>
+          <div className={styles.verticalSpace}></div>
+          <TextButton
+            fontSize="2.3vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
+              this.props.togglePanel();
+            }}
+          >
+            What is Brunel's Network?
+          </TextButton>
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.filterEngineeringNodes();
+              // this.props.togglePanel();
+            }}
+          >
+            {filterEngineersText}
+          </TextButton>
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.filterInvestorNodes();
+              // this.props.togglePanel();
+            }}
+          >
+            {filterInvestorsText}
+          </TextButton>
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.toggleindirectConnectionsVisible();
+              // this.props.togglePanel();
+            }}
+          >
+            {indirectConnectionsText + " indirect connections"}
+          </TextButton>
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.toggleUnconnectedNodesVisible();
+              // this.props.togglePanel();
+            }}
+          >
+            {unconnectedNodesText + " unconnected nodes"}
+          </TextButton>
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.togglePhysicsEnabled();
+              // this.props.togglePanel();
+            }}
+          >
+            {physicsText + "physics"}
+          </TextButton>
 
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.resetFilters();
-            // this.props.togglePanel();
-          }}
-        >
-          Reset filters
-        </TextButton>
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.resetFilters();
+              // this.props.togglePanel();
+            }}
+          >
+            Reset filters
+          </TextButton>
 
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.toggleSearchOverlay();
-            this.props.togglePanel();
-          }}
-        >
-          Search
-        </TextButton>
-        {/* <TextButton
+          <TextButton
+            fontSize="2.4vh"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.toggleSearchOverlay();
+              this.props.togglePanel();
+            }}
+          >
+            Search
+          </TextButton>
+          {/* <TextButton
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleFilterPanel();
@@ -112,8 +139,8 @@ class AnalysisPanel extends React.Component {
         >
           Filters
         </TextButton> */}
-        {/* // Remove timeline for now */}
-        {/* <TextButton
+          {/* // Remove timeline for now */}
+          {/* <TextButton
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleTimeLinePanel();
@@ -122,18 +149,19 @@ class AnalysisPanel extends React.Component {
         >
           Timeline
         </TextButton> */}
-        <div className={styles.verticalSpace}></div>
-        <TextButton
-          fontSize="2.4vh"
-          textColor="#222"
-          hoverColor="white"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.togglePanel();
-          }}
-        >
-          Close
-        </TextButton>
+          <div className={styles.verticalSpace}></div>
+          <TextButton
+            fontSize="2.4vh"
+            textColor="#222"
+            hoverColor="white"
+            padding={buttonPadding}
+            onClick={() => {
+              this.props.togglePanel();
+            }}
+          >
+            Close
+          </TextButton>
+        </div>
       </div>
     );
   }
