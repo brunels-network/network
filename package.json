@@ -30,6 +30,7 @@
     "react-graph-vis": "^1.0.5",
     "react-iframe": "^1.8.0",
     "react-jss": "^10.0.0",
+    "react-linkify": "^1.0.0-alpha",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "react-search-field": "^1.0.0",

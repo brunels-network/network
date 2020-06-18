@@ -4,6 +4,7 @@ import React from "react";
 import imageFilenames from "../data/entityImageFilenames.json";
 
 import TextButton from "./TextButton";
+import Linkify from "react-linkify";
 
 import styles from "./BioOverlay.module.css";
 
@@ -50,7 +51,9 @@ class BioOverlay extends React.Component {
         </div>
         <div className={styles.nameHeader}>{person.getName()}</div>
         <div className={styles.positions}>{}</div>
-        <div className={styles.bio}>{bio}</div>
+        <div className={styles.bio}>
+          <Linkify>{bio}</Linkify>
+        </div>
         <div className={styles.sources}>
           <div className={styles.dynamicHeader}>
             Sources
