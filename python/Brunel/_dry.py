@@ -26,7 +26,7 @@ def _stringify(obj, drypath=[]):
             drypath.append(key)
             val = _stringify(obj[key], drypath)
             drypath.pop()
-            if val:
+            if val is not None:
                 value[key] = val
 
         if len(value) > 0:
@@ -40,7 +40,7 @@ def _stringify(obj, drypath=[]):
             drypath.append(i)
             v = _stringify(obj[i], drypath)
             drypath.pop()
-            if v:
+            if v is not None:
                 value.append(v)
 
         if len(value) > 0:

@@ -23,7 +23,7 @@ class Popover extends React.Component {
 
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
-    this.state = { isOverlayOpen: false };
+    this.state = { isOverlayOpen: false, isSourceOverlayOpen: false, isBioOverlayOpen: false };
   }
 
   componentDidMount() {
@@ -98,9 +98,9 @@ class Popover extends React.Component {
 
     let entity;
     if (nodeType === "person") {
-      entity = this.props.social.getPeople().get(node.id);
+      entity = this.props.social.getPeople(false).get(node.id);
     } else if (nodeType === "business") {
-      entity = this.props.social.getBusinesses().get(node.id);
+      entity = this.props.social.getBusinesses(false).get(node.id);
     } else {
       throw new TypeError("Incorrect type or no type on node");
     }
@@ -120,9 +120,13 @@ class Popover extends React.Component {
 
     // Get biography for node
     let bio = social.getBiographies().getByID(node.id);
-    bio = bio.replace(name + ".  ", "");
 
-    bio = this.truncate(bio, 40);
+    if (!bio) {
+      bio = "No biography found.";
+    } else {
+      bio = bio.replace(name + ".  ", "");
+      bio = this.truncate(bio, 40);
+    }
 
     // Get the location of the click within the viewport so we can open the popover
     // in the correct location
@@ -162,10 +166,12 @@ class Popover extends React.Component {
           </div>
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
+          <div className={styles.edgeCount}>Number of connections: {node["edge_count"][selectedShipID]}</div>
           <div className={styles.readMore}>{readMoreButton}</div>
           <div className={styles.sourceHeader}>Sources</div>
-          <div className={styles.sourceSection}>
+          <div data-testid="sourceButton" className={styles.sourceSection}>
             <TextButton
+              data-testid="sourceButton"
               textColor="black"
               hoverColor="#808080"
               fontSize="1.5vh"

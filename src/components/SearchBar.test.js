@@ -1,17 +1,17 @@
 import React from "react";
 import Dry from "json-dry";
 
-// Brunel model
+// Required to create the social object
 import Social from "../model/Social";
 
 // import react-testing methods
-import { render, cleanup, fireEvent, waitFor, getByText, screen, getByTestId } from "@testing-library/react";
+import { render, cleanup, fireEvent, screen } from "@testing-library/react";
 
 // add custom jest matchers from jest-dom
 import "@testing-library/jest-dom/extend-expect";
 // the component to test
 import SearchBar from "./SearchBar";
-import graphData from "../dataWeights.json";
+import graphData from "../socialNetwork.json";
 
 afterEach(cleanup);
 

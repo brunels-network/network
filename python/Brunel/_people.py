@@ -1,4 +1,3 @@
-
 from ._person import Person as _Person
 
 __all__ = ["People"]
@@ -6,12 +5,14 @@ __all__ = ["People"]
 
 def _generate_person_uid():
     import uuid as _uuid
+
     uid = _uuid.uuid4()
     return "P" + str(uid)[:7]
 
 
 class People:
     """This holds a registry of individual Persons"""
+
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
@@ -52,12 +53,13 @@ class People:
         if existing is None:
             try:
                 existing = self.getByFuzzyName(person)
-            except Exception as e:
+            except Exception:
                 existing = None
 
             if existing:
-                self.addLog(f"Have fuzzy matched {person.getName()} "
-                            f"to {existing.getName()}")
+                self.addLog(
+                    f"Have fuzzy matched {person.getName()} " f"to {existing.getName()}"
+                )
 
         if existing:
             del self._names[existing.getName()]
@@ -102,13 +104,12 @@ class People:
             raise KeyError(f"No Person with ID {id}")
 
     def getByFuzzyName(self, person):
-        # find all people with matching surname
-        surname = person.getSurname()
-
         for (pid, p) in self.state["registry"].items():
             if p.couldBe(person):
-                y = input(f"Is {person.getName()} the same person "
-                          f"as {p.getName()}? (y/n) ")
+                y = input(
+                    f"Is {person.getName()} the same person "
+                    f"as {p.getName()}? (y/n) "
+                )
 
                 if y and y.lower()[0] == "y":
                     return p
@@ -139,7 +140,7 @@ class People:
         for id, name in self.getAll().items():
             imageDict[id] = {}
             imageDict[id]["name"] = name
-            imageDict[id]["filename"] = "file.jpg"
+            imageDict[id]["filename"] = "The_Steamer_Great_Western_small.jpg"
 
         return imageDict
 
@@ -174,8 +175,9 @@ class People:
 
         keys = "', '".join(self._names.keys())
 
-        raise KeyError(f"No person matches '{value}'. Available people " +
-                       f"are '{keys}'")
+        raise KeyError(
+            f"No person matches '{value}'. Available people " + f"are '{keys}'"
+        )
 
     def load(self, data):
         if data:

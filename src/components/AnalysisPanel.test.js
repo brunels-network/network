@@ -8,19 +8,6 @@ import AnalysisPanel from "./AnalysisPanel";
 afterEach(cleanup);
 
 describe("AnalysisPanel", () => {
-  it("should render", () => {
-    const { container } = render(
-      <AnalysisPanel
-        toggleSearchOverlay={jest.fn()}
-        toggleFilterPanel={jest.fn()}
-        toggleTimeLinePanel={jest.fn()}
-        togglePanel={jest.fn()}
-        toggleOptionsOverlay={jest.fn()}
-      />
-    );
-    expect(container.firstChild).toBeTruthy();
-  });
-
   it("all buttons are clickable", () => {
     const setOverlayFn = jest.fn();
     const togglePanelFn = jest.fn();
@@ -32,6 +19,7 @@ describe("AnalysisPanel", () => {
     const filterEngineeringNodesFn = jest.fn();
     const filterInvestorNodesFn = jest.fn();
     const togglePhysicsFn = jest.fn();
+    const resetFiltersFn = jest.fn();
 
     render(
       <AnalysisPanel
@@ -44,24 +32,32 @@ describe("AnalysisPanel", () => {
         indirectConnectionsVisible={true}
         filterEngineeringNodes={filterEngineeringNodesFn}
         filterInvestorNodes={filterInvestorNodesFn}
-        hideUnconnectedNodes={true}
         physicsEnabled={true}
         togglePhysicsEnabled={togglePhysicsFn}
+        unconnectedNodesVisible={false}
+        engineersFiltered={false}
+        investorsFiltered={false}
+        resetFilters={resetFiltersFn}
       />
     );
 
     fireEvent.click(screen.queryByText("Search"));
     fireEvent.click(screen.queryByText("Close"));
-    fireEvent.click(screen.queryByText("About"));
+    fireEvent.click(screen.queryByText("What is Brunel's Network?"));
     fireEvent.click(screen.queryByText(/engineer/i));
     fireEvent.click(screen.queryByText(/investor/i));
     fireEvent.click(screen.queryByText(/physics/i));
+    fireEvent.click(screen.queryByText("Reset filters"));
+
+    expect(screen.queryByText("What is Brunel's Network?")).toBeTruthy();
+    expect(screen.queryByText("Search")).toBeTruthy();
 
     expect(setOverlayFn).toHaveBeenCalled();
     expect(togglePanelFn).toHaveBeenCalled();
     expect(filterEngineeringNodesFn).toHaveBeenCalled();
     expect(filterInvestorNodesFn).toHaveBeenCalled();
     expect(togglePhysicsFn).toHaveBeenCalled();
+    expect(resetFiltersFn).toHaveBeenCalled();
   });
 
   it("props change text button rendering all true", () => {
@@ -79,12 +75,18 @@ describe("AnalysisPanel", () => {
         hideUnconnectedNodes={true}
         physicsEnabled={true}
         togglePhysicsEnabled={jest.fn()}
+        unconnectedNodesVisible={true}
+        engineersFiltered={true}
+        investorsFiltered={true}
+        resetFilters={jest.fn()}
       />
     );
 
-    screen.queryByText("Hide indirect connections");
-    screen.queryByText("Show unconnected nodes");
-    screen.queryByText("Disable physics");
+    expect(screen.queryByText("Hide indirect connections")).toBeTruthy();
+    expect(screen.queryByText("Hide unconnected nodes")).toBeTruthy();
+    expect(screen.queryByText("Disable physics")).toBeTruthy();
+    expect(screen.queryByText("Remove engineer filter")).toBeTruthy();
+    expect(screen.queryByText("Remove investor filter")).toBeTruthy();
   });
 
   it("props change text button rendering all false", () => {
@@ -96,17 +98,23 @@ describe("AnalysisPanel", () => {
         toggleUnconnectedNodesVisible={jest.fn()}
         closeOverlay={jest.fn()}
         toggleindirectConnectionsVisible={jest.fn()}
-        indirectConnectionsVisible={true}
+        indirectConnectionsVisible={false}
         filterEngineeringNodes={jest.fn()}
         filterInvestorNodes={jest.fn()}
         hideUnconnectedNodes={true}
         physicsEnabled={true}
         togglePhysicsEnabled={jest.fn()}
+        unconnectedNodesVisible={false}
+        engineersFiltered={false}
+        investorsFiltered={false}
+        resetFilters={jest.fn()}
       />
     );
 
-    screen.queryByText("Show indirect connections");
-    screen.queryByText("Hide unconnected nodes");
-    screen.queryByText("Enable physics");
+    expect(screen.queryByText("Show indirect connections")).toBeTruthy();
+    expect(screen.queryByText("Show unconnected nodes")).toBeTruthy();
+    expect(screen.queryByText("Disable physics")).toBeTruthy();
+    expect(screen.queryByText("Filter by engineers")).toBeTruthy();
+    expect(screen.queryByText("Filter by investors")).toBeTruthy();
   });
 });

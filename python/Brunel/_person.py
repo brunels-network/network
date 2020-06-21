@@ -26,6 +26,23 @@ def _mergeNames(old, new):
         old["orig_name"] = f"{old['orig_name']} or {new['orig_name']}"
 
 
+def _mergeStateItems(old, new, key):
+    """ Merge two state items, adds items from new to old state
+
+        Args:
+            old (dict): Old object's state
+            new (dict): New object's state
+            key (str): Key to acccess dictionary values
+        Returns:
+            None
+    """
+    for id, data in new[key].items():
+        if key not in old:
+            old[key] = {}
+
+        old[key][id] = data
+
+
 def _mergeProjects(old, new, key):
     old = old[key]
     new = new[key]
@@ -58,7 +75,8 @@ class Person:
             "gender": None,
             "notes": [],
             "orig_name": None,
-            "weight": {}
+            "weight": {},
+            "edge_count": {}
         }
 
         self.setState(props)
@@ -82,11 +100,9 @@ class Person:
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
 
-        for project, dates in other.state["projects"].items():
-            state["projects"][project] = dates
-
-        for id, weight in other.state["weight"].items():
-            state["weight"][id] = weight
+        _mergeStateItems(state, other.state, "projects")
+        _mergeStateItems(state, other.state, "weight")
+        _mergeStateItems(state, other.state, "edge_count")
 
         p = Person()
         p.state = state
@@ -184,6 +200,14 @@ class Person:
 
         return result
 
+    def getEdgeCount(self):
+        """ Returns the number of edges associated with this person
+
+            Returns:
+                int: Number of edges
+        """
+        return self.state["edge_count"]
+
     def getAffiliations(self):
         result = {}
 
@@ -242,6 +266,7 @@ class Person:
         self.state["orig_name"] = _setState(state, "orig_name")
         self.state["notes"] = _setState(state, "notes", [])
         self.state["weight"] = _setState(state, "weight", {})
+        self.state["edge_count"] = _setState(state, "edge_count", {})
 
         if self.state["orig_name"] == "None" or self.state["orig_name"] is None:
             raise ValueError(f"No name for {self}?")

@@ -213,7 +213,7 @@ class People {
     return nodes;
   }
 
-  registry() {
+  getRegistry() {
     // Returns the registry of people
     // key: value - uid: person
     return this.state.registry;

@@ -28,7 +28,10 @@
 }
 
 .node.highlight {
-  fill: #c7e8f3;
+  /* fill: #c7e8f3; */
+  fill: #3a6ea5;
+  stroke: white;
+  stroke-width: 2px;
 }
 
 .link {
@@ -98,6 +101,7 @@
   /* fill: #738566; */
   /* fill: #07899d; */
   fill: #ffd28b;
+
   font-size: medium;
 }
 

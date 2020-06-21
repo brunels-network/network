@@ -615,8 +615,15 @@ class Social {
     return result;
   }
 
-  resetFilters() {
+  resetAllFilters() {
     this.state.filter = {};
+    this.clearCache();
+  }
+
+  resetFiltersNotShip() {
+    const projectFilter = this.state.filter["project"];
+    this.state.filter = {};
+    this.state.filter["project"] = projectFilter;
     this.clearCache();
   }
 
@@ -653,6 +660,56 @@ class Social {
         }
       } else {
         this.state.filter[type][item] = 1;
+      }
+    }
+
+    this.clearCache();
+  }
+
+  setFilters(...args) {
+    for (let items of args) {
+      if (!Array.isArray(items)) {
+        items = [items];
+      }
+
+      for (let item of items) {
+        if (item.getID) {
+          item = item.getID();
+        }
+
+        let type = this._getType(item);
+
+        if (!(type in this.state.filter)) {
+          this.state.filter[type] = {};
+        }
+
+        this.state.filter[type][item] = 1;
+      }
+    }
+
+    this.clearCache();
+  }
+
+  clearFilters(...args) {
+    for (let items of args) {
+      if (!Array.isArray(items)) {
+        items = [items];
+      }
+
+      for (let item of items) {
+        if (item.getID) {
+          item = item.getID();
+        }
+
+        let type = this._getType(item);
+
+        if (item in this.state.filter[type]) {
+          delete this.state.filter[type][item];
+
+          if (Object.keys(this.state.filter[type]).length === 0) {
+            delete this.state.filter[type];
+          }
+        }
       }
     }
 

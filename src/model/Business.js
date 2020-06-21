@@ -72,10 +72,12 @@ class Business {
       id: null,
       projects: {},
       sources: {},
+      positions: {},
       scores: {},
       affiliations: {},
       notes: [],
-      weight: 1,
+      weight: {},
+      edge_count: {},
     };
 
     this.setState(props);
@@ -108,6 +110,14 @@ class Business {
       for (let index in this.state.affiliations[key]) {
         if (this.state.affiliations[key][index] in group) {
           seen[this.state.affiliations[key][index]] = 1;
+        }
+      }
+    });
+
+    Object.keys(this.state.positions).forEach((key) => {
+      for (let index in this.state.positions[key]) {
+        if (this.state.positions[key][index] in group) {
+          seen[this.state.positions[key][index]] = 1;
         }
       }
     });
@@ -169,11 +179,13 @@ class Business {
     }
 
     let affiliations = _filterProject(this.state.affiliations, project);
+    let positions = _filterProject(this.state.positions, project);
 
-    if (affiliations !== this.state.affiliations) {
+    if (affiliations !== this.state.affiliations || positions !== this.state.positions) {
       let business = new Business();
       business.state = { ...this.state };
       business.state.affiliations = affiliations;
+      business.state.positions = positions;
       business._getHook = this._getHook;
       return business;
     } else {
@@ -189,11 +201,13 @@ class Business {
     }
 
     let affiliations = _filterWindow(this.state.affiliations, window);
+    let positions = _filterProject(this.state.positions, window);
 
-    if (affiliations !== this.state.affiliations) {
+    if (affiliations !== this.state.affiliations || positions !== this.state.positions) {
       let business = new Business();
       business.state = { ...this.state };
       business.state.affiliations = affiliations;
+      business.state.positions = positions;
       business._getHook = this._getHook;
       return business;
     } else {
@@ -207,10 +221,12 @@ class Business {
       this.state.id = setState(state.id);
       this.state.projects = setState(state.projects, {});
       this.state.affiliations = setState(state.affiliations, {});
+      this.state.positions = setState(state.positions, {});
       this.state.scores = setState(state.scores, {});
       this.state.sources = setState(state.sources, {});
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
+      this.state.edge_count = setState(state.edge_count);
 
       if (!this.state.name) {
         throw new ValueError("You cannot have an Business without a name");
@@ -242,12 +258,28 @@ class Business {
     return this.state.affiliations;
   }
 
+  getPosition(projectID) {
+    // Return the position for the associated projectID
+    // Returns an array of position IDs
+    return this.state.positions[projectID];
+  }
+
+  getPositions() {
+    // Return the position for the associated projectID
+    // Returns an array of position IDs
+    return this.state.positions;
+  }
+
   getSources() {
     return this.state.sources;
   }
 
   getScores() {
     return this.state.scores;
+  }
+
+  getEdgeCount() {
+    return this.state.edge_count;
   }
 
   getNode(is_anchor = false) {
@@ -258,6 +290,12 @@ class Business {
     node["size"] = 0.5 * weight;
     node["weight"] = weight;
     node["type"] = "business";
+
+    node["edge_count"] = this.getEdgeCount();
+
+    // Position will be used to set the colour used
+    // for the node representing this person
+    node["positions"] = this.getPositions();
 
     let keys = Object.keys(this.state.projects);
 

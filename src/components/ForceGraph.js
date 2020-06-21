@@ -106,8 +106,6 @@ class ForceGraph extends React.Component {
       this.graph.fastPhysics();
     }
 
-    console.log(this.props.indirectConnectionsVisible);
-
     return (
       <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>
         <div id={s} className={s}>

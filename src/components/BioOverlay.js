@@ -4,6 +4,7 @@ import React from "react";
 import imageFilenames from "../data/entityImageFilenames.json";
 
 import TextButton from "./TextButton";
+import Linkify from "react-linkify";
 
 import styles from "./BioOverlay.module.css";
 
@@ -39,10 +40,8 @@ class BioOverlay extends React.Component {
       </TextButton>
     );
 
-    // const filename = "The_Steamer_Great_Western_of_Bristol_RMG_A7626.jpg";
-
     return (
-      <div className={styles.container}>
+      <div data-testid="bioOverlay" className={styles.container}>
         <div className={styles.closeButton}>
           <button onClick={this.props.toggleOverlay} style={{ background: "none", border: "none", fontSize: "2vh" }}>
             x
@@ -50,7 +49,9 @@ class BioOverlay extends React.Component {
         </div>
         <div className={styles.nameHeader}>{person.getName()}</div>
         <div className={styles.positions}>{}</div>
-        <div className={styles.bio}>{bio}</div>
+        <div className={styles.bio}>
+          <Linkify>{bio}</Linkify>
+        </div>
         <div className={styles.sources}>
           <div className={styles.dynamicHeader}>
             Sources
@@ -63,7 +64,7 @@ class BioOverlay extends React.Component {
         <div className={styles.divider} />
         <div className={styles.imageSection}>
           <div>
-            <img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />
+            <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="Image of ship" />
           </div>
           <div className={styles.imageDescription}>Image description</div>
         </div>

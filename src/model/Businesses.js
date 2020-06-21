@@ -219,6 +219,12 @@ class Businesses {
     return business;
   }
 
+  getRegistry() {
+    // Returns the registry of people
+    // key: value - uid: person
+    return this.state.registry;
+  }
+
   load(data) {
     if (data) {
       if (data.array) {
