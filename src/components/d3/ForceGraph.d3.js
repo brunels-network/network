@@ -126,10 +126,10 @@ function _resolve(item) {
 class ForceGraphD3 extends React.Component {
   constructor(props) {
     super(props);
-    this._updateSimulation = this._updateSimulation.bind(this);
-    this._updateLink = this._updateLink.bind(this);
-    this._updateNodeText = this._updateNodeText.bind(this);
-    this._updateNode = this._updateNode.bind(this);
+    this.updateSimulation = this.updateSimulation.bind(this);
+    this.updateLink = this.updateLink.bind(this);
+    this.updateNodeText = this.updateNodeText.bind(this);
+    this.updateNode = this.updateNode.bind(this);
     this.draw = this.draw.bind(this);
     this.drawFromScratch = this.drawFromScratch.bind(this);
     this.setPositionColors = this.setPositionColors.bind(this);
@@ -159,6 +159,7 @@ class ForceGraphD3 extends React.Component {
       signalMouseOver: _null_function,
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
+      standardSimulation: true,
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
@@ -176,6 +177,8 @@ class ForceGraphD3 extends React.Component {
     this._tooltips = [];
     // this.updateGraph = this.updateGraph.bind(this);
     // this.update = this.update.bind(this);
+
+    this.state.standardSimulation = true;
 
     this.update(props);
   }
@@ -206,7 +209,7 @@ class ForceGraphD3 extends React.Component {
     return this.state.social.getConnections().gotConnections(id);
   }
 
-  updateGraph(social) {
+  updateGraph(social, reposition = false) {
     let w = this.state.width;
     let h = this.state.height;
 
@@ -255,13 +258,13 @@ class ForceGraphD3 extends React.Component {
       let old_nodes = [];
       let old = {};
 
-      if (this._graph) {
-        old_nodes = this._graph.nodes;
+      //   if (this._graph) {
+      //     old_nodes = this._graph.nodes;
 
-        for (let n in old_nodes) {
-          old[old_nodes[n].id] = n;
-        }
-      }
+      //     for (let n in old_nodes) {
+      //       old[old_nodes[n].id] = n;
+      //     }
+      //   }
 
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
@@ -280,8 +283,7 @@ class ForceGraphD3 extends React.Component {
           node.y = h * Math.random();
         }
 
-        // Brunel anchor point
-        if (node.fixed) {
+        if (node.fixed && this.props.standardSimulation) {
           if (i) {
             node.fx = node.x;
             node.fy = node.y;
@@ -317,13 +319,16 @@ class ForceGraphD3 extends React.Component {
       this.state.hideUnconnectedNodes = this.props.hideUnconnectedNodes;
     }
 
+    if (!this.state.standardSimulation) {
+      this.state.standardSimulation = this.props.standardSimulation;
+    }
+
     // if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
     //   this.state.lastShip = props.selectedShipID;
     //   this._graph_changed = true;
     // }
 
     if (props.indirectConnectionsVisible !== this.state.indirectConnectionsVisible) {
-      console.log("Updating indirect links ", props.indirectConnectionsVisible);
       this.state.indirectConnectionsVisible = props.indirectConnectionsVisible;
       this._graph_changed = true;
     }
@@ -409,6 +414,12 @@ class ForceGraphD3 extends React.Component {
     if (hasHighlighted) {
       this.state.highlighted = _resolve(props.highlighted);
       //   this.setState({ highlighted: _resolve(props.highlighted) });
+    }
+
+    if (props.standardSimulation !== this.state.standardSimulation) {
+      this.state.standardSimulation = props.standardSimulation;
+      //   this.toggleSimulation();
+      this._graph_changed = true;
     }
   }
 
@@ -541,10 +552,6 @@ class ForceGraphD3 extends React.Component {
     return d3
       .drag()
       .on("start", (d) => {
-        // simulation.alphaTarget(this._target_alpha).velocityDecay(this._target_decay).restart();
-        // simulation.restart();
-        // simulation.alpha(1).alphaTarget(0.5).alphaMin(0.2).alphaDecay(0.001).restart();
-
         d.fx = d.x;
         d.fy = d.y;
       })
@@ -634,7 +641,7 @@ class ForceGraphD3 extends React.Component {
     return weight;
   }
 
-  _updateNode(data) {
+  updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 
     node = node
@@ -663,7 +670,7 @@ class ForceGraphD3 extends React.Component {
     return node;
   }
 
-  _updateNodeText(data) {
+  updateNodeText(data) {
     let text = this._mainGroup.select(".node_text-group").selectAll(".node_text");
 
     // Big weights make the size of circles too large
@@ -697,7 +704,7 @@ class ForceGraphD3 extends React.Component {
     return text;
   }
 
-  _updateLink(data) {
+  updateLink(data) {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
     // Add prop here
@@ -740,7 +747,7 @@ class ForceGraphD3 extends React.Component {
     return link;
   }
 
-  _updateSimulation() {
+  updateSimulation() {
     if (this._simulation) {
       this._simulation.stop();
       this._simulation = null;
@@ -817,6 +824,117 @@ class ForceGraphD3 extends React.Component {
     this._simulation = simulation;
   }
 
+  toggleSimulation() {
+    if (this._graph) {
+      console.log("In toggle simulation : ", this.props.standardSimulation);
+      if (this.props.standardSimulation) {
+        this.updateGraph(this.state.social, true);
+        this.updateSimulation();
+        // this.drawFromScratch()
+      } else {
+        this.centreNodes();
+      }
+    }
+  }
+
+  centreNodes() {
+    if (this._simulation) {
+      this._simulation.stop();
+      this._simulation = null;
+      this._is_running = false;
+    }
+    let w = this.state.width;
+    let h = this.state.height;
+
+    // // Take a backup of the nodes
+    // this._nodesBackup = lodash.cloneDeep(this._graph.nodes)
+
+    // let nodes = this._graph.nodes;
+
+    // for (let n in nodes) {
+    //     n
+    // }
+
+    let simulation = d3
+      .forceSimulation(this._graph.nodes)
+      .alpha(0.4)
+      .alphaTarget(0)
+      .alphaDecay(0.05)
+      .force(
+        "link",
+        d3
+          .forceLink()
+          .links(this._graph.edges)
+          //   .strength((d) => {
+          //     return 0.1 * (1 + d.value);
+          //   })
+          .distance((d) => {
+            return 75 * (1 + d.value);
+          })
+          .iterations(5)
+      )
+      .force(
+        "collision",
+        d3
+          .forceCollide()
+          .radius((d) => {
+            return 3 * (1 + d.size);
+          })
+          .strength(1.0)
+          .iterations(5)
+      )
+      .force("charge", d3.forceManyBody().strength(-10).distanceMin(10).distanceMax(25))
+      .force(
+        "X",
+        d3
+          .forceX()
+          .strength(0.5)
+          .x(w / 2)
+      )
+      .force(
+        "Y",
+        d3
+          .forceY()
+          .strength(0.5)
+          .y(h / 2)
+      )
+      // Remove this for now
+      //   .force("link", d3.forceLink(this._graph.edges))
+      .on("tick", () => {
+        this._link.attr("d", (d) => {
+          const curveFactor = 3;
+          const dx = d.target.x - d.source.x;
+          const dy = d.target.y - d.source.x;
+          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
+
+          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+        });
+        this._node
+          .attr("cx", (d) => {
+            return (d.x = constrain(d.x, w, d.r));
+          })
+          .attr("cy", (d) => {
+            return (d.y = constrain(d.y, h, d.r));
+          });
+
+        this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+      })
+      .on("end", () => {
+        this.restartSimulation();
+      });
+
+    this._is_running = true;
+
+    // Save the simulation so that we can update it later...
+    this._simulation = simulation;
+
+    this.updateLink(this._graph.edges);
+    this.updateNode(this._graph.nodes);
+    this.updateNodeText(this._graph.nodes);
+
+    this.updateGraph(this.state.social);
+  }
+
   slowPhysics() {
     if (this._simulation && this.state.physicsEnabled === true) {
       this.state.physicsEnabled = false;
@@ -850,7 +968,7 @@ class ForceGraphD3 extends React.Component {
   updateLinks(indirectConnectionsVisible) {
     if (this._graph.edges) {
       this.setState({ indirectConnectionsVisible: indirectConnectionsVisible });
-      this._updateLink(this._graph.edges);
+      this.updateLink(this._graph.edges);
     }
   }
 
@@ -902,15 +1020,15 @@ class ForceGraphD3 extends React.Component {
     let mainGroup = svg;
     this._mainGroup = mainGroup;
 
-    this._updateSimulation();
+    this.updateSimulation();
 
     mainGroup.append("g").attr("class", "link-group");
     mainGroup.append("g").attr("class", "node-group");
     mainGroup.append("g").attr("class", "node_text-group");
 
-    this._link = this._updateLink(graph.edges);
-    this._node = this._updateNode(graph.nodes);
-    this._label = this._updateNodeText(graph.nodes);
+    this._link = this.updateLink(graph.edges);
+    this._node = this.updateNode(graph.nodes);
+    this._label = this.updateNodeText(graph.nodes);
 
     this._is_drawn = true;
   }
@@ -930,19 +1048,20 @@ class ForceGraphD3 extends React.Component {
       container.selectAll("svg").attr("width", this.state.width).attr("height", this.state.height);
       this._size_changed = false;
       update_simulation = true;
-      this._label = this._updateNodeText(this._graph.nodes);
+      this._label = this.updateNodeText(this._graph.nodes);
     }
 
     if (this._graph_changed) {
-      this._node = this._updateNode(this._graph.nodes);
-      this._label = this._updateNodeText(this._graph.nodes);
-      this._link = this._updateLink(this._graph.edges);
+      this._node = this.updateNode(this._graph.nodes);
+      this._label = this.updateNodeText(this._graph.nodes);
+      this._link = this.updateLink(this._graph.edges);
       this._graph_changed = false;
       update_simulation = true;
     }
 
     if (update_simulation) {
-      this._updateSimulation();
+      //   this.updateSimulation();
+      this.toggleSimulation();
     }
   }
 }

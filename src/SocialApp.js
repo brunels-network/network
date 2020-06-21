@@ -63,6 +63,7 @@ class SocialApp extends React.Component {
       unconnectedNodesVisible: false,
       investorsFiltered: false,
       engineersFiltered: false,
+      standardSimulation: true,
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -334,8 +335,11 @@ class SocialApp extends React.Component {
     this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
-  // If unconnected nodes are enabled add them to the filter, if they're not remove them
+  toggleSimulationType() {
+    this.setState({ standardSimulation: !this.state.standardSimulation });
+  }
 
+  // If unconnected nodes are enabled add them to the filter, if they're not remove them
   filterEngineeringNodes() {
     if (this.state.investorsFiltered) {
       this.filterInvestorNodes();
@@ -353,6 +357,7 @@ class SocialApp extends React.Component {
     }
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
+    this.toggleSimulationType();
   }
 
   filterInvestorNodes() {
@@ -372,6 +377,7 @@ class SocialApp extends React.Component {
     }
 
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
+    this.toggleSimulationType();
   }
 
   toggleInfoPanel() {
@@ -567,6 +573,7 @@ class SocialApp extends React.Component {
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
+              standardSimulation={this.state.standardSimulation}
             />
           </div>
         </div>
