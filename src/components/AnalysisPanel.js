@@ -55,7 +55,7 @@ class AnalysisPanel extends React.Component {
             this.props.togglePanel();
           }}
         >
-          What is Brunel's Network?
+          What is Brunel&apos;s Network?
         </TextButton>
         <TextButton
           fontSize="2.4vh"

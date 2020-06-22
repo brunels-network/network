@@ -303,6 +303,7 @@ class SearchBar extends React.Component {
 // TODO - finish this
 SearchBar.propTypes = {
   emitSelected: PropTypes.func.isRequired,
+  emitResults: PropTypes.func.isRequired,
   social: PropTypes.object.isRequired,
   placeholder: PropTypes.string,
   searchText: PropTypes.string,

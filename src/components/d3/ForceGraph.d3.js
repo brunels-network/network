@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import * as d3 from "d3";
 
 import React from "react";
@@ -1072,5 +1073,13 @@ class ForceGraphD3 extends React.Component {
     }
   }
 }
+
+ForceGraphD3.propTypes = {
+  emitPopProps: PropTypes.func.isRequired,
+  hideUnconnectedNodes: PropTypes.bool.isRequired,
+  physicsEnabled: PropTypes.bool.isRequired,
+  standardSimulation: PropTypes.bool.isRequired,
+  selectedShipID: PropTypes.string,
+};
 
 export default ForceGraphD3;
