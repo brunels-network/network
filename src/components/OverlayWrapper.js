@@ -6,10 +6,6 @@ import SourceOverlay from "./SourceOverlay";
 import Overlay from "./Overlay";
 
 class OverlayWrapper extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const sourceButtonText = this.props.sourceButtonText;
     const socialSources = this.props.social.getSources();

@@ -6,13 +6,7 @@ import styles from "./SourceOverlay.module.css";
 import "@brainhubeu/react-carousel/lib/style.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleLeft,
-  faAngleDoubleLeft,
-  faAngleDoubleRight,
-  faAngleRight,
-  faWindowClose,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleDoubleLeft, faAngleDoubleRight, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 import TextButton from "./TextButton";
 

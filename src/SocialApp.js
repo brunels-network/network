@@ -443,12 +443,7 @@ class SocialApp extends React.Component {
   render() {
     const selected = this.state.selected_item;
     const highlighted = this.state.highlighted_item;
-    const overlayItem = this.state.overlayItem;
     const social = this.state.social;
-
-    // Check if we should be toggling the unconnected nodes
-    // if(!this.state.unconnectedNodesVisible)
-
     let searchOverlay = null;
 
     if (this.state.isSearchOverlayOpen) {

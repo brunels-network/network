@@ -5,7 +5,6 @@ import TextButton from "./TextButton";
 
 import styles from "./Popover.module.css";
 
-import tempImage from "../images/Great_Western_maiden_voyage.jpg";
 import OverlayWrapper from "./OverlayWrapper";
 
 // The detection of outside clicks in this class taken from
