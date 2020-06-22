@@ -365,7 +365,6 @@ class SocialApp extends React.Component {
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
     this.toggleSimulationType();
-    console.log("Filtering engineering nodes", "Standard simulation : ", this.state.standardSimulation);
   }
 
   filterInvestorNodes() {
@@ -386,7 +385,6 @@ class SocialApp extends React.Component {
 
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
     this.toggleSimulationType();
-    console.log("Filtering investor nodes", "Standard simulation : ", this.state.standardSimulation);
   }
 
   toggleInfoPanel() {
