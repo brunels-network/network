@@ -185,17 +185,16 @@ class ForceGraphD3 extends React.Component {
   }
 
   getSelectedShipID() {
-    // As this isn't a standard React component relying on props here doesn't work
-    // Will reimplement this when I move it into a proper component form
-    // return this.props.selectedShipID;
+    return this.props.selectedShipID;
 
-    const filter = this.state.social.getFilter();
+    // This code is now uneeded as props are updated properly
+    // const filter = this.state.social.getFilter();
 
-    if (filter["project"]) {
-      return Object.keys(filter["project"])[0];
-    } else {
-      console.error("Error finding project code from filter");
-    }
+    // if (filter["project"]) {
+    //   return Object.keys(filter["project"])[0];
+    // } else {
+    //   console.error("Error finding project code from filter");
+    // }
   }
 
   getNodeBio(id) {
@@ -210,7 +209,7 @@ class ForceGraphD3 extends React.Component {
     return this.state.social.getConnections().gotConnections(id);
   }
 
-  updateGraph(social, reposition = false) {
+  updateGraph(social) {
     let w = this.state.width;
     let h = this.state.height;
 
@@ -266,8 +265,6 @@ class ForceGraphD3 extends React.Component {
       //       old[old_nodes[n].id] = n;
       //     }
       //   }
-
-      console.log("In updateGraph : ", this.props.standardSimulation);
 
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
@@ -325,11 +322,6 @@ class ForceGraphD3 extends React.Component {
     if (!this.state.standardSimulation) {
       this.state.standardSimulation = this.props.standardSimulation;
     }
-
-    // if (props.selectedShipID && props.selectedShipID !== this.state.lastShip) {
-    //   this.state.lastShip = props.selectedShipID;
-    //   this._graph_changed = true;
-    // }
 
     if (props.indirectConnectionsVisible !== this.state.indirectConnectionsVisible) {
       this.state.indirectConnectionsVisible = props.indirectConnectionsVisible;
@@ -424,6 +416,9 @@ class ForceGraphD3 extends React.Component {
       //   this.toggleSimulation();
       this._graph_changed = true;
     }
+
+    // For now get the ID of the SS Great Eastern so we don't assign force to the nodes
+    this.state.greatEasternID = this.state.social.getProjects().getByName("SS Great Eastern").getID();
   }
 
   className() {
@@ -522,6 +517,10 @@ class ForceGraphD3 extends React.Component {
         console.error("Undefined positions for entity ", entity);
         return 0;
       }
+    }
+
+    if (this.props.selectedShipID === this.state.greatEasternID) {
+      return 0;
     }
 
     if (!this.gotConnections(entity.id)) {
