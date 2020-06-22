@@ -606,10 +606,6 @@ def importNotes(node, importers=None, isEdge=False):
 def importType(edge, importers=None):
     """ Check the type of connection this edge represents
 
-        NOTE: As the Great Eastern data is still a WIP this function 
-        returns an indirect link if no link is given. This should be changed
-        once the data is in a more finalised state.
-
         Args:
             edge: Connection between nodes
             importers (dict, default=None): Importer functions
@@ -627,7 +623,7 @@ def importType(edge, importers=None):
         return "direct"
     else:
         print(f"Invalid link type? {typ}")
-        return "indirect"
+        return None
 
 
 def importSource(data, importers=None):

@@ -4,7 +4,6 @@
       "auditor",
       "commercialrepresentative",
       "director",
-      "progenitor",
       "shareholder",
       "trustee",
       "solicitors",
@@ -17,6 +16,7 @@
   },
   "engineering": {
     "members": [
+      "progenitor",
       "buildertier1",
       "buildertier2",
       "consultingengineer",

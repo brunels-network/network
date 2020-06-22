@@ -759,6 +759,9 @@ class ForceGraphD3 extends React.Component {
     let w = this.state.width;
     let h = this.state.height;
 
+    // We don't want a force applied to null edges
+    let edges = this._graph.edges.filter((v) => v["type"]);
+
     let simulation = d3
       .forceSimulation(this._graph.nodes)
       .alpha(0.4)
@@ -770,12 +773,14 @@ class ForceGraphD3 extends React.Component {
         "link",
         d3
           .forceLink()
-          .links(this._graph.edges)
-          //   .strength((d) => {
-          //     return 0.1 * (1 + d.value);
-          //   })
+          .links(edges)
           .distance((d) => {
-            return 75 * (1 + d.value);
+            console.log(d);
+            if (d["type"] == "direct") {
+              return 75 * (1 + d.value);
+            } else {
+              return 125 * (1 + d.value);
+            }
           })
           .iterations(5)
       )

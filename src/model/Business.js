@@ -324,7 +324,6 @@ class Business {
 }
 
 Business.unDry = function (value) {
-  console.log("Creating business with value : ", value);
   return new Business(value);
 };
 

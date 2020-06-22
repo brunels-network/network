@@ -24,6 +24,11 @@ class BioOverlay extends React.Component {
 
     // Get biography and strip name
     let bio = biographies.getByID(id);
+
+    if (!bio) {
+      bio = "No biography found.";
+    }
+
     bio = bio.replace(name + ". ", "");
 
     const filename = imageFilenames[id]["filename"];
