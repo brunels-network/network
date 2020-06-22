@@ -123,6 +123,7 @@ function _resolve(item) {
   }
 }
 
+/* eslint-disable react/no-direct-mutation-state */
 class ForceGraphD3 extends React.Component {
   constructor(props) {
     super(props);
@@ -265,6 +266,8 @@ class ForceGraphD3 extends React.Component {
       //       old[old_nodes[n].id] = n;
       //     }
       //   }
+
+      console.log("In updateGraph : ", this.props.standardSimulation);
 
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
@@ -826,7 +829,7 @@ class ForceGraphD3 extends React.Component {
 
   toggleSimulation() {
     if (this._graph) {
-      console.log("In toggle simulation : ", this.props.standardSimulation);
+      //   console.log("In toggle simulation : ", this.props.standardSimulation);
       if (this.props.standardSimulation) {
         this.updateGraph(this.state.social, true);
         this.updateSimulation();

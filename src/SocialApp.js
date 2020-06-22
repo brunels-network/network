@@ -326,8 +326,11 @@ class SocialApp extends React.Component {
       }
     }
 
+    // This function only called from within ctor so need to set directly here
+    /* eslint-disable react/no-direct-mutation-state */
     this.state.connectedNodes = connectedNodes;
     this.state.unconnectedNodes = unconnectedNodes;
+    /* eslint-enable react/no-direct-mutation-state */
   }
 
   toggleUnconnectedNodesVisible() {
@@ -336,7 +339,11 @@ class SocialApp extends React.Component {
   }
 
   toggleSimulationType() {
-    this.setState({ standardSimulation: !this.state.standardSimulation });
+    // Using setState here leads to standardSimulation not being set in time for the rerender of the simulation
+    // this.setState({ standardSimulation: !this.state.standardSimulation });
+    /* eslint-disable react/no-direct-mutation-state */
+    this.state.standardSimulation = !this.state.standardSimulation;
+    /* eslint-enable react/no-direct-mutation-state */
   }
 
   // If unconnected nodes are enabled add them to the filter, if they're not remove them
@@ -358,6 +365,7 @@ class SocialApp extends React.Component {
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
     this.toggleSimulationType();
+    console.log("Filtering engineering nodes", "Standard simulation : ", this.state.standardSimulation);
   }
 
   filterInvestorNodes() {
@@ -378,6 +386,7 @@ class SocialApp extends React.Component {
 
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
     this.toggleSimulationType();
+    console.log("Filtering investor nodes", "Standard simulation : ", this.state.standardSimulation);
   }
 
   toggleInfoPanel() {
