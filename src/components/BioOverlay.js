@@ -16,7 +16,6 @@ class BioOverlay extends React.Component {
   }
 
   render() {
-    // const sources = this.props.sources;
     const person = this.props.person;
     const id = person.getID();
     const name = person.getName();
@@ -45,8 +44,6 @@ class BioOverlay extends React.Component {
       </TextButton>
     );
 
-    // const filename = "The_Steamer_Great_Western_of_Bristol_RMG_A7626.jpg";
-
     return (
       <div className={styles.container}>
         <div className={styles.closeButton}>
@@ -60,7 +57,7 @@ class BioOverlay extends React.Component {
           <Linkify>{bio}</Linkify>
         </div>
         <div className={styles.sources}>
-          <div className={styles.dynamicHeader}>
+          <div className={styles.sourcesHeader}>
             Sources
             <br />
             <br />

@@ -776,7 +776,7 @@ class ForceGraphD3 extends React.Component {
           .links(edges)
           .distance((d) => {
             console.log(d);
-            if (d["type"] == "direct") {
+            if (d["type"] === "direct") {
               return 75 * (1 + d.value);
             } else {
               return 125 * (1 + d.value);

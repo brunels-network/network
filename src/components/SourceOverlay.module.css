@@ -74,8 +74,25 @@
 }
 
 .imageSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
   grid-column-start: 3;
   grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: 6;
+  font-style: italic;
+}
+
+.imageSection img {
+  max-height: 90%;
+  max-width: auto;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  /* min-width: 100%;
+    min-height: 100%; */
 }
