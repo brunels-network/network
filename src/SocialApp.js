@@ -309,6 +309,7 @@ class SocialApp extends React.Component {
     const people = this.state.social.getPeople(false).getNodes("noanchor");
 
     for (const p of people) {
+      //   if (this.gotConnections(p.id)) {
       if (this.gotConnections(p.id)) {
         connectedNodes.push(p.id);
       } else {

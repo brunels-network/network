@@ -762,28 +762,18 @@ class ForceGraphD3 extends React.Component {
     // We don't want a force applied to null edges
     let edges = this._graph.edges.filter((v) => v["type"]);
 
-    // let labelAnchors = this._graph.nodes.map((n) => {
-    //   return { node: n };
-    // });
-
-    // let labelAnchorLinks = this._graph.nodes.map((n) => { return });
-
-    // let forceLabels = d3.forceSimulation().;
-
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .alpha(0.4)
+      .alpha(0.6)
       .alphaTarget(0)
-      .alphaDecay(0.05)
-      //   .velocityDecay(0.8)
-      .force("charge", d3.forceManyBody().strength(-10).distanceMin(4))
+      .alphaDecay(0.01)
+      .force("charge", d3.forceManyBody().strength(-40).distanceMin(4))
       .force(
         "link",
         d3
           .forceLink()
           .links(edges)
           .distance((d) => {
-            console.log(d);
             if (d["type"] === "direct") {
               return 75 * (1 + d.value);
             } else {
