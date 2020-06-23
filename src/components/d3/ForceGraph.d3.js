@@ -817,7 +817,7 @@ class ForceGraphD3 extends React.Component {
             return (d.y = constrain(d.y, h, d.r));
           });
 
-        this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+        this._label.attr("x", (d) => this.getLabelXOffset(d)).attr("y", (d) => d.y);
       })
       .on("end", () => {
         this.restartSimulation();
@@ -831,11 +831,9 @@ class ForceGraphD3 extends React.Component {
 
   toggleSimulation() {
     if (this._graph) {
-      //   console.log("In toggle simulation : ", this.props.standardSimulation);
       if (this.props.standardSimulation) {
         this.updateGraph(this.state.social, true);
         this.updateSimulation();
-        // this.drawFromScratch()
       } else {
         this.centreNodes();
       }
@@ -851,15 +849,6 @@ class ForceGraphD3 extends React.Component {
     let w = this.state.width;
     let h = this.state.height;
 
-    // // Take a backup of the nodes
-    // this._nodesBackup = lodash.cloneDeep(this._graph.nodes)
-
-    // let nodes = this._graph.nodes;
-
-    // for (let n in nodes) {
-    //     n
-    // }
-
     let simulation = d3
       .forceSimulation(this._graph.nodes)
       .alpha(0.4)
@@ -870,9 +859,6 @@ class ForceGraphD3 extends React.Component {
         d3
           .forceLink()
           .links(this._graph.edges)
-          //   .strength((d) => {
-          //     return 0.1 * (1 + d.value);
-          //   })
           .distance((d) => {
             return 75 * (1 + d.value);
           })
@@ -903,8 +889,6 @@ class ForceGraphD3 extends React.Component {
           .strength(0.5)
           .y(h / 2)
       )
-      // Remove this for now
-      //   .force("link", d3.forceLink(this._graph.edges))
       .on("tick", () => {
         this._link.attr("d", (d) => {
           const curveFactor = 3;
@@ -922,7 +906,7 @@ class ForceGraphD3 extends React.Component {
             return (d.y = constrain(d.y, h, d.r));
           });
 
-        this._label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+        this._label.attr("x", (d) => this.getLabelXOffset(d)).attr("y", (d) => d.y);
       })
       .on("end", () => {
         this.restartSimulation();
@@ -933,11 +917,24 @@ class ForceGraphD3 extends React.Component {
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
 
-    // this.updateLink(this._graph.edges);
-    // this.updateNode(this._graph.nodes);
-    // this.updateNodeText(this._graph.nodes);
-
     this.updateGraph(this.state.social);
+  }
+
+  getLabelXOffset(d) {
+    const swapSection = 20 * (window.innerWidth / 100);
+
+    let x;
+    if (d.x > window.innerWidth - swapSection) {
+      const radius = this.getWeight(d);
+      const maxOffset = 0.2 * window.innerWidth;
+      const offset = Math.min(radius * d["label"].length, maxOffset);
+
+      x = d.x - offset;
+    } else {
+      x = d.x;
+    }
+
+    return x;
   }
 
   slowPhysics() {
