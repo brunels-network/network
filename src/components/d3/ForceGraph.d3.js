@@ -762,13 +762,21 @@ class ForceGraphD3 extends React.Component {
     // We don't want a force applied to null edges
     let edges = this._graph.edges.filter((v) => v["type"]);
 
+    // let labelAnchors = this._graph.nodes.map((n) => {
+    //   return { node: n };
+    // });
+
+    // let labelAnchorLinks = this._graph.nodes.map((n) => { return });
+
+    // let forceLabels = d3.forceSimulation().;
+
     let simulation = d3
       .forceSimulation(this._graph.nodes)
       .alpha(0.4)
       .alphaTarget(0)
       .alphaDecay(0.05)
       //   .velocityDecay(0.8)
-      .force("charge", d3.forceManyBody().strength(-5).distanceMin(4).distanceMax(25))
+      .force("charge", d3.forceManyBody().strength(-10).distanceMin(4))
       .force(
         "link",
         d3
@@ -789,9 +797,9 @@ class ForceGraphD3 extends React.Component {
         d3
           .forceCollide()
           .radius((d) => {
-            return 3 * (1 + d.size);
+            return 3 * (1 + 10 * d.size);
           })
-          .strength(1.0)
+          .strength(10.0)
           .iterations(5)
       )
       // This forces the groupings given in position_groups.json left/right
@@ -935,9 +943,9 @@ class ForceGraphD3 extends React.Component {
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
 
-    this.updateLink(this._graph.edges);
-    this.updateNode(this._graph.nodes);
-    this.updateNodeText(this._graph.nodes);
+    // this.updateLink(this._graph.edges);
+    // this.updateNode(this._graph.nodes);
+    // this.updateNodeText(this._graph.nodes);
 
     this.updateGraph(this.state.social);
   }
