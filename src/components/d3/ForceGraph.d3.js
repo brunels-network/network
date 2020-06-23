@@ -138,13 +138,12 @@ class ForceGraphD3 extends React.Component {
     this.getPositionColor = this.getPositionColor.bind(this);
     this.update = this.update.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
-    // this.mouseoverNode = this.mouseoverNode.bind(this);
 
     this.drag = this.drag.bind(this);
     this.dragLink = this.dragLink.bind(this);
     this.getWeight = this.getWeight.bind(this);
 
-    // generate a UID for this graph so that we don't clash
+    // Generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
     let uid = uuidv4();
 
@@ -1068,7 +1067,6 @@ class ForceGraphD3 extends React.Component {
     }
 
     if (update_simulation) {
-      //   this.updateSimulation();
       this.toggleSimulation();
     }
   }
