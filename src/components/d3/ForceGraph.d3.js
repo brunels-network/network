@@ -471,10 +471,6 @@ class ForceGraphD3 extends React.Component {
     let colorTable = {};
     let groupTable = {};
 
-    // TODO - a lot of this could be made easier by just assigning fixed UIDs to
-    // positions, could make a small object that did that and a notebook to output
-    // a JSON that's read in here for groups etc?
-
     // Read the positions and colours from a JSON file that can be easily updated
     for (let [position, uid] of Object.entries(namedPositions)) {
       // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
@@ -536,7 +532,6 @@ class ForceGraphD3 extends React.Component {
     // The groupTable tells us which group this entity belongs to and so determines its force
     const positionGroup = this.state.groupTable[positionCode];
 
-    // TODO - clunky, fix
     if (leftForce.includes(positionGroup)) {
       return -0.17;
     } else if (rightForce.includes(positionGroup)) {
@@ -567,8 +562,6 @@ class ForceGraphD3 extends React.Component {
         d.fy = constrain(d3.event.y, h, d.r);
       })
       .on("end", (d) => {
-        // simulation.alphaTarget(0).restart();
-
         if (!d.fixed) {
           d.fx = null;
           d.fy = null;
