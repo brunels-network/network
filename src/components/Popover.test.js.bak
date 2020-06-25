@@ -1,0 +1,28 @@
+import React from "react";
+import Dry from "json-dry";
+import { render, cleanup, fireEvent, screen } from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
+
+import Popover from "./Popover";
+// This is required to create the social object
+import Social from "../model/Social";
+
+import graphData from "../socialNetwork.json";
+
+afterEach(cleanup);
+
+describe("Popover", () => {
+  const toggleOverlayFn = jest.fn();
+  const toggleSourceOverlayFn = jest.fn();
+  const testString = "This is a test";
+
+  let social = Dry.parse(graphData);
+  const name = "Christopher Claxton";
+  const person = social.getPeople().getByName(name);
+
+  it("Number of connections is shown", () => {
+    render(<Popover />);
+
+    expect(screen.queryByText(/Number of connections/)).toBeTruthy();
+  });
+});

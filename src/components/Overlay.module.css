@@ -8,7 +8,7 @@
   top: 0.5%;
 }
 
-.overlay {
+.overlayNoBackground {
   position: fixed;
   background: transparent;
 }

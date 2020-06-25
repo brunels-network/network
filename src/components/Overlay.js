@@ -11,11 +11,12 @@ function Overlay(props) {
     let style = styles.overlay;
 
     if (!props.useBackground) {
-      style = styles.overylayNoBackground;
+      style = styles.overlayNoBackground;
     }
 
     return (
       <div
+        data-testid="overlay"
         className={style}
         onClick={() => {
           props.toggleOverlay();
