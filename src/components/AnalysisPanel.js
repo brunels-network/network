@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React from "react";
-import AboutOverlay from "./AboutOverlay";
 
 import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
@@ -47,16 +46,6 @@ class AnalysisPanel extends React.Component {
         <div className={styles.verticalSpaceTitle}></div>
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
-        <TextButton
-          fontSize="2.3vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
-            this.props.togglePanel();
-          }}
-        >
-          What is Brunel&apos;s Network?
-        </TextButton>
         <TextButton
           fontSize="2.4vh"
           padding={buttonPadding}
@@ -147,7 +136,6 @@ class AnalysisPanel extends React.Component {
 }
 
 AnalysisPanel.propTypes = {
-  setOverlay: PropTypes.func,
   toggleFilterPanel: PropTypes.func,
   toggleOptionsOverlay: PropTypes.func,
   togglePanel: PropTypes.func,

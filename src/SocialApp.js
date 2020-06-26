@@ -3,10 +3,12 @@ import React from "react";
 import Dry from "json-dry";
 
 // Brunel components
+import AboutOverlay from "./components/AboutOverlay";
 import AnalysisPanel from "./components/AnalysisPanel";
 import AnalysisButton from "./components/AnalysisButton";
 import ForceGraph from "./components/ForceGraph";
 import InfoBox from "./components/InfoBox";
+import HowDoIOverlay from "./components/HowDoIOverlay";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
 import SlidingPanel from "./components/SlidingPanel";
@@ -35,6 +37,7 @@ class SocialApp extends React.Component {
     this.resetAllFilters = this.resetAllFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
+    this.closeOverlay = this.closeOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graphData);
@@ -473,6 +476,32 @@ class SocialApp extends React.Component {
 
     return (
       <div>
+        <div className={styles.whatIsButtonContainer}>
+          <TextButton
+            fontSize="28px"
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => {
+              this.setOverlay(<AboutOverlay close={this.closeOverlay} />);
+            }}
+          >
+            What is Brunel&apos;s Network?
+          </TextButton>
+        </div>
+
+        <div className={styles.howDoIButtonContainer}>
+          <TextButton
+            fontSize="28px"
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => {
+              this.setOverlay(<HowDoIOverlay close={this.closeOverlay} />);
+            }}
+          >
+            How do I navigate the network?
+          </TextButton>
+        </div>
+
         <div className={styles.resetButtonContainer}>
           <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
@@ -587,7 +616,6 @@ class SocialApp extends React.Component {
 
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
           <AnalysisPanel
-            setOverlay={this.setOverlay}
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
             toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
