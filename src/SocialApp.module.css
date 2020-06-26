@@ -98,6 +98,7 @@
   position: fixed;
   bottom: 10px;
   width: 30%;
+
   left: 50%;
   margin-left: -15%;
   text-align: center;
@@ -112,13 +113,10 @@
   text-align: center;
 }
 
-.rightSidePanel {
-  margin-top: 10%;
-  width: 5%;
+.analysisButtonPanel {
   position: fixed;
-  z-index: 1;
-  top: 20vh;
-  right: 2vw;
+  top: 92vh;
+  left: 87vw;
   /* padding: 8px 0; */
 }
 

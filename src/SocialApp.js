@@ -474,6 +474,11 @@ class SocialApp extends React.Component {
       overlay = <Overlay toggleOverlay={this.toggleOverlay}>{this.state.overlayItem}</Overlay>;
     }
 
+    let analysisButton = null;
+    if (!this.state.isAnalysisOpen) {
+      analysisButton = <AnalysisButton togglePanel={() => this.toggleAnalysisPanel()} />;
+    }
+
     return (
       <div>
         <div className={styles.whatIsButtonContainer}>
@@ -501,6 +506,8 @@ class SocialApp extends React.Component {
             How do I navigate the network?
           </TextButton>
         </div>
+
+        <div className={styles.analysisButtonPanel}>{analysisButton}</div>
 
         <div className={styles.resetButtonContainer}>
           <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
@@ -610,11 +617,7 @@ class SocialApp extends React.Component {
           </div>
         </div>
 
-        <div className={styles.rightSidePanel}>
-          <AnalysisButton togglePanel={() => this.toggleAnalysisPanel()} />
-        </div>
-
-        <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
+        <SlidingPanel isOpen={this.state.isAnalysisOpen} position="rightBottom" width="10%">
           <AnalysisPanel
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
             toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
