@@ -246,9 +246,19 @@ class SocialApp extends React.Component {
     }
   }
 
-  gotConnections(id) {
-    // Does this have node have any connections, returns bool
-    return this.state.social.getConnections().gotConnections(id);
+  gotConnections(entity) {
+    const shipID = this.state.selectedShipID;
+
+    try {
+      if (entity["edge_count"][shipID] > 0) {
+        return true;
+      } else {
+        return false;
+      }
+      // We might not have an edge count for this ship
+    } catch (error) {
+      return false;
+    }
   }
 
   findInvestorsAndEngineers() {
@@ -312,8 +322,9 @@ class SocialApp extends React.Component {
     const people = this.state.social.getPeople(false).getNodes("noanchor");
 
     for (const p of people) {
-      //   if (this.gotConnections(p.id)) {
-      if (this.gotConnections(p.id)) {
+      //   console.log(p);
+      //   if (this.(p.id)) {
+      if (this.gotConnections(p)) {
         connectedNodes.push(p.id);
       } else {
         unconnectedNodes.push(p.id);
@@ -323,7 +334,7 @@ class SocialApp extends React.Component {
     const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
 
     for (const b of businesses) {
-      if (this.gotConnections(b.id)) {
+      if (this.gotConnections(b)) {
         connectedNodes.push(b.id);
       } else {
         unconnectedNodes.push(b.id);

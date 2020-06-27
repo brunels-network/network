@@ -165,7 +165,7 @@ class Popover extends React.Component {
           </div>
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
-          <div className={styles.edgeCount}>Number of connections: {node["edge_count"][selectedShipID]}</div>
+          <div className={styles.edge_count}>Number of connections: {node["edge_count"][selectedShipID]}</div>
           <div className={styles.readMore}>{readMoreButton}</div>
           <div className={styles.sourceHeader}>Sources</div>
           <div className={styles.sourceSection}>

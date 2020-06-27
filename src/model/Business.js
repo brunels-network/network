@@ -278,7 +278,7 @@ class Business {
     return this.state.scores;
   }
 
-  getEdgeCount() {
+  getedge_count() {
     return this.state.edge_count;
   }
 
@@ -291,7 +291,7 @@ class Business {
     node["weight"] = weight;
     node["type"] = "business";
 
-    node["edge_count"] = this.getEdgeCount();
+    node["edge_count"] = this.getedge_count();
 
     // Position will be used to set the colour used
     // for the node representing this person
