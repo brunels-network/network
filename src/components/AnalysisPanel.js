@@ -118,6 +118,15 @@ class AnalysisPanel extends React.Component {
         >
           Search
         </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.saveAsImage();
+          }}
+        >
+          Save as image
+        </TextButton>
         <div className={styles.verticalSpace}></div>
         <TextButton
           fontSize="2.4vh"
@@ -148,6 +157,7 @@ AnalysisPanel.propTypes = {
   filterInvestorNodes: PropTypes.func.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
   investorsFiltered: PropTypes.bool.isRequired,
+  saveAsImage: PropTypes.func.isRequired,
   unconnectedNodesVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,

@@ -1,6 +1,8 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
+import * as d3 from "d3";
+import moment from "moment";
 
 // Brunel components
 import AboutOverlay from "./components/AboutOverlay";
@@ -27,6 +29,8 @@ import positionGroups from "./data/positionGroups.json";
 // Styling for the app
 import styles from "./SocialApp.module.css";
 import DateRange from "./model/DateRange";
+
+const saveSvgAsPng = require("save-svg-as-png");
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -321,8 +325,6 @@ class SocialApp extends React.Component {
     const people = this.state.social.getPeople(false).getNodes("noanchor");
 
     for (const p of people) {
-      //   console.log(p);
-      //   if (this.(p.id)) {
       if (this.gotConnections(p)) {
         connectedNodes.push(p.id);
       } else {
@@ -412,6 +414,18 @@ class SocialApp extends React.Component {
     });
   }
 
+  saveAsImage() {
+    const imageOptions = {
+      scale: 1,
+      encoderOptions: 1,
+      backgroundColor: "#222222",
+    };
+
+    const filename = "BrunelsNetwork-" + moment().format("YYYYMMDD-hhmmss") + ".png";
+
+    saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-viz"), filename, imageOptions);
+  }
+
   toggleFilterPanel() {
     this.setState({
       isTimeLinePanelOpen: false,
@@ -420,7 +434,6 @@ class SocialApp extends React.Component {
   }
 
   toggleAnalysisPanel() {
-    console.log("Opening panel..");
     this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
   }
 
@@ -682,6 +695,7 @@ class SocialApp extends React.Component {
             filterCommercialNodes={() => this.filterCommercialNodes()}
             physicsEnabled={this.state.physicsEnabled}
             togglePhysicsEnabled={this.togglePhysicsEnabled}
+            saveAsImage={() => this.saveAsImage()}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             unconnectedNodesVisible={this.state.unconnectedNodesVisible}
             resetFilters={() => this.resetFiltersNotShip()}
