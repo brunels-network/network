@@ -5,7 +5,6 @@ import Dry from "json-dry";
 // Brunel components
 import AboutOverlay from "./components/AboutOverlay";
 import AnalysisPanel from "./components/AnalysisPanel";
-import AnalysisButton from "./components/AnalysisButton";
 import ForceGraph from "./components/ForceGraph";
 import InfoBox from "./components/InfoBox";
 import HowDoIOverlay from "./components/HowDoIOverlay";
@@ -421,6 +420,7 @@ class SocialApp extends React.Component {
   }
 
   toggleAnalysisPanel() {
+    console.log("Opening panel..");
     this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
   }
 
@@ -487,14 +487,23 @@ class SocialApp extends React.Component {
 
     let analysisButton = null;
     if (!this.state.isAnalysisOpen) {
-      analysisButton = <AnalysisButton togglePanel={() => this.toggleAnalysisPanel()} />;
+      analysisButton = (
+        <TextButton
+          fontSize="4.5vh"
+          textColor="#f1f1f1"
+          hoverColor="#9CB6A4"
+          onClick={() => this.toggleAnalysisPanel()}
+        >
+          Analysis
+        </TextButton>
+      );
     }
 
     return (
       <div>
         <div className={styles.whatIsButtonContainer}>
           <TextButton
-            fontSize="28px"
+            fontSize="3vh"
             hoverColor="#9CB6A4"
             padding="2px 2px 2px 2px"
             onClick={() => {
@@ -507,7 +516,7 @@ class SocialApp extends React.Component {
 
         <div className={styles.howDoIButtonContainer}>
           <TextButton
-            fontSize="28px"
+            fontSize="3vh"
             hoverColor="#9CB6A4"
             padding="2px 2px 2px 2px"
             onClick={() => {
@@ -521,7 +530,7 @@ class SocialApp extends React.Component {
         <div className={styles.analysisButtonPanel}>{analysisButton}</div>
 
         <div className={styles.resetButtonContainer}>
-          <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
+          <TextButton fontSize="2.7vh" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
           </TextButton>
         </div>

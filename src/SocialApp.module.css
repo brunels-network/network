@@ -99,8 +99,10 @@
 
 .analysisButtonPanel {
   position: fixed;
-  top: 92vh;
+  top: 90vh;
   left: 87vw;
+  height: 10vh;
+  z-index: 5;
   /* padding: 8px 0; */
 }
 
