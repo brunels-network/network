@@ -622,8 +622,8 @@ class SocialApp extends React.Component {
           />
         </div>
         <div className={styles.acknowledgeContainer}>
-          Brunel's Network is a project by the Brunel Institute, a collaboration of the SS Great Britain Trust and
-          University of Bristol 
+          Brunel&apos;s Network is a project by the Brunel Institute, a collaboration of the SS Great Britain Trust and
+          University of Bristol.
         </div>
 
         {/* The social graph itself */}
