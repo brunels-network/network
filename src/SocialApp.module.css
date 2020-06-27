@@ -46,36 +46,20 @@
   left: 73vw;
 }
 
-.hamburgerContainer {
+.commercialNodeLabel {
   position: fixed;
-  top: 2vh;
-  left: 1vw;
+  top: 40vh;
+  left: -6vw;
+  z-index: 101;
+  transform: rotate(-90deg);
 }
 
-.hamburgerButton {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  /* Within the column so left is top, center is middle */
-  justify-content: center;
-  align-items: left;
-  height: 40px;
-  width: 1.5em;
-  font-size: xx-large;
-  bottom: 10px;
-  border: 0;
-  color: white;
-  vertical-align: top;
-  background: transparent;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hamburgerButton:hover {
-    background-color: white;
-    color: black;
-  }
+.engineeringNodeLabel {
+  position: fixed;
+  top: 40vh;
+  left: 91vw;
+  transform: rotate(90deg);
+  height: 10%;
 }
 
 .controlButton {
@@ -94,22 +78,22 @@
   transform: translateY(2px);
 }
 
-.analysisButtons {
-  position: fixed;
-  bottom: 10px;
-  width: 30%;
-
-  left: 50%;
-  margin-left: -15%;
-  text-align: center;
-}
-
 .bottomContainer {
   position: fixed;
-  bottom: 10px;
+  bottom: 3vh;
   width: 75%;
-  left: 40%;
-  margin-left: -25%;
+  left: 25%;
+  /* margin-left: -25%;
+  text-align: center; */
+}
+
+.acknowledgeContainer {
+  font-family: "Playfair Display";
+  position: fixed;
+  bottom: 1vh;
+  width: 100%;
+  color: white;
+  font-size: 2vh;
   text-align: center;
 }
 

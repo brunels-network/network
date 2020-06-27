@@ -353,7 +353,7 @@ class SocialApp extends React.Component {
   // If unconnected nodes are enabled add them to the filter, if they're not remove them
   filterEngineeringNodes() {
     if (this.state.investorsFiltered) {
-      this.filterInvestorNodes();
+      this.filterCommercialNodes();
     }
 
     // If we have unconnected nodes as part of this filter set, get rid of them
@@ -371,7 +371,7 @@ class SocialApp extends React.Component {
     this.toggleSimulationType();
   }
 
-  filterInvestorNodes() {
+  filterCommercialNodes() {
     if (this.state.engineersFiltered) {
       this.filterEngineeringNodes();
     }
@@ -515,6 +515,29 @@ class SocialApp extends React.Component {
           </TextButton>
         </div>
 
+        <div className={styles.commercialNodeLabel}>
+          <TextButton
+            fontSize="4.3vh"
+            textColor="#B52222"
+            hoverColor="#FFFFF0"
+            padding="1px 1px 1px 1px"
+            onClick={() => this.filterCommercialNodes()}
+          >
+            Commercial&#x25CF;
+          </TextButton>
+        </div>
+        <div className={styles.engineeringNodeLabel}>
+          <TextButton
+            fontSize="4.3vh"
+            textColor="#808080"
+            hoverColor="#FFFFF0"
+            padding="1px 1px 1px 1px"
+            onClick={() => this.filterEngineeringNodes()}
+          >
+            Engineers&#x25CF;
+          </TextButton>
+        </div>
+
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
           <span
             className={styles.closePanelButton}
@@ -598,6 +621,10 @@ class SocialApp extends React.Component {
             selectedShip={this.state.selectedShip}
           />
         </div>
+        <div className={styles.acknowledgeContainer}>
+          Brunel's Network is a project by the Brunel Institute, a collaboration of the SS Great Britain Trust and
+          University of Bristol 
+        </div>
 
         {/* The social graph itself */}
         <div className={styles.mainContainer}>
@@ -632,7 +659,7 @@ class SocialApp extends React.Component {
             investorsFiltered={this.state.investorsFiltered}
             engineersFiltered={this.state.engineersFiltered}
             filterEngineeringNodes={() => this.filterEngineeringNodes()}
-            filterInvestorNodes={() => this.filterInvestorNodes()}
+            filterCommercialNodes={() => this.filterCommercialNodes()}
             physicsEnabled={this.state.physicsEnabled}
             togglePhysicsEnabled={this.togglePhysicsEnabled}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}

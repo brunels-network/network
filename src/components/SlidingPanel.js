@@ -56,7 +56,7 @@ class SlidingPanel extends React.Component {
     if (position === "right") {
       container = styles.rightContainer;
       transition = SlideFromRight;
-    } else if (position == "rightBottom") {
+    } else if (position === "rightBottom") {
       container = styles.rightContainer;
       transition = SlideFromBottom;
     } else if (position === "bottom") {
