@@ -786,12 +786,27 @@ class ForceGraphD3 extends React.Component {
           .iterations(5)
       )
       // This forces the groupings given in position_groups.json left/right
+      //   .force(
+      //     "X",
+      //     d3.forceX().strength((d) => {
+      //       return this.getGroupForce(d);
+      //     })
+      //   )
       .force(
         "X",
         d3.forceX().strength((d) => {
-          return this.getGroupForce(d);
+          // Force dependent on weight
+          return 1 / d["weight"][this.props.selectedShipID];
         })
       )
+      .force(
+        "Y",
+        d3.forceY().strength((d) => {
+          // Force dependent on weight
+          return 1 / d["weight"][this.props.selectedShipID];
+        })
+      )
+
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
         this._link.attr("d", (d) => {
