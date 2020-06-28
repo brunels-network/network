@@ -1,12 +1,15 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
+import * as d3 from "d3";
+import moment from "moment";
 
 // Brunel components
+import AboutOverlay from "./components/AboutOverlay";
 import AnalysisPanel from "./components/AnalysisPanel";
-import AnalysisButton from "./components/AnalysisButton";
 import ForceGraph from "./components/ForceGraph";
 import InfoBox from "./components/InfoBox";
+import HowDoIOverlay from "./components/HowDoIOverlay";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
 import SlidingPanel from "./components/SlidingPanel";
@@ -27,6 +30,8 @@ import positionGroups from "./data/positionGroups.json";
 import styles from "./SocialApp.module.css";
 import DateRange from "./model/DateRange";
 
+const saveSvgAsPng = require("save-svg-as-png");
+
 class SocialApp extends React.Component {
   constructor(props) {
     super(props);
@@ -35,6 +40,7 @@ class SocialApp extends React.Component {
     this.resetAllFilters = this.resetAllFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
+    this.closeOverlay = this.closeOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graphData);
@@ -62,6 +68,7 @@ class SocialApp extends React.Component {
       unconnectedNodesVisible: false,
       investorsFiltered: false,
       engineersFiltered: false,
+      standardSimulation: true,
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -241,9 +248,19 @@ class SocialApp extends React.Component {
     }
   }
 
-  gotConnections(id) {
-    // Does this have node have any connections, returns bool
-    return this.state.social.getConnections().gotConnections(id);
+  gotConnections(entity) {
+    const shipID = this.state.selectedShipID;
+
+    try {
+      if (entity["edge_count"][shipID] > 0) {
+        return true;
+      } else {
+        return false;
+      }
+      // We might not have an edge count for this ship
+    } catch (error) {
+      return false;
+    }
   }
 
   findInvestorsAndEngineers() {
@@ -307,7 +324,7 @@ class SocialApp extends React.Component {
     const people = this.state.social.getPeople(false).getNodes("noanchor");
 
     for (const p of people) {
-      if (this.gotConnections(p.id)) {
+      if (this.gotConnections(p)) {
         connectedNodes.push(p.id);
       } else {
         unconnectedNodes.push(p.id);
@@ -317,15 +334,18 @@ class SocialApp extends React.Component {
     const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
 
     for (const b of businesses) {
-      if (this.gotConnections(b.id)) {
+      if (this.gotConnections(b)) {
         connectedNodes.push(b.id);
       } else {
         unconnectedNodes.push(b.id);
       }
     }
 
+    // This function only called from within ctor so need to set directly here
+    /* eslint-disable react/no-direct-mutation-state */
     this.state.connectedNodes = connectedNodes;
     this.state.unconnectedNodes = unconnectedNodes;
+    /* eslint-enable react/no-direct-mutation-state */
   }
 
   toggleUnconnectedNodesVisible() {
@@ -333,11 +353,18 @@ class SocialApp extends React.Component {
     this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
-  // If unconnected nodes are enabled add them to the filter, if they're not remove them
+  toggleSimulationType() {
+    // Using setState here leads to standardSimulation not being set in time for the rerender of the simulation
+    // this.setState({ standardSimulation: !this.state.standardSimulation });
+    /* eslint-disable react/no-direct-mutation-state */
+    this.state.standardSimulation = !this.state.standardSimulation;
+    /* eslint-enable react/no-direct-mutation-state */
+  }
 
+  // If unconnected nodes are enabled add them to the filter, if they're not remove them
   filterEngineeringNodes() {
     if (this.state.investorsFiltered) {
-      this.filterInvestorNodes();
+      this.filterCommercialNodes();
     }
 
     // If we have unconnected nodes as part of this filter set, get rid of them
@@ -352,9 +379,10 @@ class SocialApp extends React.Component {
     }
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
+    this.toggleSimulationType();
   }
 
-  filterInvestorNodes() {
+  filterCommercialNodes() {
     if (this.state.engineersFiltered) {
       this.filterEngineeringNodes();
     }
@@ -371,6 +399,7 @@ class SocialApp extends React.Component {
     }
 
     this.setState({ investorsFiltered: !this.state.investorsFiltered });
+    this.toggleSimulationType();
   }
 
   toggleInfoPanel() {
@@ -382,6 +411,18 @@ class SocialApp extends React.Component {
       isFilterPanelOpen: false,
       isTimeLinePanelOpen: !this.state.isTimeLinePanelOpen,
     });
+  }
+
+  saveAsImage() {
+    const imageOptions = {
+      scale: 1,
+      encoderOptions: 1,
+      backgroundColor: "#222222",
+    };
+
+    const filename = "BrunelsNetwork-" + moment().format("YYYYMMDD-hhmmss") + ".png";
+
+    saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-viz"), filename, imageOptions);
   }
 
   toggleFilterPanel() {
@@ -425,12 +466,7 @@ class SocialApp extends React.Component {
   render() {
     const selected = this.state.selected_item;
     const highlighted = this.state.highlighted_item;
-    const overlayItem = this.state.overlayItem;
     const social = this.state.social;
-
-    // Check if we should be toggling the unconnected nodes
-    // if(!this.state.unconnectedNodesVisible)
-
     let searchOverlay = null;
 
     if (this.state.isSearchOverlayOpen) {
@@ -457,13 +493,79 @@ class SocialApp extends React.Component {
       overlay = <Overlay toggleOverlay={this.toggleOverlay}>{this.state.overlayItem}</Overlay>;
     }
 
+    let analysisButton = null;
+    if (!this.state.isAnalysisOpen) {
+      analysisButton = (
+        <TextButton
+          fontSize="4.5vh"
+          textColor="#f1f1f1"
+          hoverColor="#9CB6A4"
+          onClick={() => this.toggleAnalysisPanel()}
+        >
+          Analysis
+        </TextButton>
+      );
+    }
+
     return (
       <div>
+        <div className={styles.whatIsButtonContainer}>
+          <TextButton
+            fontSize="3vh"
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => {
+              this.setOverlay(<AboutOverlay close={this.closeOverlay} />);
+            }}
+          >
+            What is Brunel&apos;s Network?
+          </TextButton>
+        </div>
+
+        <div className={styles.howDoIButtonContainer}>
+          <TextButton
+            fontSize="3vh"
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => {
+              this.setOverlay(<HowDoIOverlay close={this.closeOverlay} />);
+            }}
+          >
+            How do I navigate the network?
+          </TextButton>
+        </div>
+
+        <div className={styles.analysisButtonPanel}>{analysisButton}</div>
+
         <div className={styles.resetButtonContainer}>
-          <TextButton fontSize="28px" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
+          <TextButton fontSize="2.7vh" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
           </TextButton>
         </div>
+
+        <div className={styles.commercialNodeLabel}>
+          <TextButton
+            fontSize="4.3vh"
+            textColor="#B52222"
+            hoverColor="#FFFFF0"
+            padding="1px 1px 1px 1px"
+            onClick={() => this.filterCommercialNodes()}
+          >
+            Commercial&#x25CF;
+          </TextButton>
+        </div>
+        <div className={styles.engineeringNodeLabel}>
+          <TextButton
+            fontSize="4.3vh"
+            textColor="#808080"
+            hoverColor="#FFFFF0"
+            padding="1px 1px 1px 1px"
+            onClick={() => this.filterEngineeringNodes()}
+          >
+            Engineers&#x25CF;
+          </TextButton>
+        </div>
+
         <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
           <span
             className={styles.closePanelButton}
@@ -517,6 +619,10 @@ class SocialApp extends React.Component {
         <div className={styles.bottomContainer}>
           <ShipSelector projects={this.state.social.getProjects()} shipFilter={(item) => this.slotSetShip(item)} />
         </div>
+        <div className={styles.acknowledgeContainer}>
+          Brunel&apos;s Network is a project by the Brunel Institute, a collaboration of the SS Great Britain Trust and
+          University of Bristol.
+        </div>
 
         {/* The social graph itself */}
         <div className={styles.mainContainer}>
@@ -530,17 +636,13 @@ class SocialApp extends React.Component {
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
+              standardSimulation={this.state.standardSimulation}
             />
           </div>
         </div>
 
-        <div className={styles.rightSidePanel}>
-          <AnalysisButton togglePanel={() => this.toggleAnalysisPanel()} />
-        </div>
-
-        <SlidingPanel isOpen={this.state.isAnalysisOpen} position="right" width="10%">
+        <SlidingPanel isOpen={this.state.isAnalysisOpen} position="rightBottom" width="10%">
           <AnalysisPanel
-            setOverlay={this.setOverlay}
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
@@ -553,9 +655,10 @@ class SocialApp extends React.Component {
             investorsFiltered={this.state.investorsFiltered}
             engineersFiltered={this.state.engineersFiltered}
             filterEngineeringNodes={() => this.filterEngineeringNodes()}
-            filterInvestorNodes={() => this.filterInvestorNodes()}
+            filterCommercialNodes={() => this.filterCommercialNodes()}
             physicsEnabled={this.state.physicsEnabled}
             togglePhysicsEnabled={this.togglePhysicsEnabled}
+            saveAsImage={() => this.saveAsImage()}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             unconnectedNodesVisible={this.state.unconnectedNodesVisible}
             resetFilters={() => this.resetFiltersNotShip()}

@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React from "react";
-import AboutOverlay from "./AboutOverlay";
 
 import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
@@ -48,18 +47,6 @@ class AnalysisPanel extends React.Component {
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
         <TextButton
-          data-testid="searchButton"
-          fontSize="2.3vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.setOverlay(<AboutOverlay close={this.props.closeOverlay} />);
-            this.props.togglePanel();
-          }}
-        >
-          What is Brunel's Network?
-        </TextButton>
-        <TextButton
-          data-testid="filtersButton"
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
@@ -133,6 +120,15 @@ class AnalysisPanel extends React.Component {
         >
           Search
         </TextButton>
+        <TextButton
+          fontSize="2.4vh"
+          padding={buttonPadding}
+          onClick={() => {
+            this.props.saveAsImage();
+          }}
+        >
+          Save as image
+        </TextButton>
         <div className={styles.verticalSpace}></div>
         <TextButton
           data-testid="closeButton"
@@ -152,7 +148,6 @@ class AnalysisPanel extends React.Component {
 }
 
 AnalysisPanel.propTypes = {
-  setOverlay: PropTypes.func,
   toggleFilterPanel: PropTypes.func,
   togglePanel: PropTypes.func,
   toggleSearchOverlay: PropTypes.func,
@@ -164,6 +159,7 @@ AnalysisPanel.propTypes = {
   filterInvestorNodes: PropTypes.func.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
   investorsFiltered: PropTypes.bool.isRequired,
+  saveAsImage: PropTypes.func.isRequired,
   unconnectedNodesVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,

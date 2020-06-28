@@ -122,7 +122,7 @@ class Connections {
   }
 
   gotConnections(id) {
-    return !(this.find(id).length == 0);
+    return !(this.find(id).length === 0);
   }
 
   get(id) {

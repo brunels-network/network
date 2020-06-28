@@ -11,8 +11,8 @@
   z-index: 11;
   padding: 1.5vh 0.5vw 0.5vh 0.75vw;
   display: grid;
-  grid-template-columns: 40% 10% 50%;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 50% 2% 46%;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 
   font-size: 1.5vh;
   color: #222222;
@@ -68,8 +68,17 @@
   grid-column-start: 1;
   grid-column-end: 1;
   grid-row-start: 2;
-  grid-row-end: 5;
+  grid-row-end: 7;
   font-size: 1.8vh;
+  overflow: auto;
+}
+
+.sourcesHeader {
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  font-size: 2vh;
+  color: #003366;
+  height: 10%;
 }
 
 .sources {
@@ -77,8 +86,8 @@
   color: #003366;
   grid-column-start: 1;
   grid-column-end: 1;
-  grid-row-start: 6;
-  grid-row-end: 6;
+  grid-row-start: 7;
+  grid-row-end: 7;
 }
 
 .imageSection {
@@ -90,20 +99,15 @@
   width: 100%;
   grid-column-start: 3;
   grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 6;
+  grid-row-start: 2;
+  grid-row-end: 7;
   font-style: italic;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .imageSection img {
+  max-width: 99%;
   object-fit: contain;
   display: block;
-  /* flex-shrink: 0;
-  min-width: 100%;
-  min-height: 100%; */
 }
 
 .imageDescription {

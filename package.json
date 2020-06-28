@@ -39,6 +39,7 @@
     "react-visjs-timeline": "^1.6.0",
     "react-web-tabs": "^1.0.1",
     "reactstrap": "^8.1.1",
+    "save-svg-as-png": "^1.4.17",
     "uuid": "^3.3.3",
     "vis": "^4.21.0-EOL",
     "vis-timeline": "^6.3.2"

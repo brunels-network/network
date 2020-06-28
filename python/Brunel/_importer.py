@@ -1,11 +1,25 @@
-
-__all__ = ["getDefaultImporters", "extractPersonName",
-           "isPerson", "importPerson", "isBusiness", "importBusiness",
-           "importConnection", "importPositions", "importAffiliations",
-           "importSources", "importType", "importNotes",
-           "importProject", "importSource", "importBiography",
-           "importEdgeSources", "importSharedLinks",
-           "importProjectDates", "importWeights", "importEdgeCount"]
+__all__ = [
+    "getDefaultImporters",
+    "extractPersonName",
+    "isPerson",
+    "importPerson",
+    "isBusiness",
+    "importBusiness",
+    "importConnection",
+    "importPositions",
+    "importAffiliations",
+    "importSources",
+    "importType",
+    "importNotes",
+    "importProject",
+    "importSource",
+    "importBiography",
+    "importEdgeSources",
+    "importSharedLinks",
+    "importProjectDates",
+    "importWeights",
+    "importEdgeCount",
+]
 
 
 def _clean_string(s):
@@ -18,6 +32,7 @@ def _get_url(s):
 
 def _get_date(s):
     from ._daterange import Date as _Date
+
     return _Date(s)
 
 
@@ -85,19 +100,20 @@ def extractPersonName(name):
 
         parts = name.split(",")
 
-        possible_titles = {"captain": "Captain",
-                           "cpt": "Captain",
-                           "superintendent": "Superintendent",
-                           "dr": "Dr.",
-                           "doctor": "Dr.",
-                           "prof": "Prof.",
-                           "mr": "Mr.",
-                           "ms": "Ms.",
-                           "mrs": "Mrs.",
-                           "miss": "Miss.",
-                           "rn": "RN",
-                           "rev": "Rev."
-                           }
+        possible_titles = {
+            "captain": "Captain",
+            "cpt": "Captain",
+            "superintendent": "Superintendent",
+            "dr": "Dr.",
+            "doctor": "Dr.",
+            "prof": "Prof.",
+            "mr": "Mr.",
+            "ms": "Ms.",
+            "mrs": "Mrs.",
+            "miss": "Miss.",
+            "rn": "RN",
+            "rev": "Rev.",
+        }
 
         for part in parts[0].split(" "):
             for surname in part.split("."):
@@ -128,8 +144,11 @@ def extractPersonName(name):
 
     if "Mr." in state["titles"]:
         state["gender"] = "male"
-    elif "Mrs." in state["titles"] or "Ms." in state["titles"] or \
-         "Miss." in state["titles"]:
+    elif (
+        "Mrs." in state["titles"]
+        or "Ms." in state["titles"]
+        or "Miss." in state["titles"]
+    ):
         state["gender"] = "female"
 
     return state
@@ -215,12 +234,12 @@ def importPerson(node, project, importers=None):
         name = str(node.Label)
         state = extractPersonName(name)
 
-        state["positions"] = {pid:  importPositions(node, importers=importers)}
-        state["sources"] = {pid:  importSources(node, importers=importers)}
-        state["affiliations"] = {pid:  importAffiliations(node, importers=importers)}
-        state["notes"] = {pid:  importNotes(node, importers=importers)}
+        state["positions"] = {pid: importPositions(node, importers=importers)}
+        state["sources"] = {pid: importSources(node, importers=importers)}
+        state["affiliations"] = {pid: importAffiliations(node, importers=importers)}
+        state["notes"] = {pid: importNotes(node, importers=importers)}
         state["projects"] = {pid: importProjectDates(node, importers=importers)}
-        state["weight"] = {pid:  importWeights(node, importers=importers)}
+        state["weight"] = {pid: importWeights(node, importers=importers)}
         state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
 
         return _Person(state)
@@ -282,6 +301,7 @@ def importBusiness(node, project, importers=None):
         state["projects"] = {pid: _DateRange.null()}
 
         from ._business import Business as _Business
+
         return _Business(state)
     except Exception as e:
         print(f"Cannot load Business {node}: {e}")
@@ -442,24 +462,27 @@ def importConnection(edge, project, mapping=None, importers=None):
             raise KeyError(f"Unspecified n1 {n0} <=> {n1}")
 
         notes = importNotes(edge, importers=importers, isEdge=True)
-        (duration, asources, csources) = importEdgeSources(edge,
-                                                           importers=importers)
+        (duration, asources, csources) = importEdgeSources(edge, importers=importers)
 
         typ = importType(edge, importers=importers)
         shared_links = importSharedLinks(edge, importers=importers)
 
         from ._connection import Connection as _Connection
-        return _Connection({"n0": n0,
-                            "n1": n1,
-                            "notes": notes,
-                            "affiliations": asources,
-                            "correspondences": csources,
-                            "duration": duration,
-                            "shared": shared_links,
-                            "projects": {project.getID(): _DateRange.null()},
-                            "weights": {project.getID(): 1.0},
-                            "type": typ,
-                            })
+
+        return _Connection(
+            {
+                "n0": n0,
+                "n1": n1,
+                "notes": notes,
+                "affiliations": asources,
+                "correspondences": csources,
+                "duration": duration,
+                "shared": shared_links,
+                "projects": {project.getID(): _DateRange.null()},
+                "weights": {project.getID(): 1.0},
+                "type": typ,
+            }
+        )
 
     except Exception as e:
         raise Exception(f"\nFailed to add connection!\n{e}\n{edge}\n\n")
@@ -473,7 +496,7 @@ def extractPositionName(position):
 
 def importPositions(node, importers=None):
     import re as _re
-    
+
     positions = importers["positions"]
 
     result = []
@@ -581,6 +604,14 @@ def importNotes(node, importers=None, isEdge=False):
 
 
 def importType(edge, importers=None):
+    """ Check the type of connection this edge represents
+
+        Args:
+            edge: Connection between nodes
+            importers (dict, default=None): Importer functions
+        Returns:
+            str: Type of connection, direct or indirect
+    """
     try:
         typ = str(edge.Link).lower()
     except Exception:
@@ -598,8 +629,10 @@ def importType(edge, importers=None):
 def importSource(data, importers=None):
     from ._source import Source as _Source
 
-    props = {"name": _clean_string(data.Source),
-             "description": _clean_string(data.Description)}
+    props = {
+        "name": _clean_string(data.Source),
+        "description": _clean_string(data.Description),
+    }
 
     return _Source(props)
 
@@ -607,9 +640,11 @@ def importSource(data, importers=None):
 def importProject(data, importers=None):
     from ._project import Project as _Project
 
-    props = {"name": _clean_string(data.Name),
-             "duration": _get_daterange(data.Duration),
-             "url": _get_url(data.URL)}
+    props = {
+        "name": _clean_string(data.Name),
+        "duration": _get_daterange(data.Duration),
+        "url": _get_url(data.URL),
+    }
 
     return _Project(props)
 
@@ -629,6 +664,7 @@ def importBiography(data, importers=None):
         extractPersonName = extractPersonName
 
     from ._person import Person as _Person
+
     person = None
 
     try:
@@ -673,17 +709,25 @@ def importBiography(data, importers=None):
 
 
 def getDefaultImporters():
-    return {"isPerson": isPerson, "extractPersonName": extractPersonName,
-            "importPerson": importPerson,
-            "isBusiness": isBusiness, "importBusiness": importBusiness,
-            "importConnection": importConnection,
-            "importPositions": importPositions,
-            "importAffiliations": importAffiliations,
-            "importSources": importSources, "importNotes": importNotes,
-            "importType": importType,
-            "importSource": importSource, "importProject": importProject,
-            "importBiography": importBiography,
-            "importEdgeSources": importEdgeSources,
-            "importSharedLinks": importSharedLinks,
-            "importProjectDates": importProjectDates,
-            "importWeights": importWeights, "importEdgeCount": importEdgeCount}
+    return {
+        "isPerson": isPerson,
+        "extractPersonName": extractPersonName,
+        "importPerson": importPerson,
+        "isBusiness": isBusiness,
+        "importBusiness": importBusiness,
+        "importConnection": importConnection,
+        "importPositions": importPositions,
+        "importAffiliations": importAffiliations,
+        "importSources": importSources,
+        "importNotes": importNotes,
+        "importType": importType,
+        "importSource": importSource,
+        "importProject": importProject,
+        "importBiography": importBiography,
+        "importEdgeSources": importEdgeSources,
+        "importSharedLinks": importSharedLinks,
+        "importProjectDates": importProjectDates,
+        "importWeights": importWeights,
+        "importEdgeCount": importEdgeCount,
+    }
+

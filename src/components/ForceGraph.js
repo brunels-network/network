@@ -15,19 +15,12 @@ class ForceGraph extends React.Component {
       popups: {},
     };
 
-    // We want to add to the props so we need to clone the props
-    // that are passed in as that object is read-only
-    let tempProps = lodash.cloneDeep(props);
-
     this.updateSize = this.updateSize.bind(this);
     this.emitPopProps = this.emitPopProps.bind(this);
     this.clearPopups = this.clearPopups.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
-    // TODO - look up better way of doing this
-    // Bring this into the class above it?
-    // This feels very clunky
-    tempProps["emitPopProps"] = this.emitPopProps;
-    this.graph = new ForceGraphD3(tempProps);
+    this.graph = new ForceGraphD3(props);
   }
 
   componentDidMount() {
@@ -40,6 +33,11 @@ class ForceGraph extends React.Component {
   }
 
   componentDidUpdate() {
+    // TODO - look up better way of doing this
+    // This feels very clunky
+    let localProps = lodash.cloneDeep(this.props);
+    localProps["emitPopProps"] = this.emitPopProps;
+    this.graph.props = localProps;
     this.graph.update(this.props);
     this.graph.draw();
   }

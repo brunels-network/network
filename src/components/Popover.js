@@ -5,7 +5,6 @@ import TextButton from "./TextButton";
 
 import styles from "./Popover.module.css";
 
-import tempImage from "../images/Great_Western_maiden_voyage.jpg";
 import OverlayWrapper from "./OverlayWrapper";
 
 // The detection of outside clicks in this class taken from
@@ -166,7 +165,7 @@ class Popover extends React.Component {
           </div>
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
-          <div className={styles.edgeCount}>Number of connections: {node["edge_count"][selectedShipID]}</div>
+          <div className={styles.edge_count}>Number of connections: {node["edge_count"][selectedShipID]}</div>
           <div className={styles.readMore}>{readMoreButton}</div>
           <div className={styles.sourceHeader}>Sources</div>
           <div data-testid="sourceButton" className={styles.sourceSection}>

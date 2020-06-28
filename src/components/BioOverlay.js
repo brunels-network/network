@@ -16,7 +16,6 @@ class BioOverlay extends React.Component {
   }
 
   render() {
-    // const sources = this.props.sources;
     const person = this.props.person;
     const id = person.getID();
     const name = person.getName();
@@ -24,6 +23,11 @@ class BioOverlay extends React.Component {
 
     // Get biography and strip name
     let bio = biographies.getByID(id);
+
+    if (!bio) {
+      bio = "No biography found.";
+    }
+
     bio = bio.replace(name + ". ", "");
 
     const filename = imageFilenames[id]["filename"];
@@ -53,7 +57,7 @@ class BioOverlay extends React.Component {
           <Linkify>{bio}</Linkify>
         </div>
         <div className={styles.sources}>
-          <div className={styles.dynamicHeader}>
+          <div className={styles.sourcesHeader}>
             Sources
             <br />
             <br />

@@ -9,13 +9,13 @@
       "solicitors",
       "missing",
       "investor",
-      "supplier",
-      "trustee"
+      "supplier"
     ],
     "color": "#B52222"
   },
   "engineering": {
     "members": [
+      "progenitor",
       "buildertier1",
       "buildertier2",
       "consultingengineer",

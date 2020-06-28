@@ -387,7 +387,7 @@ class Person {
     return this.state.weight;
   }
 
-  getEdgeCount() {
+  getedge_count() {
     return this.state.edge_count;
   }
 
@@ -419,7 +419,7 @@ class Person {
     // Position will be used to set the colour used
     // for the node representing this person
     node["positions"] = this.getPositions();
-    node["edge_count"] = this.getEdgeCount();
+    node["edge_count"] = this.getedge_count();
 
     let keys = Object.keys(this.state.projects);
 

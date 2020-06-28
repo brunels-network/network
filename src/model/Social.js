@@ -365,7 +365,7 @@ class Social {
 
     if (filtered) {
       if (!this.state.cache.people) {
-        console.log("REBUILD PEOPLE");
+        // console.log("REBUILD PEOPLE");
         this._rebuilding += 1;
         this.state.cache.people = this.state.people.filter(this.getNodeFilters());
         this._rebuilding -= 1;
@@ -384,7 +384,7 @@ class Social {
 
     if (filtered) {
       if (!this.state.cache.businesses) {
-        console.log("REBUILD BUSINESSES");
+        // console.log("REBUILD BUSINESSES");
         this._rebuilding += 1;
         this.state.cache.businesses = this.state.businesses.filter(this.getNodeFilters());
         this._rebuilding -= 1;
@@ -403,7 +403,7 @@ class Social {
 
     if (filtered) {
       if (!this.state.cache.connections) {
-        console.log("REBUILD CONNECTIONS");
+        // console.log("REBUILD CONNECTIONS");
         this._rebuilding += 1;
         this.state.cache.connections = this.state.connections.filter(this.getEdgeFilters());
         this._rebuilding -= 1;

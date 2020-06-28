@@ -30,46 +30,36 @@
 
 .resetButtonContainer {
   position: fixed;
+  top: 94vh;
+  left: 2vw;
+}
+
+.whatIsButtonContainer {
+  position: fixed;
   top: 2vh;
-  left: 2%;
+  left: 2vw;
 }
 
-.hamburgerContainer {
+.howDoIButtonContainer {
   position: fixed;
-  top: 2%;
-  left: 1%;
+  top: 2vh;
+  left: 73vw;
 }
 
-.hamburgerButton {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  /* Within the column so left is top, center is middle */
-  justify-content: center;
-  align-items: left;
-  height: 40px;
-  width: 1.5em;
-  font-size: xx-large;
-  bottom: 10px;
-  border: 0;
-  color: white;
-  vertical-align: top;
-  background: transparent;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-}
-
-.resetButton {
+.commercialNodeLabel {
   position: fixed;
-  top: 3%;
-  left: 5%;
+  top: 40vh;
+  left: -6vw;
+  z-index: 101;
+  transform: rotate(-90deg);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .hamburgerButton:hover {
-    background-color: white;
-    color: black;
-  }
+.engineeringNodeLabel {
+  position: fixed;
+  top: 40vh;
+  left: 91vw;
+  transform: rotate(90deg);
+  height: 10%;
 }
 
 .controlButton {
@@ -88,31 +78,31 @@
   transform: translateY(2px);
 }
 
-.analysisButtons {
-  position: fixed;
-  bottom: 10px;
-  width: 30%;
-  left: 50%;
-  margin-left: -15%;
-  text-align: center;
-}
-
 .bottomContainer {
   position: fixed;
-  bottom: 10px;
+  bottom: 3vh;
   width: 75%;
-  left: 40%;
-  margin-left: -25%;
+  left: 25%;
+  /* margin-left: -25%;
+  text-align: center; */
+}
+
+.acknowledgeContainer {
+  font-family: "Playfair Display";
+  position: fixed;
+  bottom: 1vh;
+  width: 100%;
+  color: white;
+  font-size: 2vh;
   text-align: center;
 }
 
-.rightSidePanel {
-  margin-top: 10%;
-  width: 5%;
+.analysisButtonPanel {
   position: fixed;
-  z-index: 1;
-  top: 20vh;
-  right: 2vw;
+  top: 90vh;
+  left: 87vw;
+  height: 10vh;
+  z-index: 5;
   /* padding: 8px 0; */
 }
 

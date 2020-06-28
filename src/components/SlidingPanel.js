@@ -49,10 +49,16 @@ class SlidingPanel extends React.Component {
     // let style = horiz_size;
     // Get the passed in position
     let position = this.props.position;
+    if (!position) {
+      position = this.state.position;
+    }
 
     if (position === "right") {
       container = styles.rightContainer;
       transition = SlideFromRight;
+    } else if (position === "rightBottom") {
+      container = styles.rightContainer;
+      transition = SlideFromBottom;
     } else if (position === "bottom") {
       container = styles.bottomContainer;
       transition = SlideFromBottom;
