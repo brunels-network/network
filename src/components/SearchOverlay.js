@@ -58,7 +58,6 @@ class SearchOverlay extends React.Component {
 
     let infoOverlay = null;
     if (this.state.selectedEntity) {
-      infoOverlay = <div style={{ background: "white", width: "75%", height: "75%", fontSize: "5vh" }}>Wooooo</div>;
       const entity = this.state.selectedEntity;
 
       // If we can't find it in the selected ship then get the sources for the other ship

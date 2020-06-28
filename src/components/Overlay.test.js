@@ -1,6 +1,6 @@
 import React from "react";
 
-import { render, cleanup, fireEvent, screen } from "@testing-library/react";
+import { render, cleanup, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 
 import Overlay from "./Overlay";
@@ -21,15 +21,27 @@ describe("Overlay Item", () => {
     expect(screen.queryAllByText(testString)).toBeTruthy();
   });
 
-  it("With background selects correct background", () => {
+  it("No background matches snapshot", () => {
     const toggleOverlayFn = jest.fn();
     const testString = "This is a test";
-    render(
+    const { asFragment } = render(
       <Overlay toggleOverlay={toggleOverlayFn} useBackground={false}>
         <TextButton>{testString}</TextButton>
       </Overlay>
     );
 
-    expect(screen.queryByTestId("overlay")).toHaveStyle(`background: transparent`);
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it("With background matches snapshot", () => {
+    const toggleOverlayFn = jest.fn();
+    const testString = "This is a test";
+    const { asFragment } = render(
+      <Overlay toggleOverlay={toggleOverlayFn} useBackground={true}>
+        <TextButton>{testString}</TextButton>
+      </Overlay>
+    );
+
+    expect(asFragment()).toMatchSnapshot();
   });
 });
