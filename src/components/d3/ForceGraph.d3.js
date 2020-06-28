@@ -269,35 +269,35 @@ class ForceGraphD3 extends React.Component {
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
 
+        // node.x = (w / 2) * this.randomShift(0.1, 0.5);
+        // node.y = (h / 2) * this.randomShift(0.1, 0.5);
         node.x = w * Math.random();
         node.y = h * Math.random();
 
-        // let i = old[node.id];
+        //     // let i = old[node.id];
 
-        // if (i) {
-        //   let o = old_nodes[i];
-        //   node.x = o.x;
-        //   node.y = o.y;
-        // } else if (this.gotConnections(node.id)) {
-        //   node.x = w * Math.random();
-        //   node.y = h * Math.random();
-        // } else {
-        //   node.x = w - 0.15 * w;
-        //   node.y = h * Math.random();
-        // }
+        //     // if (i) {
+        //     //   let o = old_nodes[i];
+        //     //   node.x = o.x;
+        //     //   node.y = o.y;
+        //     // } else if (this.gotConnections(node.id)) {
+        //     // } else {
+        //     //   node.x = w - 0.15 * w;
+        //     //   node.y = h * Math.random();
+        //     // }
 
-        // if (node.fixed && this.props.standardSimulation) {
-        //   if (i) {
-        //     node.fx = node.x;
-        //     node.fy = node.y;
-        //   } else if (node.fixedLocation) {
-        //     node.fx = w * node.fixedLocation["x"] * this.randomShift();
-        //     node.fy = h * node.fixedLocation["y"] * this.randomShift();
-        //   } else {
-        //     node.fx = w * 0.66;
-        //     node.fy = h * 0.5;
-        //   }
-        // }
+        //     // if (node.fixed && this.props.standardSimulation) {
+        //     //   if (i) {
+        //     //     node.fx = node.x;
+        //     //     node.fy = node.y;
+        //     //   } else if (node.fixedLocation) {
+        //     //     node.fx = w * node.fixedLocation["x"] * this.randomShift();
+        //     //     node.fy = h * node.fixedLocation["y"] * this.randomShift();
+        //     //   } else {
+        //     //     node.fx = w * 0.66;
+        //     //     node.fy = h * 0.5;
+        //     //   }
+        //     // }
       }
 
       this._graph = graph;
@@ -758,42 +758,33 @@ class ForceGraphD3 extends React.Component {
     // We don't want a force applied to null edges
     let edges = this._graph.edges.filter((v) => v["type"]);
 
-    console.log(this._graph.nodes);
+    const maxWeight = d3.max(this._graph.nodes, (d) => {
+      return d["weight"][this.props.selectedShipID];
+    });
 
-    let strengthScale = d3
-      .scalePow()
-      .exponent(1)
-      .range([0, 1])
-      .domain([
-        0,
-        d3.max(this._graph.nodes, (d) => {
-          return d["weight"][this.props.selectedShipID];
-        }),
-      ]);
-
-    let radiusScale = d3
-      .scaleLinear()
-      .domain([
-        0,
-        d3.max(this._graph.nodes, (d) => {
-          return d["weight"][this.props.selectedShipID];
-        }),
-      ])
-      .range([1, 80]);
+    let strengthScale = d3.scalePow().exponent(2.5).range([0, 1]).domain([0, maxWeight]);
+    let radiusScale = d3.scaleLinear().domain([0, maxWeight]).range([1, 80]);
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
       .force(
         "X",
-        d3.forceX().strength((d) => {
-          return strengthScale(d["weight"][this.props.selectedShipID]);
-        })
+        d3
+          .forceX()
+          .strength((d) => {
+            return strengthScale(d["weight"][this.props.selectedShipID]);
+          })
+          .x(w / 2)
       )
+
       .force(
         "Y",
-        d3.forceY().strength((d) => {
-          return strengthScale(d["weight"][this.props.selectedShipID]);
-        })
+        d3
+          .forceY()
+          .strength((d) => {
+            return strengthScale(d["weight"][this.props.selectedShipID]);
+          })
+          .y(h / 2)
       )
       .force(
         "charge",
@@ -807,20 +798,21 @@ class ForceGraphD3 extends React.Component {
           .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
           .iterations(30)
       )
-      .force(
-        "link",
-        d3
-          .forceLink()
-          .links(edges)
-          .distance((d) => {
-            if (d["type"] === "direct") {
-              return 35 * (1 + d.value);
-            } else {
-              return 60 * (1 + d.value);
-            }
-          })
-          .iterations(80)
-      )
+      .force("link", d3.forceLink().strength(0).links(edges).iterations(80))
+      //   .force(
+      //     "X",
+      //     d3
+      //       .forceX()
+      //       .strength(0.5)
+      //       .x(w / 2)
+      //   )
+      //   .force(
+      //     "Y",
+      //     d3
+      //       .forceY()
+      //       .strength(0.5)
+      //       .y(h / 2)
+      //   )
       //   .force(
       //     "collision",
       //     d3
@@ -841,14 +833,15 @@ class ForceGraphD3 extends React.Component {
 
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
-        // this._link.attr("d", (d) => {
-        //   const curveFactor = 3;
-        //   const dx = d.target.x - d.source.x;
-        //   const dy = d.target.y - d.source.x;
-        //   const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
+        this._link.attr("d", (d) => {
+          // The smaller the curve factor the greater the curve
+          const curveFactor = 1.5;
+          const dx = d.target.x - d.source.x;
+          const dy = d.target.y - d.source.x;
+          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
 
-        //   return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
-        // });
+          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+        });
         this._node
           .attr("cx", (d) => {
             return (d.x = constrain(d.x, w, d.r));
