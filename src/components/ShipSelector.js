@@ -20,8 +20,6 @@ class ShipSelector extends React.Component {
     const shipName = item.getName();
 
     if (shipName === this.state.lastShip) {
-      //   this.props.resetFilters();
-      //   this.setState({ lastShip: "" });
       return;
     }
 
@@ -54,7 +52,6 @@ class ShipSelector extends React.Component {
 
 ShipSelector.propTypes = {
   projects: PropTypes.object.isRequired,
-  resetFilters: PropTypes.func.isRequired,
   shipFilter: PropTypes.func.isRequired,
 };
 

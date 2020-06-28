@@ -423,7 +423,6 @@ class SocialApp extends React.Component {
   }
 
   render() {
-    console.log(this.state.social.getProjects());
     const selected = this.state.selected_item;
     const highlighted = this.state.highlighted_item;
     const overlayItem = this.state.overlayItem;
@@ -516,12 +515,7 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.bottomContainer}>
-          <ShipSelector
-            projects={this.state.social.getProjects()}
-            shipFilter={(item) => this.slotSetShip(item)}
-            resetFilters={this.resetAllFilters}
-            selectedShip={this.state.selectedShip}
-          />
+          <ShipSelector projects={this.state.social.getProjects()} shipFilter={(item) => this.slotSetShip(item)} />
         </div>
 
         {/* The social graph itself */}

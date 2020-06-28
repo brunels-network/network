@@ -33,7 +33,6 @@ describe("BioOverlay", () => {
 
     expect(screen.queryByText(testString)).toBeTruthy();
     expect(screen.queryByText(name)).toBeTruthy();
-    expect(screen.queryByText(testString)).toBeTruthy();
     expect(screen.queryByText(/Claxtons father was a Caribbean merchant/)).toBeTruthy();
   });
 

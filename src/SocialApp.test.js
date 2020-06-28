@@ -31,9 +31,8 @@ describe("SocialApp", () => {
     // Check we find the buttons in the analysis panel
     expect(screen.queryByText("Search")).toBeTruthy();
     expect(screen.queryByText("Close")).toBeTruthy();
-    expect(screen.queryByText("About")).toBeTruthy();
-    expect(screen.queryByText("Filter by Engineers")).toBeTruthy();
-    expect(screen.queryByText("Filter by Investors")).toBeTruthy();
+    expect(screen.queryByText("Filter by engineers")).toBeTruthy();
+    expect(screen.queryByText("Filter by investors")).toBeTruthy();
     expect(screen.queryByText("Show indirect connections")).toBeTruthy();
     expect(screen.queryByText("Show unconnected nodes")).toBeTruthy();
     expect(screen.queryByText("Enable physics")).toBeTruthy();
