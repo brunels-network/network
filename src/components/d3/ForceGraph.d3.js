@@ -776,7 +776,6 @@ class ForceGraphD3 extends React.Component {
           })
           .x(w / 2)
       )
-
       .force(
         "Y",
         d3
@@ -799,43 +798,11 @@ class ForceGraphD3 extends React.Component {
           .iterations(30)
       )
       .force("link", d3.forceLink().strength(0).links(edges).iterations(80))
-      //   .force(
-      //     "X",
-      //     d3
-      //       .forceX()
-      //       .strength(0.5)
-      //       .x(w / 2)
-      //   )
-      //   .force(
-      //     "Y",
-      //     d3
-      //       .forceY()
-      //       .strength(0.5)
-      //       .y(h / 2)
-      //   )
-      //   .force(
-      //     "collision",
-      //     d3
-      //       .forceCollide()
-      //       .radius((d) => {
-      //         return 3 * (1 + 10 * d.size);
-      //       })
-      //       .strength(10.0)
-      //       .iterations(5)
-      //   )
-      // This forces the groupings given in position_groups.json left/right
-      //   .force(
-      //     "X",
-      //     d3.forceX().strength((d) => {
-      //       return this.getGroupForce(d);
-      //     })
-      //   )
-
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
         this._link.attr("d", (d) => {
           // The smaller the curve factor the greater the curve
-          const curveFactor = 1.5;
+          const curveFactor = 2;
           const dx = d.target.x - d.source.x;
           const dy = d.target.y - d.source.x;
           const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
