@@ -1,0 +1,7 @@
+{
+  "intro": "This site offers a previously unseen view into the connections between Isambard Kingdom Brunel and those involved in the financing, construction and development of the three great steam ships, the SS Great Western, SS Great Britain and the SS Great Eastern.",
+  "description": "Each circle (node) on this page represents an individual entity, whether it be a person or a company. Connections have been made between people and companies involved in the construction on the ships through research into the correspondence between these individuals. Each line (edge) between the nodes shows that correspondence exists between these nodes.",
+  "HOWTO-drag": "In the social network graph engineering and commercial nodes are easily distinguished by colour, grey for engineering and red for commercial nodes. Each node can be moved and you can drag the nodes around to create a layout that works for your analysis.",
+  "HOWTO-click": "Clicking on each node opens a small popup window that gives a short summary of that node including their biography, the number of connections they have with other nods and the sources thesin which these connections were found. Clicking read more will open a window with a more detailed biography and an image showing the person or representing the company that this node represents.",
+  "HOWTO-save": "You can save an image of your network under the analysis panel, click save as image and this will let you download and save your network layout."
+}
