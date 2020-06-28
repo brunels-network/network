@@ -68,7 +68,7 @@ class BioOverlay extends React.Component {
         <div className={styles.divider} />
         <div className={styles.imageSection}>
           <div>
-            <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="Image of ship" />
+            <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="A ship" />
           </div>
           <div className={styles.imageDescription}>Image description</div>
         </div>

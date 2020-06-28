@@ -1,14 +1,12 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
-import * as d3 from "d3";
 import moment from "moment";
 
 // Brunel components
 import AboutOverlay from "./components/AboutOverlay";
 import AnalysisPanel from "./components/AnalysisPanel";
 import ForceGraph from "./components/ForceGraph";
-import InfoBox from "./components/InfoBox";
 import HowDoIOverlay from "./components/HowDoIOverlay";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";

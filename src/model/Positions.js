@@ -137,10 +137,6 @@ class Positions {
     } else if (results.length > 1) {
       return results;
     }
-
-    let keys = Object.keys(this._names).join("', '");
-
-    // throw new MissingError(`No position matches '${name}. Available Positions are '${keys}'`);
   }
 
   get(id) {
