@@ -16,7 +16,7 @@ describe("SocialApp", () => {
   test("click on analysis opens panel", () => {
     render(<SocialApp />);
 
-    const analysisButton = screen.getByTestId("AnalysisButton");
+    const analysisButton = screen.queryByText("Analysis").closest("button");
 
     let analyisPanel = screen.queryByTestId("AnalysisPanel");
 
@@ -48,12 +48,6 @@ describe("SocialApp", () => {
     fireEvent.click(gbButton);
 
     expect(screen.queryByTestId("shipTitle").textContent).toMatch("SS Great Britain");
-  });
-
-  test("SS Great Eastern button disabled", () => {
-    render(<SocialApp />);
-
-    expect(screen.queryByText("SS Great Eastern").closest("button")).toBeDisabled();
   });
 
   test("Reset button resets window", () => {

@@ -18,16 +18,33 @@ import graphData from "../socialNetwork.json";
 afterEach(cleanup);
 
 describe("SearchBar", () => {
-  it("should render", () => {
-    const { container } = render(<SearchBar emitSelected={jest.fn()} social={jest.fn()} />);
+  // Load in the Dried graph data from JSON
+  let social = Dry.parse(graphData);
+  test("should render", () => {
+    const { container } = render(
+      <SearchBar
+        emitHighlighted={jest.fn()}
+        emitClicked={jest.fn()}
+        emitResults={jest.fn()}
+        emitSelected={jest.fn()}
+        placeholder={"Test"}
+        social={social}
+      />
+    );
     expect(container.firstChild).toBeTruthy();
   });
 
-  // Load in the Dried graph data from JSON
-  let social = Dry.parse(graphData);
-
-  it("this input should should find entity", () => {
-    render(<SearchBar emitSelected={jest.fn()} emitResults={jest.fn()} social={social} />);
+  test("this input should should find entity", () => {
+    render(
+      <SearchBar
+        emitHighlighted={jest.fn()}
+        emitClicked={jest.fn()}
+        emitResults={jest.fn()}
+        emitSelected={jest.fn()}
+        placeholder={"Test"}
+        social={social}
+      />
+    );
 
     fireEvent.change(screen.getByTestId("searchInput"), {
       target: { value: "Falkner" },
@@ -38,8 +55,17 @@ describe("SearchBar", () => {
     expect(searchResults.length).toBe(2);
   });
 
-  it("this input should should not find entity", () => {
-    render(<SearchBar emitSelected={jest.fn()} emitResults={jest.fn()} social={social} />);
+  test("this input should should not find entity", () => {
+    render(
+      <SearchBar
+        emitHighlighted={jest.fn()}
+        emitClicked={jest.fn()}
+        emitResults={jest.fn()}
+        emitSelected={jest.fn()}
+        placeholder={"Test"}
+        social={social}
+      />
+    );
 
     fireEvent.change(screen.getByTestId("searchInput"), {
       target: { value: "QWERTY" },

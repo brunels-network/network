@@ -16,7 +16,7 @@ describe("ShipSelector", () => {
   const social = Dry.parse(graphData);
   const projects = social.getProjects();
 
-  it("Check overlay and search bar are rendered", () => {
+  test("Check overlay and search bar are rendered", () => {
     const shipFilterFn = jest.fn();
 
     render(<ShipSelector projects={projects} shipFilter={shipFilterFn} />);
@@ -26,7 +26,7 @@ describe("ShipSelector", () => {
     expect(screen.getByText("SS Great Eastern")).toBeTruthy();
   });
 
-  it("Clicking ship calls filter function", () => {
+  test("Clicking ship calls filter function", () => {
     const shipFilterFn = jest.fn();
 
     render(<ShipSelector projects={projects} shipFilter={shipFilterFn} />);

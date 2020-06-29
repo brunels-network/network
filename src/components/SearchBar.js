@@ -305,7 +305,6 @@ class SearchBar extends React.Component {
   }
 }
 
-// TODO - finish this
 SearchBar.propTypes = {
   emitSelected: PropTypes.func.isRequired,
   emitResults: PropTypes.func.isRequired,

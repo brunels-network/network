@@ -20,7 +20,7 @@ describe("Popover", () => {
   const node = social.getPeople().getByName(name).getNode();
   const shipID = social.getProjects().getIDs()[0];
 
-  it("Close button works", () => {
+  test("Close button works", () => {
     let toggleFn = jest.fn();
     let clearPopupsFn = jest.fn();
 
@@ -41,7 +41,7 @@ describe("Popover", () => {
     expect(clearPopupsFn).toHaveBeenCalled();
   });
 
-  it("All text rendered correctly", () => {
+  test("All text rendered correctly", () => {
     let toggleFn = jest.fn();
     let clearPopupsFn = jest.fn();
 
@@ -62,7 +62,7 @@ describe("Popover", () => {
     expect(screen.queryByText(/Sources/)).toBeTruthy();
   });
 
-  it("Sources button clicks", () => {
+  test("Sources button clicks", () => {
     let toggleFn = jest.fn();
     let clearPopupsFn = jest.fn();
 
@@ -83,7 +83,7 @@ describe("Popover", () => {
     expect(screen.queryByText(/Sources/)).toBeTruthy();
   });
 
-  it("Clicking read more opens overlay", () => {
+  test("Clicking read more opens overlay", () => {
     let toggleFn = jest.fn();
     let clearPopupsFn = jest.fn();
 
@@ -106,7 +106,7 @@ describe("Popover", () => {
     expect(screen.queryByTestId("bioOverlay")).toBeTruthy();
   });
 
-  it("Clicking source button", () => {
+  test("Clicking source button", () => {
     let toggleFn = jest.fn();
     let clearPopupsFn = jest.fn();
 

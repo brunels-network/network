@@ -17,7 +17,7 @@ describe("SearchOverlay", () => {
   const social = Dry.parse(graphData);
   const shipID = social.getProjects().getIDs()[0];
 
-  it("Check overlay and search bar are rendered", () => {
+  test("Check overlay and search bar are rendered", () => {
     const toggleSearchOverlayFn = jest.fn();
     const emitHighlightedFn = jest.fn();
     const emitSelectedFn = jest.fn();
@@ -38,7 +38,7 @@ describe("SearchOverlay", () => {
     expect(screen.queryByTestId("overlay")).toBeTruthy();
   });
 
-  it("Search bar functions correctly - input results in button render", () => {
+  test("Search bar functions correctly - input results in button render", () => {
     const toggleSearchOverlayFn = jest.fn();
     const emitHighlightedFn = jest.fn();
     const emitSelectedFn = jest.fn();
@@ -64,7 +64,7 @@ describe("SearchOverlay", () => {
     expect(searchResults.length).toBe(2);
   });
 
-  it("To match the snapshot", () => {
+  test("To match the snapshot", () => {
     const toggleSearchOverlayFn = jest.fn();
     const emitHighlightedFn = jest.fn();
     const emitSelectedFn = jest.fn();

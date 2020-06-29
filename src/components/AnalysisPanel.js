@@ -4,6 +4,9 @@ import React from "react";
 import TextButton from "./TextButton";
 import styles from "./AnalysisPanel.module.css";
 
+import moment from "moment";
+const saveSvgAsPng = require("save-svg-as-png");
+
 class AnalysisPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +42,7 @@ class AnalysisPanel extends React.Component {
     let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
 
     let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
-    let filterInvestorsText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
+    let filterCommercialText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
 
     return (
       <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.wholePanel}>
@@ -61,11 +64,11 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.filterInvestorNodes();
+            this.props.filterCommercialNodes();
             // this.props.togglePanel();
           }}
         >
-          {filterInvestorsText}
+          {filterCommercialText}
         </TextButton>
         <TextButton
           fontSize="2.4vh"
@@ -124,7 +127,15 @@ class AnalysisPanel extends React.Component {
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
-            this.props.saveAsImage();
+            const imageOptions = {
+              scale: 1,
+              encoderOptions: 1,
+              backgroundColor: "#222222",
+            };
+
+            const filename = "BrunelsNetwork-" + moment().format("YYYYMMDD-hhmmss") + ".png";
+
+            saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-viz"), filename, imageOptions);
           }}
         >
           Save as image
@@ -156,10 +167,9 @@ AnalysisPanel.propTypes = {
   toggleindirectConnectionsVisible: PropTypes.func.isRequired,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   filterEngineeringNodes: PropTypes.func.isRequired,
-  filterInvestorNodes: PropTypes.func.isRequired,
+  filterCommercialNodes: PropTypes.func.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
   investorsFiltered: PropTypes.bool.isRequired,
-  saveAsImage: PropTypes.func.isRequired,
   unconnectedNodesVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,

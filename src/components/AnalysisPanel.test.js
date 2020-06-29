@@ -8,7 +8,7 @@ import AnalysisPanel from "./AnalysisPanel";
 afterEach(cleanup);
 
 describe("AnalysisPanel", () => {
-  it("all buttons are clickable", () => {
+  test("all buttons are clickable", () => {
     const setOverlayFn = jest.fn();
     const togglePanelFn = jest.fn();
     const toggleSearchOverlayFn = jest.fn();
@@ -17,7 +17,7 @@ describe("AnalysisPanel", () => {
     const toggleindirectConnectionsVisibleFn = jest.fn();
 
     const filterEngineeringNodesFn = jest.fn();
-    const filterInvestorNodesFn = jest.fn();
+    const filterCommercialNodesFn = jest.fn();
     const togglePhysicsFn = jest.fn();
     const resetFiltersFn = jest.fn();
 
@@ -31,7 +31,7 @@ describe("AnalysisPanel", () => {
         toggleindirectConnectionsVisible={toggleindirectConnectionsVisibleFn}
         indirectConnectionsVisible={true}
         filterEngineeringNodes={filterEngineeringNodesFn}
-        filterInvestorNodes={filterInvestorNodesFn}
+        filterCommercialNodes={filterCommercialNodesFn}
         physicsEnabled={true}
         togglePhysicsEnabled={togglePhysicsFn}
         unconnectedNodesVisible={false}
@@ -41,26 +41,23 @@ describe("AnalysisPanel", () => {
       />
     );
 
-    fireEvent.click(screen.queryByText("Search"));
-    fireEvent.click(screen.queryByText("Close"));
-    fireEvent.click(screen.queryByText("What is Brunel's Network?"));
-    fireEvent.click(screen.queryByText(/engineer/i));
-    fireEvent.click(screen.queryByText(/investor/i));
-    fireEvent.click(screen.queryByText(/physics/i));
-    fireEvent.click(screen.queryByText("Reset filters"));
+    fireEvent.click(screen.queryByText("Search").closest("button"));
+    fireEvent.click(screen.queryByText("Close").closest("button"));
+    fireEvent.click(screen.queryByText(/engineer/i).closest("button"));
+    fireEvent.click(screen.queryByText(/investor/i).closest("button"));
+    fireEvent.click(screen.queryByText(/physics/i).closest("button"));
+    fireEvent.click(screen.queryByText("Reset filters").closest("button"));
 
-    expect(screen.queryByText("What is Brunel's Network?")).toBeTruthy();
     expect(screen.queryByText("Search")).toBeTruthy();
 
-    expect(setOverlayFn).toHaveBeenCalled();
     expect(togglePanelFn).toHaveBeenCalled();
     expect(filterEngineeringNodesFn).toHaveBeenCalled();
-    expect(filterInvestorNodesFn).toHaveBeenCalled();
+    expect(filterCommercialNodesFn).toHaveBeenCalled();
     expect(togglePhysicsFn).toHaveBeenCalled();
     expect(resetFiltersFn).toHaveBeenCalled();
   });
 
-  it("props change text button rendering all true", () => {
+  test("props change text button rendering all true", () => {
     render(
       <AnalysisPanel
         setOverlay={jest.fn()}
@@ -71,7 +68,7 @@ describe("AnalysisPanel", () => {
         toggleindirectConnectionsVisible={jest.fn()}
         indirectConnectionsVisible={true}
         filterEngineeringNodes={jest.fn()}
-        filterInvestorNodes={jest.fn()}
+        filterCommercialNodes={jest.fn()}
         hideUnconnectedNodes={true}
         physicsEnabled={true}
         togglePhysicsEnabled={jest.fn()}
@@ -89,7 +86,7 @@ describe("AnalysisPanel", () => {
     expect(screen.queryByText("Remove investor filter")).toBeTruthy();
   });
 
-  it("props change text button rendering all false", () => {
+  test("props change text button rendering all false", () => {
     render(
       <AnalysisPanel
         setOverlay={jest.fn()}
@@ -100,7 +97,7 @@ describe("AnalysisPanel", () => {
         toggleindirectConnectionsVisible={jest.fn()}
         indirectConnectionsVisible={false}
         filterEngineeringNodes={jest.fn()}
-        filterInvestorNodes={jest.fn()}
+        filterCommercialNodes={jest.fn()}
         hideUnconnectedNodes={true}
         physicsEnabled={true}
         togglePhysicsEnabled={jest.fn()}

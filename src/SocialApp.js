@@ -1,7 +1,6 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
-import moment from "moment";
 
 // Brunel components
 import AboutOverlay from "./components/AboutOverlay";
@@ -27,8 +26,6 @@ import positionGroups from "./data/positionGroups.json";
 // Styling for the app
 import styles from "./SocialApp.module.css";
 import DateRange from "./model/DateRange";
-
-const saveSvgAsPng = require("save-svg-as-png");
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -90,9 +87,8 @@ class SocialApp extends React.Component {
     // Find the unconnected nodes for filtering
     this.findConnectedNodes();
 
-    // // Hide the unconnected nodes
-    this.slotToggleFilter(this.state.connectedNodes);
-    // // setState doesn't fire as called from ctor so change it here
+    // Hide the unconnected nodes
+    this.state.social.toggleFilter(this.state.connectedNodes);
     this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
@@ -411,18 +407,6 @@ class SocialApp extends React.Component {
     });
   }
 
-  saveAsImage() {
-    const imageOptions = {
-      scale: 1,
-      encoderOptions: 1,
-      backgroundColor: "#222222",
-    };
-
-    const filename = "BrunelsNetwork-" + moment().format("YYYYMMDD-hhmmss") + ".png";
-
-    saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-viz"), filename, imageOptions);
-  }
-
   toggleFilterPanel() {
     this.setState({
       isTimeLinePanelOpen: false,
@@ -656,7 +640,6 @@ class SocialApp extends React.Component {
             filterCommercialNodes={() => this.filterCommercialNodes()}
             physicsEnabled={this.state.physicsEnabled}
             togglePhysicsEnabled={this.togglePhysicsEnabled}
-            saveAsImage={() => this.saveAsImage()}
             indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             unconnectedNodesVisible={this.state.unconnectedNodesVisible}
             resetFilters={() => this.resetFiltersNotShip()}

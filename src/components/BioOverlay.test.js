@@ -23,7 +23,7 @@ describe("BioOverlay", () => {
   const name = "Christopher Claxton";
   const person = social.getPeople().getByName(name);
 
-  it("Test text renders correctly", () => {
+  test("Test text renders correctly", () => {
     render(
       <BioOverlay
         social={social}
@@ -36,10 +36,10 @@ describe("BioOverlay", () => {
 
     expect(screen.queryByText(testString)).toBeTruthy();
     expect(screen.queryByText(name)).toBeTruthy();
-    expect(screen.queryByText(/Claxtons father was a Caribbean merchant/)).toBeTruthy();
+    expect(screen.queryByText(/father was a Caribbean merchant/)).toBeTruthy();
   });
 
-  it("Contains an image", () => {
+  test("Contains an image", () => {
     render(
       <BioOverlay
         social={social}
@@ -53,7 +53,7 @@ describe("BioOverlay", () => {
     expect(screen.queryAllByTestId("bioImage")).toBeTruthy();
   });
 
-  it("Buttons click props correctly", () => {
+  test("Buttons click props correctly", () => {
     render(
       <BioOverlay
         social={social}

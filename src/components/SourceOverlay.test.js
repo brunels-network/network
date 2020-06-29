@@ -24,7 +24,7 @@ describe("SourceOverlay", () => {
   const sourceIDs = [sources.values()[nSource]["state"]["id"]];
   const sourceName = sources.values()[nSource]["state"]["name"];
 
-  it("Test text renders correctly", () => {
+  test("Test text renders correctly", () => {
     const toggleOverlayFn = jest.fn();
     const toggleSourceOverlayFn = jest.fn();
     render(
@@ -41,7 +41,7 @@ describe("SourceOverlay", () => {
     expect(screen.queryByText(sourceName)).toBeInTheDocument();
   });
 
-  it("Clicking biography button calls function", () => {
+  test("Clicking biography button calls function", () => {
     const toggleOverlayFn = jest.fn();
     const toggleSourceOverlayFn = jest.fn();
     render(
@@ -59,7 +59,7 @@ describe("SourceOverlay", () => {
     expect(toggleSourceOverlayFn).toHaveBeenCalled();
   });
 
-  it("Contains an image", () => {
+  test("Contains an image", () => {
     const toggleOverlayFn = jest.fn();
     const toggleSourceOverlayFn = jest.fn();
     render(

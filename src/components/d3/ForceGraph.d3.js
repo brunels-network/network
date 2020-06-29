@@ -286,10 +286,6 @@ class ForceGraphD3 extends React.Component {
       this.state.physicsEnabled = this.props.physicsEnabled;
     }
 
-    if (!this.state.hideUnconnectedNodes) {
-      this.state.hideUnconnectedNodes = this.props.hideUnconnectedNodes;
-    }
-
     if (!this.state.standardSimulation) {
       this.state.standardSimulation = this.props.standardSimulation;
     }
@@ -1064,7 +1060,6 @@ class ForceGraphD3 extends React.Component {
 
 ForceGraphD3.propTypes = {
   emitPopProps: PropTypes.func.isRequired,
-  hideUnconnectedNodes: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   standardSimulation: PropTypes.bool.isRequired,
   selectedShipID: PropTypes.string,

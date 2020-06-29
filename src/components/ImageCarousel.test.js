@@ -7,7 +7,7 @@ import ImageCarousel from "./ImageCarousel";
 afterEach(cleanup);
 
 describe("ImageCarousel", () => {
-  it("Images are within page", () => {
+  test("Images are within page", () => {
     render(
       <ImageCarousel>
         <img src={require("../images/RHowlett_IKB.jpg")} alt="Test Image 1" />
