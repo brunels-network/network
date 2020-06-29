@@ -255,6 +255,8 @@ class ForceGraphD3 extends React.Component {
         }
       }
 
+      console.log("Updating graph!");
+
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
 
@@ -262,9 +264,7 @@ class ForceGraphD3 extends React.Component {
         node.y = h * Math.random();
 
         if (node.fixed && this.props.simulationType === "Structured") {
-          node.fx = w * node.fixedLocation["x"];
-          node.fy = h * node.fixedLocation["y"];
-
+          console.log("Setting fixed location for ", node.label);
           node.fx = w * node.fixedLocation["x"] * this.randomShift();
           node.fy = h * node.fixedLocation["y"] * this.randomShift();
         }
@@ -895,14 +895,13 @@ class ForceGraphD3 extends React.Component {
 
   changeSimulationType() {
     if (this._graph) {
-      console.log("In forcegraph simulation type is ", this.props.simulationType);
       switch (this.props.simulationType) {
         case "Standard":
           this.updateGraph(this.state.social);
           this.updateSimulation();
           break;
         case "Structured":
-          this.updateGraph(this.state.social);
+          //   this.updateGraph(this.state.social);
           this.structuredSimulation();
           break;
         case "Centred":
