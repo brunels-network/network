@@ -5,7 +5,9 @@ import "@testing-library/jest-dom/extend-expect";
 
 import SourceOverlay from "./SourceOverlay";
 // This is required to create the social object
+/* eslint-disable no-unused-vars */
 import Social from "../model/Social";
+/* eslint-enable no-unused-vars */
 
 import graphData from "../socialNetwork.json";
 

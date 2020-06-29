@@ -3,9 +3,11 @@ import React from "react";
 import { render, cleanup, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 
+/* eslint-disable no-unused-vars */
 import BioOverlay from "./BioOverlay";
 // This is required to create the social object
 import Social from "../model/Social";
+/* eslint-enable no-unused-vars */
 import graphData from "../socialNetwork.json";
 
 import Popover from "./Popover";

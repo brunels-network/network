@@ -1,5 +1,5 @@
 import React from "react";
-import { render, cleanup, fireEvent, screen, getByTestId } from "@testing-library/react";
+import { render, cleanup, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 
 import ImageCarousel from "./ImageCarousel";
@@ -18,6 +18,4 @@ describe("ImageCarousel", () => {
     expect(screen.getByAltText("Test Image 1")).toBeTruthy();
     expect(screen.getByAltText("Test Image 2")).toBeTruthy();
   });
-
-  // Should test clicking the arrows here
 });

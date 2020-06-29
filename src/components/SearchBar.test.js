@@ -1,8 +1,10 @@
 import React from "react";
 import Dry from "json-dry";
 
+/* eslint-disable no-unused-vars */
 // Required to create the social object
 import Social from "../model/Social";
+/* eslint-enable no-unused-vars */
 
 // import react-testing methods
 import { render, cleanup, fireEvent, screen } from "@testing-library/react";

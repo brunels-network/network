@@ -255,50 +255,19 @@ class ForceGraphD3 extends React.Component {
         }
       }
 
-      //index any old nodes
-      let old_nodes = [];
-      let old = {};
-
-      //   if (this._graph) {
-      //     old_nodes = this._graph.nodes;
-
-      //     for (let n in old_nodes) {
-      //       old[old_nodes[n].id] = n;
-      //     }
-      //   }
-
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
 
-        // node.x = (w / 2) * this.randomShift(0.1, 0.5);
-        // node.y = (h / 2) * this.randomShift(0.1, 0.5);
         node.x = w * Math.random();
         node.y = h * Math.random();
 
-        //     // let i = old[node.id];
+        // if (node.fixed && this.props.standardSimulation) {
+        //   node.fx = w * node.fixedLocation["x"];
+        //   node.fy = h * node.fixedLocation["y"];
 
-        //     // if (i) {
-        //     //   let o = old_nodes[i];
-        //     //   node.x = o.x;
-        //     //   node.y = o.y;
-        //     // } else if (this.gotConnections(node.id)) {
-        //     // } else {
-        //     //   node.x = w - 0.15 * w;
-        //     //   node.y = h * Math.random();
-        //     // }
-
-        //     // if (node.fixed && this.props.standardSimulation) {
-        //     //   if (i) {
-        //     //     node.fx = node.x;
-        //     //     node.fy = node.y;
-        //     //   } else if (node.fixedLocation) {
-        //     //     node.fx = w * node.fixedLocation["x"] * this.randomShift();
-        //     //     node.fy = h * node.fixedLocation["y"] * this.randomShift();
-        //     //   } else {
-        //     //     node.fx = w * 0.66;
-        //     //     node.fy = h * 0.5;
-        //     //   }
-        //     // }
+        //     node.fx = w * node.fixedLocation["x"] * this.randomShift();
+        //     node.fy = h * node.fixedLocation["y"] * this.randomShift();
+        // }
       }
 
       this._graph = graph;
@@ -687,9 +656,9 @@ class ForceGraphD3 extends React.Component {
         (update) => update.attr("class", `node_text ${styles.node_text}`)
       )
       .text((d) => d.label)
-      .style("font-size", (d) => {
-        // return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
+      .style("font-size", () => {
         return "1.5vh";
+        // return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
       })
       .attr("dx", (d) => {
         return this.getWeight(d) + "px";
@@ -829,18 +798,9 @@ class ForceGraphD3 extends React.Component {
           .attr("cy", (d) => {
             return (d.y = constrain(d.y, h, d.r));
           });
-
-        // labelSim.alphaTarget(0.3).restart();
-        // labelNode
-        // We also need to update the labels of the labelSim here
-        // Iterate over all the labels
         this._label
           .attr("x", (d) => {
-            if (this.getLabelXOffset(d))
-              // console.log(this.getBBox());
-              //  x -  100 pixels wide
-              // y - 20px high
-              return this.getLabelXOffset(d);
+            if (this.getLabelXOffset(d)) return this.getLabelXOffset(d);
           })
           .attr("y", (d) => d.y);
       })
@@ -930,12 +890,6 @@ class ForceGraphD3 extends React.Component {
           .attr("cy", (d) => {
             return (d.y = constrain(d.y, h, d.r));
           });
-
-        // Iterate over each of the labels on the screen, check if they overlap with another and if so
-        // move it until no overlapping occurs?
-
-        //   See  http://bl.ocks.org/larskotthoff/11406992
-
         this._label
           .attr("x", (d) => {
             return this.getLabelXOffset(d);
@@ -968,21 +922,14 @@ class ForceGraphD3 extends React.Component {
   getLabelXOffset(d) {
     const swapSection = 0.2 * window.innerWidth;
     const radius = this.getWeight(d);
-
     const textWidth = this.getTextWidth(d["label"], "Playfair Display SemiBold");
 
-    let x;
     if (d.x > window.innerWidth - swapSection) {
       const maxOffset = 0.2 * window.innerWidth;
-      const offset = Math.min(radius + 1.5 * textWidth, maxOffset);
-      //   const offset = Math.min(radius * d["label"].length, maxOffset);
-
-      x = d.x - offset;
+      return d.x - Math.min(radius + 1.5 * textWidth, maxOffset);
     } else {
-      x = d.x;
+      return d.x;
     }
-
-    return x;
   }
 
   slowPhysics() {
