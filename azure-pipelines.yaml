@@ -28,9 +28,6 @@ steps:
   - script: npm run test-ci
     displayName: "Run tests"
 
-  - script: npm run deploy
-    displayName: "Deploy to GitHub pages"
-
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
