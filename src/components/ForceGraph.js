@@ -103,6 +103,7 @@ class ForceGraph extends React.Component {
     } else {
       this.graph.fastPhysics();
     }
+    console.log(this.props.simulationType);
 
     return (
       <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>

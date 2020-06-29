@@ -261,13 +261,13 @@ class ForceGraphD3 extends React.Component {
         node.x = w * Math.random();
         node.y = h * Math.random();
 
-        // if (node.fixed && this.props.standardSimulation) {
-        //   node.fx = w * node.fixedLocation["x"];
-        //   node.fy = h * node.fixedLocation["y"];
+        if (node.fixed && this.props.simulationType === "Structured") {
+          node.fx = w * node.fixedLocation["x"];
+          node.fy = h * node.fixedLocation["y"];
 
-        //     node.fx = w * node.fixedLocation["x"] * this.randomShift();
-        //     node.fy = h * node.fixedLocation["y"] * this.randomShift();
-        // }
+          node.fx = w * node.fixedLocation["x"] * this.randomShift();
+          node.fy = h * node.fixedLocation["y"] * this.randomShift();
+        }
       }
 
       this._graph = graph;
@@ -380,7 +380,13 @@ class ForceGraphD3 extends React.Component {
 
     if (props.standardSimulation !== this.state.standardSimulation) {
       this.state.standardSimulation = props.standardSimulation;
-      //   this.toggleSimulation();
+      //   this.changeSimulationType();
+      this._graph_changed = true;
+    }
+
+    if (props.simulationType !== this.state.standardSimulation) {
+      this.state.standardSimulation = props.simulationType;
+      //   this.changeSimulationType();
       this._graph_changed = true;
     }
 
@@ -810,35 +816,105 @@ class ForceGraphD3 extends React.Component {
     this._simulation = simulation;
   }
 
-  toggleSimulation() {
+  structuredSimulation() {
+    if (this._simulation) {
+      this._simulation.stop();
+      this._simulation = null;
+      this._is_running = false;
+    }
+
+    let w = this.state.width;
+    let h = this.state.height;
+
+    // We don't want a force applied to null edges
+    let edges = this._graph.edges.filter((v) => v["type"]);
+
+    let simulation = d3
+      .forceSimulation(this._graph.nodes)
+      .force("charge", d3.forceManyBody().strength(-40).distanceMin(4))
+      .force(
+        "link",
+        d3
+          .forceLink()
+          .links(edges)
+          .distance((d) => {
+            if (d["type"] === "direct") {
+              return 75 * (1 + d.value);
+            } else {
+              return 125 * (1 + d.value);
+            }
+          })
+          .iterations(5)
+      )
+      .force(
+        "collision",
+        d3
+          .forceCollide()
+          .radius((d) => {
+            return 3 * (1 + 10 * d.size);
+          })
+          .strength(10.0)
+          .iterations(5)
+      )
+      // This forces the groupings given in position_groups.json left/right
+      .force(
+        "X",
+        d3.forceX().strength((d) => {
+          return this.getGroupForce(d);
+        })
+      )
+      // This function with help from https://stackoverflow.com/a/13456081
+      .on("tick", () => {
+        this._link.attr("d", (d) => {
+          const curveFactor = 3;
+          const dx = d.target.x - d.source.x;
+          const dy = d.target.y - d.source.x;
+          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
+
+          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+        });
+        this._node
+          .attr("cx", (d) => {
+            return (d.x = constrain(d.x, w, d.r));
+          })
+          .attr("cy", (d) => {
+            return (d.y = constrain(d.y, h, d.r));
+          });
+
+        this._label.attr("x", (d) => this.getLabelXOffset(d)).attr("y", (d) => d.y);
+      })
+      .on("end", () => {
+        this.restartSimulation();
+      });
+
+    this._is_running = true;
+
+    // Save the simulation so that we can update it later...
+    this._simulation = simulation;
+  }
+
+  changeSimulationType() {
     if (this._graph) {
+      console.log("In forcegraph simulation type is ", this.props.simulationType);
       switch (this.props.simulationType) {
-        case "standard":
+        case "Standard":
           this.updateGraph(this.state.social);
           this.updateSimulation();
           break;
-        case "structured":
+        case "Structured":
+          this.updateGraph(this.state.social);
           this.structuredSimulation();
           break;
-        case "centred":
+        case "Centred":
           this.centreNodes();
+          break;
+        default:
+          break;
       }
     }
   }
 
-  //   toggleSimulation() {
-  //     if (this._graph) {
-  //       if (this.props.standardSimulation) {
-  //         this.updateGraph(this.state.social, true);
-  //         this.updateSimulation();
-  //       } else {
-  //         this.centreNodes();
-  //       }
-  //     }
-  //   }
-
   centreNodes() {
-    console.log("Setting centred simulation");
     if (this._simulation) {
       this._simulation.stop();
       this._simulation = null;
@@ -1070,7 +1146,7 @@ class ForceGraphD3 extends React.Component {
     }
 
     if (update_simulation) {
-      this.toggleSimulation();
+      this.changeSimulationType();
     }
   }
 }

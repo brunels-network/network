@@ -64,7 +64,7 @@ class SocialApp extends React.Component {
       commercialFiltered: false,
       engineersFiltered: false,
       standardSimulation: true,
-      simulationType: "standard",
+      simulationType: "Standard",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -82,7 +82,7 @@ class SocialApp extends React.Component {
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
 
-    this.simulationTypes = Object.freeze({ standard: 1, centred: 1, structured: 1 });
+    this.simulationTypes = Object.freeze({ Standard: 1, Centred: 1, Structured: 1 });
 
     // Find the investors and engineers for easy filtering
     // This requires the
@@ -351,19 +351,18 @@ class SocialApp extends React.Component {
   }
 
   toggleSimulationType() {
-    // Using setState here leads to standardSimulation not being set in time for the rerender of the simulation
-    // this.setState({ standardSimulation: !this.state.standardSimulation });
-    /* eslint-disable react/no-direct-mutation-state */
-    this.state.standardSimulation = !this.state.standardSimulation;
-    /* eslint-enable react/no-direct-mutation-state */
+    const simType = this.state.simulationType;
+
+    if (simType === "Standard") {
+      this.setSimulationType("Structured");
+    } else if (simType === "Structured" || simType === "Centred") {
+      this.setSimulationType("Standard");
+    }
   }
 
   setSimulationType(simType) {
     if (simType in this.simulationTypes) {
-      /* eslint-disable react/no-direct-mutation-state */
-      this.state.simulationType = simType;
-      /* eslint-enable react/no-direct-mutation-state */
-      //   this.setState({ simulationType: simType });
+      this.setState({ simulationType: simType });
     } else {
       console.error("Invalid simulaiton type, valid types are ", Object.keys(this.simulationTypes));
     }
@@ -375,17 +374,16 @@ class SocialApp extends React.Component {
       this.filterCommercialNodes();
     }
 
-    // If we have unconnected nodes as part of this filter set, get rid of them
-    let nodesToFilter = this.state.engineerNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
-
     if (this.state.engineersFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
-      this.setSimulationType("standard");
+      this.setSimulationType("Standard");
     } else {
       this.resetFiltersNotShip();
+      // If we have unconnected nodes as part of this filter set, get rid of them
+      const nodesToFilter = this.state.engineerNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
       this.slotToggleFilter(nodesToFilter);
-      this.setSimulationType("centred");
+      this.setSimulationType("Centred");
     }
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
@@ -397,17 +395,16 @@ class SocialApp extends React.Component {
       this.filterEngineeringNodes();
     }
 
-    // If we have unconnected nodes as part of this filter set, get rid of them
-    let nodesToFilter = this.state.commericalNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
-
     if (this.state.commercialFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
-      this.setSimulationType("standard");
+      this.setSimulationType("Standard");
     } else {
       this.resetFiltersNotShip();
+      // If we have unconnected nodes as part of this filter set, get rid of them
+      const nodesToFilter = this.state.commericalNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
       this.slotToggleFilter(nodesToFilter);
-      this.setSimulationType("centred");
+      this.setSimulationType("Centred");
     }
 
     this.setState({ commercialFiltered: !this.state.commercialFiltered });
@@ -541,6 +538,17 @@ class SocialApp extends React.Component {
         <div className={styles.resetButtonContainer}>
           <TextButton fontSize="2.7vh" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
             Reset
+          </TextButton>
+        </div>
+
+        <div className={styles.simulationTypeButtonContainer}>
+          <TextButton
+            fontSize="2.7vh"
+            textColor="#f1f1f1"
+            hoverColor="#9CB6A4"
+            onClick={() => this.toggleSimulationType()}
+          >
+            {this.state.simulationType}
           </TextButton>
         </div>
 

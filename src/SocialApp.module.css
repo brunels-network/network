@@ -34,6 +34,12 @@
   left: 2vw;
 }
 
+.simulationTypeButtonContainer {
+  position: fixed;
+  top: 94vh;
+  left: 6vw;
+}
+
 .whatIsButtonContainer {
   position: fixed;
   top: 2vh;
