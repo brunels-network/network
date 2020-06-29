@@ -61,9 +61,10 @@ class SocialApp extends React.Component {
       isSearchOverlayOpen: false,
       indirectConnectionsVisible: false,
       unconnectedNodesVisible: false,
-      investorsFiltered: false,
+      commercialFiltered: false,
       engineersFiltered: false,
       standardSimulation: true,
+      simulationType: "standard",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -80,6 +81,8 @@ class SocialApp extends React.Component {
     const ssGW = social.getProjects().getByName("SS Great Western");
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
+
+    this.simulationTypes = Object.freeze({ standard: 1, centred: 1, structured: 1 });
 
     // Find the investors and engineers for easy filtering
     // This requires the
@@ -101,7 +104,7 @@ class SocialApp extends React.Component {
     this.setState({
       social: social,
       engineersFiltered: false,
-      investorsFiltered: false,
+      commercialFiltered: false,
       unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
     });
   }
@@ -113,7 +116,7 @@ class SocialApp extends React.Component {
     this.setState({
       social: social,
       engineersFiltered: false,
-      investorsFiltered: false,
+      commercialFiltered: false,
       unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
     });
   }
@@ -355,9 +358,20 @@ class SocialApp extends React.Component {
     /* eslint-enable react/no-direct-mutation-state */
   }
 
+  setSimulationType(simType) {
+    if (simType in this.simulationTypes) {
+      /* eslint-disable react/no-direct-mutation-state */
+      this.state.simulationType = simType;
+      /* eslint-enable react/no-direct-mutation-state */
+      //   this.setState({ simulationType: simType });
+    } else {
+      console.error("Invalid simulaiton type, valid types are ", Object.keys(this.simulationTypes));
+    }
+  }
+
   // If unconnected nodes are enabled add them to the filter, if they're not remove them
   filterEngineeringNodes() {
-    if (this.state.investorsFiltered) {
+    if (this.state.commercialFiltered) {
       this.filterCommercialNodes();
     }
 
@@ -367,13 +381,15 @@ class SocialApp extends React.Component {
     if (this.state.engineersFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
+      this.setSimulationType("standard");
     } else {
       this.resetFiltersNotShip();
       this.slotToggleFilter(nodesToFilter);
+      this.setSimulationType("centred");
     }
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
-    this.toggleSimulationType();
+    // this.toggleSimulationType();
   }
 
   filterCommercialNodes() {
@@ -384,16 +400,19 @@ class SocialApp extends React.Component {
     // If we have unconnected nodes as part of this filter set, get rid of them
     let nodesToFilter = this.state.commericalNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
 
-    if (this.state.investorsFiltered) {
+    if (this.state.commercialFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
+      this.setSimulationType("standard");
     } else {
       this.resetFiltersNotShip();
       this.slotToggleFilter(nodesToFilter);
+      this.setSimulationType("centred");
     }
 
-    this.setState({ investorsFiltered: !this.state.investorsFiltered });
-    this.toggleSimulationType();
+    this.setState({ commercialFiltered: !this.state.commercialFiltered });
+    // this.toggleSimulationType();
+    console.log("At the end of the commerical, sim type ", this.state.simulationType, this.state.commercialFiltered);
   }
 
   toggleInfoPanel() {
@@ -619,6 +638,7 @@ class SocialApp extends React.Component {
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
               standardSimulation={this.state.standardSimulation}
+              simulationType={this.state.simulationType}
             />
           </div>
         </div>
@@ -634,7 +654,7 @@ class SocialApp extends React.Component {
             }}
             toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
             closeOverlay={() => this.closeOverlay()}
-            investorsFiltered={this.state.investorsFiltered}
+            commercialFiltered={this.state.commercialFiltered}
             engineersFiltered={this.state.engineersFiltered}
             filterEngineeringNodes={() => this.filterEngineeringNodes()}
             filterCommercialNodes={() => this.filterCommercialNodes()}

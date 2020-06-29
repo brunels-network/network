@@ -119,6 +119,7 @@ ForceGraph.propTypes = {
   selectedShipID: PropTypes.string,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
+  simulationType: PropTypes.string.isRequired,
 };
 
 export default ForceGraph;

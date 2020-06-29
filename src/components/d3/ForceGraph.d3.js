@@ -812,16 +812,33 @@ class ForceGraphD3 extends React.Component {
 
   toggleSimulation() {
     if (this._graph) {
-      if (this.props.standardSimulation) {
-        this.updateGraph(this.state.social, true);
-        this.updateSimulation();
-      } else {
-        this.centreNodes();
+      switch (this.props.simulationType) {
+        case "standard":
+          this.updateGraph(this.state.social);
+          this.updateSimulation();
+          break;
+        case "structured":
+          this.structuredSimulation();
+          break;
+        case "centred":
+          this.centreNodes();
       }
     }
   }
 
+  //   toggleSimulation() {
+  //     if (this._graph) {
+  //       if (this.props.standardSimulation) {
+  //         this.updateGraph(this.state.social, true);
+  //         this.updateSimulation();
+  //       } else {
+  //         this.centreNodes();
+  //       }
+  //     }
+  //   }
+
   centreNodes() {
+    console.log("Setting centred simulation");
     if (this._simulation) {
       this._simulation.stop();
       this._simulation = null;
@@ -1062,6 +1079,7 @@ ForceGraphD3.propTypes = {
   emitPopProps: PropTypes.func.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   standardSimulation: PropTypes.bool.isRequired,
+  simulationType: PropTypes.string.isRequired,
   selectedShipID: PropTypes.string,
 };
 

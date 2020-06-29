@@ -42,7 +42,7 @@ class AnalysisPanel extends React.Component {
     let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
 
     let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
-    let filterCommercialText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
+    let filterCommercialText = this.props.commercialFiltered ? "Remove commerical filter" : "Filter by commercial";
 
     return (
       <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.wholePanel}>
@@ -169,7 +169,7 @@ AnalysisPanel.propTypes = {
   filterEngineeringNodes: PropTypes.func.isRequired,
   filterCommercialNodes: PropTypes.func.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
-  investorsFiltered: PropTypes.bool.isRequired,
+  commercialFiltered: PropTypes.bool.isRequired,
   unconnectedNodesVisible: PropTypes.bool.isRequired,
   physicsEnabled: PropTypes.bool.isRequired,
   togglePhysicsEnabled: PropTypes.func.isRequired,
