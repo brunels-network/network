@@ -131,9 +131,9 @@ class People {
       return results;
     }
 
-    let keys = Object.keys(this._names).join("', '");
+    // let keys = Object.keys(this._names).join("', '");
 
-    throw new MissingError(`No Person matches '${name}. Available People are '${keys}'`);
+    // throw new MissingError(`No Person matches '${name}. Available People are '${keys}'`);
   }
 
   filter(funcs = []) {

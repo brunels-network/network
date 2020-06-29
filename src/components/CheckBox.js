@@ -6,7 +6,7 @@ import styles from "./CheckBox.module.css";
 function CheckBox(props) {
   return (
     <label className={styles.checkBox} style={props.style}>
-      <input type="checkbox" checked={props.checked} onChange={props.onChange} />
+      <input data-testid="checkbox" type="checkbox" checked={props.checked} onChange={props.onChange} />
       <span className={styles.checkMark} />
     </label>
   );

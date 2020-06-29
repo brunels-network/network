@@ -45,7 +45,7 @@ class BioOverlay extends React.Component {
     );
 
     return (
-      <div className={styles.container}>
+      <div data-testid="bioOverlay" className={styles.container}>
         <div className={styles.closeButton}>
           <button onClick={this.props.toggleOverlay} style={{ background: "none", border: "none", fontSize: "2vh" }}>
             x
@@ -68,7 +68,7 @@ class BioOverlay extends React.Component {
         <div className={styles.divider} />
         <div className={styles.imageSection}>
           <div>
-            <img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />
+            <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="A ship" />
           </div>
           <div className={styles.imageDescription}>Image description</div>
         </div>

@@ -175,6 +175,7 @@ class ForceGraphD3 extends React.Component {
     this._target_decay = 0.1;
     this._target_alpha = 0.3;
 
+    this.labelSide = {};
     this._tooltips = [];
     // this.updateGraph = this.updateGraph.bind(this);
     // this.update = this.update.bind(this);
@@ -306,8 +307,6 @@ class ForceGraphD3 extends React.Component {
   }
 
   randomShift(min = 0.01, max = 0.15) {
-    // Adds a small bit of randomness to the placement of the fixed nodes so it
-    // doesn't look so fixed
     return 1 - Math.random() * (max - min) + max;
   }
 
@@ -422,6 +421,13 @@ class ForceGraphD3 extends React.Component {
 
     // For now get the ID of the SS Great Eastern so we don't assign force to the nodes
     this.state.greatEasternID = this.state.social.getProjects().getByName("SS Great Eastern").getID();
+
+    if (this._graph) {
+      // Create this.labelSide
+      for (const n of this._graph.nodes) {
+        this.labelSide[n.id] = Math.random() >= 0.5;
+      }
+    }
   }
 
   className() {
@@ -682,7 +688,8 @@ class ForceGraphD3 extends React.Component {
       )
       .text((d) => d.label)
       .style("font-size", (d) => {
-        return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
+        // return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
+        return "1.5vh";
       })
       .attr("dx", (d) => {
         return this.getWeight(d) + "px";
@@ -698,6 +705,8 @@ class ForceGraphD3 extends React.Component {
       .on("mouseover", handleMouseOver(this))
       .on("mouseout", handleMouseOut(this))
       .call(this.drag());
+
+    console.log(text);
 
     return text;
   }
@@ -758,15 +767,19 @@ class ForceGraphD3 extends React.Component {
     // We don't want a force applied to null edges
     let edges = this._graph.edges.filter((v) => v["type"]);
 
+    // Node layout
     const maxWeight = d3.max(this._graph.nodes, (d) => {
       return d["weight"][this.props.selectedShipID];
     });
 
-    let strengthScale = d3.scalePow().exponent(2.5).range([0, 1]).domain([0, maxWeight]);
+    let strengthScale = d3.scalePow().exponent(3).range([0, 1]).domain([0, maxWeight]);
     let radiusScale = d3.scaleLinear().domain([0, maxWeight]).range([1, 80]);
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
+      .alpha(0.4)
+      .alphaTarget(0)
+      .alphaDecay(0.01)
       .force(
         "X",
         d3
@@ -787,7 +800,7 @@ class ForceGraphD3 extends React.Component {
       )
       .force(
         "charge",
-        d3.forceManyBody().strength((d) => radiusScale(d["weight"][this.props.selectedShipID]))
+        d3.forceManyBody().strength((d) => 2 * radiusScale(d["weight"][this.props.selectedShipID]))
       )
       .force(
         "collide",
@@ -817,7 +830,19 @@ class ForceGraphD3 extends React.Component {
             return (d.y = constrain(d.y, h, d.r));
           });
 
-        this._label.attr("x", (d) => this.getLabelXOffset(d)).attr("y", (d) => d.y);
+        // labelSim.alphaTarget(0.3).restart();
+        // labelNode
+        // We also need to update the labels of the labelSim here
+        // Iterate over all the labels
+        this._label
+          .attr("x", (d) => {
+            if (this.getLabelXOffset(d))
+              // console.log(this.getBBox());
+              //  x -  100 pixels wide
+              // y - 20px high
+              return this.getLabelXOffset(d);
+          })
+          .attr("y", (d) => d.y);
       })
       .on("end", () => {
         this.restartSimulation();
@@ -906,7 +931,16 @@ class ForceGraphD3 extends React.Component {
             return (d.y = constrain(d.y, h, d.r));
           });
 
-        this._label.attr("x", (d) => this.getLabelXOffset(d)).attr("y", (d) => d.y);
+        // Iterate over each of the labels on the screen, check if they overlap with another and if so
+        // move it until no overlapping occurs?
+
+        //   See  http://bl.ocks.org/larskotthoff/11406992
+
+        this._label
+          .attr("x", (d) => {
+            return this.getLabelXOffset(d);
+          })
+          .attr("y", (d) => d.y);
       })
       .on("end", () => {
         this.restartSimulation();
@@ -920,14 +954,28 @@ class ForceGraphD3 extends React.Component {
     this.updateGraph(this.state.social);
   }
 
+  getTextWidth(text, font) {
+    // https://stackoverflow.com/a/21015393
+    // If given, use cached canvas for better performance
+    // else, create new canvas
+    let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
+    let context = canvas.getContext("2d");
+    context.font = font;
+    let metrics = context.measureText(text);
+    return metrics.width;
+  }
+
   getLabelXOffset(d) {
-    const swapSection = 20 * (window.innerWidth / 100);
+    const swapSection = 0.2 * window.innerWidth;
+    const radius = this.getWeight(d);
+
+    const textWidth = this.getTextWidth(d["label"], "Playfair Display SemiBold");
 
     let x;
     if (d.x > window.innerWidth - swapSection) {
-      const radius = this.getWeight(d);
       const maxOffset = 0.2 * window.innerWidth;
-      const offset = Math.min(radius * d["label"].length, maxOffset);
+      const offset = Math.min(radius + 1.5 * textWidth, maxOffset);
+      //   const offset = Math.min(radius * d["label"].length, maxOffset);
 
       x = d.x - offset;
     } else {

@@ -10,6 +10,7 @@ class ImageCarousel extends Component {
   render() {
     return (
       <Carousel
+        data-testid="carouselCont"
         slidesPerPage={1}
         arrowLeft={<FontAwesomeIcon icon={faAngleDoubleLeft} />}
         arrowLeftDisabled={<FontAwesomeIcon icon={faAngleLeft} />}

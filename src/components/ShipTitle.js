@@ -7,7 +7,11 @@ function ShipTitle(props) {
   if (props.name == null) {
     return null;
   } else {
-    return <button className={styles.shipTitle}>{props.name}</button>;
+    return (
+      <button data-testid="shipTitle" className={styles.shipTitle}>
+        {props.name}
+      </button>
+    );
   }
 }
 

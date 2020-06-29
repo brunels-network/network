@@ -42,7 +42,7 @@ class AnalysisPanel extends React.Component {
     let filterInvestorsText = this.props.investorsFiltered ? "Remove investor filter" : "Filter by investors";
 
     return (
-      <div ref={this.setWrapperRef} className={styles.wholePanel}>
+      <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.wholePanel}>
         <div className={styles.verticalSpaceTitle}></div>
         <div className={styles.titleText}>Analysis</div>
         <div className={styles.verticalSpace}></div>
@@ -57,6 +57,7 @@ class AnalysisPanel extends React.Component {
           {filterEngineersText}
         </TextButton>
         <TextButton
+          data-testid="timelineButton"
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
@@ -98,6 +99,7 @@ class AnalysisPanel extends React.Component {
         </TextButton>
 
         <TextButton
+          data-testid="OptionsButton"
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
@@ -129,6 +131,7 @@ class AnalysisPanel extends React.Component {
         </TextButton>
         <div className={styles.verticalSpace}></div>
         <TextButton
+          data-testid="closeButton"
           fontSize="2.4vh"
           textColor="#222"
           hoverColor="white"
@@ -146,7 +149,6 @@ class AnalysisPanel extends React.Component {
 
 AnalysisPanel.propTypes = {
   toggleFilterPanel: PropTypes.func,
-  toggleOptionsOverlay: PropTypes.func,
   togglePanel: PropTypes.func,
   toggleSearchOverlay: PropTypes.func,
   toggleUnconnectedNodesVisible: PropTypes.func.isRequired,

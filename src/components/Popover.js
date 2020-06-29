@@ -22,7 +22,7 @@ class Popover extends React.Component {
 
     this.toggleOverlay = this.toggleOverlay.bind(this);
 
-    this.state = { isOverlayOpen: false };
+    this.state = { isOverlayOpen: false, isSourceOverlayOpen: false, isBioOverlayOpen: false };
   }
 
   componentDidMount() {
@@ -168,8 +168,9 @@ class Popover extends React.Component {
           <div className={styles.edge_count}>Number of connections: {node["edge_count"][selectedShipID]}</div>
           <div className={styles.readMore}>{readMoreButton}</div>
           <div className={styles.sourceHeader}>Sources</div>
-          <div className={styles.sourceSection}>
+          <div data-testid="sourceButton" className={styles.sourceSection}>
             <TextButton
+              data-testid="sourceButton"
               textColor="black"
               hoverColor="#808080"
               fontSize="1.5vh"

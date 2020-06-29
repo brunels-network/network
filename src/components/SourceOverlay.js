@@ -25,7 +25,7 @@ class SourceOverlay extends React.Component {
 
       this.state.elemCodes.push(id);
 
-      return <img key={id} src={require(`../images/${filename}`)} alt="Manuscript" />;
+      return <img data-testid="sourceImage" key={id} src={require(`../images/${filename}`)} alt="Manuscript" />;
     });
   }
 
@@ -56,7 +56,7 @@ class SourceOverlay extends React.Component {
     );
 
     return (
-      <div className={styles.container}>
+      <div data-testid="sourceOverlay" className={styles.container}>
         <div className={styles.closeButton}>
           <button onClick={this.props.toggleOverlay} style={{ background: "none", border: "none", fontSize: "2vh" }}>
             x

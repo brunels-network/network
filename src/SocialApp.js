@@ -1,14 +1,12 @@
 // package imports
 import React from "react";
 import Dry from "json-dry";
-import * as d3 from "d3";
 import moment from "moment";
 
 // Brunel components
 import AboutOverlay from "./components/AboutOverlay";
 import AnalysisPanel from "./components/AnalysisPanel";
 import ForceGraph from "./components/ForceGraph";
-import InfoBox from "./components/InfoBox";
 import HowDoIOverlay from "./components/HowDoIOverlay";
 import TimeLineBox from "./components/TimeLineBox";
 import FilterBox from "./components/FilterBox";
@@ -64,7 +62,6 @@ class SocialApp extends React.Component {
       isFilterPanelOpen: false,
       isHamburgerMenuOpen: false,
       isSearchOverlayOpen: false,
-      isOptionsOverlayOpen: false,
       indirectConnectionsVisible: false,
       unconnectedNodesVisible: false,
       investorsFiltered: false,
@@ -445,10 +442,6 @@ class SocialApp extends React.Component {
     this.setState({ physicsEnabled: !this.state.physicsEnabled });
   }
 
-  toggleOptionsOverlay() {
-    this.setState({ isOptionsOverlayOpen: !this.state.isOptionsOverlayOpen });
-  }
-
   toggleindirectConnectionsVisible() {
     this.setState({ indirectConnectionsVisible: !this.state.indirectConnectionsVisible });
   }
@@ -590,31 +583,6 @@ class SocialApp extends React.Component {
           />
         </SlidingPanel>
 
-        {/* Info panel on the RHS */}
-        <SlidingPanel isOpen={this.state.isInfoPanelOpen} position="right">
-          <span
-            className={styles.closePanelButton}
-            onClick={() => {
-              this.setState({ isInfoPanelOpen: false });
-            }}
-          >
-            X
-          </span>
-          <InfoBox
-            item={selected}
-            social={social}
-            emitSelected={(item) => {
-              this.slotSelected(item);
-            }}
-            emitHighlighted={(item) => {
-              this.slotHighlighted(item);
-            }}
-            emitToggleFilter={(item) => {
-              this.slotToggleFilter(item);
-            }}
-          />
-        </SlidingPanel>
-
         {/* Filter on bottom of page */}
         <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="25%">
           <span
@@ -647,12 +615,7 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.bottomContainer}>
-          <ShipSelector
-            projects={this.state.social.getProjects()}
-            shipFilter={(item) => this.slotSetShip(item)}
-            resetFilters={this.resetAllFilters}
-            selectedShip={this.state.selectedShip}
-          />
+          <ShipSelector projects={this.state.social.getProjects()} shipFilter={(item) => this.slotSetShip(item)} />
         </div>
         <div className={styles.acknowledgeContainer}>
           Brunel&apos;s Network is a project by the Brunel Institute, a collaboration of the SS Great Britain Trust and
@@ -668,7 +631,6 @@ class SocialApp extends React.Component {
               highlighted={highlighted}
               emitClicked={(id) => this.slotSelected(id)}
               setOverlay={this.setOverlay}
-              wobble={this.state.wobbleEnabled}
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
@@ -680,7 +642,6 @@ class SocialApp extends React.Component {
         <SlidingPanel isOpen={this.state.isAnalysisOpen} position="rightBottom" width="10%">
           <AnalysisPanel
             toggleSearchOverlay={() => this.toggleSearchOverlay()}
-            toggleOptionsOverlay={() => this.toggleOptionsOverlay()}
             toggleFilterPanel={() => this.toggleFilterPanel()}
             toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
             togglePanel={() => this.toggleAnalysisPanel()}

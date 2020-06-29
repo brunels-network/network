@@ -21,7 +21,11 @@ function SearchResults(props) {
   let items = [];
 
   results.forEach((item, index) => {
-    items.push(<li key={index}>{item}</li>);
+    items.push(
+      <li data-testid={"searchResult" + index} key={"searchResult" + index}>
+        {item}
+      </li>
+    );
   });
 
   return <ul>{items}</ul>;
@@ -121,7 +125,7 @@ class SearchBar extends React.Component {
     try {
       items = social.find(text);
     } catch (error) {
-      console.error(error);
+      //   console.warn(error);
       items = null;
     }
 
@@ -280,6 +284,7 @@ class SearchBar extends React.Component {
       <div>
         <div className={styles.searchContainer}>
           <input
+            data-testid="searchInput"
             className={styles.searchBox}
             onChange={(event) => {
               this.onChange(event);
