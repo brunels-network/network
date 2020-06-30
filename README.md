@@ -1,18 +1,18 @@
-[![Build Status](https://dev.azure.com/brunel-network/brunel/_apis/build/status/gareth-j.brunel?branchName=devel)](https://dev.azure.com/brunel-network/brunel/_build/latest?definitionId=1&branchName=devel)
-[![Code Coverage](https://img.shields.io/azure-devops/coverage/brunel-network/brunel/1/devel)](https://img.shields.io/azure-devops/coverage/brunel-network/brunel/1/devel)
+[![Build Status](https://dev.azure.com/brunels-network/network/_apis/build/status/brunels-network.network?branchName=devel)](https://dev.azure.com/brunels-network/network/_build/latest?definitionId=1&branchName=devel)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# A project to visualize the connections between people involved in the construction of Isambard Kingdom Brunel's great steamships, the SS Great Western, SS Great Britain and SS Great Eastern.
+## A project to visualize the connections between people involved in the construction of Isambard Kingdom Brunel's great steamships, the SS Great Western, SS Great Britain and SS Great Eastern.
 
 This project uses data taken from correspondence between those involveed in the construction of the three great steam ships.
 
-## Use the network
+## Run
 
 To run this software locally you'll need to [install npm](https://www.npmjs.com/get-npm) and then clone this repository
 
 `git clone https://github.com/brunels-network/network.git`
 
-Then move into the `network` directory and run
+Move into the `network` directory and run
 
 `npm install`
 
@@ -20,7 +20,7 @@ This will download the libraries the network requires to run. Once this has comp
 
 `npm start`
 
-This will open the network in your default browser and you can use this as you would online.
+This will open the network in your default browser and you can use this as you would at [https://brunels-network.github.io/network/](https://brunels-network.github.io/network/).
 
 ## Updating data
 
