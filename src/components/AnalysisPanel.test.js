@@ -18,7 +18,6 @@ describe("AnalysisPanel", () => {
 
     const filterEngineeringNodesFn = jest.fn();
     const filterCommercialNodesFn = jest.fn();
-    const togglePhysicsFn = jest.fn();
     const resetFiltersFn = jest.fn();
 
     render(
@@ -32,8 +31,6 @@ describe("AnalysisPanel", () => {
         indirectConnectionsVisible={true}
         filterEngineeringNodes={filterEngineeringNodesFn}
         filterCommercialNodes={filterCommercialNodesFn}
-        physicsEnabled={true}
-        togglePhysicsEnabled={togglePhysicsFn}
         unconnectedNodesVisible={false}
         engineersFiltered={false}
         investorsFiltered={false}
@@ -45,7 +42,6 @@ describe("AnalysisPanel", () => {
     fireEvent.click(screen.queryByText("Close").closest("button"));
     fireEvent.click(screen.queryByText(/engineer/i).closest("button"));
     fireEvent.click(screen.queryByText(/investor/i).closest("button"));
-    fireEvent.click(screen.queryByText(/physics/i).closest("button"));
     fireEvent.click(screen.queryByText("Reset filters").closest("button"));
 
     expect(screen.queryByText("Search")).toBeTruthy();
@@ -53,7 +49,6 @@ describe("AnalysisPanel", () => {
     expect(togglePanelFn).toHaveBeenCalled();
     expect(filterEngineeringNodesFn).toHaveBeenCalled();
     expect(filterCommercialNodesFn).toHaveBeenCalled();
-    expect(togglePhysicsFn).toHaveBeenCalled();
     expect(resetFiltersFn).toHaveBeenCalled();
   });
 
@@ -70,8 +65,6 @@ describe("AnalysisPanel", () => {
         filterEngineeringNodes={jest.fn()}
         filterCommercialNodes={jest.fn()}
         hideUnconnectedNodes={true}
-        physicsEnabled={true}
-        togglePhysicsEnabled={jest.fn()}
         unconnectedNodesVisible={true}
         engineersFiltered={true}
         investorsFiltered={true}
@@ -81,7 +74,6 @@ describe("AnalysisPanel", () => {
 
     expect(screen.queryByText("Hide indirect connections")).toBeTruthy();
     expect(screen.queryByText("Hide unconnected nodes")).toBeTruthy();
-    expect(screen.queryByText("Disable physics")).toBeTruthy();
     expect(screen.queryByText("Remove engineer filter")).toBeTruthy();
     expect(screen.queryByText("Remove investor filter")).toBeTruthy();
   });
@@ -99,8 +91,6 @@ describe("AnalysisPanel", () => {
         filterEngineeringNodes={jest.fn()}
         filterCommercialNodes={jest.fn()}
         hideUnconnectedNodes={true}
-        physicsEnabled={true}
-        togglePhysicsEnabled={jest.fn()}
         unconnectedNodesVisible={false}
         engineersFiltered={false}
         investorsFiltered={false}
@@ -110,7 +100,6 @@ describe("AnalysisPanel", () => {
 
     expect(screen.queryByText("Show indirect connections")).toBeTruthy();
     expect(screen.queryByText("Show unconnected nodes")).toBeTruthy();
-    expect(screen.queryByText("Disable physics")).toBeTruthy();
     expect(screen.queryByText("Filter by engineers")).toBeTruthy();
     expect(screen.queryByText("Filter by investors")).toBeTruthy();
   });

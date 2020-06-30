@@ -39,7 +39,6 @@ class AnalysisPanel extends React.Component {
 
     let indirectConnectionsText = this.props.indirectConnectionsVisible ? "Hide" : "Show";
     let unconnectedNodesText = this.props.unconnectedNodesVisible ? "Hide" : "Show";
-    let physicsText = this.props.physicsEnabled ? "Disable " : "Enable ";
 
     let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
     let filterCommercialText = this.props.commercialFiltered ? "Remove commerical filter" : "Filter by commercial";
@@ -90,17 +89,6 @@ class AnalysisPanel extends React.Component {
         >
           {unconnectedNodesText + " unconnected nodes"}
         </TextButton>
-        <TextButton
-          fontSize="2.4vh"
-          padding={buttonPadding}
-          onClick={() => {
-            this.props.togglePhysicsEnabled();
-            // this.props.togglePanel();
-          }}
-        >
-          {physicsText + "physics"}
-        </TextButton>
-
         <TextButton
           data-testid="OptionsButton"
           fontSize="2.4vh"
@@ -171,8 +159,6 @@ AnalysisPanel.propTypes = {
   engineersFiltered: PropTypes.bool.isRequired,
   commercialFiltered: PropTypes.bool.isRequired,
   unconnectedNodesVisible: PropTypes.bool.isRequired,
-  physicsEnabled: PropTypes.bool.isRequired,
-  togglePhysicsEnabled: PropTypes.func.isRequired,
   resetFilters: PropTypes.func.isRequired,
 };
 

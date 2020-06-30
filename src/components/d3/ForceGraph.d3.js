@@ -128,7 +128,7 @@ function _resolve(item) {
 class ForceGraphD3 extends React.Component {
   constructor(props) {
     super(props);
-    this.updateSimulation = this.updateSimulation.bind(this);
+    this.gravitySimulation = this.gravitySimulation.bind(this);
     this.updateLink = this.updateLink.bind(this);
     this.updateNodeText = this.updateNodeText.bind(this);
     this.updateNode = this.updateNode.bind(this);
@@ -161,6 +161,8 @@ class ForceGraphD3 extends React.Component {
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
       standardSimulation: true,
+      selectedShipID: null,
+      lastSimulationType: "Standard",
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
@@ -175,7 +177,6 @@ class ForceGraphD3 extends React.Component {
     this._target_decay = 0.1;
     this._target_alpha = 0.3;
 
-    this.labelSide = {};
     this._tooltips = [];
     // this.updateGraph = this.updateGraph.bind(this);
     // this.update = this.update.bind(this);
@@ -232,7 +233,8 @@ class ForceGraphD3 extends React.Component {
     if (graph !== this.state.graph) {
       //save the cached graph
       this.state.graph = graph;
-      //   this.setState({ graph: graph });
+
+      console.log("Setting nodes");
 
       // This view needs to clone its own copy of the graph, as
       // D3 will update the graph object. We need to clone in case
@@ -255,8 +257,6 @@ class ForceGraphD3 extends React.Component {
         }
       }
 
-      console.log("Updating graph!");
-
       for (let n in graph.nodes) {
         let node = graph.nodes[n];
 
@@ -264,7 +264,6 @@ class ForceGraphD3 extends React.Component {
         node.y = h * Math.random();
 
         if (node.fixed && this.props.simulationType === "Structured") {
-          console.log("Setting fixed location for ", node.label);
           node.fx = w * node.fixedLocation["x"] * this.randomShift();
           node.fy = h * node.fixedLocation["y"] * this.randomShift();
         }
@@ -324,10 +323,8 @@ class ForceGraphD3 extends React.Component {
     if (hasSignalClicked) {
       if (this.state.signalClicked) {
         this.state.signalClicked = props.signalClicked;
-        // this.setState({ signalClicked: props.signalClicked });
       } else {
         this.state.signalClicked = _null_function;
-        // this.setState({ signalClicked: _null_function });
       }
     }
 
@@ -336,10 +333,8 @@ class ForceGraphD3 extends React.Component {
     if (hasSignalMouseOut) {
       if (this.state.signalMouseOut) {
         this.state.signalMouseOut = props.signalMouseOut;
-        // this.setState({ signalMouseOut: props.signalMouseOut });
       } else {
         this.state.signalMouseOut = _null_function;
-        // this.setState({ signalMouseOut: _null_function });
       }
     }
 
@@ -348,10 +343,8 @@ class ForceGraphD3 extends React.Component {
     if (hasSignalMouseOver) {
       if (this.state.signalMouseOver) {
         this.state.signalMouseOver = props.signalMouseOver;
-        // this.setState({ signalMouseOver: props.signalMouseOver });
       } else {
         this.state.signalMouseOver = _null_function;
-        // this.setState({ signalMouseOver: _null_function });
       }
     }
 
@@ -368,37 +361,32 @@ class ForceGraphD3 extends React.Component {
 
     if (hasSelected) {
       this.state.selected = _resolve(props.selected);
-      //   this.setState({ selected: _resolve(props.selected) });
     }
 
     let hasHighlighted = Object.prototype.hasOwnProperty.call(props, "highlighted");
 
     if (hasHighlighted) {
       this.state.highlighted = _resolve(props.highlighted);
-      //   this.setState({ highlighted: _resolve(props.highlighted) });
     }
 
-    if (props.standardSimulation !== this.state.standardSimulation) {
-      this.state.standardSimulation = props.standardSimulation;
-      //   this.changeSimulationType();
+    // if (props.standardSimulation !== this.state.standardSimulation) {
+    //   this.state.standardSimulation = props.standardSimulation;
+    //   this._graph_changed = true;
+    // }
+
+    if (this.props.selectedShipID !== this.state.selectedShipID) {
+      this.state.selectedShipID = this.props.selectedShipID;
       this._graph_changed = true;
     }
 
-    if (props.simulationType !== this.state.standardSimulation) {
-      this.state.standardSimulation = props.simulationType;
+    if (this.props.simulationType !== this.state.simulationType) {
+      this.state.simulationType = this.props.simulationType;
       //   this.changeSimulationType();
       this._graph_changed = true;
     }
 
     // For now get the ID of the SS Great Eastern so we don't assign force to the nodes
     this.state.greatEasternID = this.state.social.getProjects().getByName("SS Great Eastern").getID();
-
-    if (this._graph) {
-      // Create this.labelSide
-      for (const n of this._graph.nodes) {
-        this.labelSide[n.id] = Math.random() >= 0.5;
-      }
-    }
   }
 
   className() {
@@ -430,11 +418,10 @@ class ForceGraphD3 extends React.Component {
   }
 
   getPositionCode(entity) {
-    // There might not be a position for this project
-    let code;
-
     const shipID = this.getSelectedShipID();
 
+    let code = null;
+    // There might not be a position for this project
     try {
       code = entity["positions"][shipID][0];
     } catch (error) {
@@ -677,8 +664,6 @@ class ForceGraphD3 extends React.Component {
       .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
-    console.log(text);
-
     return text;
   }
 
@@ -725,7 +710,32 @@ class ForceGraphD3 extends React.Component {
     return link;
   }
 
-  updateSimulation() {
+  changeSimulationType() {
+    if (this._graph) {
+      if (
+        this.props.simulationType !== this.state.lastSimulationType ||
+        this.props.selectedShipID !== this.state.selectedShipID
+      )
+        this.state.lastSimulationType = this.props.simulationType;
+      this.state.selectedShipID = this.props.selectedShipID;
+
+      switch (this.props.simulationType) {
+        case "Gravity":
+          this.gravitySimulation();
+          break;
+        case "Structured":
+          this.structuredSimulation();
+          break;
+        case "Filtered":
+          this.centreNodes();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  gravitySimulation() {
     if (this._simulation) {
       this._simulation.stop();
       this._simulation = null;
@@ -734,6 +744,17 @@ class ForceGraphD3 extends React.Component {
 
     let w = this.state.width;
     let h = this.state.height;
+
+    let graph = this._graph;
+    for (let n in graph.nodes) {
+      let node = graph.nodes[n];
+
+      node.x = w * Math.random();
+      node.y = h * Math.random();
+
+      node.fx = null;
+      node.fy = null;
+    }
 
     // We don't want a force applied to null edges
     let edges = this._graph.edges.filter((v) => v["type"]);
@@ -823,8 +844,23 @@ class ForceGraphD3 extends React.Component {
       this._is_running = false;
     }
 
+    console.log("Setting structured simulation");
+
     let w = this.state.width;
     let h = this.state.height;
+
+    let graph = this._graph;
+    for (let n in graph.nodes) {
+      let node = graph.nodes[n];
+
+      node.x = w * Math.random();
+      node.y = h * Math.random();
+
+      if (node.fixed) {
+        node.fx = w * node.fixedLocation["x"] * this.randomShift();
+        node.fy = h * node.fixedLocation["y"] * this.randomShift();
+      }
+    }
 
     // We don't want a force applied to null edges
     let edges = this._graph.edges.filter((v) => v["type"]);
@@ -891,26 +927,6 @@ class ForceGraphD3 extends React.Component {
 
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
-  }
-
-  changeSimulationType() {
-    if (this._graph) {
-      switch (this.props.simulationType) {
-        case "Standard":
-          this.updateGraph(this.state.social);
-          this.updateSimulation();
-          break;
-        case "Structured":
-          //   this.updateGraph(this.state.social);
-          this.structuredSimulation();
-          break;
-        case "Centred":
-          this.centreNodes();
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   centreNodes() {
@@ -993,7 +1009,7 @@ class ForceGraphD3 extends React.Component {
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
 
-    this.updateGraph(this.state.social);
+    // this.updateGraph(this.state.social);
   }
 
   getTextWidth(text, font) {
@@ -1105,7 +1121,7 @@ class ForceGraphD3 extends React.Component {
     let mainGroup = svg;
     this._mainGroup = mainGroup;
 
-    this.updateSimulation();
+    this.gravitySimulation();
 
     mainGroup.append("g").attr("class", "link-group");
     mainGroup.append("g").attr("class", "node-group");

@@ -63,8 +63,8 @@ class SocialApp extends React.Component {
       unconnectedNodesVisible: false,
       commercialFiltered: false,
       engineersFiltered: false,
-      standardSimulation: true,
-      simulationType: "Standard",
+      GravitySimulation: true,
+      simulationType: "Gravity",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -82,7 +82,7 @@ class SocialApp extends React.Component {
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
 
-    this.simulationTypes = Object.freeze({ Standard: 1, Centred: 1, Structured: 1 });
+    this.simulationTypes = Object.freeze({ Gravity: 1, Filtered: 1, Structured: 1 });
 
     // Find the investors and engineers for easy filtering
     // This requires the
@@ -353,10 +353,10 @@ class SocialApp extends React.Component {
   toggleSimulationType() {
     const simType = this.state.simulationType;
 
-    if (simType === "Standard") {
+    if (simType === "Gravity") {
       this.setSimulationType("Structured");
-    } else if (simType === "Structured" || simType === "Centred") {
-      this.setSimulationType("Standard");
+    } else if (simType === "Structured" || simType === "Filtered") {
+      this.setSimulationType("Gravity");
     }
   }
 
@@ -377,17 +377,16 @@ class SocialApp extends React.Component {
     if (this.state.engineersFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
-      this.setSimulationType("Standard");
+      this.setSimulationType("Gravity");
     } else {
       this.resetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
       const nodesToFilter = this.state.engineerNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
       this.slotToggleFilter(nodesToFilter);
-      this.setSimulationType("Centred");
+      this.setSimulationType("Filtered");
     }
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
-    // this.toggleSimulationType();
   }
 
   filterCommercialNodes() {
@@ -398,18 +397,16 @@ class SocialApp extends React.Component {
     if (this.state.commercialFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
-      this.setSimulationType("Standard");
+      this.setSimulationType("Gravity");
     } else {
       this.resetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
       const nodesToFilter = this.state.commericalNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
       this.slotToggleFilter(nodesToFilter);
-      this.setSimulationType("Centred");
+      this.setSimulationType("Filtered");
     }
 
     this.setState({ commercialFiltered: !this.state.commercialFiltered });
-    // this.toggleSimulationType();
-    console.log("At the end of the commerical, sim type ", this.state.simulationType, this.state.commercialFiltered);
   }
 
   toggleInfoPanel() {
@@ -546,9 +543,10 @@ class SocialApp extends React.Component {
             fontSize="2.7vh"
             textColor="#f1f1f1"
             hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
             onClick={() => this.toggleSimulationType()}
           >
-            {this.state.simulationType}
+            Type : {this.state.simulationType}
           </TextButton>
         </div>
 
@@ -645,7 +643,7 @@ class SocialApp extends React.Component {
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
-              standardSimulation={this.state.standardSimulation}
+              GravitySimulation={this.state.GravitySimulation}
               simulationType={this.state.simulationType}
             />
           </div>
