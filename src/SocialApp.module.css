@@ -31,13 +31,15 @@
 .resetButtonContainer {
   position: fixed;
   top: 94vh;
-  left: 2vw;
+  left: 14vw;
 }
 
 .simulationTypeButtonContainer {
+  display: flex;
+  flex-direction: column;
   position: fixed;
-  top: 94vh;
-  left: 8vw;
+  top: 91vh;
+  left: 1vw;
 }
 
 .whatIsButtonContainer {
@@ -195,27 +197,5 @@
   .closePanelButton:hover {
     padding: 2px 5px;
     color: white;
-  }
-}
-
-.hover {
-  position: relative;
-
-  &:hover &__no_hover {
-    opacity: 0;
-  }
-
-  &:hover &__hover {
-    opacity: 1;
-  }
-
-  &__hover {
-    position: absolute;
-    top: 0;
-    opacity: 0;
-  }
-
-  &__no_hover {
-    opacity: 1;
   }
 }

@@ -539,6 +539,9 @@ class SocialApp extends React.Component {
         </div>
 
         <div className={styles.simulationTypeButtonContainer}>
+          <TextButton fontSize="1.8vh" textColor="#f1f1f1" hoverColor="#f1f1f1" padding="2px 2px 2px 2px">
+            Simulation type
+          </TextButton>
           <TextButton
             fontSize="2.7vh"
             textColor="#f1f1f1"
@@ -546,7 +549,7 @@ class SocialApp extends React.Component {
             padding="2px 2px 2px 2px"
             onClick={() => this.toggleSimulationType()}
           >
-            Type : {this.state.simulationType}
+            {this.state.simulationType}
           </TextButton>
         </div>
 

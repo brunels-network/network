@@ -41,7 +41,7 @@ class AnalysisPanel extends React.Component {
     let unconnectedNodesText = this.props.unconnectedNodesVisible ? "Hide" : "Show";
 
     let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
-    let filterCommercialText = this.props.commercialFiltered ? "Remove commerical filter" : "Filter by commercial";
+    let filterCommercialText = this.props.commercialFiltered ? "Remove commercial filter" : "Filter by commercial";
 
     return (
       <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.wholePanel}>

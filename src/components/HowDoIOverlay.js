@@ -27,6 +27,14 @@ class HowDoIOverlay extends React.Component {
           <div className={styles.body}>
             <p>{howDoIText["HOWTO-click"]}</p>
           </div>
+          <div className={styles.sectionHeader}>Filter</div>
+          <div className={styles.body}>
+            <p>{howDoIText["HOWTO-filter"]}</p>
+          </div>
+          <div className={styles.sectionHeader}>Change simulation</div>
+          <div className={styles.body}>
+            <p>{howDoIText["HOWTO-simulation"]}</p>
+          </div>
           <div className={styles.sectionHeader}>Save</div>
           <div className={styles.body}>
             <p>{howDoIText["HOWTO-save"]}</p>

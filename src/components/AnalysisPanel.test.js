@@ -33,7 +33,7 @@ describe("AnalysisPanel", () => {
         filterCommercialNodes={filterCommercialNodesFn}
         unconnectedNodesVisible={false}
         engineersFiltered={false}
-        investorsFiltered={false}
+        commercialFiltered={false}
         resetFilters={resetFiltersFn}
       />
     );
@@ -41,7 +41,7 @@ describe("AnalysisPanel", () => {
     fireEvent.click(screen.queryByText("Search").closest("button"));
     fireEvent.click(screen.queryByText("Close").closest("button"));
     fireEvent.click(screen.queryByText(/engineer/i).closest("button"));
-    fireEvent.click(screen.queryByText(/investor/i).closest("button"));
+    fireEvent.click(screen.queryByText(/commercial/i).closest("button"));
     fireEvent.click(screen.queryByText("Reset filters").closest("button"));
 
     expect(screen.queryByText("Search")).toBeTruthy();
@@ -67,7 +67,7 @@ describe("AnalysisPanel", () => {
         hideUnconnectedNodes={true}
         unconnectedNodesVisible={true}
         engineersFiltered={true}
-        investorsFiltered={true}
+        commercialFiltered={true}
         resetFilters={jest.fn()}
       />
     );
@@ -75,7 +75,7 @@ describe("AnalysisPanel", () => {
     expect(screen.queryByText("Hide indirect connections")).toBeTruthy();
     expect(screen.queryByText("Hide unconnected nodes")).toBeTruthy();
     expect(screen.queryByText("Remove engineer filter")).toBeTruthy();
-    expect(screen.queryByText("Remove investor filter")).toBeTruthy();
+    expect(screen.queryByText("Remove commercial filter")).toBeTruthy();
   });
 
   test("props change text button rendering all false", () => {
@@ -93,7 +93,7 @@ describe("AnalysisPanel", () => {
         hideUnconnectedNodes={true}
         unconnectedNodesVisible={false}
         engineersFiltered={false}
-        investorsFiltered={false}
+        commercialFiltered={false}
         resetFilters={jest.fn()}
       />
     );
@@ -101,6 +101,6 @@ describe("AnalysisPanel", () => {
     expect(screen.queryByText("Show indirect connections")).toBeTruthy();
     expect(screen.queryByText("Show unconnected nodes")).toBeTruthy();
     expect(screen.queryByText("Filter by engineers")).toBeTruthy();
-    expect(screen.queryByText("Filter by investors")).toBeTruthy();
+    expect(screen.queryByText("Filter by commercial")).toBeTruthy();
   });
 });

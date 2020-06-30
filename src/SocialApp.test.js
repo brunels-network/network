@@ -32,10 +32,11 @@ describe("SocialApp", () => {
     expect(screen.queryByText("Search")).toBeTruthy();
     expect(screen.queryByText("Close")).toBeTruthy();
     expect(screen.queryByText("Filter by engineers")).toBeTruthy();
-    expect(screen.queryByText("Filter by investors")).toBeTruthy();
+    expect(screen.queryByText("Filter by commercial")).toBeTruthy();
     expect(screen.queryByText("Show indirect connections")).toBeTruthy();
     expect(screen.queryByText("Show unconnected nodes")).toBeTruthy();
-    expect(screen.queryByText("Enable physics")).toBeTruthy();
+    expect(screen.queryByText("Save as image")).toBeTruthy();
+    expect(screen.queryByText("Reset filters")).toBeTruthy();
   });
 
   test("Ship selection buttons change ship title", () => {
