@@ -47,4 +47,4 @@ You should now have an updated social network that can be read in and visualised
 
 ## Updating images
 
-The images of people/business and sources seen in the biography and source overlays are read in from two files, `entityImageFilenames.json` and `sourceImageFilenames.json`. To add new images place the image files in the `src/images` directory and modify the matching record in the corresponding JSON file.
+The images of people/business and sources seen in the biography and source overlays are read in from two files, `entityImageFilenames.json` and `sourceImageFilenames.json`. To update the images used place the new image files in the `src/images` directory and modify the matching `filename` record in the corresponding JSON file.
