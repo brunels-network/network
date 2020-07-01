@@ -234,8 +234,6 @@ class ForceGraphD3 extends React.Component {
       //save the cached graph
       this.state.graph = graph;
 
-      console.log("Setting nodes");
-
       // This view needs to clone its own copy of the graph, as
       // D3 will update the graph object. We need to clone in case
       // two ForceGraph.d3 views are viewing the same Social graph

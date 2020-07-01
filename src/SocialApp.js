@@ -245,7 +245,7 @@ class SocialApp extends React.Component {
     }
   }
 
-  hasConnections(entity, shipID) {
+  hasConnections(entity) {
     return this.state.social.getConnections().gotConnections(entity.id);
     // const shipID = this.state.selectedShipID;
     // try {
@@ -318,17 +318,18 @@ class SocialApp extends React.Component {
     let connectedNodes = {};
     let unconnectedNodes = {};
 
+    // This should be updated to properly count the number of unconnected nodes per ship
+
     const shipIDs = this.state.social.getProjects().projects();
 
-    for (const [name, shipID] of Object.entries(shipIDs)) {
-      console.log(name, shipID);
+    for (const shipID of Object.values(shipIDs)) {
       let connected = [];
       let unconnected = [];
 
       const people = this.state.social.getPeople(false).getNodes("noanchor");
 
       for (const p of people) {
-        if (this.hasConnections(p, shipID)) {
+        if (this.hasConnections(p)) {
           connected.push(p.id);
         } else {
           unconnected.push(p.id);
@@ -338,7 +339,7 @@ class SocialApp extends React.Component {
       const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
 
       for (const b of businesses) {
-        if (this.hasConnections(b, shipID)) {
+        if (this.hasConnections(b)) {
           connected.push(b.id);
         } else {
           unconnected.push(b.id);
