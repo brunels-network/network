@@ -622,7 +622,7 @@ def importType(edge, importers=None):
     elif typ.find("direct") != -1:
         return "direct"
     else:
-        print(f"Invalid link type? {typ}")
+        # print(f"Invalid link type? {typ}")
         return None
 
 
