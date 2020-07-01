@@ -55,6 +55,10 @@ class Projects {
     return Object.values(this._names);
   }
 
+  projects() {
+    return this._names;
+  }
+
   getDetails() {
     return this._names;
   }

@@ -91,7 +91,7 @@ class SocialApp extends React.Component {
     this.findConnectedNodes();
 
     // Hide the unconnected nodes
-    this.state.social.toggleFilter(this.state.connectedNodes);
+    this.state.social.toggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
     this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
@@ -245,19 +245,19 @@ class SocialApp extends React.Component {
     }
   }
 
-  gotConnections(entity) {
-    const shipID = this.state.selectedShipID;
-
-    try {
-      if (entity["edge_count"][shipID] > 0) {
-        return true;
-      } else {
-        return false;
-      }
-      // We might not have an edge count for this ship
-    } catch (error) {
-      return false;
-    }
+  hasConnections(entity, shipID) {
+    return this.state.social.getConnections().gotConnections(entity.id);
+    // const shipID = this.state.selectedShipID;
+    // try {
+    //   if (entity["edge_count"][shipID] > 0) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    //   // We might not have an edge count for this ship
+    // } catch (error) {
+    //   return false;
+    // }
   }
 
   findInvestorsAndEngineers() {
@@ -315,27 +315,40 @@ class SocialApp extends React.Component {
 
   findConnectedNodes() {
     // Loop through and find the connected nodes and create a list of them
-    let connectedNodes = [];
-    let unconnectedNodes = [];
+    let connectedNodes = {};
+    let unconnectedNodes = {};
 
-    const people = this.state.social.getPeople(false).getNodes("noanchor");
+    const shipIDs = this.state.social.getProjects().projects();
 
-    for (const p of people) {
-      if (this.gotConnections(p)) {
-        connectedNodes.push(p.id);
-      } else {
-        unconnectedNodes.push(p.id);
+    for (const [name, shipID] of Object.entries(shipIDs)) {
+      console.log(name, shipID);
+      let connected = [];
+      let unconnected = [];
+
+      const people = this.state.social.getPeople(false).getNodes("noanchor");
+
+      for (const p of people) {
+        if (this.hasConnections(p, shipID)) {
+          connected.push(p.id);
+        } else {
+          unconnected.push(p.id);
+        }
       }
-    }
 
-    const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
+      const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
 
-    for (const b of businesses) {
-      if (this.gotConnections(b)) {
-        connectedNodes.push(b.id);
-      } else {
-        unconnectedNodes.push(b.id);
+      for (const b of businesses) {
+        if (this.hasConnections(b, shipID)) {
+          connected.push(b.id);
+        } else {
+          unconnected.push(b.id);
+        }
       }
+
+      connectedNodes[shipID] = connected;
+      unconnectedNodes[shipID] = unconnected;
+
+      console.log(shipID, unconnected);
     }
 
     // This function only called from within ctor so need to set directly here
@@ -346,7 +359,7 @@ class SocialApp extends React.Component {
   }
 
   toggleUnconnectedNodesVisible() {
-    this.slotToggleFilter(this.state.connectedNodes);
+    this.slotToggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
     this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
   }
 
@@ -381,7 +394,9 @@ class SocialApp extends React.Component {
     } else {
       this.resetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
-      const nodesToFilter = this.state.engineerNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
+      const nodesToFilter = this.state.engineerNodeFilter.filter(
+        (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
+      );
       this.slotToggleFilter(nodesToFilter);
       this.setSimulationType("Filtered");
     }
@@ -401,7 +416,9 @@ class SocialApp extends React.Component {
     } else {
       this.resetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
-      const nodesToFilter = this.state.commericalNodeFilter.filter((v) => !this.state.unconnectedNodes.includes(v));
+      const nodesToFilter = this.state.commericalNodeFilter.filter(
+        (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
+      );
       this.slotToggleFilter(nodesToFilter);
       this.setSimulationType("Filtered");
     }

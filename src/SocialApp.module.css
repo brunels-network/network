@@ -65,7 +65,7 @@
 .engineeringNodeLabel {
   position: fixed;
   top: 40vh;
-  right: 5vw;
+  left: 90vw;
   transform: rotate(90deg);
   height: 10%;
 }
