@@ -754,6 +754,11 @@ class ForceGraphD3 extends React.Component {
 
       node.fx = null;
       node.fy = null;
+
+      if (node["group"] === "anchor") {
+        node.fx = w * 0.5;
+        node.fy = h * 0.5;
+      }
     }
 
     // We don't want a force applied to null edges
@@ -764,7 +769,7 @@ class ForceGraphD3 extends React.Component {
       return d["weight"][this.props.selectedShipID];
     });
 
-    let strengthScale = d3.scalePow().exponent(3).range([0, 1]).domain([0, maxWeight]);
+    let strengthScale = d3.scalePow().exponent(5).range([0, 1]).domain([0, maxWeight]);
     let radiusScale = d3.scaleLinear().domain([0, maxWeight]).range([1, 80]);
 
     let simulation = d3
@@ -843,8 +848,6 @@ class ForceGraphD3 extends React.Component {
       this._simulation = null;
       this._is_running = false;
     }
-
-    console.log("Setting structured simulation");
 
     let w = this.state.width;
     let h = this.state.height;

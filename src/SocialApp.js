@@ -347,8 +347,6 @@ class SocialApp extends React.Component {
 
       connectedNodes[shipID] = connected;
       unconnectedNodes[shipID] = unconnected;
-
-      console.log(shipID, unconnected);
     }
 
     // This function only called from within ctor so need to set directly here

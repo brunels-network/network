@@ -19,25 +19,14 @@ class HowDoIOverlay extends React.Component {
           <div className={styles.intro}>
             <p>{howDoIText["intro"]}</p>
           </div>
-          <div className={styles.sectionHeader}>Drag</div>
           <div className={styles.body}>
-            <p>{howDoIText["HOWTO-drag"]}</p>
-          </div>
-          <div className={styles.sectionHeader}>Click</div>
-          <div className={styles.body}>
-            <p>{howDoIText["HOWTO-click"]}</p>
-          </div>
-          <div className={styles.sectionHeader}>Filter</div>
-          <div className={styles.body}>
-            <p>{howDoIText["HOWTO-filter"]}</p>
-          </div>
-          <div className={styles.sectionHeader}>Change simulation</div>
-          <div className={styles.body}>
-            <p>{howDoIText["HOWTO-simulation"]}</p>
-          </div>
-          <div className={styles.sectionHeader}>Save</div>
-          <div className={styles.body}>
-            <p>{howDoIText["HOWTO-save"]}</p>
+            <p>{howDoIText["paraOne"]}</p>
+            <br />
+            <p>{howDoIText["paraTwo"]}</p>
+            <br />
+            <p>{howDoIText["paraThree"]}</p>
+            <br />
+            <p>{howDoIText["paraFour"]}</p>
           </div>
         </div>
       </div>
