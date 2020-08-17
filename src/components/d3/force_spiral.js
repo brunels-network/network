@@ -18,9 +18,14 @@ export default function (w, h) {
   let rx = 0.75 * x;
   let ry = 0.75 * y;
 
+  x -= 0.15 * rx;
+  y += 0.15 * ry;
+
   function force(alpha) {
 
     let phi = 0.0;
+    let j = 0;
+    let delta = 0;
 
     for (var i = 0, n = nodes.length; i < n; ++i) {
         let node = nodes[i];
@@ -41,15 +46,31 @@ export default function (w, h) {
             phi = phi + (2.0 * Math.PI);
         }*/
 
-        let r_scl = 0.1 + (0.4 * 0.5 * phi / Math.PI);
+        /*let r_scl = 0.1 + (0.4 * 0.5 * phi / Math.PI);
 
         let rad_x = (r_scl * rx * Math.cos(phi));
-        let rad_y = (r_scl * ry * Math.sin(phi));
+        let rad_y = (r_scl * ry * Math.sin(phi));*/
+
+        let rad_x = 0.0;
+        let rad_y = 0.0;
+
+        if (j > 0) {
+            let radius = Math.sqrt(j);
+            phi += Math.asin(1 / radius);//sin(angle) = opposite/hypothenuse => used asin to get angle
+            rad_x = Math.cos(phi) * radius * (0.2 * rx);
+            rad_y = Math.sin(phi) * radius * (0.2 * ry);
+        }
 
         node.vx += (x + rad_x - node.x) * strengths[i] * alpha;
         node.vy += (y + rad_y - node.y) * strengths[i] * alpha;
 
-        phi += 0.15 * Math.PI;
+        for (let k = 1; k <= delta; ++k){
+            j += 1;
+            let radius = Math.sqrt(j);
+            phi += Math.asin(1 / radius);//sin(angle) = opposite/hypothenuse => used asin to get angle
+        }
+
+        j += 1;
     }
   }
 

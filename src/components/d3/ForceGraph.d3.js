@@ -853,15 +853,10 @@ class ForceGraphD3 extends React.Component {
       .forceSimulation(graph.nodes)
       .alpha(1.0)
       .alphaTarget(0)
-      .alphaDecay(0.01)
+      .alphaDecay(0.05)
       .force(
         "spiral", force_spiral(w, h)
-        .strength(0.5)
-      )
-      .force(
-        "collide", d3.forceCollide()
-        .radius(10)
-        .strength(0.5)
+        .strength(0.2)
       )
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
