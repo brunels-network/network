@@ -82,7 +82,12 @@ class SocialApp extends React.Component {
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
 
-    this.simulationTypes = Object.freeze({ Gravity: 1, Filtered: 1, Structured: 1 });
+    this.simulationTypes = Object.freeze({
+      Gravity: 1,
+      Filtered: 1,
+      Structured: 1,
+      Spiral: 1
+    });
 
     // Find the investors and engineers for easy filtering
     // This requires the
@@ -366,7 +371,9 @@ class SocialApp extends React.Component {
     const simType = this.state.simulationType;
 
     if (simType === "Gravity") {
-      this.setSimulationType("Structured");
+        this.setSimulationType("Spiral");
+    } else if (simType === "Spiral") {
+        this.setSimulationType("Structured");
     } else if (simType === "Structured" || simType === "Filtered") {
       this.setSimulationType("Gravity");
     }
