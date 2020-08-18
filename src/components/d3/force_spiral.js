@@ -86,36 +86,41 @@ export default function force_spiral(width, height) {
 
     // what is the maximum index - will need to know this to generate
     // all of the points
-    let max_index = Math.max.apply(null, indexes);
+    let max_index = Math.max(...indexes);
 
     // now calculate all of the points
     points_x = new Array(max_index + 1);
     points_y = new Array(max_index + 1);
 
+    let angle = 0.0;
+    let radius = 0.0;
+
+    for (let i = 1; i <= max_index; ++i) {
+      radius = Math.sqrt(i);
+      angle += Math.asin(1 / radius);
+      points_x[i] = Math.cos(angle) * radius;
+      points_y[i] = Math.sin(angle) * radius;
+    }
+
+    // we now need to scale such that 'radius' can fit comfortably
+    // on a width * height page
     let center_x = width / 2;
     let center_y = height / 2;
 
-    let radius_x = 0.75 * center_x;
-    let radius_y = 0.75 * center_y;
+    let scale_x = 0.97 * center_x / radius;
+    let scale_y = 0.97 * center_y / radius;
 
     // offset the center slightly as the spiral
     // biases to top right
-    center_x -= 0.15 * radius_x;
-    center_y += 0.15 * radius_y;
-
-    let angle = 0.0;
+    center_x -= 0.05 * scale_x * radius;
+    center_y += 0.05 * scale_y * radius;
 
     points_x[0] = center_x;
     points_y[0] = center_y;
 
     for (let i = 1; i <= max_index; ++i) {
-      let radius = Math.sqrt(i);
-      angle += Math.asin(1 / radius);
-      let rx = Math.cos(angle) * radius * (0.2 * radius_x);
-      let ry = Math.sin(angle) * radius * (0.2 * radius_y);
-
-      points_x[i] = center_x + rx;
-      points_y[i] = center_y + ry;
+      points_x[i] = center_x + (points_x[i] * scale_x);
+      points_y[i] = center_y + (points_y[i] * scale_y);
     }
   }
 
