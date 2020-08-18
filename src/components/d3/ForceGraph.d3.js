@@ -18,6 +18,10 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
+function randomShift(min = 0.01, max = 0.15) {
+  return 1 - Math.random() * (max - min) + max;
+}
+
 function handleMouseOver(THIS) {
   function handle() {
     let svg = THIS._mainGroup;
@@ -190,15 +194,6 @@ class ForceGraphD3 extends React.Component {
 
   getSelectedShipID() {
     return this.props.selectedShipID;
-
-    // This code is now uneeded as props are updated properly
-    // const filter = this.state.social.getFilter();
-
-    // if (filter["project"]) {
-    //   return Object.keys(filter["project"])[0];
-    // } else {
-    //   console.error("Error finding project code from filter");
-    // }
   }
 
   getNodeBio(id) {
@@ -264,18 +259,14 @@ class ForceGraphD3 extends React.Component {
         node.y = h * Math.random();
 
         if (node.fixed && this.props.simulationType === "Structured") {
-          node.fx = w * node.fixedLocation["x"] * this.randomShift();
-          node.fy = h * node.fixedLocation["y"] * this.randomShift();
+          node.fx = w * node.fixedLocation["x"] * randomShift();
+          node.fy = h * node.fixedLocation["y"] * randomShift();
         }
       }
 
       this._graph = graph;
       this._graph_changed = true;
     }
-  }
-
-  randomShift(min = 0.01, max = 0.15) {
-    return 1 - Math.random() * (max - min) + max;
   }
 
   update(props) {
@@ -712,29 +703,33 @@ class ForceGraphD3 extends React.Component {
 
   changeSimulationType() {
     if (this._graph) {
-      if (
-        this.props.simulationType !== this.state.lastSimulationType ||
-        this.props.selectedShipID !== this.state.selectedShipID
-      )
-        this.state.lastSimulationType = this.props.simulationType;
+      console.log(`${this.state.lastSimulationType} ${this.props.simulationType}`);
+
+      let simulation_type = this.props.simulationType;
+
+      if (simulation_type === "Filtered") {
+        simulation_type = this.state.lastSimulationType;
+      }
+
+      this.state.lastSimulationType = simulation_type;
       this.state.selectedShipID = this.props.selectedShipID;
 
-      switch (this.props.simulationType) {
-        case "Gravity":
-          this.gravitySimulation();
-          break;
-        case "Structured":
-          this.structuredSimulation();
-          break;
-        case "Spiral":
-          this.spiralSimulation();
-          break;
-        case "Filtered":
-          this.centreNodes();
-          break;
-        default:
-          console.log(`Unrecognised simulation type ${this.props.simulationType}`);
-          break;
+      switch (simulation_type) {
+          case "Gravity":
+              this.gravitySimulation();
+              break;
+          case "Structured":
+              this.structuredSimulation();
+              break;
+          case "Spiral":
+              this.spiralSimulation();
+              break;
+          case "Filtered":
+              this.centreNodes();
+              break;
+          default:
+              console.log(`Unrecognised simulation type ${this.props.simulationType}`);
+              break;
       }
     }
   }
@@ -764,7 +759,7 @@ class ForceGraphD3 extends React.Component {
 
     let simulation = d3
       .forceSimulation(this._graph.nodes)
-      .alpha(0.4)
+      .alpha(1.0)
       .alphaTarget(0)
       .alphaDecay(0.01)
       .force(
@@ -844,15 +839,28 @@ class ForceGraphD3 extends React.Component {
 
     let graph = this._graph;
 
-    // We don't want a force applied to null edges
-    let edges = graph.edges.filter((v) => v["type"]);
+    // Node layout
+    const maxWeight = d3.max(graph.nodes, (d) => {
+      return d["weight"][this.props.selectedShipID];
+    });
+
+    let radiusScale = d3.scaleLinear().domain([0, maxWeight]).range([1, 80]);
 
     let simulation = d3
       .forceSimulation(graph.nodes)
       .alpha(1.0)
       .alphaTarget(0)
-      .alphaDecay(0.05)
-      .force("spiral", force_spiral(w, h).strength(0.2))
+      .alphaDecay(0.01)
+      .force("spiral",
+        force_spiral(w, h))
+      .force(
+          "collide",
+          d3
+            .forceCollide()
+            .strength(1)
+            .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
+            .iterations(30)
+        )
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
         this._link.attr("d", (d) => {
@@ -864,13 +872,15 @@ class ForceGraphD3 extends React.Component {
 
           return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
         });
+
         this._node
           .attr("cx", (d) => {
-            return d.x; // = constrain(d.x, w, d.r));
+            return (d.x = constrain(d.x, w, d.r));
           })
           .attr("cy", (d) => {
-            return d.y; // = constrain(d.y, h, d.r));
+            return (d.y = constrain(d.y, h, d.r));
           });
+
         this._label
           .attr("x", (d) => {
             if (this.getLabelXOffset(d)) return this.getLabelXOffset(d);
@@ -1112,7 +1122,6 @@ class ForceGraphD3 extends React.Component {
   }
 
   drawFromScratch() {
-    console.log("DRAW FROM SCRATCH");
     let graph = this._graph;
 
     if (!graph) {
@@ -1138,8 +1147,6 @@ class ForceGraphD3 extends React.Component {
 
     const width = this.state.width;
     const height = this.state.height;
-
-    console.log(`REDRAW ${width}x${height}`);
 
     if (!width || !height) {
       console.log(`Invalid width or height? ${width} x ${height}`);
