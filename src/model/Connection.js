@@ -275,8 +275,7 @@ class Connection {
       case "indirect":
         return "rgb(180,180,180)";
       default:
-        console.log(`Unknown type? ${this.state.type}`);
-        return "red";
+        return "orange";
     }
   }
 

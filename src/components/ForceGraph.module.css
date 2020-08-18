@@ -1,122 +1,128 @@
 @font-face {
-  font-family: "Playfair Display";
-  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
+    font-family: "Playfair Display";
+    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: "Playfair Display SemiBold";
-  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-SemiBold.ttf) format("truetype");
+    font-family: "Playfair Display SemiBold";
+    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-SemiBold.ttf) format("truetype");
 }
 
 .container {
-  padding: 0px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .graph {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  border: black;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border: black;
 }
 
 .node {
-  stroke: white;
-  stroke-width: 1px;
+    stroke: white;
+    stroke-width: 1px;
 }
 
 .node.highlight {
-  /* fill: #c7e8f3; */
-  fill: #3a6ea5;
-  stroke: white;
-  stroke-width: 2px;
+    /* fill: #c7e8f3; */
+    fill: #3a6ea5;
+    stroke: white;
+    stroke-width: 2px;
 }
 
 .link {
-  /* Was white */
-  stroke: #659dd8;
-  stroke-width: 0.05vw;
-  stroke-opacity: 60%;
-  fill: none;
+    /* Was white */
+    stroke: #659dd8;
+    stroke-width: 0.05vw;
+    stroke-opacity: 60%;
+    fill: none;
 }
 
 .linkWeak {
-  stroke: #659dd8;
-  stroke-width: 0.05vw;
-  stroke-opacity: 20%;
-  fill: none;
+    stroke: #659dd8;
+    stroke-width: 0.05vw;
+    stroke-opacity: 20%;
+    fill: none;
 }
 
 .linkIndirect {
-  stroke: #808080;
-  stroke-width: 0.05vw;
-  stroke-opacity: 50%;
-  fill: none;
+    stroke: #808080;
+    stroke-width: 0.05vw;
+    stroke-opacity: 50%;
+    fill: none;
 }
 
 .linkInvisible {
-  stroke: transparent;
-  fill: none;
+    stroke: transparent;
+    fill: none;
 }
 
 .linkWeak.highlight {
-  stroke: red;
-  stroke-width: 0.05vw;
-  stroke-opacity: 50%;
-  fill: none;
+    stroke: red;
+    stroke-width: 0.25vw;
+    stroke-opacity: 50%;
+    fill: none;
 }
 
 .linkIndirect.highlight {
-  stroke: red;
-  stroke-width: 0.05vw;
-  stroke-opacity: 50%;
-  fill: none;
+    stroke: red;
+    stroke-width: 0.25vw;
+    stroke-opacity: 50%;
+    fill: none;
 }
 
 .link.highlight {
-  stroke: red;
-  stroke-width: 0.1vw;
-  fill: none;
+    stroke: red;
+    stroke-width: 0.25vw;
+    fill: none;
 }
 
 .node_text {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
-  font-family: "Playfair Display SemiBold";
-  /* padding-left: 1cm; */
-  font-size: 14px;
-  stroke-width: 0;
-  fill: white;
-  /* justify-content: right; */
+    font-family: "Playfair Display SemiBold";
+    /* padding-left: 1cm; */
+    font-size: 14px;
+    stroke-width: 0;
+    fill: white;
+    /* justify-content: right; */
 }
 
 .node_text.highlight {
-  /* fill: #738566; */
-  /* fill: #07899d; */
-  fill: #ffd28b;
+    /* fill: #738566; */
+    /* fill: #07899d; */
+    fill: #ffd28b;
 
-  font-size: medium;
+    font-size: medium;
 }
 
 .tooltip {
-  position: absolute;
-  padding: 10px;
-  z-index: 10;
-  width: 15vw;
-  height: 20vh;
-  font-family: "Playfair Display SemiBold";
-  font-size: max(12px, 0.8vw);
-  background-color: #808080;
-  color: white;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 1px;
-  visibility: visible;
+    position: absolute;
+    padding: 10px;
+    z-index: 10;
+    width: 15vw;
+    height: 20vh;
+    font-family: "Playfair Display SemiBold";
+    font-size: max(12px, 0.8vw);
+    background-color: #808080;
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 1px;
+    visibility: visible;
 }

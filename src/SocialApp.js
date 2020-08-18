@@ -92,6 +92,7 @@ class SocialApp extends React.Component {
     // Find the investors and engineers for easy filtering
     // This requires the
     this.findInvestorsAndEngineers();
+
     // Find the unconnected nodes for filtering
     this.findConnectedNodes();
 
@@ -324,7 +325,6 @@ class SocialApp extends React.Component {
     let unconnectedNodes = {};
 
     // This should be updated to properly count the number of unconnected nodes per ship
-
     const shipIDs = this.state.social.getProjects().projects();
 
     for (const shipID of Object.values(shipIDs)) {
@@ -371,9 +371,9 @@ class SocialApp extends React.Component {
     const simType = this.state.simulationType;
 
     if (simType === "Gravity") {
-        this.setSimulationType("Spiral");
+      this.setSimulationType("Spiral");
     } else if (simType === "Spiral") {
-        this.setSimulationType("Structured");
+      this.setSimulationType("Structured");
     } else if (simType === "Structured" || simType === "Filtered") {
       this.setSimulationType("Gravity");
     }
@@ -383,7 +383,7 @@ class SocialApp extends React.Component {
     if (simType in this.simulationTypes) {
       this.setState({ simulationType: simType });
     } else {
-      console.error("Invalid simulaiton type, valid types are ", Object.keys(this.simulationTypes));
+      console.error("Invalid simulation type, valid types are ", Object.keys(this.simulationTypes));
     }
   }
 

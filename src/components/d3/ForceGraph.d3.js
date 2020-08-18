@@ -4,7 +4,9 @@ import * as d3 from "d3";
 import React from "react";
 
 import lodash from "lodash";
-import { v4 as uuidv4 } from "uuid";
+import {
+  v4 as uuidv4
+} from "uuid";
 
 import force_spiral from "./force_spiral.js";
 
@@ -715,21 +717,21 @@ class ForceGraphD3 extends React.Component {
       this.state.selectedShipID = this.props.selectedShipID;
 
       switch (simulation_type) {
-          case "Gravity":
-              this.gravitySimulation();
-              break;
-          case "Structured":
-              this.structuredSimulation();
-              break;
-          case "Spiral":
-              this.spiralSimulation();
-              break;
-          case "Filtered":
-              this.centreNodes();
-              break;
-          default:
-              console.log(`Unrecognised simulation type ${this.props.simulationType}`);
-              break;
+        case "Gravity":
+          this.gravitySimulation();
+          break;
+        case "Structured":
+          this.structuredSimulation();
+          break;
+        case "Spiral":
+          this.spiralSimulation();
+          break;
+        case "Filtered":
+          this.centreNodes();
+          break;
+        default:
+          console.log(`Unrecognised simulation type ${this.props.simulationType}`);
+          break;
       }
     }
   }
@@ -765,20 +767,20 @@ class ForceGraphD3 extends React.Component {
       .force(
         "X",
         d3
-          .forceX()
-          .strength((d) => {
-            return strengthScale(d["weight"][this.props.selectedShipID]);
-          })
-          .x(w / 2)
+        .forceX()
+        .strength((d) => {
+          return strengthScale(d["weight"][this.props.selectedShipID]);
+        })
+        .x(w / 2)
       )
       .force(
         "Y",
         d3
-          .forceY()
-          .strength((d) => {
-            return strengthScale(d["weight"][this.props.selectedShipID]);
-          })
-          .y(h / 2)
+        .forceY()
+        .strength((d) => {
+          return strengthScale(d["weight"][this.props.selectedShipID]);
+        })
+        .y(h / 2)
       )
       .force(
         "charge",
@@ -787,15 +789,19 @@ class ForceGraphD3 extends React.Component {
       .force(
         "collide",
         d3
-          .forceCollide()
-          .strength(1)
-          .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
-          .iterations(30)
+        .forceCollide()
+        .strength(1)
+        .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
+        .iterations(30)
       )
       .force("link", d3.forceLink().strength(0).links(edges).iterations(80))
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
+
         this._link.attr("d", (d) => {
+          if (d.target.x === undefined || d.source.x === undefined) {
+            return null;
+          }
           // The smaller the curve factor the greater the curve
           const curveFactor = 2;
           const dx = d.target.x - d.source.x;
@@ -804,6 +810,7 @@ class ForceGraphD3 extends React.Component {
 
           return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
         });
+
         this._node
           .attr("cx", (d) => {
             return (d.x = constrain(d.x, w, d.r));
@@ -811,6 +818,7 @@ class ForceGraphD3 extends React.Component {
           .attr("cy", (d) => {
             return (d.y = constrain(d.y, h, d.r));
           });
+
         this._label
           .attr("x", (d) => {
             if (this.getLabelXOffset(d)) return this.getLabelXOffset(d);
@@ -839,6 +847,9 @@ class ForceGraphD3 extends React.Component {
 
     let graph = this._graph;
 
+    // We don't want a force applied to null edges
+    let edges = graph.edges.filter((v) => v["type"]);
+
     // Node layout
     const maxWeight = d3.max(graph.nodes, (d) => {
       return d["weight"][this.props.selectedShipID];
@@ -851,26 +862,31 @@ class ForceGraphD3 extends React.Component {
       .alpha(1.0)
       .alphaTarget(0)
       .alphaDecay(0.01)
-      .force("spiral",
-        force_spiral(w, h))
+      .force("spiral", force_spiral(w, h).strength(0.3))
       .force(
-          "collide",
-          d3
-            .forceCollide()
-            .strength(1)
-            .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
-            .iterations(30)
-        )
+        "collide",
+        d3
+        .forceCollide()
+        .strength(0.1)
+        .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
+        .iterations(30)
+      )
+      .force("link", d3.forceLink().strength(0).links(edges).iterations(80))
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
+
         this._link.attr("d", (d) => {
+          if (d.target.x === undefined || d.source.x === undefined) {
+            return null;
+          }
+
           // The smaller the curve factor the greater the curve
           const curveFactor = 2;
           const dx = d.target.x - d.source.x;
           const dy = d.target.y - d.source.x;
           const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
 
-          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+          return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
         });
 
         this._node
@@ -917,26 +933,26 @@ class ForceGraphD3 extends React.Component {
       .force(
         "link",
         d3
-          .forceLink()
-          .links(edges)
-          .distance((d) => {
-            if (d["type"] === "direct") {
-              return 75 * (1 + d.value);
-            } else {
-              return 125 * (1 + d.value);
-            }
-          })
-          .iterations(5)
+        .forceLink()
+        .links(edges)
+        .distance((d) => {
+          if (d["type"] === "direct") {
+            return 75 * (1 + d.value);
+          } else {
+            return 125 * (1 + d.value);
+          }
+        })
+        .iterations(5)
       )
       .force(
         "collision",
         d3
-          .forceCollide()
-          .radius((d) => {
-            return 3 * (1 + 10 * d.size);
-          })
-          .strength(10.0)
-          .iterations(5)
+        .forceCollide()
+        .radius((d) => {
+          return 3 * (1 + 10 * d.size);
+        })
+        .strength(10.0)
+        .iterations(5)
       )
       // This forces the groupings given in position_groups.json left/right
       .force(
@@ -947,14 +963,19 @@ class ForceGraphD3 extends React.Component {
       )
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
+
         this._link.attr("d", (d) => {
+          if (d.target.x === undefined || d.source.x === undefined) {
+            return null;
+          }
           const curveFactor = 3;
           const dx = d.target.x - d.source.x;
           const dy = d.target.y - d.source.x;
           const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
 
-          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+          return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
         });
+
         this._node
           .attr("cx", (d) => {
             return (d.x = constrain(d.x, w, d.r));
@@ -992,37 +1013,37 @@ class ForceGraphD3 extends React.Component {
       .force(
         "link",
         d3
-          .forceLink()
-          .links(this._graph.edges)
-          .distance((d) => {
-            return 75 * (1 + d.value);
-          })
-          .iterations(5)
+        .forceLink()
+        .links(this._graph.edges)
+        .distance((d) => {
+          return 75 * (1 + d.value);
+        })
+        .iterations(5)
       )
       .force(
         "collision",
         d3
-          .forceCollide()
-          .radius((d) => {
-            return 3 * (1 + d.size);
-          })
-          .strength(1.0)
-          .iterations(5)
+        .forceCollide()
+        .radius((d) => {
+          return 3 * (1 + d.size);
+        })
+        .strength(1.0)
+        .iterations(5)
       )
       .force("charge", d3.forceManyBody().strength(-10).distanceMin(10).distanceMax(25))
       .force(
         "X",
         d3
-          .forceX()
-          .strength(0.5)
-          .x(w / 2)
+        .forceX()
+        .strength(0.5)
+        .x(w / 2)
       )
       .force(
         "Y",
         d3
-          .forceY()
-          .strength(0.5)
-          .y(h / 2)
+        .forceY()
+        .strength(0.5)
+        .y(h / 2)
       )
       .on("tick", () => {
         this._link.attr("d", (d) => {
@@ -1031,7 +1052,7 @@ class ForceGraphD3 extends React.Component {
           const dy = d.target.y - d.source.x;
           const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
 
-          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+          return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
         });
         this._node
           .attr("cx", (d) => {
