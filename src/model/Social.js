@@ -11,6 +11,9 @@ import Notes from "./Notes";
 import Projects from "./Projects";
 import Biographies from "./Biographies";
 import DateRange from "./DateRange";
+import get_id from "./get_id";
+
+import score_by_connections from "./ScoringFunctions";
 
 import {
   ValueError
@@ -62,6 +65,7 @@ class Social {
     };
     this.state.window = new DateRange();
     this.state.max_window = new DateRange();
+    this.state.scoring_function = score_by_connections;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -209,11 +213,11 @@ class Social {
 
       for (let connection in connections) {
         let node = connections[connection];
-        filter[node.getID()] = 1;
+        filter[get_id(node)] = 1;
       }
 
       this.state.cache.node_filters.push((item) => {
-        if (item.getID() in filter) {
+        if (get_id(item) in filter) {
           return item;
         } else {
           return null;
@@ -546,9 +550,7 @@ class Social {
   }
 
   _getType(item) {
-    if (item.getID) {
-      item = item.getID();
-    }
+    item = get_id(item);
 
     if (item[0] === "P" || item[0] === "B") {
       return "node";
@@ -562,9 +564,7 @@ class Social {
   }
 
   isFiltered(item) {
-    if (item.getID) {
-      item = item.getID();
-    }
+    item = get_id(item);
 
     let type = this._getType(item);
 
@@ -652,9 +652,7 @@ class Social {
     }
 
     for (let item of items) {
-      if (item.getID) {
-        item = item.getID();
-      }
+      item = get_id(item);
 
       let type = this._getType(item);
 
@@ -683,9 +681,7 @@ class Social {
       }
 
       for (let item of items) {
-        if (item.getID) {
-          item = item.getID();
-        }
+        item = get_id(item);
 
         let type = this._getType(item);
 
@@ -707,9 +703,7 @@ class Social {
       }
 
       for (let item of items) {
-        if (item.getID) {
-          item = item.getID();
-        }
+        item = get_id(item);
 
         let type = this._getType(item);
 
@@ -777,6 +771,13 @@ class Social {
     return this.state.cache.itemTimeLine;
   }
 
+  /** Return the scoring function that should be used to order the
+   *  nodes in any ordered graph
+   */
+  getScoringFunction() {
+    return this.state.scoring_function;
+  }
+
   /** Return the graph of nodes and edges that will be displayed by
    *  the app. This should apply all of the filters and only return
    *  the nodes and edges that should be visible. It should also
@@ -796,40 +797,18 @@ class Social {
 
     let n = {};
     for (let i in nodes) {
-      n[nodes[i].id] = 1;
+      n[get_id(nodes[i])] = 1;
     }
 
-    let connections = this.getConnections();
+    let edges = this.getConnections().getEdges(n);
 
-    let counts = {}
-    let edges = connections.getEdges(n, counts);
+    let scoring_function = this.getScoringFunction();
 
-    let scores = [];
-
-    for (let i in nodes) {
-      let node = nodes[i];
-      let score = 0;
-
-      if (node.id === anchor.getID()) {
-        score += 1000;
-      }
-
-      if (connections.areConnected(anchor.getID(), node.id)) {
-        score += 500;
-      }
-
-      if (counts[node.id]) {
-        score += counts[node.id];
-      }
-
-      scores.push([score, i]);
+    if (!scoring_function) {
+      scoring_function = score_by_connections;
     }
 
-    scores.sort((x, y) => { return y[0] - x[0]; });
-
-    for (let i in scores) {
-      nodes[scores[i][1]].sort_index = i;
-    }
+    scoring_function(nodes, edges, this);
 
     this.state.cache.graph = {
       nodes: nodes,
@@ -863,9 +842,7 @@ class Social {
   }
 
   get(id, filtered = true) {
-    if (id.getID) {
-      id = id.getID();
-    }
+    id = get_id(id);
 
     if (this._rebuilding) {
       // we cannot get filtered data when rebuilding, else otherwise

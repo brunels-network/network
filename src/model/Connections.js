@@ -5,6 +5,8 @@ import {
 import lodash from "lodash";
 
 import Connection from "./Connection";
+import get_id from "./get_id";
+
 import {
   KeyError,
   MissingError
@@ -60,13 +62,13 @@ class Connections {
 
     if (existing) {
       existing = existing.merge(connection);
-      this.state.registry[existing.getID()] = existing;
+      this.state.registry[get_id(existing)] = existing;
       return existing;
     }
 
     connection = Connection.clone(connection);
 
-    let id = connection.getID();
+    let id = get_id(connection);
 
     if (id) {
       if (id in this.state.registry) {
@@ -83,8 +85,9 @@ class Connections {
     }
 
     connection._updateHooks(this._getHook);
-    this._names[connection.getName()] = connection.getID();
-    this.state.registry[connection.getID()] = connection;
+    let connection_id = get_id(connection);
+    this._names[connection.getName()] = connection_id;
+    this.state.registry[connection_id] = connection;
 
     let id0 = connection.getNode0ID();
     let id1 = connection.getNode1ID();
@@ -115,7 +118,7 @@ class Connections {
 
   find(name) {
     if (name instanceof Connection || name._isAConnectionObject) {
-      return this.get(name.getID());
+      return this.get(get_id(name));
     }
 
     name = name.trim().toLowerCase();
@@ -255,21 +258,8 @@ class Connections {
   }
 
   areConnected(item0, item1) {
-    if (item0.getID) {
-      let id = item0.getID();
-      item0 = id;
-    } else if (item0.id) {
-      let id = item0.id;
-      item0 = id;
-    }
-
-    if (item1.getID) {
-      let id = item1.getID();
-      item1 = id;
-    } else if (item1.id) {
-      let id = item1.id;
-      item1 = id;
-    }
+    item0 = get_id(item0);
+    item1 = get_id(item1);
 
     if (item0 in this._connections) {
       return item1 in this._connections[item0];
@@ -278,34 +268,20 @@ class Connections {
     }
   }
 
-  getEdges(ids = null, counts = null) {
+  getEdges(ids = null) {
     let edges = [];
-
-    let add_count = (id) => {
-      let x = (counts[id] || 0) + 1;
-      counts[id] = x;
-    };
-
-    let add_connection_count = (connection) => {
-      if (counts) {
-        add_count(connection.getNode0ID());
-        add_count(connection.getNode1ID());
-      }
-    };
 
     if (ids) {
       Object.keys(this.state.registry).forEach((key) => {
         let connection = this.state.registry[key];
         if (connection.areNodesVisible(ids)) {
           edges.push(connection.toEdge());
-          add_connection_count(connection);
         }
       });
     } else {
       Object.keys(this.state.registry).forEach((key) => {
         let connection = this.state.registry[key];
         edges.push(connection.toEdge());
-        add_connection_count(connection);
       });
     }
 
