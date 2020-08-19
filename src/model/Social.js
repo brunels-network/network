@@ -11,15 +11,22 @@ import Notes from "./Notes";
 import Projects from "./Projects";
 import Biographies from "./Biographies";
 import DateRange from "./DateRange";
+import get_id from "./get_id";
 
-import { ValueError } from "./Errors";
+import score_by_connections from "./ScoringFunctions";
+
+import {
+  ValueError
+} from "./Errors";
 
 const fast_physics = {
   enabled: true,
   timestep: 0.5,
 };
 
-const slow_physics = { ...fast_physics };
+const slow_physics = {
+  ...fast_physics
+};
 slow_physics.timestep = 0.1;
 
 function _push(values, list) {
@@ -58,6 +65,7 @@ class Social {
     };
     this.state.window = new DateRange();
     this.state.max_window = new DateRange();
+    this.state.scoring_function = score_by_connections;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -74,7 +82,9 @@ class Social {
       return this.get(id);
     };
 
-    let state = { ...this.state };
+    let state = {
+      ...this.state
+    };
 
     if (!(this.state.people instanceof People)) {
       state.people = new People();
@@ -197,15 +207,17 @@ class Social {
 
     if (node_filter) {
       let connections = this.getConnectionsTo(node_filter);
-      let filter = { ...node_filter };
+      let filter = {
+        ...node_filter
+      };
 
       for (let connection in connections) {
         let node = connections[connection];
-        filter[node.getID()] = 1;
+        filter[get_id(node)] = 1;
       }
 
       this.state.cache.node_filters.push((item) => {
-        if (item.getID() in filter) {
+        if (get_id(item) in filter) {
           return item;
         } else {
           return null;
@@ -448,7 +460,9 @@ class Social {
   }
 
   getFilter() {
-    return { ...this.state.filter };
+    return {
+      ...this.state.filter
+    };
   }
 
   getFilterText() {
@@ -536,9 +550,7 @@ class Social {
   }
 
   _getType(item) {
-    if (item.getID) {
-      item = item.getID();
-    }
+    item = get_id(item);
 
     if (item[0] === "P" || item[0] === "B") {
       return "node";
@@ -552,9 +564,7 @@ class Social {
   }
 
   isFiltered(item) {
-    if (item.getID) {
-      item = item.getID();
-    }
+    item = get_id(item);
 
     let type = this._getType(item);
 
@@ -642,9 +652,7 @@ class Social {
     }
 
     for (let item of items) {
-      if (item.getID) {
-        item = item.getID();
-      }
+      item = get_id(item);
 
       let type = this._getType(item);
 
@@ -673,9 +681,7 @@ class Social {
       }
 
       for (let item of items) {
-        if (item.getID) {
-          item = item.getID();
-        }
+        item = get_id(item);
 
         let type = this._getType(item);
 
@@ -697,9 +703,7 @@ class Social {
       }
 
       for (let item of items) {
-        if (item.getID) {
-          item = item.getID();
-        }
+        item = get_id(item);
 
         let type = this._getType(item);
 
@@ -767,23 +771,49 @@ class Social {
     return this.state.cache.itemTimeLine;
   }
 
+  /** Return the scoring function that should be used to order the
+   *  nodes in any ordered graph
+   */
+  getScoringFunction() {
+    return this.state.scoring_function;
+  }
+
+  /** Return the graph of nodes and edges that will be displayed by
+   *  the app. This should apply all of the filters and only return
+   *  the nodes and edges that should be visible. It should also
+   *  apply the indexing function so that the index of the nodes
+   *  show their sorted order according to the primary criterion
+   */
   getGraph() {
     if (this.state.cache.graph !== null) {
       return this.state.cache.graph;
     }
 
     const anchor = this.state.anchor;
-    let nodes = this.getPeople().getNodes({ anchor: anchor });
+    let nodes = this.getPeople().getNodes({
+      anchor: anchor
+    });
     nodes = nodes.concat(this.getBusinesses().getNodes());
 
     let n = {};
     for (let i in nodes) {
-      n[nodes[i].id] = 1;
+      n[get_id(nodes[i])] = 1;
     }
 
     let edges = this.getConnections().getEdges(n);
 
-    this.state.cache.graph = { nodes: nodes, edges: edges };
+    let scoring_function = this.getScoringFunction();
+
+    if (!scoring_function) {
+      scoring_function = score_by_connections;
+    }
+
+    scoring_function(nodes, edges, this);
+
+    this.state.cache.graph = {
+      nodes: nodes,
+      edges: edges
+    };
     return this.state.cache.graph;
   }
 
@@ -812,9 +842,7 @@ class Social {
   }
 
   get(id, filtered = true) {
-    if (id.getID) {
-      id = id.getID();
-    }
+    id = get_id(id);
 
     if (this._rebuilding) {
       // we cannot get filtered data when rebuilding, else otherwise
@@ -852,7 +880,9 @@ class Social {
   }
 
   toDry() {
-    return { value: this.state };
+    return {
+      value: this.state
+    };
   }
 }
 

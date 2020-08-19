@@ -1,9 +1,16 @@
 import Dry from "json-dry";
-import { v4 as uuidv4 } from "uuid";
+import {
+  v4 as uuidv4
+} from "uuid";
 import lodash from "lodash";
 
 import Connection from "./Connection";
-import { KeyError, MissingError } from "./Errors";
+import get_id from "./get_id";
+
+import {
+  KeyError,
+  MissingError
+} from "./Errors";
 
 function _generate_connection_uid() {
   let uid = uuidv4();
@@ -17,6 +24,7 @@ class Connections {
     };
 
     this._names = {};
+    this._connections = {};
     this._isAConnectionsObject = true;
   }
 
@@ -54,13 +62,13 @@ class Connections {
 
     if (existing) {
       existing = existing.merge(connection);
-      this.state.registry[existing.getID()] = existing;
+      this.state.registry[get_id(existing)] = existing;
       return existing;
     }
 
     connection = Connection.clone(connection);
 
-    let id = connection.getID();
+    let id = get_id(connection);
 
     if (id) {
       if (id in this.state.registry) {
@@ -77,8 +85,23 @@ class Connections {
     }
 
     connection._updateHooks(this._getHook);
-    this._names[connection.getName()] = connection.getID();
-    this.state.registry[connection.getID()] = connection;
+    let connection_id = get_id(connection);
+    this._names[connection.getName()] = connection_id;
+    this.state.registry[connection_id] = connection;
+
+    let id0 = connection.getNode0ID();
+    let id1 = connection.getNode1ID();
+
+    if (!(id0 in this._connections)) {
+      this._connections[id0] = {};
+    }
+
+    if (!(id1 in this._connections)) {
+      this._connections[id1] = {};
+    }
+
+    this._connections[id0][id1] = 1;
+    this._connections[id1][id0] = 1;
 
     return connection;
   }
@@ -95,7 +118,7 @@ class Connections {
 
   find(name) {
     if (name instanceof Connection || name._isAConnectionObject) {
-      return this.get(name.getID());
+      return this.get(get_id(name));
     }
 
     name = name.trim().toLowerCase();
@@ -142,6 +165,7 @@ class Connections {
 
     let registry = {};
     let names = {};
+    let conns = {};
 
     Object.keys(this.state.registry).forEach((key) => {
       let connection = this.state.registry[key];
@@ -157,6 +181,20 @@ class Connections {
         if (connection) {
           registry[key] = connection;
           names[connection.getName()] = key;
+
+          let id0 = connection.getNode0ID();
+          let id1 = connection.getNode1ID();
+
+          if (!(id0 in conns)) {
+            conns[id0] = {};
+          }
+
+          if (!(id1 in conns)) {
+            conns[id1] = {};
+          }
+
+          conns[id0][id1] = 1;
+          conns[id1][id0] = 1;
         }
       }
     });
@@ -165,6 +203,7 @@ class Connections {
 
     connections.state.registry = registry;
     connections._names = names;
+    connections._connections = conns;
     connections._updateHooks(this._getHook);
 
     return connections;
@@ -218,6 +257,17 @@ class Connections {
     return connections;
   }
 
+  areConnected(item0, item1) {
+    item0 = get_id(item0);
+    item1 = get_id(item1);
+
+    if (item0 in this._connections) {
+      return item1 in this._connections[item0];
+    } else {
+      return false;
+    }
+  }
+
   getEdges(ids = null) {
     let edges = [];
 
@@ -239,7 +289,9 @@ class Connections {
   }
 
   toDry() {
-    return { value: this.state };
+    return {
+      value: this.state
+    };
   }
 }
 
@@ -251,6 +303,20 @@ Connections.unDry = function (value) {
   Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     connections._names[v.getName()] = key;
+
+    let id0 = v.getNode0ID();
+    let id1 = v.getNode1ID();
+
+    if (!(id0 in connections._connections)) {
+      connections._connections[id0] = {};
+    }
+
+    if (!(id1 in connections._connections)) {
+      connections._connections[id1] = {};
+    }
+
+    connections._connections[id0][id1] = 1;
+    connections._connections[id1][id0] = 1;
   });
 
   return connections;

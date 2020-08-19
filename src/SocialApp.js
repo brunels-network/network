@@ -63,8 +63,7 @@ class SocialApp extends React.Component {
       unconnectedNodesVisible: false,
       commercialFiltered: false,
       engineersFiltered: false,
-      GravitySimulation: true,
-      simulationType: "Gravity",
+      simulationType: "Spiral",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -92,6 +91,7 @@ class SocialApp extends React.Component {
     // Find the investors and engineers for easy filtering
     // This requires the
     this.findInvestorsAndEngineers();
+
     // Find the unconnected nodes for filtering
     this.findConnectedNodes();
 
@@ -324,7 +324,6 @@ class SocialApp extends React.Component {
     let unconnectedNodes = {};
 
     // This should be updated to properly count the number of unconnected nodes per ship
-
     const shipIDs = this.state.social.getProjects().projects();
 
     for (const shipID of Object.values(shipIDs)) {
@@ -371,10 +370,10 @@ class SocialApp extends React.Component {
     const simType = this.state.simulationType;
 
     if (simType === "Gravity") {
-        this.setSimulationType("Spiral");
+      this.setSimulationType("Spiral");
     } else if (simType === "Spiral") {
-        this.setSimulationType("Structured");
-    } else if (simType === "Structured" || simType === "Filtered") {
+      this.setSimulationType("Structured");
+    } else if (simType === "Structured") {
       this.setSimulationType("Gravity");
     }
   }
@@ -383,7 +382,7 @@ class SocialApp extends React.Component {
     if (simType in this.simulationTypes) {
       this.setState({ simulationType: simType });
     } else {
-      console.error("Invalid simulaiton type, valid types are ", Object.keys(this.simulationTypes));
+      console.error("Invalid simulation type, valid types are ", Object.keys(this.simulationTypes));
     }
   }
 
@@ -396,7 +395,6 @@ class SocialApp extends React.Component {
     if (this.state.engineersFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
-      this.setSimulationType("Gravity");
     } else {
       this.resetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
@@ -404,7 +402,6 @@ class SocialApp extends React.Component {
         (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
       );
       this.slotToggleFilter(nodesToFilter);
-      this.setSimulationType("Filtered");
     }
 
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
@@ -418,7 +415,6 @@ class SocialApp extends React.Component {
     if (this.state.commercialFiltered) {
       this.resetFiltersNotShip();
       this.toggleUnconnectedNodesVisible();
-      this.setSimulationType("Gravity");
     } else {
       this.resetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
@@ -426,7 +422,6 @@ class SocialApp extends React.Component {
         (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
       );
       this.slotToggleFilter(nodesToFilter);
-      this.setSimulationType("Filtered");
     }
 
     this.setState({ commercialFiltered: !this.state.commercialFiltered });
@@ -520,7 +515,7 @@ class SocialApp extends React.Component {
           hoverColor="#9CB6A4"
           onClick={() => this.toggleAnalysisPanel()}
         >
-          Analysis
+          Menu
         </TextButton>
       );
     }
@@ -669,7 +664,6 @@ class SocialApp extends React.Component {
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
               physicsEnabled={this.state.physicsEnabled}
-              GravitySimulation={this.state.GravitySimulation}
               simulationType={this.state.simulationType}
             />
           </div>

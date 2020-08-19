@@ -46,14 +46,13 @@ class AnalysisPanel extends React.Component {
     return (
       <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.wholePanel}>
         <div className={styles.verticalSpaceTitle}></div>
-        <div className={styles.titleText}>Analysis</div>
+        <div className={styles.titleText}>Menu</div>
         <div className={styles.verticalSpace}></div>
         <TextButton
           fontSize="2.4vh"
           padding={buttonPadding}
           onClick={() => {
             this.props.filterEngineeringNodes();
-            // this.props.togglePanel();
           }}
         >
           {filterEngineersText}
@@ -64,7 +63,6 @@ class AnalysisPanel extends React.Component {
           padding={buttonPadding}
           onClick={() => {
             this.props.filterCommercialNodes();
-            // this.props.togglePanel();
           }}
         >
           {filterCommercialText}
@@ -74,7 +72,6 @@ class AnalysisPanel extends React.Component {
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleindirectConnectionsVisible();
-            // this.props.togglePanel();
           }}
         >
           {indirectConnectionsText + " indirect connections"}
@@ -84,7 +81,6 @@ class AnalysisPanel extends React.Component {
           padding={buttonPadding}
           onClick={() => {
             this.props.toggleUnconnectedNodesVisible();
-            // this.props.togglePanel();
           }}
         >
           {unconnectedNodesText + " unconnected nodes"}
@@ -95,7 +91,6 @@ class AnalysisPanel extends React.Component {
           padding={buttonPadding}
           onClick={() => {
             this.props.resetFilters();
-            // this.props.togglePanel();
           }}
         >
           Reset filters
