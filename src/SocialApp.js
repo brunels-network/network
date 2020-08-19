@@ -515,7 +515,7 @@ class SocialApp extends React.Component {
           hoverColor="#9CB6A4"
           onClick={() => this.toggleAnalysisPanel()}
         >
-          Analysis
+          Menu
         </TextButton>
       );
     }
