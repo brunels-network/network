@@ -136,7 +136,6 @@ function _resolve(item) {
 class ForceGraphD3 extends React.Component {
   constructor(props) {
     super(props);
-    this.gravitySimulation = this.gravitySimulation.bind(this);
     this.updateLink = this.updateLink.bind(this);
     this.updateNodeText = this.updateNodeText.bind(this);
     this.updateNode = this.updateNode.bind(this);
@@ -1193,7 +1192,7 @@ class ForceGraphD3 extends React.Component {
     let mainGroup = svg;
     this._mainGroup = mainGroup;
 
-    this.gravitySimulation();
+    this.spiralSimulation();
 
     mainGroup.append("g").attr("class", "link-group");
     mainGroup.append("g").attr("class", "node-group");

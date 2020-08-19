@@ -114,8 +114,8 @@ export default function force_spiral(width, height) {
 
     // offset the center slightly as the spiral
     // biases to top right
-    //center_x -= 0.05 * scale_x * radius;
-    //center_y += 0.05 * scale_y * radius;
+    center_x -= 0.05 * scale_x * radius;
+    center_y += 0.05 * scale_y * radius;
 
     points_x[0] = center_x;
     points_y[0] = center_y;
