@@ -32,6 +32,7 @@ export default function force_spiral(width, height) {
   let index = _return_index();
   let strength = _constant(0.1);
   let strengths = null;
+  let indexes = null;
   let points_x = null;
   let points_y = null;
 
@@ -48,8 +49,9 @@ export default function force_spiral(width, height) {
 
     for (let i = 0, n = nodes.length; i < n; ++i) {
       let node = nodes[i];
-      node.vx += (points_x[i] - node.x) * strengths[i] * alpha;
-      node.vy += (points_y[i] - node.y) * strengths[i] * alpha;
+      let index = indexes[i];
+      node.vx += (points_x[index] - node.x) * strengths[i] * alpha;
+      node.vy += (points_y[index] - node.y) * strengths[i] * alpha;
     }
   }
 
@@ -70,7 +72,7 @@ export default function force_spiral(width, height) {
 
     // collect the strengths and indexes
     strengths = new Array(n);
-    let indexes = new Array(n);
+    indexes = new Array(n);
 
     for (let i = 0; i < n; ++i) {
       strengths[i] = +strength(nodes[i], i, nodes);
@@ -112,8 +114,8 @@ export default function force_spiral(width, height) {
 
     // offset the center slightly as the spiral
     // biases to top right
-    center_x -= 0.05 * scale_x * radius;
-    center_y += 0.05 * scale_y * radius;
+    //center_x -= 0.05 * scale_x * radius;
+    //center_y += 0.05 * scale_y * radius;
 
     points_x[0] = center_x;
     points_y[0] = center_y;

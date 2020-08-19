@@ -12,14 +12,18 @@ import Projects from "./Projects";
 import Biographies from "./Biographies";
 import DateRange from "./DateRange";
 
-import { ValueError } from "./Errors";
+import {
+  ValueError
+} from "./Errors";
 
 const fast_physics = {
   enabled: true,
   timestep: 0.5,
 };
 
-const slow_physics = { ...fast_physics };
+const slow_physics = {
+  ...fast_physics
+};
 slow_physics.timestep = 0.1;
 
 function _push(values, list) {
@@ -74,7 +78,9 @@ class Social {
       return this.get(id);
     };
 
-    let state = { ...this.state };
+    let state = {
+      ...this.state
+    };
 
     if (!(this.state.people instanceof People)) {
       state.people = new People();
@@ -197,7 +203,9 @@ class Social {
 
     if (node_filter) {
       let connections = this.getConnectionsTo(node_filter);
-      let filter = { ...node_filter };
+      let filter = {
+        ...node_filter
+      };
 
       for (let connection in connections) {
         let node = connections[connection];
@@ -448,7 +456,9 @@ class Social {
   }
 
   getFilter() {
-    return { ...this.state.filter };
+    return {
+      ...this.state.filter
+    };
   }
 
   getFilterText() {
@@ -767,13 +777,21 @@ class Social {
     return this.state.cache.itemTimeLine;
   }
 
+  /** Return the graph of nodes and edges that will be displayed by
+   *  the app. This should apply all of the filters and only return
+   *  the nodes and edges that should be visible. It should also
+   *  apply the indexing function so that the index of the nodes
+   *  show their sorted order according to the primary criterion
+   */
   getGraph() {
     if (this.state.cache.graph !== null) {
       return this.state.cache.graph;
     }
 
     const anchor = this.state.anchor;
-    let nodes = this.getPeople().getNodes({ anchor: anchor });
+    let nodes = this.getPeople().getNodes({
+      anchor: anchor
+    });
     nodes = nodes.concat(this.getBusinesses().getNodes());
 
     let n = {};
@@ -781,9 +799,42 @@ class Social {
       n[nodes[i].id] = 1;
     }
 
-    let edges = this.getConnections().getEdges(n);
+    let connections = this.getConnections();
 
-    this.state.cache.graph = { nodes: nodes, edges: edges };
+    let counts = {}
+    let edges = connections.getEdges(n, counts);
+
+    let scores = [];
+
+    for (let i in nodes) {
+      let node = nodes[i];
+      let score = 0;
+
+      if (node.id === anchor.getID()) {
+        score += 1000;
+      }
+
+      if (connections.areConnected(anchor.getID(), node.id)) {
+        score += 500;
+      }
+
+      if (counts[node.id]) {
+        score += counts[node.id];
+      }
+
+      scores.push([score, i]);
+    }
+
+    scores.sort((x, y) => { return y[0] - x[0]; });
+
+    for (let i in scores) {
+      nodes[scores[i][1]].sort_index = i;
+    }
+
+    this.state.cache.graph = {
+      nodes: nodes,
+      edges: edges
+    };
     return this.state.cache.graph;
   }
 
@@ -852,7 +903,9 @@ class Social {
   }
 
   toDry() {
-    return { value: this.state };
+    return {
+      value: this.state
+    };
   }
 }
 

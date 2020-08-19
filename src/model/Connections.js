@@ -1,9 +1,14 @@
 import Dry from "json-dry";
-import { v4 as uuidv4 } from "uuid";
+import {
+  v4 as uuidv4
+} from "uuid";
 import lodash from "lodash";
 
 import Connection from "./Connection";
-import { KeyError, MissingError } from "./Errors";
+import {
+  KeyError,
+  MissingError
+} from "./Errors";
 
 function _generate_connection_uid() {
   let uid = uuidv4();
@@ -17,6 +22,7 @@ class Connections {
     };
 
     this._names = {};
+    this._connections = {};
     this._isAConnectionsObject = true;
   }
 
@@ -80,6 +86,20 @@ class Connections {
     this._names[connection.getName()] = connection.getID();
     this.state.registry[connection.getID()] = connection;
 
+    let id0 = connection.getNode0ID();
+    let id1 = connection.getNode1ID();
+
+    if (!(id0 in this._connections)) {
+      this._connections[id0] = {};
+    }
+
+    if (!(id1 in this._connections)) {
+      this._connections[id1] = {};
+    }
+
+    this._connections[id0][id1] = 1;
+    this._connections[id1][id0] = 1;
+
     return connection;
   }
 
@@ -142,6 +162,7 @@ class Connections {
 
     let registry = {};
     let names = {};
+    let conns = {};
 
     Object.keys(this.state.registry).forEach((key) => {
       let connection = this.state.registry[key];
@@ -157,6 +178,20 @@ class Connections {
         if (connection) {
           registry[key] = connection;
           names[connection.getName()] = key;
+
+          let id0 = connection.getNode0ID();
+          let id1 = connection.getNode1ID();
+
+          if (!(id0 in conns)) {
+            conns[id0] = {};
+          }
+
+          if (!(id1 in conns)) {
+            conns[id1] = {};
+          }
+
+          conns[id0][id1] = 1;
+          conns[id1][id0] = 1;
         }
       }
     });
@@ -165,6 +200,7 @@ class Connections {
 
     connections.state.registry = registry;
     connections._names = names;
+    connections._connections = conns;
     connections._updateHooks(this._getHook);
 
     return connections;
@@ -218,20 +254,58 @@ class Connections {
     return connections;
   }
 
-  getEdges(ids = null) {
+  areConnected(item0, item1) {
+    if (item0.getID) {
+      let id = item0.getID();
+      item0 = id;
+    } else if (item0.id) {
+      let id = item0.id;
+      item0 = id;
+    }
+
+    if (item1.getID) {
+      let id = item1.getID();
+      item1 = id;
+    } else if (item1.id) {
+      let id = item1.id;
+      item1 = id;
+    }
+
+    if (item0 in this._connections) {
+      return item1 in this._connections[item0];
+    } else {
+      return false;
+    }
+  }
+
+  getEdges(ids = null, counts = null) {
     let edges = [];
+
+    let add_count = (id) => {
+      let x = (counts[id] || 0) + 1;
+      counts[id] = x;
+    };
+
+    let add_connection_count = (connection) => {
+      if (counts) {
+        add_count(connection.getNode0ID());
+        add_count(connection.getNode1ID());
+      }
+    };
 
     if (ids) {
       Object.keys(this.state.registry).forEach((key) => {
         let connection = this.state.registry[key];
         if (connection.areNodesVisible(ids)) {
           edges.push(connection.toEdge());
+          add_connection_count(connection);
         }
       });
     } else {
       Object.keys(this.state.registry).forEach((key) => {
         let connection = this.state.registry[key];
         edges.push(connection.toEdge());
+        add_connection_count(connection);
       });
     }
 
@@ -239,7 +313,9 @@ class Connections {
   }
 
   toDry() {
-    return { value: this.state };
+    return {
+      value: this.state
+    };
   }
 }
 
@@ -251,6 +327,20 @@ Connections.unDry = function (value) {
   Object.keys(value.registry).forEach((key) => {
     let v = value.registry[key];
     connections._names[v.getName()] = key;
+
+    let id0 = v.getNode0ID();
+    let id1 = v.getNode1ID();
+
+    if (!(id0 in connections._connections)) {
+      connections._connections[id0] = {};
+    }
+
+    if (!(id1 in connections._connections)) {
+      connections._connections[id1] = {};
+    }
+
+    connections._connections[id0][id1] = 1;
+    connections._connections[id1][id0] = 1;
   });
 
   return connections;

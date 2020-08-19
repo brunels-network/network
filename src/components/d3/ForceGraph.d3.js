@@ -862,7 +862,13 @@ class ForceGraphD3 extends React.Component {
       .alpha(1.0)
       .alphaTarget(0)
       .alphaDecay(0.01)
-      .force("spiral", force_spiral(w, h).strength(0.3))
+      .force("spiral",
+        force_spiral(w, h)
+        .strength(0.3)
+        .index((d) => {
+          return d.sort_index;
+        })
+      )
       .force(
         "collide",
         d3
