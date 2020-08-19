@@ -97,11 +97,22 @@ export default function force_spiral(width, height) {
     let angle = 0.0;
     let radius = 0.0;
 
+    let min_x = 0.0;
+    let max_x = 0.0;
+    let min_y = 0.0;
+    let max_y = 0.0;
+
     for (let i = 1; i <= max_index; ++i) {
       radius = Math.sqrt(i);
       angle += Math.asin(1 / radius);
       points_x[i] = Math.cos(angle) * radius;
       points_y[i] = Math.sin(angle) * radius;
+
+      min_x = Math.min(min_x, points_x[i]);
+      max_x = Math.max(max_x, points_x[i]);
+
+      min_y = Math.min(min_y, points_y[i]);
+      max_y = Math.max(max_y, points_y[i]);
     }
 
     // we now need to scale such that 'radius' can fit comfortably
@@ -109,13 +120,12 @@ export default function force_spiral(width, height) {
     let center_x = width / 2;
     let center_y = height / 2;
 
-    let scale_x = 0.97 * center_x / radius;
-    let scale_y = 0.97 * center_y / radius;
+    let scale_x = 0.80 * width / (max_x - min_x);
+    let scale_y = 0.80 * height / (max_y - min_y);
 
-    // offset the center slightly as the spiral
-    // biases to top right
-    center_x -= 0.05 * scale_x * radius;
-    center_y += 0.05 * scale_y * radius;
+    // offset the center slightly as the spiral biases slightly
+    center_x -= 0.5 * scale_x * (max_x + min_x);
+    center_y -= 0.5 * scale_y * (max_y + min_y);
 
     points_x[0] = center_x;
     points_y[0] = center_y;

@@ -37,21 +37,21 @@
 .link {
     /* Was white */
     stroke: #659dd8;
-    stroke-width: 0.05vw;
+    stroke-width: 0.10vw;
     stroke-opacity: 60%;
     fill: none;
 }
 
 .linkWeak {
     stroke: #659dd8;
-    stroke-width: 0.05vw;
+    stroke-width: 0.10vw;
     stroke-opacity: 20%;
     fill: none;
 }
 
 .linkIndirect {
     stroke: #808080;
-    stroke-width: 0.05vw;
+    stroke-width: 0.10vw;
     stroke-opacity: 50%;
     fill: none;
 }
@@ -63,21 +63,21 @@
 
 .linkWeak.highlight {
     stroke: red;
-    stroke-width: 0.25vw;
+    stroke-width: 0.30vw;
     stroke-opacity: 50%;
     fill: none;
 }
 
 .linkIndirect.highlight {
     stroke: red;
-    stroke-width: 0.25vw;
+    stroke-width: 0.30vw;
     stroke-opacity: 50%;
     fill: none;
 }
 
 .link.highlight {
     stroke: red;
-    stroke-width: 0.25vw;
+    stroke-width: 0.35vw;
     fill: none;
 }
 
