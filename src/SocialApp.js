@@ -26,6 +26,11 @@ import positionGroups from "./data/positionGroups.json";
 // Styling for the app
 import styles from "./SocialApp.module.css";
 import DateRange from "./model/DateRange";
+import {
+  score_by_connections_to_anchor,
+  score_by_connections,
+  score_by_weight
+} from "./model/ScoringFunctions";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -64,6 +69,7 @@ class SocialApp extends React.Component {
       commercialFiltered: false,
       engineersFiltered: false,
       simulationType: "Spiral",
+      spiralOrder: "Brunel",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -88,6 +94,12 @@ class SocialApp extends React.Component {
       Spiral: 1
     });
 
+    this.spiralOrders = Object.freeze({
+      "Brunel": score_by_connections_to_anchor,
+      "Connections": score_by_connections,
+      "Weight": score_by_weight
+    });
+
     // Find the investors and engineers for easy filtering
     // This requires the
     this.findInvestorsAndEngineers();
@@ -97,6 +109,7 @@ class SocialApp extends React.Component {
 
     // Hide the unconnected nodes
     this.state.social.toggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
+    this.state.social.setScoringFunction(this.spiralOrders[this.state.spiralOrder]);
     this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
@@ -378,6 +391,33 @@ class SocialApp extends React.Component {
     }
   }
 
+  toggleSpiralOrder() {
+    const order = this.state.spiralOrder;
+
+    if (order === "Brunel") {
+      this.setSpiralOrder("Connections");
+    } else if (order === "Connections") {
+      this.setSpiralOrder("Weight");
+    } else if (order === "Weight") {
+      this.setSpiralOrder("Brunel");
+    }
+  }
+
+  setSpiralOrder(order) {
+    if (order in this.spiralOrders) {
+      if (this.state.spiralOrder !== order) {
+        let social = this.state.social;
+        social.setScoringFunction(this.spiralOrders[order]);
+        this.setState({
+          social: social,
+          spiralOrder: order
+        });
+      }
+    } else {
+      console.error("Invalid spiral order, valid orders are ", Object.keys(this.spiralOrders));
+    }
+  }
+
   setSimulationType(simType) {
     if (simType in this.simulationTypes) {
       this.setState({ simulationType: simType });
@@ -520,6 +560,27 @@ class SocialApp extends React.Component {
       );
     }
 
+    let spiral_order = null;
+
+    if (this.state.simulationType === "Spiral") {
+      spiral_order = (
+        <div className={styles.spiralOrderButtonContainer}>
+          <TextButton fontSize="1.8vh" textColor="#f1f1f1" hoverColor="#f1f1f1" padding="2px 2px 2px 2px">
+            Spiral Order
+          </TextButton>
+          <TextButton
+            fontSize="2.7vh"
+            textColor="#f1f1f1"
+            hoverColor="#9CB6A4"
+            padding="2px 2px 2px 2px"
+            onClick={() => this.toggleSpiralOrder()}
+          >
+            {this.state.spiralOrder}
+          </TextButton>
+        </div>
+      );
+    }
+
     return (
       <div>
         <div className={styles.whatIsButtonContainer}>
@@ -570,6 +631,8 @@ class SocialApp extends React.Component {
             {this.state.simulationType}
           </TextButton>
         </div>
+
+        {spiral_order}
 
         <div className={styles.commercialNodeLabel}>
           <TextButton

@@ -186,12 +186,17 @@ class Person {
 
     let affiliations = _filterProject(this.state.affiliations, project);
     let positions = _filterProject(this.state.positions, project);
+    let weight = _filterProject(this.state.weight, project);
+    let edge_count = _filterProject(this.state.edge_count, project);
 
-    if (affiliations !== this.state.affiliations || positions !== this.state.positions) {
+    if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
+        weight !== this.state.weight || edge_count !== this.state.edge_count) {
       let person = new Person();
       person.state = { ...this.state };
       person.state.affiliations = affiliations;
       person.state.positions = positions;
+      person.state.weight = weight;
+      person.state.edge_count = edge_count;
       person._getHook = this._getHook;
       return person;
     } else {
