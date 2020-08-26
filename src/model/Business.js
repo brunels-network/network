@@ -180,12 +180,17 @@ class Business {
 
     let affiliations = _filterProject(this.state.affiliations, project);
     let positions = _filterProject(this.state.positions, project);
+    let weight = _filterProject(this.state.weight, project);
+    let edge_count = _filterProject(this.state.edge_count, project);
 
-    if (affiliations !== this.state.affiliations || positions !== this.state.positions) {
+    if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
+        weight !== this.state.weight || edge_count !== this.state.edge_count) {
       let business = new Business();
       business.state = { ...this.state };
       business.state.affiliations = affiliations;
       business.state.positions = positions;
+      business.state.weight = weight;
+      business.state.edge_count = edge_count;
       business._getHook = this._getHook;
       return business;
     } else {

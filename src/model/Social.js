@@ -771,6 +771,14 @@ class Social {
     return this.state.cache.itemTimeLine;
   }
 
+  /** Set the scoring function used to order the nodes */
+  setScoringFunction(func) {
+    if (func !== this.state.scoring_function) {
+      this.state.scoring_function = func;
+      this.clearCache();
+    }
+  }
+
   /** Return the scoring function that should be used to order the
    *  nodes in any ordered graph
    */
