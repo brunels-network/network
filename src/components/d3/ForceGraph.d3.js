@@ -12,8 +12,6 @@ import force_spiral from "./force_spiral.js";
 
 import styles from "../ForceGraph.module.css";
 
-import positionGroups from "../../data/positionGroups.json";
-
 function _null_function() {}
 
 function constrain(x, w, r = 20) {
@@ -141,13 +139,10 @@ class ForceGraphD3 extends React.Component {
     this.updateNode = this.updateNode.bind(this);
     this.draw = this.draw.bind(this);
     this.drawFromScratch = this.drawFromScratch.bind(this);
-    this.setPositionColors = this.setPositionColors.bind(this);
-    this.getPositionColor = this.getPositionColor.bind(this);
     this.update = this.update.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
 
     this.drag = this.drag.bind(this);
-    this.dragLink = this.dragLink.bind(this);
     this.getWeight = this.getWeight.bind(this);
 
     // Generate a UID for this graph so that we don't clash
@@ -160,16 +155,12 @@ class ForceGraphD3 extends React.Component {
       social: null,
       selected: null,
       highlighted: null,
-      lastPhysics: "fast",
-      physicsEnabled: this.props.physicsEnabled,
       signalClicked: _null_function,
       signalMouseOut: _null_function,
       signalMouseOver: _null_function,
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
-      standardSimulation: true,
       selectedShipID: null,
-      lastSimulationType: "Standard",
       colors: {},
       groupTable: {},
       uid: uid.slice(uid.length - 8),
@@ -273,14 +264,6 @@ class ForceGraphD3 extends React.Component {
   update(props) {
     let size_changed = false;
 
-    if (!this.state.physicsEnabled) {
-      this.state.physicsEnabled = this.props.physicsEnabled;
-    }
-
-    if (!this.state.standardSimulation) {
-      this.state.standardSimulation = this.props.standardSimulation;
-    }
-
     if (props.indirectConnectionsVisible !== this.state.indirectConnectionsVisible) {
       this.state.indirectConnectionsVisible = props.indirectConnectionsVisible;
       this._graph_changed = true;
@@ -346,9 +329,6 @@ class ForceGraphD3 extends React.Component {
       this.updateGraph(props.social);
     }
 
-    // We can setup the colours object
-    this.setPositionColors();
-
     let hasSelected = Object.prototype.hasOwnProperty.call(props, "selected");
 
     if (hasSelected) {
@@ -370,136 +350,10 @@ class ForceGraphD3 extends React.Component {
       this.state.selectedShipID = this.props.selectedShipID;
       this._graph_changed = true;
     }
-
-    if (this.props.simulationType !== this.state.simulationType) {
-      this.state.simulationType = this.props.simulationType;
-      //   this.changeSimulationType();
-      this._graph_changed = true;
-    }
-
-    // For now get the ID of the SS Great Eastern so we don't assign force to the nodes
-    this.state.greatEasternID = this.state.social.getProjects().getByName("SS Great Eastern").getID();
   }
 
   className() {
     return `ForceGraphD3-${this.state.uid}`;
-  }
-
-  getPositionColor(entity) {
-    // Businesses have a single colour
-    if (entity["type"] === "business") {
-      return positionGroups["business"]["color"];
-    }
-
-    // Anchor
-    if (entity["group"] === "anchor") {
-      return positionGroups["anchor"]["color"];
-    }
-
-    // This shouldn't happen, but all nodes must have a colour set
-    if (!entity["positions"]) {
-      console.error("No colour available for this entity : ", entity);
-      return "#FFFFFF";
-    }
-
-    const positionCode = this.getPositionCode(entity);
-
-    let color = this.state.colors[positionCode];
-
-    return color;
-  }
-
-  getPositionCode(entity) {
-    const shipID = this.getSelectedShipID();
-
-    let code = null;
-    // There might not be a position for this project
-    try {
-      code = entity["positions"][shipID][0];
-    } catch (error) {
-      code = "NA";
-    }
-
-    return code;
-  }
-
-  setPositionColors() {
-    // Read all the positions for this graph
-    const namedPositions = this.state.social.getPositions().items();
-
-    let colorTable = {};
-    let groupTable = {};
-
-    // Read the positions and colours from a JSON file that can be easily updated
-    for (let [position, uid] of Object.entries(namedPositions)) {
-      // Process these to remove whitespace and non letter/number characters so we have less likelihood of errors
-      let trimPosition = position
-        .toLowerCase()
-        .replace(/\s/g, "")
-        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
-
-      // Here positionGroups is the import JSON object containing
-      // which positions are in which group and the colour assigned to them
-      for (let [group, members] of Object.entries(positionGroups)) {
-        if (members["members"].includes(trimPosition)) {
-          colorTable[uid] = members["color"];
-          groupTable[uid] = group;
-          break;
-        } else {
-          // Assign bright blue to any we don't recognize, but this
-          // shouldn't (hopefully) happen if the JSON is correct
-          colorTable[uid] = positionGroups["unknown"]["color"];
-        }
-      }
-    }
-
-    // Set the colour for the anchor
-    colorTable["anchor"] = positionGroups["anchor"]["color"];
-
-    // This is being called from within the ctor so we can't use setState here
-    this.state.colors = colorTable;
-    this.state.groupTable = groupTable;
-  }
-
-  getGroupForce(entity) {
-    if (!entity.positions) {
-      const entity_id = entity["id"].toLowerCase();
-
-      // Need a better way of handling businesses
-      if (entity_id.startsWith("b")) {
-        return -0.11;
-      } else {
-        console.error("Undefined positions for entity ", entity);
-        return 0;
-      }
-    }
-
-    if (this.props.selectedShipID === this.state.greatEasternID) {
-      return 0;
-    }
-
-    if (!this.gotConnections(entity.id)) {
-      return 0;
-    }
-
-    const leftForce = ["engineering"];
-    const rightForce = ["commercial"];
-    const noForce = ["other", "anchor", "business", "unknown"];
-
-    // Get the position codes for this entity
-    const positionCode = this.getPositionCode(entity);
-    // The groupTable tells us which group this entity belongs to and so determines its force
-    const positionGroup = this.state.groupTable[positionCode];
-
-    if (leftForce.includes(positionGroup)) {
-      return -0.17;
-    } else if (rightForce.includes(positionGroup)) {
-      return 0.1;
-    } else if (noForce.includes(positionGroup)) {
-      return 0.1;
-    }
-
-    return 0;
   }
 
   drag() {
@@ -524,60 +378,6 @@ class ForceGraphD3 extends React.Component {
         if (!d.fixed) {
           d.fx = null;
           d.fy = null;
-        }
-      });
-  }
-
-  dragLink() {
-    let simulation = this._simulation;
-
-    return d3
-      .drag()
-      .on("start", (d) => {
-        //find the two nodes connected to this edge
-        let source = this._graph.nodes[d.source.index];
-        let target = this._graph.nodes[d.target.index];
-
-        //fix those nodes in place
-        source.fx = source.x;
-        source.fy = source.y;
-
-        target.fx = target.x;
-        target.fy = target.y;
-      })
-      .on("drag", (d) => {
-        if (!this._is_running) simulation.restart();
-
-        //find the two nodes connected to this edge
-        let source = this._graph.nodes[d.source.index];
-        let target = this._graph.nodes[d.target.index];
-
-        //moves those nodes with the event - move the center point of the
-        //line connecting these two nodes...
-        let dx = 0.5 * (target.x - source.x);
-        let dy = 0.5 * (target.y - source.y);
-
-        source.fx = constrain(d3.event.x - dx, this.state.width, source.r);
-        source.fy = constrain(d3.event.y - dy, this.state.height, source.r);
-
-        target.fx = constrain(d3.event.x + dx, this.state.width, target.r);
-        target.fy = constrain(d3.event.y + dy, this.state.height, target.r);
-      })
-      .on("end", (d) => {
-        // simulation.alphaTarget(0).restart();
-
-        //find the two nodes connected to this edge
-        let source = this._graph.nodes[d.source.index];
-        let target = this._graph.nodes[d.target.index];
-
-        if (!source.fixed) {
-          source.fx = null;
-          source.fy = null;
-        }
-
-        if (!target.fixed) {
-          target.fx = null;
-          target.fy = null;
         }
       });
   }
@@ -612,9 +412,6 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("id", (d) => {
         return d.id;
-      })
-      .attr("fill", (d) => {
-        return this.getPositionColor(d);
       })
       .on("click", (d) => this.props.emitPopProps(d))
       .on("mouseover", handleMouseOver(this))
@@ -696,142 +493,9 @@ class ForceGraphD3 extends React.Component {
         return d.target_id;
       })
       .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this))
-      .call(this.dragLink());
+      .on("mouseout", handleMouseOut(this));
 
     return link;
-  }
-
-  changeSimulationType() {
-    if (this._graph) {
-      console.log(`${this.state.lastSimulationType} ${this.props.simulationType}`);
-
-      let simulation_type = this.props.simulationType;
-
-      if (simulation_type === "Filtered") {
-        simulation_type = this.state.lastSimulationType;
-      }
-
-      this.state.lastSimulationType = simulation_type;
-      this.state.selectedShipID = this.props.selectedShipID;
-
-      switch (simulation_type) {
-        case "Gravity":
-          this.gravitySimulation();
-          break;
-        case "Structured":
-          this.structuredSimulation();
-          break;
-        case "Spiral":
-          this.spiralSimulation();
-          break;
-        case "Filtered":
-          this.centreNodes();
-          break;
-        default:
-          console.log(`Unrecognised simulation type ${this.props.simulationType}`);
-          break;
-      }
-    }
-  }
-
-  gravitySimulation() {
-    if (this._simulation) {
-      this._simulation.stop();
-      this._simulation = null;
-      this._is_running = false;
-    }
-
-    let w = this.state.width;
-    let h = this.state.height;
-
-    let graph = this._graph;
-
-    // We don't want a force applied to null edges
-    let edges = graph.edges.filter((v) => v["type"]);
-
-    // Node layout
-    const maxWeight = d3.max(graph.nodes, (d) => {
-      return d["weight"][this.props.selectedShipID];
-    });
-
-    let strengthScale = d3.scalePow().exponent(5).range([0, 1]).domain([0, maxWeight]);
-    let radiusScale = d3.scaleLinear().domain([0, maxWeight]).range([1, 80]);
-
-    let simulation = d3
-      .forceSimulation(this._graph.nodes)
-      .alpha(1.0)
-      .alphaTarget(0)
-      .alphaDecay(0.01)
-      .force(
-        "X",
-        d3
-        .forceX()
-        .strength((d) => {
-          return strengthScale(d["weight"][this.props.selectedShipID]);
-        })
-        .x(w / 2)
-      )
-      .force(
-        "Y",
-        d3
-        .forceY()
-        .strength((d) => {
-          return strengthScale(d["weight"][this.props.selectedShipID]);
-        })
-        .y(h / 2)
-      )
-      .force(
-        "charge",
-        d3.forceManyBody().strength((d) => 2 * radiusScale(d["weight"][this.props.selectedShipID]))
-      )
-      .force(
-        "collide",
-        d3
-        .forceCollide()
-        .strength(1)
-        .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
-        .iterations(30)
-      )
-      .force("link", d3.forceLink().strength(0).links(edges).iterations(80))
-      // This function with help from https://stackoverflow.com/a/13456081
-      .on("tick", () => {
-
-        this._link.attr("d", (d) => {
-          if (d.target.x === undefined || d.source.x === undefined) {
-            return null;
-          }
-          // The smaller the curve factor the greater the curve
-          const curveFactor = 2;
-          const dx = d.target.x - d.source.x;
-          const dy = d.target.y - d.source.x;
-          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
-
-          return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
-        });
-
-        this._node
-          .attr("cx", (d) => {
-            return (d.x = constrain(d.x, w, d.r));
-          })
-          .attr("cy", (d) => {
-            return (d.y = constrain(d.y, h, d.r));
-          });
-
-        this._label
-          .attr("x", (d) => {
-            if (this.getLabelXOffset(d)) return this.getLabelXOffset(d);
-          })
-          .attr("y", (d) => d.y);
-      })
-      .on("end", () => {
-        this.restartSimulation();
-      });
-
-    this._is_running = true;
-
-    // Save the simulation so that we can update it later...
-    this._simulation = simulation;
   }
 
   spiralSimulation() {
@@ -918,172 +582,6 @@ class ForceGraphD3 extends React.Component {
     this._simulation = simulation;
   }
 
-  structuredSimulation() {
-    if (this._simulation) {
-      this._simulation.stop();
-      this._simulation = null;
-      this._is_running = false;
-    }
-
-    let w = this.state.width;
-    let h = this.state.height;
-
-    let graph = this._graph;
-    // We don't want a force applied to null edges
-    let edges = graph.edges.filter((v) => v["type"]);
-
-    let simulation = d3
-      .forceSimulation(graph.nodes)
-      .force("charge", d3.forceManyBody().strength(-40).distanceMin(4))
-      .force(
-        "link",
-        d3
-        .forceLink()
-        .links(edges)
-        .distance((d) => {
-          if (d["type"] === "direct") {
-            return 75 * (1 + d.value);
-          } else {
-            return 125 * (1 + d.value);
-          }
-        })
-        .iterations(5)
-      )
-      .force(
-        "collision",
-        d3
-        .forceCollide()
-        .radius((d) => {
-          return 3 * (1 + 10 * d.size);
-        })
-        .strength(10.0)
-        .iterations(5)
-      )
-      // This forces the groupings given in position_groups.json left/right
-      .force(
-        "X",
-        d3.forceX().strength((d) => {
-          return this.getGroupForce(d);
-        })
-      )
-      // This function with help from https://stackoverflow.com/a/13456081
-      .on("tick", () => {
-
-        this._link.attr("d", (d) => {
-          if (d.target.x === undefined || d.source.x === undefined) {
-            return null;
-          }
-          const curveFactor = 3;
-          const dx = d.target.x - d.source.x;
-          const dy = d.target.y - d.source.x;
-          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
-
-          return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
-        });
-
-        this._node
-          .attr("cx", (d) => {
-            return (d.x = constrain(d.x, w, d.r));
-          })
-          .attr("cy", (d) => {
-            return (d.y = constrain(d.y, h, d.r));
-          });
-
-        this._label.attr("x", (d) => this.getLabelXOffset(d)).attr("y", (d) => d.y);
-      })
-      .on("end", () => {
-        this.restartSimulation();
-      });
-
-    this._is_running = true;
-
-    // Save the simulation so that we can update it later...
-    this._simulation = simulation;
-  }
-
-  centreNodes() {
-    if (this._simulation) {
-      this._simulation.stop();
-      this._simulation = null;
-      this._is_running = false;
-    }
-    let w = this.state.width;
-    let h = this.state.height;
-
-    let simulation = d3
-      .forceSimulation(this._graph.nodes)
-      .alpha(0.4)
-      .alphaTarget(0)
-      .alphaDecay(0.05)
-      .force(
-        "link",
-        d3
-        .forceLink()
-        .links(this._graph.edges)
-        .distance((d) => {
-          return 75 * (1 + d.value);
-        })
-        .iterations(5)
-      )
-      .force(
-        "collision",
-        d3
-        .forceCollide()
-        .radius((d) => {
-          return 3 * (1 + d.size);
-        })
-        .strength(1.0)
-        .iterations(5)
-      )
-      .force("charge", d3.forceManyBody().strength(-10).distanceMin(10).distanceMax(25))
-      .force(
-        "X",
-        d3
-        .forceX()
-        .strength(0.5)
-        .x(w / 2)
-      )
-      .force(
-        "Y",
-        d3
-        .forceY()
-        .strength(0.5)
-        .y(h / 2)
-      )
-      .on("tick", () => {
-        this._link.attr("d", (d) => {
-          const curveFactor = 3;
-          const dx = d.target.x - d.source.x;
-          const dy = d.target.y - d.source.x;
-          const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
-
-          return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
-        });
-        this._node
-          .attr("cx", (d) => {
-            return (d.x = constrain(d.x, w, d.r));
-          })
-          .attr("cy", (d) => {
-            return (d.y = constrain(d.y, h, d.r));
-          });
-        this._label
-          .attr("x", (d) => {
-            return this.getLabelXOffset(d);
-          })
-          .attr("y", (d) => d.y);
-      })
-      .on("end", () => {
-        this.restartSimulation();
-      });
-
-    this._is_running = true;
-
-    // Save the simulation so that we can update it later...
-    this._simulation = simulation;
-
-    // this.updateGraph(this.state.social);
-  }
-
   getTextWidth(text, font) {
     // https://stackoverflow.com/a/21015393
     // If given, use cached canvas for better performance
@@ -1105,20 +603,6 @@ class ForceGraphD3 extends React.Component {
       return d.x - Math.min(radius + 1.5 * textWidth, maxOffset);
     } else {
       return d.x;
-    }
-  }
-
-  slowPhysics() {
-    if (this._simulation && this.state.physicsEnabled === true) {
-      this.state.physicsEnabled = false;
-      this._simulation.alpha(0.1).alphaTarget(0).alphaDecay(0.05).velocityDecay(0.8).restart();
-    }
-  }
-
-  fastPhysics() {
-    if (this._simulation && this.state.physicsEnabled === false) {
-      this.state.physicsEnabled = true;
-      this._simulation.alpha(1).alphaTarget(0.5).alphaMin(0.2).alphaDecay(0.001).restart();
     }
   }
 
@@ -1213,35 +697,23 @@ class ForceGraphD3 extends React.Component {
       return;
     }
 
-    let update_simulation = false;
-
     if (this._size_changed) {
       let container = d3.select(`.${this.className()}`);
       container.selectAll("svg").attr("width", this.state.width).attr("height", this.state.height);
       this._size_changed = false;
-      update_simulation = true;
       this._label = this.updateNodeText(this._graph.nodes);
     }
 
     if (this._graph_changed) {
-      this._node = this.updateNode(this._graph.nodes);
-      this._label = this.updateNodeText(this._graph.nodes);
-      this._link = this.updateLink(this._graph.edges);
+      this.drawFromScratch();
+      this._size_changed = false;
       this._graph_changed = false;
-      update_simulation = true;
-    }
-
-    if (update_simulation) {
-      this.changeSimulationType();
     }
   }
 }
 
 ForceGraphD3.propTypes = {
   emitPopProps: PropTypes.func.isRequired,
-  physicsEnabled: PropTypes.bool.isRequired,
-  standardSimulation: PropTypes.bool.isRequired,
-  simulationType: PropTypes.string.isRequired,
   selectedShipID: PropTypes.string,
 };
 
