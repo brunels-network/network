@@ -52,11 +52,12 @@ class SocialApp extends React.Component {
       selectedShipID: null,
     };
 
-    // TODO - work out a cleaner way of doing this
-    // Is set in ShipSelector correctly
     const ssGW = social.getProjects().getByName("SS Great Western");
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
+
+    // make sure that we start showing only the Great Western
+    this.state.social.toggleFilter(ssGW);
 
     this.spiralOrders = Object.freeze({
       "Connections": score_by_connections,
@@ -372,65 +373,47 @@ class SocialApp extends React.Component {
   }
 
   render() {
+
     return (
       <div>
-        <div className={styles.spiralTypeButtonContainer}>
-          <TextButton fontSize="1.8vh" textColor="#f1f1f1" hoverColor="#f1f1f1" padding="2px 2px 2px 2px">
-            Spiral Order
-          </TextButton>
-          <TextButton
-            fontSize="2.7vh"
-            textColor="#f1f1f1"
-            hoverColor="#9CB6A4"
-            padding="2px 2px 2px 2px"
-            onClick={() => this.toggleSpiralOrder()}
-          >
-            {this.state.spiralOrder}
-          </TextButton>
-        </div>
+        <div className={styles.ui_main}>
+          <div className={styles.ui_header}>
+            <div className={styles.ui_header_item}>
+              Menu
+            </div>
+            <div className={styles.ui_header_item}>
+              SEARCH
+            </div>
+            <div className={styles.ui_header_item}>
+              HELP
+            </div>
+          </div>
 
-        <div className={styles.commercialNodeLabel}>
-          <TextButton
-            fontSize="4.3vh"
-            textColor="#B52222"
-            hoverColor="#FFFFF0"
-            padding="1px 1px 1px 1px"
-            onClick={() => this.filterCommercialNodes()}
-          >
-            Commercial&#x25CF;
-          </TextButton>
-        </div>
+          <div className={styles.ui_content}>
+              <ForceGraph
+                social={this.state.social}
+                selected={this.state.selected_item}
+                highlighted={this.state.highlighted_item}
+                emitClicked={(id) => this.slotSelected(id)}
+                selectedShipID={this.state.selectedShipID}
+                indirectConnectionsVisible={this.state.indirectConnectionsVisible}
+                emitSetCenter={(id)=>{this.slotSetAnchor(id)}}
+              />
+          </div>
 
-        <div className={styles.engineeringNodeLabel}>
-          <TextButton
-            fontSize="4.3vh"
-            textColor="#808080"
-            hoverColor="#FFFFF0"
-            padding="1px 1px 1px 1px"
-            onClick={() => this.filterEngineeringNodes()}
-          >
-            Engineers&#x25CF;
-          </TextButton>
-        </div>
-
-        <div className={styles.bottomContainer}>
-          <ShipSelector projects={this.state.social.getProjects()} shipFilter={(item) => this.slotSetShip(item)} />
-        </div>
-
-        {/* The social graph itself */}
-        <div className={styles.mainContainer}>
-          <div className={styles.graphContainer}>
-            <ForceGraph
-              social={this.state.social}
-              selected={this.state.selected_item}
-              highlighted={this.state.highlighted_item}
-              emitClicked={(id) => this.slotSelected(id)}
-              selectedShipID={this.state.selectedShipID}
-              indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-              emitSetCenter={(id)=>{this.slotSetAnchor(id)}}
-            />
+          <div className={styles.ui_footer}>
+            <div className={styles.ui_footer_item}>
+              Spiral
+            </div>
+            <div className={styles.ui_footer_item}>
+              Ship
+            </div>
+            <div className={styles.ui_footer_item}>
+              Size
+            </div>
           </div>
         </div>
+
       </div>
     );
   }
