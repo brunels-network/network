@@ -1,7 +1,7 @@
 import get_id from "./get_id";
 
 /** Score by the weight of each node */
-function score_by_weight(nodes, edges, social) {
+function score_by_influence(nodes, edges, social) {
   let scores = [];
 
   for (let i in nodes) {
@@ -61,6 +61,13 @@ function score_by_connections(nodes, edges, social) {
  *  relationship to the anchor node
  */
 function score_by_connections_to_anchor(nodes, edges, social) {
+  let anchor = social.getAnchor();
+
+  if (!anchor) {
+    score_by_connections(nodes, edges, social);
+    return;
+  }
+
   let connections = social.getConnections();
 
   let counts = {};
@@ -78,7 +85,6 @@ function score_by_connections_to_anchor(nodes, edges, social) {
 
   let scores = [];
 
-  let anchor = social.getAnchor();
   let anchor_id = get_id(anchor);
 
   for (let i in nodes) {
@@ -114,6 +120,5 @@ function score_by_connections_to_anchor(nodes, edges, social) {
 export {
   score_by_connections as default,
   score_by_connections,
-  score_by_connections_to_anchor,
-  score_by_weight
+  score_by_influence
 };

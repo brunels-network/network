@@ -3,16 +3,9 @@ import React from "react";
 import Dry from "json-dry";
 
 // Brunel components
-import AboutOverlay from "./components/AboutOverlay";
-import AnalysisPanel from "./components/AnalysisPanel";
 import ForceGraph from "./components/ForceGraph";
-import HowDoIOverlay from "./components/HowDoIOverlay";
 import TimeLineBox from "./components/TimeLineBox";
-import FilterBox from "./components/FilterBox";
-import SlidingPanel from "./components/SlidingPanel";
 import ShipSelector from "./components/ShipSelector";
-import ShipTitle from "./components/ShipTitle";
-import SearchOverlay from "./components/SearchOverlay";
 import TextButton from "./components/TextButton";
 import Overlay from "./components/Overlay";
 
@@ -25,18 +18,16 @@ import positionGroups from "./data/positionGroups.json";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
-import DateRange from "./model/DateRange";
+
 import {
-  score_by_connections_to_anchor,
   score_by_connections,
-  score_by_weight
+  score_by_influence
 } from "./model/ScoringFunctions";
 
 class SocialApp extends React.Component {
   constructor(props) {
     super(props);
 
-    this.togglePhysicsEnabled = this.togglePhysicsEnabled.bind(this);
     this.resetAllFilters = this.resetAllFilters.bind(this);
     this.setOverlay = this.setOverlay.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -50,33 +41,21 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
-    // Special cases for Brunel project...
-    social.setAnchor("Brunel");
-    social.setMaxWindow(new DateRange({ start: "1800-01-01", end: "1860-12-31" }));
-
     this.state = {
       social: social,
       highlighted_item: null,
       selected_item: null,
       overlayItem: null,
-      isInfoPanelOpen: false,
-      isTimeLinePanelOpen: false,
-      isFilterPanelOpen: false,
-      isHamburgerMenuOpen: false,
-      isSearchOverlayOpen: false,
       indirectConnectionsVisible: false,
       unconnectedNodesVisible: false,
       commercialFiltered: false,
       engineersFiltered: false,
-      simulationType: "Spiral",
-      spiralOrder: "Brunel",
+      spiralOrder: "Influence",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
       timeline: new TimeLineBox(),
       isOverlayOpen: false,
-      isAnalysisOpen: false,
-      physicsEnabled: false,
       selectedShip: null,
       selectedShipID: null,
     };
@@ -87,17 +66,9 @@ class SocialApp extends React.Component {
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
 
-    this.simulationTypes = Object.freeze({
-      Gravity: 1,
-      Filtered: 1,
-      Structured: 1,
-      Spiral: 1
-    });
-
     this.spiralOrders = Object.freeze({
-      "Brunel": score_by_connections_to_anchor,
       "Connections": score_by_connections,
-      "Weight": score_by_weight
+      "Influence": score_by_influence
     });
 
     // Find the investors and engineers for easy filtering
@@ -108,8 +79,10 @@ class SocialApp extends React.Component {
     this.findConnectedNodes();
 
     // Hide the unconnected nodes
-    this.state.social.toggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
-    this.state.social.setScoringFunction(this.spiralOrders[this.state.spiralOrder]);
+    this.state.social.toggleFilter(
+      this.state.connectedNodes[this.state.selectedShipID]);
+    this.state.social.setScoringFunction(
+      this.spiralOrders[this.state.spiralOrder]);
     this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
@@ -141,12 +114,8 @@ class SocialApp extends React.Component {
 
   closePanels() {
     this.setState({
-      isInfoPanelOpen: false,
-      isTimeLinePanelOpen: false,
-      isHamburgerMenuOpen: false,
-      isFilterPanelOpen: false,
-      isAnalysisOpen: false,
-      highlighted_item: null,
+      isOverlayOpen: false,
+      overlayItem: null,
     });
   }
 
@@ -265,17 +234,6 @@ class SocialApp extends React.Component {
 
   hasConnections(entity) {
     return this.state.social.getConnections().gotConnections(entity.id);
-    // const shipID = this.state.selectedShipID;
-    // try {
-    //   if (entity["edge_count"][shipID] > 0) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    //   // We might not have an edge count for this ship
-    // } catch (error) {
-    //   return false;
-    // }
   }
 
   findInvestorsAndEngineers() {
@@ -343,7 +301,7 @@ class SocialApp extends React.Component {
       let connected = [];
       let unconnected = [];
 
-      const people = this.state.social.getPeople(false).getNodes("noanchor");
+      const people = this.state.social.getPeople(false).getNodes();
 
       for (const p of people) {
         if (this.hasConnections(p)) {
@@ -353,7 +311,7 @@ class SocialApp extends React.Component {
         }
       }
 
-      const businesses = this.state.social.getBusinesses(false).getNodes("noanchor");
+      const businesses = this.state.social.getBusinesses(false).getNodes();
 
       for (const b of businesses) {
         if (this.hasConnections(b)) {
@@ -376,30 +334,19 @@ class SocialApp extends React.Component {
 
   toggleUnconnectedNodesVisible() {
     this.slotToggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
-    this.setState({ unconnectedNodesVisible: !this.state.unconnectedNodesVisible });
-  }
-
-  toggleSimulationType() {
-    const simType = this.state.simulationType;
-
-    if (simType === "Gravity") {
-      this.setSimulationType("Spiral");
-    } else if (simType === "Spiral") {
-      this.setSimulationType("Structured");
-    } else if (simType === "Structured") {
-      this.setSimulationType("Gravity");
-    }
+    this.setState({
+      unconnectedNodesVisible:
+        !this.state.unconnectedNodesVisible
+    });
   }
 
   toggleSpiralOrder() {
     const order = this.state.spiralOrder;
 
-    if (order === "Brunel") {
+    if (order === "Influence") {
       this.setSpiralOrder("Connections");
     } else if (order === "Connections") {
-      this.setSpiralOrder("Weight");
-    } else if (order === "Weight") {
-      this.setSpiralOrder("Brunel");
+      this.setSpiralOrder("Influence");
     }
   }
 
@@ -414,15 +361,8 @@ class SocialApp extends React.Component {
         });
       }
     } else {
-      console.error("Invalid spiral order, valid orders are ", Object.keys(this.spiralOrders));
-    }
-  }
-
-  setSimulationType(simType) {
-    if (simType in this.simulationTypes) {
-      this.setState({ simulationType: simType });
-    } else {
-      console.error("Invalid simulation type, valid types are ", Object.keys(this.simulationTypes));
+      console.error("Invalid spiral order, valid orders are ",
+        Object.keys(this.spiralOrders));
     }
   }
 
@@ -467,38 +407,11 @@ class SocialApp extends React.Component {
     this.setState({ commercialFiltered: !this.state.commercialFiltered });
   }
 
-  toggleInfoPanel() {
-    this.setState({ isInfoPanelOpen: !this.state.isInfoPanelOpen });
-  }
-
-  toggleTimeLinePanel() {
-    this.setState({
-      isFilterPanelOpen: false,
-      isTimeLinePanelOpen: !this.state.isTimeLinePanelOpen,
-    });
-  }
-
-  toggleFilterPanel() {
-    this.setState({
-      isTimeLinePanelOpen: false,
-      isFilterPanelOpen: !this.state.isFilterPanelOpen,
-    });
-  }
-
-  toggleAnalysisPanel() {
-    this.setState({ isAnalysisOpen: !this.state.isAnalysisOpen });
-  }
-
-  toggleSearchOverlay() {
-    this.setState({ isSearchOverlayOpen: !this.state.isSearchOverlayOpen });
-  }
-
-  togglePhysicsEnabled() {
-    this.setState({ physicsEnabled: !this.state.physicsEnabled });
-  }
-
   toggleindirectConnectionsVisible() {
-    this.setState({ indirectConnectionsVisible: !this.state.indirectConnectionsVisible });
+    this.setState({
+      indirectConnectionsVisible:
+        !this.state.indirectConnectionsVisible
+    });
   }
 
   setOverlay(item) {
@@ -517,54 +430,15 @@ class SocialApp extends React.Component {
   }
 
   render() {
-    const selected = this.state.selected_item;
-    const highlighted = this.state.highlighted_item;
-    const social = this.state.social;
-    let searchOverlay = null;
-
-    if (this.state.isSearchOverlayOpen) {
-      searchOverlay = (
-        <SearchOverlay
-          social={social}
-          toggleSearchOverlay={() => this.toggleSearchOverlay()}
-          emitSelected={(item) => {
-            this.slotSelected(item);
-          }}
-          emitHighlighted={(item) => {
-            this.slotHighlighted(item);
-          }}
-          emitClicked={(item) => {
-            this.slotClicked(item);
-          }}
-          selectedShipID={this.state.selectedShipID}
-        />
-      );
-    }
-
     let overlay = null;
     if (this.state.isOverlayOpen) {
-      overlay = <Overlay toggleOverlay={this.toggleOverlay}>{this.state.overlayItem}</Overlay>;
+      overlay = (<Overlay toggleOverlay={this.toggleOverlay}>
+                  {this.state.overlayItem}</Overlay>);
     }
 
-    let analysisButton = null;
-    if (!this.state.isAnalysisOpen) {
-      analysisButton = (
-        <TextButton
-          fontSize="4.5vh"
-          textColor="#f1f1f1"
-          hoverColor="#9CB6A4"
-          onClick={() => this.toggleAnalysisPanel()}
-        >
-          Menu
-        </TextButton>
-      );
-    }
-
-    let spiral_order = null;
-
-    if (this.state.simulationType === "Spiral") {
-      spiral_order = (
-        <div className={styles.spiralOrderButtonContainer}>
+    return (
+      <div>
+        <div className={styles.spiralTypeButtonContainer}>
           <TextButton fontSize="1.8vh" textColor="#f1f1f1" hoverColor="#f1f1f1" padding="2px 2px 2px 2px">
             Spiral Order
           </TextButton>
@@ -578,61 +452,6 @@ class SocialApp extends React.Component {
             {this.state.spiralOrder}
           </TextButton>
         </div>
-      );
-    }
-
-    return (
-      <div>
-        <div className={styles.whatIsButtonContainer}>
-          <TextButton
-            fontSize="3vh"
-            hoverColor="#9CB6A4"
-            padding="2px 2px 2px 2px"
-            onClick={() => {
-              this.setOverlay(<AboutOverlay close={this.closeOverlay} />);
-            }}
-          >
-            What is Brunel&apos;s Network?
-          </TextButton>
-        </div>
-
-        <div className={styles.howDoIButtonContainer}>
-          <TextButton
-            fontSize="3vh"
-            hoverColor="#9CB6A4"
-            padding="2px 2px 2px 2px"
-            onClick={() => {
-              this.setOverlay(<HowDoIOverlay close={this.closeOverlay} />);
-            }}
-          >
-            How do I navigate the network?
-          </TextButton>
-        </div>
-
-        <div className={styles.analysisButtonPanel}>{analysisButton}</div>
-
-        <div className={styles.resetButtonContainer}>
-          <TextButton fontSize="2.7vh" hoverColor="#9CB6A4" padding="2px 2px 2px 2px" onClick={() => this.resetAll()}>
-            Reset
-          </TextButton>
-        </div>
-
-        <div className={styles.simulationTypeButtonContainer}>
-          <TextButton fontSize="1.8vh" textColor="#f1f1f1" hoverColor="#f1f1f1" padding="2px 2px 2px 2px">
-            Simulation type
-          </TextButton>
-          <TextButton
-            fontSize="2.7vh"
-            textColor="#f1f1f1"
-            hoverColor="#9CB6A4"
-            padding="2px 2px 2px 2px"
-            onClick={() => this.toggleSimulationType()}
-          >
-            {this.state.simulationType}
-          </TextButton>
-        </div>
-
-        {spiral_order}
 
         <div className={styles.commercialNodeLabel}>
           <TextButton
@@ -645,6 +464,7 @@ class SocialApp extends React.Component {
             Commercial&#x25CF;
           </TextButton>
         </div>
+
         <div className={styles.engineeringNodeLabel}>
           <TextButton
             fontSize="4.3vh"
@@ -657,62 +477,8 @@ class SocialApp extends React.Component {
           </TextButton>
         </div>
 
-        <SlidingPanel isOpen={this.state.isTimeLinePanelOpen} position="bottom" height="15%">
-          <span
-            className={styles.closePanelButton}
-            onClick={() => {
-              this.setState({ isTimeLinePanelOpen: false });
-            }}
-          >
-            X
-          </span>
-          <TimeLineBox
-            selected={selected}
-            projects={this.state.social.getProjects()}
-            shipSelect={(item) => {
-              this.slotSetFilter(item);
-            }}
-            resetFilters={this.resetAllFilters}
-          />
-        </SlidingPanel>
-
-        {/* Filter on bottom of page */}
-        <SlidingPanel isOpen={this.state.isFilterPanelOpen} position="bottom" height="25%">
-          <span
-            className={styles.closePanelButton}
-            onClick={() => {
-              this.setState({ isFilterPanelOpen: false });
-            }}
-          >
-            X
-          </span>
-          <FilterBox
-            social={social}
-            emitToggleFilter={(item) => {
-              this.slotToggleFilter(item);
-            }}
-            emitSelected={(item) => {
-              this.slotSelected(item);
-            }}
-            emitHighlighted={(item) => {
-              this.slotHighlighted(item);
-            }}
-            emitClearFilters={() => {
-              this.resetAllFilters();
-            }}
-          />
-        </SlidingPanel>
-
-        <div className={styles.shipNameContainer}>
-          <ShipTitle name={this.state.selectedShip} />
-        </div>
-
         <div className={styles.bottomContainer}>
           <ShipSelector projects={this.state.social.getProjects()} shipFilter={(item) => this.slotSetShip(item)} />
-        </div>
-        <div className={styles.acknowledgeContainer}>
-          Brunel&apos;s Network is a project by the Brunel Institute, a collaboration of the SS Great Britain Trust and
-          University of Bristol.
         </div>
 
         {/* The social graph itself */}
@@ -720,41 +486,17 @@ class SocialApp extends React.Component {
           <div className={styles.graphContainer}>
             <ForceGraph
               social={this.state.social}
-              selected={selected}
-              highlighted={highlighted}
+              selected={this.state.selected_item}
+              highlighted={this.state.highlighted_item}
               emitClicked={(id) => this.slotSelected(id)}
               setOverlay={this.setOverlay}
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-              physicsEnabled={this.state.physicsEnabled}
-              simulationType={this.state.simulationType}
             />
           </div>
         </div>
 
-        <SlidingPanel isOpen={this.state.isAnalysisOpen} position="rightBottom" width="10%">
-          <AnalysisPanel
-            toggleSearchOverlay={() => this.toggleSearchOverlay()}
-            toggleFilterPanel={() => this.toggleFilterPanel()}
-            toggleTimeLinePanel={() => this.toggleTimeLinePanel()}
-            togglePanel={() => this.toggleAnalysisPanel()}
-            toggleUnconnectedNodesVisible={() => {
-              this.toggleUnconnectedNodesVisible();
-            }}
-            toggleindirectConnectionsVisible={() => this.toggleindirectConnectionsVisible()}
-            closeOverlay={() => this.closeOverlay()}
-            commercialFiltered={this.state.commercialFiltered}
-            engineersFiltered={this.state.engineersFiltered}
-            filterEngineeringNodes={() => this.filterEngineeringNodes()}
-            filterCommercialNodes={() => this.filterCommercialNodes()}
-            physicsEnabled={this.state.physicsEnabled}
-            togglePhysicsEnabled={this.togglePhysicsEnabled}
-            indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-            unconnectedNodesVisible={this.state.unconnectedNodesVisible}
-            resetFilters={() => this.resetFiltersNotShip()}
-          />
-        </SlidingPanel>
-        {searchOverlay}
+        {/* Any overlay box that gets activated */}
         {overlay}
       </div>
     );

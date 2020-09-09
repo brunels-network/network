@@ -189,7 +189,7 @@ class People {
   getNodes({ anchor = null } = {}) {
     let nodes = [];
 
-    if (anchor.getID) {
+    if (anchor && anchor.getID) {
       anchor = anchor.getID();
     }
 

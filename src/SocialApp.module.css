@@ -34,15 +34,7 @@
   left: 14vw;
 }
 
-.spiralOrderButtonContainer {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 81vh;
-  left: 1vw;
-}
-
-.simulationTypeButtonContainer {
+.spiralTypeButtonContainer {
   display: flex;
   flex-direction: column;
   position: fixed;
