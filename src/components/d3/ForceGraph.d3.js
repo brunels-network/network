@@ -18,10 +18,6 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
-function randomShift(min = 0.01, max = 0.15) {
-  return 1 - Math.random() * (max - min) + max;
-}
-
 function handleMouseOver(THIS) {
   function handle() {
     let svg = THIS._mainGroup;
@@ -161,8 +157,6 @@ class ForceGraphD3 extends React.Component {
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
       selectedShipID: null,
-      colors: {},
-      groupTable: {},
       uid: uid.slice(uid.length - 8),
     };
 
@@ -170,16 +164,6 @@ class ForceGraphD3 extends React.Component {
     this._graph_changed = true;
     this._is_running = false;
     this._is_drawn = false;
-
-    // Set parameters for the force simulation
-    this._target_decay = 0.1;
-    this._target_alpha = 0.3;
-
-    this._tooltips = [];
-    // this.updateGraph = this.updateGraph.bind(this);
-    // this.update = this.update.bind(this);
-
-    this.state.standardSimulation = true;
 
     this.update(props);
   }
@@ -249,11 +233,6 @@ class ForceGraphD3 extends React.Component {
 
         node.x = w * Math.random();
         node.y = h * Math.random();
-
-        if (node.fixed && this.props.simulationType === "Structured") {
-          node.fx = w * node.fixedLocation["x"] * randomShift();
-          node.fy = h * node.fixedLocation["y"] * randomShift();
-        }
       }
 
       this._graph = graph;
@@ -340,11 +319,6 @@ class ForceGraphD3 extends React.Component {
     if (hasHighlighted) {
       this.state.highlighted = _resolve(props.highlighted);
     }
-
-    // if (props.standardSimulation !== this.state.standardSimulation) {
-    //   this.state.standardSimulation = props.standardSimulation;
-    //   this._graph_changed = true;
-    // }
 
     if (this.props.selectedShipID !== this.state.selectedShipID) {
       this.state.selectedShipID = this.props.selectedShipID;
