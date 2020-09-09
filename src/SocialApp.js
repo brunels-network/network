@@ -4,10 +4,8 @@ import Dry from "json-dry";
 
 // Brunel components
 import ForceGraph from "./components/ForceGraph";
-import TimeLineBox from "./components/TimeLineBox";
 import ShipSelector from "./components/ShipSelector";
 import TextButton from "./components/TextButton";
-import Overlay from "./components/Overlay";
 
 // Brunel model
 import Social from "./model/Social";
@@ -29,9 +27,6 @@ class SocialApp extends React.Component {
     super(props);
 
     this.resetAllFilters = this.resetAllFilters.bind(this);
-    this.setOverlay = this.setOverlay.bind(this);
-    this.toggleOverlay = this.toggleOverlay.bind(this);
-    this.closeOverlay = this.closeOverlay.bind(this);
 
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graphData);
@@ -45,7 +40,6 @@ class SocialApp extends React.Component {
       social: social,
       highlighted_item: null,
       selected_item: null,
-      overlayItem: null,
       indirectConnectionsVisible: false,
       unconnectedNodesVisible: false,
       commercialFiltered: false,
@@ -54,8 +48,6 @@ class SocialApp extends React.Component {
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
-      timeline: new TimeLineBox(),
-      isOverlayOpen: false,
       selectedShip: null,
       selectedShipID: null,
     };
@@ -112,31 +104,11 @@ class SocialApp extends React.Component {
     });
   }
 
-  closePanels() {
-    this.setState({
-      isOverlayOpen: false,
-      overlayItem: null,
-    });
-  }
+  slotSetAnchor(item) {
+    let social = this.state.social;
 
-  closeOverlay() {
-    this.setState({
-      isOverlayOpen: false,
-      overlayItem: null,
-    });
-  }
-
-  showInfo(item) {
-    if (item._isAProjectObject) {
-      this.setState({
-        overlayItem: item,
-        isOverlayOpen: true,
-      });
-    } else {
-      this.setState({
-        selected_item: item,
-        isInfoPanelOpen: true,
-      });
+    if (social.setAnchor(item)) {
+      this.setState({ social: social });
     }
   }
 
@@ -203,25 +175,6 @@ class SocialApp extends React.Component {
     }
 
     this.setState({ highlighted_item: id });
-  }
-
-  slotSelected(id) {
-    if (!id) {
-      this.closePanels();
-      return;
-    }
-
-    if (id._isADateRangeObject) {
-      let social = this.state.social;
-      if (social.setWindow(id)) {
-        this.setState({ social: social });
-      }
-      return;
-    }
-
-    const social = this.state.social;
-    const item = social.get(id);
-    this.showInfo(item);
   }
 
   slotWindowChanged(window) {
@@ -414,28 +367,11 @@ class SocialApp extends React.Component {
     });
   }
 
-  setOverlay(item) {
-    this.setState({
-      overlayItem: item,
-      isOverlayOpen: true,
-    });
-  }
-
-  toggleOverlay() {
-    this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
-  }
-
   resetAll() {
     window.location.reload(true);
   }
 
   render() {
-    let overlay = null;
-    if (this.state.isOverlayOpen) {
-      overlay = (<Overlay toggleOverlay={this.toggleOverlay}>
-                  {this.state.overlayItem}</Overlay>);
-    }
-
     return (
       <div>
         <div className={styles.spiralTypeButtonContainer}>
@@ -489,15 +425,11 @@ class SocialApp extends React.Component {
               selected={this.state.selected_item}
               highlighted={this.state.highlighted_item}
               emitClicked={(id) => this.slotSelected(id)}
-              setOverlay={this.setOverlay}
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
             />
           </div>
         </div>
-
-        {/* Any overlay box that gets activated */}
-        {overlay}
       </div>
     );
   }

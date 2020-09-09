@@ -642,8 +642,13 @@ class Social {
       anchor = this.getPeople().find(anchor);
     }
 
+    if (anchor === this.state.anchor) {
+      return false;
+    }
+
     this.state.anchor = anchor;
     this.clearCache();
+    return true;
   }
 
   toggleFilter(items) {

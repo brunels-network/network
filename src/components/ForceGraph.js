@@ -64,13 +64,6 @@ class ForceGraph extends React.Component {
   emitPopProps(node) {
     // this.clearPopups();
     this.setState({ popups: { id: node } });
-
-    // Keep code for multiple popups
-    // if (this.state.popups[id]) {
-    //   this.updatePopupState(id, false);
-    // } else {
-    //   this.updatePopupState(id, node);
-    // }
   }
 
   clearPopups() {
