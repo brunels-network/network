@@ -1,5 +1,5 @@
 import Dry from "json-dry";
-import lodash from "lodash";
+import lodash, { isString } from "lodash";
 
 import People from "./People";
 import Businesses from "./Businesses";
@@ -638,9 +638,37 @@ class Social {
   }
 
   setAnchor(anchor) {
-    if (anchor) {
-      anchor = this.getPeople().find(anchor);
+    let got_anchor = null;
+
+    if (isString(anchor)) {
+      got_anchor = this.get(anchor);
     }
+
+    if (got_anchor) {
+      if (got_anchor === this.state.anchor) {
+        return false;
+      }
+      else {
+        this.state.anchor = got_anchor;
+        this.clearCache();
+        return true;
+      }
+    }
+
+    if (anchor) {
+      got_anchor = this.getPeople().find(anchor);
+    }
+
+    if (!got_anchor) {
+      got_anchor = this.getBusinesses().find(anchor);
+    }
+
+    if (!got_anchor) {
+      console.log(`CANNOT FIND ANCHOR ${anchor}: ${got_anchor}`);
+      return false;
+    }
+
+    anchor = got_anchor;
 
     if (anchor === this.state.anchor) {
       return false;

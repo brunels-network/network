@@ -427,6 +427,7 @@ class SocialApp extends React.Component {
               emitClicked={(id) => this.slotSelected(id)}
               selectedShipID={this.state.selectedShipID}
               indirectConnectionsVisible={this.state.indirectConnectionsVisible}
+              emitSetCenter={(id)=>{this.slotSetAnchor(id)}}
             />
           </div>
         </div>

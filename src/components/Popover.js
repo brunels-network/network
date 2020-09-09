@@ -91,6 +91,26 @@ class Popover extends React.Component {
       </TextButton>
     );
 
+    let centerButton = null;
+
+    if (this.props.emitSetCenter) {
+      centerButton = (
+        <TextButton
+          textColor="#9B1C31"
+          hoverColor="#808080"
+          fontSize="1.5vh"
+          padding="0px 2px 2px 2px"
+          fontFamily="Playfair Display Medium"
+          onClick={() => {
+            this.props.clearPopups();
+            this.props.emitSetCenter(node.id);
+          }}
+        >
+          Make center
+        </TextButton>
+      );
+    }
+
     const buttonStrings = [];
 
     let nodeType = node["type"];
@@ -166,7 +186,7 @@ class Popover extends React.Component {
           <div className={styles.header}>{name}</div>
           <div className={styles.bioSection}>{bio}</div>
           <div className={styles.edge_count}>Number of connections: {node["edge_count"][selectedShipID]}</div>
-          <div className={styles.readMore}>{readMoreButton}</div>
+          <div className={styles.readMore}>{readMoreButton}{centerButton}</div>
           <div className={styles.sourceHeader}>Sources</div>
           <div data-testid="sourceButton" className={styles.sourceSection}>
             <TextButton
@@ -205,6 +225,7 @@ Popover.propTypes = {
   togglePopover: PropTypes.func.isRequired,
   selectedShipID: PropTypes.string,
   clearPopups: PropTypes.func.isRequired,
+  emitSetCenter: PropTypes.func.isRequired,
 };
 
 export default Popover;

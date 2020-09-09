@@ -85,6 +85,7 @@ class ForceGraph extends React.Component {
             social={this.props.social}
             selectedShipID={this.props.selectedShipID}
             clearPopups={this.clearPopups}
+            emitSetCenter={this.props.emitSetCenter}
           />
         );
         popups.push(p);
@@ -105,6 +106,7 @@ ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
   selectedShipID: PropTypes.string,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
+  emitSetCenter: PropTypes.func.isRequired,
 };
 
 export default ForceGraph;
