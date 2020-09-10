@@ -1,7 +1,7 @@
 /* This makes the buttons look like text */
 /* Based on https://stackoverflow.com/a/1368286 */
 .button {
-  background: green;
+  background: #222222;
   border: none;
   color: #f1f1f1;
   width: 100%;

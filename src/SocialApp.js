@@ -40,6 +40,8 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
+    this.updateSize = this.updateSize.bind(this);
+
     this.state = {
       social: social,
       highlighted_item: null,
@@ -54,6 +56,8 @@ class SocialApp extends React.Component {
       connectedNodes: null,
       selectedShip: null,
       selectedShipID: null,
+      height: 0,
+      width: 0,
     };
 
     const ssGW = social.getProjects().getByName("SS Great Western");
@@ -83,6 +87,24 @@ class SocialApp extends React.Component {
     this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.updateSize);
+    this.updateSize();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateSize);
+  }
+
+  updateSize() {
+    this.setState({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    console.log(`WINDOW ${this.state.width}x${this.state.height}`);
   }
 
   resetAllFilters() {
@@ -378,32 +400,44 @@ class SocialApp extends React.Component {
 
   render() {
 
+    console.log("RENDER");
+
+    let menu = <TextButton>Menu</TextButton>;
+    let search = <TextButton>Search</TextButton>;
+    let help = <TextButton>Help</TextButton>;
+
+    let graph = <ForceGraph
+      social={this.state.social}
+      selected={this.state.selected_item}
+      highlighted={this.state.highlighted_item}
+      emitClicked={(id) => this.slotSelected(id)}
+      selectedShipID={this.state.selectedShipID}
+      indirectConnectionsVisible={this.state.indirectConnectionsVisible}
+      emitSetCenter={(id) => { this.slotSetAnchor(id) }}
+    />;
+
+    let spiral = <TextButton>Spiral</TextButton>;
+    let ship = <TextButton>Ship</TextButton>;
+    let size = <TextButton>Size</TextButton>;
+
     return (
       <div>
         <div className={styles.ui_main}>
           <VBox>
             <HBox>
-              <TextButton>Menu</TextButton>
-              <BigBox><TextButton>Search</TextButton></BigBox>
-              <TextButton>Help</TextButton>
+              {menu}
+              <BigBox>{search}</BigBox>
+              {help}
             </HBox>
 
             <BigBox>
-              <ForceGraph
-                social={this.state.social}
-                selected={this.state.selected_item}
-                highlighted={this.state.highlighted_item}
-                emitClicked={(id) => this.slotSelected(id)}
-                selectedShipID={this.state.selectedShipID}
-                indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-                emitSetCenter={(id)=>{this.slotSetAnchor(id)}}
-              />
+              {graph}
             </BigBox>
 
             <HBox>
-              <TextButton>Spiral Order</TextButton>
-              <BigBox><TextButton>Ship</TextButton></BigBox>
-              <TextButton>Size</TextButton>
+              {spiral}
+              <BigBox>{ship}</BigBox>
+              {size}
             </HBox>
           </VBox>
         </div>

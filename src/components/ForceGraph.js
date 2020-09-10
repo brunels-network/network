@@ -23,6 +23,8 @@ class ForceGraph extends React.Component {
     this.clearPopups = this.clearPopups.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
+    this.containerRef = React.createRef();
+
     this.graph = new ForceGraphD3(this, props);
   }
 
@@ -40,12 +42,18 @@ class ForceGraph extends React.Component {
   }
 
   updateSize() {
-    if (this.container && this.graph) {
+    const containerRect = this.containerRef.current.getBoundingClientRect();
+
+    if (this.containerRef && this.graph) {
+      let width = Math.floor(0.99 * containerRect.width);
+      let height = Math.floor(0.99 * containerRect.height);
+      console.log(`${width}x${height}`);
+
       this.graph.update({
-        width: this.container.offsetWidth,
-        height: this.container.offsetHeight,
+        width: width,
+        height: height
       });
-      this.graph.draw();
+      this.graph.drawFromScratch();
     }
   }
 
@@ -90,7 +98,7 @@ class ForceGraph extends React.Component {
     }
 
     return (
-      <div ref={(el) => (this.container = el)} className={styles.container}>
+      <div ref={this.containerRef} className={styles.container}>
         <div id={s} className={s}>
           {popups}
         </div>
