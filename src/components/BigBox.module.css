@@ -1,0 +1,9 @@
+.bigbox {
+    flex: 1;
+    align-content: stretch;
+}
+
+.fill {
+    height: 100%;
+    width: 100%;
+}

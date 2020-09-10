@@ -6,6 +6,9 @@ import ForceGraphD3 from "./d3/ForceGraph.d3.js";
 
 import lodash from "lodash";
 
+import styles from "./ForceGraph.module.css";
+
+
 class ForceGraph extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +23,7 @@ class ForceGraph extends React.Component {
     this.clearPopups = this.clearPopups.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
-    this.graph = new ForceGraphD3(props);
+    this.graph = new ForceGraphD3(this, props);
   }
 
   componentDidMount() {
@@ -33,12 +36,6 @@ class ForceGraph extends React.Component {
   }
 
   componentDidUpdate() {
-    // TODO - look up better way of doing this
-    // This feels very clunky
-    let localProps = lodash.cloneDeep(this.props);
-    localProps["emitPopProps"] = this.emitPopProps;
-    this.graph.props = localProps;
-    this.graph.update(this.props);
     this.graph.draw();
   }
 
@@ -93,7 +90,7 @@ class ForceGraph extends React.Component {
     }
 
     return (
-      <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>
+      <div ref={(el) => (this.container = el)} className={styles.container}>
         <div id={s} className={s}>
           {popups}
         </div>

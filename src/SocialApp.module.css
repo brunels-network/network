@@ -2,70 +2,10 @@
   all: unset;
 }
 
-.mainContainer {
-  background: #222222;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  left: 0px;
-  right: 0px;
-  z-index: -1;
-}
-
-.graphContainer {
-  display: inline-block;
-  position: fixed;
-  z-index: 0;
-  width: 92%;
-  height: 88%;
-  left: 2.5%;
-  top: 5%;
-  background-color: #222222;
-}
-
 .ui_main {
   position: fixed;
-  height: 100%;
-  width: 100%;
   left: 0px;
   right: 0px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: stretch;
-}
-
-.ui_header {
-  display: flex;
-  text-align: center;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  background-color: white;
-  align-content: center;
-  align-items: stretch;
-}
-
-.ui_header_item {
-  flex: 1;
-}
-
-.ui_content {
-  flex: 1;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  background-color: #222222;
-}
-
-.ui_footer_item {
-  flex: 1;
-}
-
-.ui_footer {
-  display: flex;
-  text-align: center;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  background-color: white;
-  align-content: center;
-  align-items: stretch;
+  top: 0px;
+  bottom: 0px;
 }

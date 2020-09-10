@@ -7,6 +7,10 @@ import ForceGraph from "./components/ForceGraph";
 import ShipSelector from "./components/ShipSelector";
 import TextButton from "./components/TextButton";
 
+import HBox from "./components/HBox";
+import VBox from "./components/VBox";
+import BigBox from "./components/BigBox";
+
 // Brunel model
 import Social from "./model/Social";
 
@@ -377,19 +381,14 @@ class SocialApp extends React.Component {
     return (
       <div>
         <div className={styles.ui_main}>
-          <div className={styles.ui_header}>
-            <div className={styles.ui_header_item}>
-              Menu
-            </div>
-            <div className={styles.ui_header_item}>
-              SEARCH
-            </div>
-            <div className={styles.ui_header_item}>
-              HELP
-            </div>
-          </div>
+          <VBox>
+            <HBox>
+              <TextButton>Menu</TextButton>
+              <BigBox><TextButton>Search</TextButton></BigBox>
+              <TextButton>Help</TextButton>
+            </HBox>
 
-          <div className={styles.ui_content}>
+            <BigBox>
               <ForceGraph
                 social={this.state.social}
                 selected={this.state.selected_item}
@@ -399,19 +398,14 @@ class SocialApp extends React.Component {
                 indirectConnectionsVisible={this.state.indirectConnectionsVisible}
                 emitSetCenter={(id)=>{this.slotSetAnchor(id)}}
               />
-          </div>
+            </BigBox>
 
-          <div className={styles.ui_footer}>
-            <div className={styles.ui_footer_item}>
-              Spiral
-            </div>
-            <div className={styles.ui_footer_item}>
-              Ship
-            </div>
-            <div className={styles.ui_footer_item}>
-              Size
-            </div>
-          </div>
+            <HBox>
+              <TextButton>Spiral Order</TextButton>
+              <BigBox><TextButton>Ship</TextButton></BigBox>
+              <TextButton>Size</TextButton>
+            </HBox>
+          </VBox>
         </div>
 
       </div>

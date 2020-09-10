@@ -128,7 +128,7 @@ function _resolve(item) {
 
 /* eslint-disable react/no-direct-mutation-state */
 class ForceGraphD3 extends React.Component {
-  constructor(props) {
+  constructor(parent, props) {
     super(props);
     this.updateLink = this.updateLink.bind(this);
     this.updateNodeText = this.updateNodeText.bind(this);
@@ -140,6 +140,7 @@ class ForceGraphD3 extends React.Component {
 
     this.drag = this.drag.bind(this);
     this.getWeight = this.getWeight.bind(this);
+    this.parent = parent;
 
     // Generate a UID for this graph so that we don't clash
     // with any other graphs on the same page
@@ -387,7 +388,7 @@ class ForceGraphD3 extends React.Component {
       .attr("id", (d) => {
         return d.id;
       })
-      .on("click", (d) => this.props.emitPopProps(d))
+      .on("click", (d) => this.parent.emitPopProps(d))
       .on("mouseover", handleMouseOver(this))
       .on("mouseout", handleMouseOut(this))
       .call(this.drag());
@@ -422,7 +423,7 @@ class ForceGraphD3 extends React.Component {
       .attr("id", (d) => {
         return d.id;
       })
-      .on("click", (d) => this.props.emitPopProps(d))
+      .on("click", (d) => this.parent.emitPopProps(d))
       .on("mouseover", handleMouseOver(this))
       .on("mouseout", handleMouseOut(this))
       .call(this.drag());
@@ -687,7 +688,6 @@ class ForceGraphD3 extends React.Component {
 }
 
 ForceGraphD3.propTypes = {
-  emitPopProps: PropTypes.func.isRequired,
   selectedShipID: PropTypes.string,
 };
 
