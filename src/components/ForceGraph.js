@@ -78,6 +78,8 @@ class ForceGraph extends React.Component {
   render() {
     let s = this.graph.className();
 
+    this.graph.update(this.props);
+
     let popups = [];
 
     for (let [id, node] of Object.entries(this.state.popups)) {
