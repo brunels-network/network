@@ -14,20 +14,11 @@ import DateRange from "./DateRange";
 import get_id from "./get_id";
 
 import score_by_connections from "./ScoringFunctions";
+import size_by_influence from "./SizingFunctions";
 
 import {
   ValueError
 } from "./Errors";
-
-const fast_physics = {
-  enabled: true,
-  timestep: 0.5,
-};
-
-const slow_physics = {
-  ...fast_physics
-};
-slow_physics.timestep = 0.1;
 
 function _push(values, list) {
   if (!list || !values) {
@@ -66,6 +57,7 @@ class Social {
     this.state.window = new DateRange();
     this.state.max_window = new DateRange();
     this.state.scoring_function = score_by_connections;
+    this.state.sizing_function = size_by_influence;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -819,6 +811,19 @@ class Social {
     return this.state.scoring_function;
   }
 
+  /** Set the sizing function used to size the nodes */
+  setSizingFunction(func) {
+    if (func !== this.state.sizing_function) {
+      this.state.sizing_function = func;
+      this.clearCache();
+    }
+  }
+
+/** Return the sizing function that should be used to size the nodes */
+  getSizingFunction() {
+    return this.state.sizing_function;
+  }
+
   /** Return the graph of nodes and edges that will be displayed by
    *  the app. This should apply all of the filters and only return
    *  the nodes and edges that should be visible. It should also
@@ -830,18 +835,38 @@ class Social {
       return this.state.cache.graph;
     }
 
-    const anchor = this.state.anchor;
-    let nodes = this.getPeople().getNodes({
-      anchor: anchor
-    });
+    let nodes = this.getPeople().getNodes();
     nodes = nodes.concat(this.getBusinesses().getNodes());
 
+    // create a dictionary so we know which nodes are selected
     let n = {};
     for (let i in nodes) {
       n[get_id(nodes[i])] = 1;
     }
 
+    // get only the edges that involve these nodes
     let edges = this.getConnections().getEdges(n);
+
+    // let each node know how many connections it has got
+    let counts = {};
+
+    let add_count = (id) => {
+      // ensures x == 1 if id doesn't exist in counts
+      let x = (counts[id] || 0) + 1;
+      counts[id] = x;
+    };
+
+    for (let i in edges) {
+      add_count(edges[i].source);
+      add_count(edges[i].target);
+    }
+
+    nodes.forEach((node) => {
+      let count = counts[node.id];
+
+      if (count === null) { count = 0; }
+      node.edge_count = count;
+    });
 
     let scoring_function = this.getScoringFunction();
 
@@ -850,6 +875,16 @@ class Social {
     }
 
     scoring_function(nodes, edges, this);
+
+    let sizing_function = this.getSizingFunction();
+
+    if (!sizing_function) {
+      sizing_function = size_by_influence;
+    }
+
+    sizing_function(nodes, edges, this);
+
+    console.log(nodes);
 
     this.state.cache.graph = {
       nodes: nodes,

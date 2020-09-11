@@ -15,15 +15,13 @@ function score_by_influence(nodes, edges, social) {
 
   for (let i in nodes) {
     let node = nodes[i];
-    let score = node.weight[Object.keys(node.weight)[0]];
+    let score = node.weight;
 
     if (anchor_id) {
-      let node_id = get_id(node);
-
-      if (node_id === anchor_id) {
+      if (node.id === anchor_id) {
         score += 100000.0;
       }
-      else if (connections.areConnected(node_id, anchor_id)) {
+      else if (connections.areConnected(node.id, anchor_id)) {
         score += 50000.0;
       }
     }
@@ -42,8 +40,6 @@ function score_by_influence(nodes, edges, social) {
 
 /** Score by the number of connections only */
 function score_by_connections(nodes, edges, social) {
-  let counts = {};
-
   let anchor = social.getAnchor();
   let anchor_id = null;
   let connections = null;
@@ -53,33 +49,17 @@ function score_by_connections(nodes, edges, social) {
     connections = social.getConnections();
   }
 
-  let add_count = (id) => {
-    // ensures x == 1 if id doesn't exist in counts
-    let x = (counts[id] || 0) + 1;
-    counts[id] = x;
-  };
-
-  for (let i in edges) {
-    add_count(edges[i].source);
-    add_count(edges[i].target);
-  }
-
   let scores = [];
 
   for (let i in nodes) {
     let node = nodes[i];
-    let node_id = get_id(node);
-    let score = 0.0;
-
-    if (counts[node_id]) {
-      score += counts[node_id];
-    }
+    let score = node.edge_count;
 
     if (anchor_id) {
-      if (node_id === anchor_id) {
+      if (node.id === anchor_id) {
         score += 100000.0;
       }
-      else if (connections.areConnected(node_id, anchor_id)) {
+      else if (connections.areConnected(node.id, anchor_id)) {
         score += 50000.0;
       }
     }

@@ -1,6 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import ShipButton from "./ShipButton";
+
+import HBox from "./HBox";
+
 import styles from "./ShipSelector.module.css";
 
 class ShipSelector extends React.Component {
@@ -31,14 +35,16 @@ class ShipSelector extends React.Component {
     let projects = this.props.projects;
 
     let output = projects.values().map((item) => {
-      return (
-        <button href="#" key={item.getName()} className={styles.button} onClick={() => this.setFilter(item)}>
-          {item.getName()}
-        </button>
+      return (<ShipButton
+                key={item.getName()}
+                ship={item}
+                setShip={(item) => { this.setFilter(item) }}/>
       );
     });
 
-    return output;
+    return (
+      <HBox>{output}</HBox>
+    );
   }
 }
 

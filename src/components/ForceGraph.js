@@ -47,7 +47,6 @@ class ForceGraph extends React.Component {
     if (this.containerRef && this.graph) {
       let width = containerRect.width;
       let height = containerRect.height;
-      console.log(`${width}x${height}`);
 
       this.graph.update({
         width: width,
@@ -101,7 +100,7 @@ class ForceGraph extends React.Component {
 
     return (
       <div ref={this.containerRef} className={styles.container}>
-        <div id={s} className={s}>
+        <div className={s}>
           {popups}
         </div>
       </div>

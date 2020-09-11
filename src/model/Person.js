@@ -388,12 +388,13 @@ class Person {
     }
   }
 
-  getWeight() {
-    return this.state.weight;
-  }
+  getWeight(project_id = null) {
+    if (project_id === null) {
+      // return the first project weight
+      project_id = Object.keys(this.state.weight)[0];
+    }
 
-  getedge_count() {
-    return this.state.edge_count;
+    return this.state.weight[project_id];
   }
 
   getProjectWeight(projectKey) {
@@ -407,43 +408,16 @@ class Person {
     return weight;
   }
 
-  getNode(isAnchor = false) {
+  getNode() {
     let node = {
       id: this.getID(),
       label: this.getName(),
       title: this.getName(),
-      fixed: false,
       shape: "circle",
     };
 
-    const name = this.getName();
-
     node["weight"] = this.getWeight();
     node["type"] = "person";
-
-    // Position will be used to set the colour used
-    // for the node representing this person
-    node["positions"] = this.getPositions();
-    node["edge_count"] = this.getedge_count();
-
-    let keys = Object.keys(this.state.projects);
-
-    if (keys.length > 0) {
-      node["group"] = keys.sort().join(":");
-    } else {
-      node["group"] = "unknown";
-    }
-
-    if (isAnchor) {
-      node["shape"] = "rect";
-      node["fixed"] = true;
-      node["group"] = "anchor";
-    }
-
-    if (name in fixedNodes) {
-      node["fixed"] = true;
-      node["fixedLocation"] = fixedNodes[name];
-    }
 
     return node;
   }

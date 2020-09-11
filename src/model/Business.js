@@ -247,8 +247,12 @@ class Business {
     return this;
   }
 
-  getWeight() {
-    return this.state.weight;
+  getWeight(project_id = null) {
+    if (project_id === null) {
+      // use the first project's weight
+      project_id = Object.keys(this.state.weight)[0];
+    }
+    return this.state.weight[project_id];
   }
 
   toString() {
@@ -283,43 +287,17 @@ class Business {
     return this.state.scores;
   }
 
-  getedge_count() {
-    return this.state.edge_count;
-  }
+  getNode() {
+    let node = {
+      id: this.getID(),
+      label: this.getName(),
+      title: this.getName(),
+      shape: "square"
+    };
 
-  getNode(is_anchor = false) {
-    let node = { id: this.getID(), label: this.getName(), title: this.getName(), shape: "circle" };
-
-    const weight = this.getWeight();
-
-    node["size"] = 0.5 * weight;
-    node["weight"] = weight;
+    node["weight"] = this.getWeight();
     node["type"] = "business";
 
-    node["edge_count"] = this.getedge_count();
-
-    // Position will be used to set the colour used
-    // for the node representing this person
-    node["positions"] = this.getPositions();
-
-    let keys = Object.keys(this.state.projects);
-
-    if (keys.length > 0) {
-      node["group"] = keys.sort().join(":");
-    } else {
-      node["group"] = "unknown";
-    }
-
-    if (is_anchor) {
-      node["shape"] = "rect";
-      node["physics"] = false;
-      node["group"] = "anchor";
-      node["size"] = 20.0;
-    }
-
-    if (this.getName() in fixedNodes) {
-      node["fixed"] = true;
-    }
     return node;
   }
 

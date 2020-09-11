@@ -383,7 +383,7 @@ class ForceGraphD3 extends React.Component {
       .attr("r", (d) => {
         // If no project selected keep previous weight
         // Otherwise update using the selected project code
-        return this.getWeight(d);
+        return 3.0 * d.size;
       })
       .attr("id", (d) => {
         return d.id;

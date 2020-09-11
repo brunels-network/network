@@ -29,6 +29,13 @@ import {
   score_by_influence
 } from "./model/ScoringFunctions";
 
+import {
+  size_by_connections,
+  size_by_influence
+} from "./model/SizingFunctions";
+
+
+
 class SocialApp extends React.Component {
   constructor(props) {
     super(props);
@@ -54,6 +61,7 @@ class SocialApp extends React.Component {
       commercialFiltered: false,
       engineersFiltered: false,
       spiralOrder: "Influence",
+      nodeSize: "Influence",
       commericalNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
@@ -75,6 +83,13 @@ class SocialApp extends React.Component {
       "Connections": score_by_connections,
       "Influence": score_by_influence
     });
+
+    this.nodeSizes = Object.freeze({
+      "Influence": size_by_influence,
+      "Connections": size_by_connections,
+    })
+
+    this.state.social.setSizingFunction(size_by_influence);
 
     // Find the investors and engineers for easy filtering
     // This requires the
@@ -350,6 +365,32 @@ class SocialApp extends React.Component {
     }
   }
 
+  toggleNodeSize() {
+    const size = this.state.nodeSize;
+
+    if (size === "Influence") {
+      this.setNodeSize("Connections");
+    } else if (size === "Connections") {
+      this.setNodeSize("Influence");
+    }
+  }
+
+  setNodeSize(size) {
+    if (size in this.nodeSizes) {
+      if (this.state.nodeSize !== size) {
+        let social = this.state.social;
+        social.setSizingFunction(this.nodeSizes[size]);
+        this.setState({
+          social: social,
+          nodeSize: size,
+        });
+      }
+    } else {
+      console.error("Invalid sizing function, valid functions are ",
+        Object.keys(this.nodeSizes));
+    }
+  }
+
   // If unconnected nodes are enabled add them to the filter, if they're not remove them
   filterEngineeringNodes() {
     if (this.state.commercialFiltered) {
@@ -451,13 +492,16 @@ class SocialApp extends React.Component {
         onClick={()=>{this.toggleSpiralOrder()}}
       />);
 
-    let ship = <TextButton>Ship</TextButton>;
+    let ship = (
+      <ShipSelector
+        projects={this.state.social.getProjects()}
+        shipFilter={(item) => this.slotSetShip(item)} />);
 
     let size = (
       <LabelButton
         label="Node Size"
-        button={this.state.spiralOrder}
-        onClick={()=>{this.toggleSpiralOrder()}}
+        button={this.state.nodeSize}
+        onClick={()=>{this.toggleNodeSize()}}
       />);
 
 
