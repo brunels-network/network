@@ -43,6 +43,7 @@ class Connection {
       correspondances: null,
       projects: null,
       notes: null,
+      is_highlighted: false,
     };
 
     this.setState(props);
@@ -311,6 +312,19 @@ class Connection {
     }
   }
 
+  setHighlighted(val) {
+    if (val) {
+      this.state.is_highlighted = true;
+    }
+    else {
+      this.state.is_highlighted = false;
+    }
+  }
+
+  getHighlighted() {
+    return this.state.is_highlighted;
+  }
+
   toEdge() {
     let color = this.getColorFromType();
     // let weight = this.getWeightFromType();
@@ -323,6 +337,7 @@ class Connection {
       value: weight,
       type: this.state.type,
       color: color,
+      highlighted: this.getHighlighted(),
     };
 
     return edge;

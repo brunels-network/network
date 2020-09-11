@@ -43,6 +43,12 @@ class Connections {
     return c;
   }
 
+  clearHighlights() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setHighlighted(false);
+    });
+  }
+
   canAdd(item) {
     return item instanceof Connection || item._isAConnectionObject;
   }
@@ -207,6 +213,24 @@ class Connections {
     connections._updateHooks(this._getHook);
 
     return connections;
+  }
+
+  highlightConnections(item, social) {
+    if (item.getID) {
+      item = item.getID();
+    }
+
+    for (let key in this.state.registry) {
+      let connection = this.state.registry[key];
+
+      if (connection.getNode0ID() === item) {
+        connection.setHighlighted(true);
+        social.get(connection.getNode1ID(), false).setHighlighted(true);
+      } else if (connection.getNode1ID() === item) {
+        connection.setHighlighted(true);
+        social.get(connection.getNode0ID(), false).setHighlighted(true);
+      }
+    }
   }
 
   getConnectionsTo(item) {

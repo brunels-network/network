@@ -256,8 +256,7 @@ class ForceGraphD3 extends React.Component {
     node = node
       .data(data, (d) => d.id)
       .join(
-        (enter) => enter.append("circle").attr("class", `node ${styles.node}`),
-        (update) => update.attr("class", `node ${styles.node}`)
+        (enter) => enter.append("circle")
       )
       // Here size is the weight given to that entity
       .attr("r", (d) => {
@@ -265,10 +264,17 @@ class ForceGraphD3 extends React.Component {
         // Otherwise update using the selected project code
         return 3.0 * d.size;
       })
-      .attr("id", (d) => {
-        return d.id;
+      .attr("class", (d) => {
+        if (d.highlighted) {
+          console.log(d);
+          return `node ${styles.node_highlight}`
+        }
+        else {
+          return `node ${styles.node}`
+        }
       })
-      .on("click", (d) => this.parent.emitPopProps(d))
+      .attr("id", (d) => {return d.id;})
+      .on("click", (d) => { this.state.signalClicked(d.id) })
       .call(this.drag());
 
     return node;
@@ -298,10 +304,8 @@ class ForceGraphD3 extends React.Component {
         return -1 * (3 + sizeScale * this.getWeight(d)) + "px";
       })
       .attr("text-anchor", "start")
-      .attr("id", (d) => {
-        return d.id;
-      })
-      .on("click", (d) => this.parent.emitPopProps(d))
+      .attr("id", (d) => { return d.id; })
+      .on("click", (d) => { this.state.signalClicked(d.id) })
       .call(this.drag());
 
     return text;

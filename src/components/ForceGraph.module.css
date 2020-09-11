@@ -9,7 +9,7 @@
     stroke-width: 1px;
 }
 
-.node.highlight {
+.node_highlight {
     /* fill: #c7e8f3; */
     fill: #3a6ea5;
     stroke: white;

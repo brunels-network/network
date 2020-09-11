@@ -569,6 +569,36 @@ class Social {
     }
   }
 
+  clearHighlights() {
+    this.getPeople(false).clearHighlights();
+    this.getBusinesses(false).clearHighlights();
+    this.getConnections(false).clearHighlights();
+    this.clearCache();
+  }
+
+  setHighlighted(item, highlight_connections = true, clear_previous = true) {
+    if (clear_previous) {
+      this.clearHighlights();
+    }
+
+    item = get_id(item);
+    item = this.get(item, false);
+
+    if (item === null) { return; }
+
+    item.setHighlighted(true);
+
+    if (highlight_connections) {
+      this.getConnections(false).highlightConnections(item, this);
+    }
+
+    this.clearCache();
+  }
+
+  isHighlighted(item) {
+    return false;
+  }
+
   find(text) {
     let result = [];
 

@@ -49,6 +49,12 @@ class People {
     return output;
   }
 
+  clearHighlights() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setHighlighted(false);
+    });
+  }
+
   canAdd(item) {
     return item instanceof Person || item._isAPersonObject;
   }

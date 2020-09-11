@@ -211,16 +211,20 @@ class SocialApp extends React.Component {
     this.setState({ social: social });
   }
 
-  slotHighlighted(id) {
+  slotClicked(id) {
     if (!id) {
       return;
     }
 
-    if (id._isADateRangeObject) {
-      return;
-    }
+    let social = this.state.social;
 
-    this.setState({ highlighted_item: id });
+    if (social.isHighlighted(id)) {
+      console.log(`POP UP THE SHORT BIO FOR ${id}`);
+    }
+    else {
+      social.setHighlighted(id, true, true);
+      this.setState({ social: social });
+    }
   }
 
   slotWindowChanged(window) {
@@ -479,7 +483,7 @@ class SocialApp extends React.Component {
       social={this.state.social}
       selected={this.state.selected_item}
       highlighted={this.state.highlighted_item}
-      emitClicked={(id) => this.slotSelected(id)}
+      signalClicked={(id) => this.slotClicked(id)}
       selectedShipID={this.state.selectedShipID}
       indirectConnectionsVisible={this.state.indirectConnectionsVisible}
       emitSetCenter={(id) => { this.slotSetAnchor(id) }}

@@ -78,6 +78,7 @@ class Business {
       notes: [],
       weight: {},
       edge_count: {},
+      is_highlighted: false,
     };
 
     this.setState(props);
@@ -287,16 +288,29 @@ class Business {
     return this.state.scores;
   }
 
+  setHighlighted(val) {
+    if (val) {
+      this.state.is_highlighted = true;
+    }
+    else {
+      this.state.is_highlighted = false;
+    }
+  }
+
+  getHighlighted() {
+    return this.state.is_highlighted;
+  }
+
   getNode() {
     let node = {
       id: this.getID(),
       label: this.getName(),
       title: this.getName(),
-      shape: "square"
+      shape: "square",
+      highlighted: this.getHighlighted(),
+      weight: this.getWeight(),
+      type: "business",
     };
-
-    node["weight"] = this.getWeight();
-    node["type"] = "business";
 
     return node;
   }

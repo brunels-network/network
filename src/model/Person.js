@@ -249,6 +249,7 @@ class Person {
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
       this.state.edge_count = setState(state.edge_count);
+      this.state.is_highlighted = false;
 
       if (!this.state.orig_name || this.state.orig_name === "None") {
         throw new ValueError(`No name for ${this}`);
@@ -408,16 +409,34 @@ class Person {
     return weight;
   }
 
+  setHighlighted(val) {
+    if (val) {
+      this.state.is_highlighted = true;
+      console.log(`SET_HIGHLIGHTED ${this} ${val}`);
+    }
+    else {
+      this.state.is_highlighted = false;
+    }
+  }
+
+  getHighlighted() {
+    return this.state.is_highlighted;
+  }
+
   getNode() {
     let node = {
       id: this.getID(),
       label: this.getName(),
       title: this.getName(),
       shape: "circle",
+      weight: this.getWeight(),
+      type: "person",
+      highlighted: this.getHighlighted(),
     };
 
-    node["weight"] = this.getWeight();
-    node["type"] = "person";
+    if (this.getHighlighted()) {
+      console.log(`HIGHLIGHTED ${node}`);
+    }
 
     return node;
   }
