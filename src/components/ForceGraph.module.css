@@ -1,26 +1,7 @@
-@font-face {
-    font-family: "Playfair Display";
-    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
-}
-
-@font-face {
-    font-family: "Playfair Display SemiBold";
-    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-SemiBold.ttf) format("truetype");
-}
-
 .container {
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: #222222;
-}
-
-.graph {
-    position: relative;
-    height: 100%;
     width: 100%;
-    border: black;
+    height: 100%;
+    background-color: #00000000;
 }
 
 .node {
@@ -96,19 +77,13 @@
     user-select: none;
     /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
-    font-family: "Playfair Display SemiBold";
-    /* padding-left: 1cm; */
     font-size: 14px;
     stroke-width: 0;
     fill: white;
-    /* justify-content: right; */
 }
 
 .node_text.highlight {
-    /* fill: #738566; */
-    /* fill: #07899d; */
     fill: #ffd28b;
-
     font-size: medium;
 }
 
@@ -118,7 +93,6 @@
     z-index: 10;
     width: 15vw;
     height: 20vh;
-    font-family: "Playfair Display SemiBold";
     font-size: max(12px, 0.8vw);
     background-color: #808080;
     color: white;

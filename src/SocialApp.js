@@ -431,7 +431,9 @@ class SocialApp extends React.Component {
             </HBox>
 
             <BigBox>
-              {graph}
+              <div className={styles.fullscreen}>
+                {graph}
+              </div>
             </BigBox>
 
             <HBox>
