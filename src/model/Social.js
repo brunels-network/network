@@ -589,14 +589,30 @@ class Social {
     item.setHighlighted(true);
 
     if (highlight_connections) {
-      this.getConnections(false).highlightConnections(item, this);
+      this.getConnections(true).highlightConnections(item, this);
     }
 
     this.clearCache();
   }
 
   isHighlighted(item) {
-    return false;
+    if (item.getID) {
+      item = item.getID();
+    }
+
+    item = this.get(item, false);
+
+    console.log(item);
+
+    if (item === null) {
+      return false;
+    }
+    else if (item.getHighlighted) {
+      return item.getHighlighted();
+    }
+    else {
+      return false;
+    }
   }
 
   find(text) {
@@ -913,8 +929,6 @@ class Social {
     }
 
     sizing_function(nodes, edges, this);
-
-    console.log(nodes);
 
     this.state.cache.graph = {
       nodes: nodes,

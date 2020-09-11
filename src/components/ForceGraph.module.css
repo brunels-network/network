@@ -57,7 +57,7 @@
     fill: none;
 }
 
-.link.highlight {
+.link_highlight {
     stroke: red;
     stroke-width: 0.35vw;
     fill: none;
@@ -82,7 +82,7 @@
     fill: white;
 }
 
-.node_text.highlight {
+.node_text_highlight {
     fill: #ffd28b;
     font-size: medium;
 }

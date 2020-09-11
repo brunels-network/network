@@ -412,7 +412,6 @@ class Person {
   setHighlighted(val) {
     if (val) {
       this.state.is_highlighted = true;
-      console.log(`SET_HIGHLIGHTED ${this} ${val}`);
     }
     else {
       this.state.is_highlighted = false;
@@ -433,10 +432,6 @@ class Person {
       type: "person",
       highlighted: this.getHighlighted(),
     };
-
-    if (this.getHighlighted()) {
-      console.log(`HIGHLIGHTED ${node}`);
-    }
 
     return node;
   }

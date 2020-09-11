@@ -189,18 +189,6 @@ class ForceGraphD3 extends React.Component {
       this.updateGraph(props.social);
     }
 
-    let hasSelected = Object.prototype.hasOwnProperty.call(props, "selected");
-
-    if (hasSelected) {
-      this.state.selected = _resolve(props.selected);
-    }
-
-    let hasHighlighted = Object.prototype.hasOwnProperty.call(props, "highlighted");
-
-    if (hasHighlighted) {
-      this.state.highlighted = _resolve(props.highlighted);
-    }
-
     if (this.props.selectedShipID !== this.state.selectedShipID) {
       this.state.selectedShipID = this.props.selectedShipID;
       this._graph_changed = true;
@@ -266,8 +254,7 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("class", (d) => {
         if (d.highlighted) {
-          console.log(d);
-          return `node ${styles.node_highlight}`
+          return `node ${styles.node_highlight} highlighted`
         }
         else {
           return `node ${styles.node}`
@@ -289,13 +276,20 @@ class ForceGraphD3 extends React.Component {
     text = text
       .data(data, (d) => d.id)
       .join(
-        (enter) => enter.append("text").attr("class", `node_text ${styles.node_text}`),
-        (update) => update.attr("class", `node_text ${styles.node_text}`)
+        (enter) => enter.append("text"),
       )
       .text((d) => d.label)
       .style("font-size", () => {
         return "1.5vh";
         // return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
+      })
+      .attr("class", (d) => {
+        if (d.highlighted) {
+          return `node_text ${styles.node_text_highlight} highlighted`;
+        }
+        else {
+          return `node_text ${styles.node_text}`;
+        }
       })
       .attr("dx", (d) => {
         return this.getWeight(d) + "px";
@@ -322,8 +316,7 @@ class ForceGraphD3 extends React.Component {
     link = link
       .data(data, (d) => d.id)
       .join(
-        (enter) => enter.append("path").attr("class", `link ${styles.link}`),
-        (update) => update.attr("class", `link ${styles.link}`)
+        (enter) => enter.append("path"),
       )
       .attr("class", (d) => {
         // Here we're using the weight of the edges between
@@ -336,6 +329,14 @@ class ForceGraphD3 extends React.Component {
           }
         } else {
           return `link ${indirectStyle}`;
+        }
+      })
+      .attr("class", (d) => {
+        if (d.highlighted) {
+          return `link ${styles.link_highlight} highlighted`;
+        }
+        else {
+          return `link ${styles.link}`;
         }
       })
       .attr("id", (d) => {
