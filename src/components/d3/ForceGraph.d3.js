@@ -278,7 +278,14 @@ class ForceGraphD3 extends React.Component {
       .join(
         (enter) => enter.append("text"),
       )
-      .text((d) => d.label)
+      .text((d) => {
+        if (d.highlighted) {
+          return d.label;
+        }
+        else {
+          return "";
+        }
+      })
       .style("font-size", () => {
         return "1.5vh";
         // return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
