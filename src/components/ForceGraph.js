@@ -45,8 +45,8 @@ class ForceGraph extends React.Component {
     const containerRect = this.containerRef.current.getBoundingClientRect();
 
     if (this.containerRef && this.graph) {
-      let width = Math.floor(0.99 * containerRect.width);
-      let height = Math.floor(0.99 * containerRect.height);
+      let width = containerRect.width;
+      let height = containerRect.height;
       console.log(`${width}x${height}`);
 
       this.graph.update({

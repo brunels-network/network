@@ -3,15 +3,10 @@
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: stretch;
-    align-content: flex-start;
-    justify-content: center;
-    overflow: none;
     height: 100%;
     width: 100%;
 }
 
-.fill {}
-
 .child {
-    flex: 0 1 auto;
+    flex: 0;
 }

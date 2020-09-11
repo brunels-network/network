@@ -6,6 +6,9 @@ import Dry from "json-dry";
 import ForceGraph from "./components/ForceGraph";
 import ShipSelector from "./components/ShipSelector";
 import TextButton from "./components/TextButton";
+import LabelButton from "./components/LabelButton";
+import HowDoIOverlay from "./components/HowDoIOverlay";
+import Overlay from "./components/Overlay";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -56,6 +59,7 @@ class SocialApp extends React.Component {
       connectedNodes: null,
       selectedShip: null,
       selectedShipID: null,
+      isOverlayOpen: false,
       height: 0,
       width: 0,
     };
@@ -394,6 +398,24 @@ class SocialApp extends React.Component {
     });
   }
 
+  setOverlay(item) {
+    this.setState({
+      overlayItem: item,
+      isOverlayOpen: true,
+    });
+  }
+
+  closeOverlay() {
+    this.setState({
+      isOverlayOpen: false,
+      overlayItem: null,
+    });
+  }
+
+  toggleOverlay() {
+    this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
+  }
+
   resetAll() {
     window.location.reload(true);
   }
@@ -404,7 +426,13 @@ class SocialApp extends React.Component {
 
     let menu = <TextButton>Menu</TextButton>;
     let search = <TextButton>Search</TextButton>;
-    let help = <TextButton>Help</TextButton>;
+    let help = (
+      <TextButton
+        onClick={() => {
+          this.setOverlay(<HowDoIOverlay close={() => { this.closeOverlay() }} />);
+        }}>
+        Help
+      </TextButton>);
 
     let graph = <ForceGraph
       social={this.state.social}
@@ -416,9 +444,28 @@ class SocialApp extends React.Component {
       emitSetCenter={(id) => { this.slotSetAnchor(id) }}
     />;
 
-    let spiral = <TextButton>Spiral</TextButton>;
+    let spiral = (
+      <LabelButton
+        label="Spiral Order"
+        button={this.state.spiralOrder}
+        onClick={()=>{this.toggleSpiralOrder()}}
+      />);
+
     let ship = <TextButton>Ship</TextButton>;
-    let size = <TextButton>Size</TextButton>;
+
+    let size = (
+      <LabelButton
+        label="Node Size"
+        button={this.state.spiralOrder}
+        onClick={()=>{this.toggleSpiralOrder()}}
+      />);
+
+
+    let overlay = null;
+    if (this.state.isOverlayOpen) {
+      overlay = <Overlay toggleOverlay={() => {this.toggleOverlay()}}>
+                    {this.state.overlayItem}</Overlay>;
+    }
 
     return (
       <div>
@@ -443,6 +490,8 @@ class SocialApp extends React.Component {
             </HBox>
           </VBox>
         </div>
+
+        {overlay}
 
       </div>
     );

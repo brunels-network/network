@@ -1,21 +1,10 @@
-@font-face {
-  font-family: "Montserrat";
-  src: local("Montserrat"), url(../fonts/Montserrat-Regular.ttf) format("truetype");
-}
-
-@font-face {
-  font-family: "Playfair Display Bold";
-  src: local("Montserrat"), url(../fonts/PlayfairDisplay-Bold.ttf) format("truetype");
-}
-
 .container {
   position: absolute;
   background: white;
-  font-family: "Playfair Display Medium";
-  width: 50%;
-  height: 65%;
-  left: 25%;
-  top: 12.5%;
+  width: 90%;
+  height: 90%;
+  left: 5%;
+  top: 5%;
   opacity: 1;
   background-color: white;
   z-index: 12;
