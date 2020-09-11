@@ -18,104 +18,6 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
-function handleMouseOver(THIS) {
-  function handle() {
-    let svg = THIS._mainGroup;
-    if (!svg) {
-      return;
-    }
-
-    let node = d3.select(this);
-    node.raise();
-
-    let id = node.attr("id");
-
-    if (!id) {
-      return;
-    }
-
-    //highlight the node
-    let items = svg.selectAll(`#${id}`);
-    items.classed(styles.highlight, true);
-
-    //highlight the connection lines with this node as a source
-    items = svg.selectAll(`[source_id=${id}]`);
-    items.classed(styles.highlight, true);
-
-    //highlight the nodes with this node as a target
-    items.each((d) => {
-      let target_id = d.target.id;
-      svg.selectAll(`#${target_id}`).classed(styles.highlight, true);
-    });
-
-    //highlight the connection lines with this node as a target
-    items = svg.selectAll(`[target_id=${id}]`);
-    items.classed(styles.highlight, true);
-
-    //highlight the nodes with this node as a source
-    items.each((d) => {
-      let source_id = d.source.id;
-      svg.selectAll(`#${source_id}`).classed(styles.highlight, true);
-    });
-
-    if (node.attr("source_id")) {
-      svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, true);
-
-      svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, true);
-    }
-
-    THIS.state.signalMouseOver(id);
-  }
-
-  return handle;
-}
-
-function handleMouseOut(THIS) {
-  function handle() {
-    let svg = THIS._mainGroup;
-    if (!svg) {
-      return;
-    }
-
-    let node = d3.select(this);
-    let id = node.attr("id");
-
-    let items = svg.selectAll(`#${id}`);
-
-    items.classed(styles.highlight, false);
-
-    //highlight the connection lines with this node as a source
-    items = svg.selectAll(`[source_id=${id}]`);
-    items.classed(styles.highlight, false);
-
-    //highlight the nodes with this node as a target
-    items.each((d) => {
-      let target_id = d.target.id;
-      svg.selectAll(`#${target_id}`).classed(styles.highlight, false);
-    });
-
-    //highlight the connection lines with this node as a target
-    items = svg.selectAll(`[target_id=${id}]`);
-    items.classed(styles.highlight, false);
-
-    //highlight the nodes with this node as a source
-    items.each((d) => {
-      let source_id = d.source.id;
-      svg.selectAll(`#${source_id}`).classed(styles.highlight, false);
-    });
-
-    if (node.attr("source_id")) {
-      svg.selectAll(`#${node.attr("source_id")}`).classed(styles.highlight, false);
-
-      svg.selectAll(`#${node.attr("target_id")}`).classed(styles.highlight, false);
-    }
-
-    THIS.state.signalMouseOut(id);
-  }
-
-  return handle;
-}
-
 function _resolve(item) {
   if (!item) {
     return null;
@@ -153,8 +55,6 @@ class ForceGraphD3 extends React.Component {
       selected: null,
       highlighted: null,
       signalClicked: _null_function,
-      signalMouseOut: _null_function,
-      signalMouseOver: _null_function,
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
       selectedShipID: null,
@@ -283,26 +183,6 @@ class ForceGraphD3 extends React.Component {
       }
     }
 
-    let hasSignalMouseOut = Object.prototype.hasOwnProperty.call(props, "signalMouseOut");
-
-    if (hasSignalMouseOut) {
-      if (this.state.signalMouseOut) {
-        this.state.signalMouseOut = props.signalMouseOut;
-      } else {
-        this.state.signalMouseOut = _null_function;
-      }
-    }
-
-    let hasSignalMouseOver = Object.prototype.hasOwnProperty.call(props, "signalMouseOver");
-
-    if (hasSignalMouseOver) {
-      if (this.state.signalMouseOver) {
-        this.state.signalMouseOver = props.signalMouseOver;
-      } else {
-        this.state.signalMouseOver = _null_function;
-      }
-    }
-
     let hasSocial = Object.prototype.hasOwnProperty.call(props, "social");
 
     if (hasSocial) {
@@ -389,8 +269,6 @@ class ForceGraphD3 extends React.Component {
         return d.id;
       })
       .on("click", (d) => this.parent.emitPopProps(d))
-      .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return node;
@@ -424,8 +302,6 @@ class ForceGraphD3 extends React.Component {
         return d.id;
       })
       .on("click", (d) => this.parent.emitPopProps(d))
-      .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this))
       .call(this.drag());
 
     return text;
@@ -466,9 +342,7 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("target_id", (d) => {
         return d.target_id;
-      })
-      .on("mouseover", handleMouseOver(this))
-      .on("mouseout", handleMouseOut(this));
+      });
 
     return link;
   }
