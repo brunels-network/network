@@ -218,11 +218,11 @@ class SocialApp extends React.Component {
 
     let social = this.state.social;
 
-    if (social.isHighlighted(id)) {
+    if (social.isSelected(id)) {
       console.log(`POP UP THE SHORT BIO FOR ${id}`);
     }
     else {
-      social.setHighlighted(id, true, true);
+      social.setSelected(id, true, true);
       this.setState({ social: social });
     }
   }

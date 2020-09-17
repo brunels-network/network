@@ -4,6 +4,7 @@ import lodash from "lodash";
 import DateRange from "./DateRange";
 
 import { ValueError } from "./Errors";
+import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
 
 function setState(val, def = null) {
   if (val) {
@@ -77,6 +78,7 @@ class Business {
       weight: {},
       edge_count: {},
       is_highlighted: false,
+      is_selected: false,
     };
 
     this.setState(props);
@@ -286,6 +288,19 @@ class Business {
     return this.state.scores;
   }
 
+  setSelected(val) {
+    if (val) {
+      this.state.is_selected = true;
+    }
+    else {
+      this.state.is_selected = false;
+    }
+  }
+
+  getSelected() {
+    return this.state.is_selected;
+  }
+
   setHighlighted(val) {
     if (val) {
       this.state.is_highlighted = true;
@@ -306,6 +321,7 @@ class Business {
       title: this.getName(),
       shape: "square",
       highlighted: this.getHighlighted(),
+      selected: this.getSelected(),
       weight: this.getWeight(),
       type: "business",
     };

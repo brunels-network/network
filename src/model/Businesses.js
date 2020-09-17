@@ -49,6 +49,12 @@ class Businesses {
     return output;
   }
 
+  clearSelections() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setSelected(false);
+    });
+  }
+
   clearHighlights() {
     Object.keys(this._names).forEach((key) => {
       this.get(this._names[key]).setHighlighted(false);

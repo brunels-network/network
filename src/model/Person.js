@@ -248,6 +248,7 @@ class Person {
       this.state.weight = setState(state.weight);
       this.state.edge_count = setState(state.edge_count);
       this.state.is_highlighted = false;
+      this.state.is_selected = false;
 
       if (!this.state.orig_name || this.state.orig_name === "None") {
         throw new ValueError(`No name for ${this}`);
@@ -407,6 +408,19 @@ class Person {
     return weight;
   }
 
+  setSelected(val) {
+    if (val) {
+      this.state.is_selected = true;
+    }
+    else {
+      this.state.is_selected = false;
+    }
+  }
+
+  getSelected() {
+    return this.state.is_selected;
+  }
+
   setHighlighted(val) {
     if (val) {
       this.state.is_highlighted = true;
@@ -429,6 +443,7 @@ class Person {
       weight: this.getWeight(),
       type: "person",
       highlighted: this.getHighlighted(),
+      selected: this.getSelected(),
     };
 
     return node;

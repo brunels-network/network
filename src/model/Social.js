@@ -576,6 +576,35 @@ class Social {
     this.clearCache();
   }
 
+  clearSelections() {
+    this.getPeople(false).clearSelections();
+    this.getBusinesses(false).clearSelections();
+    this.clearCache();
+  }
+
+  setSelected(item, highlight_connections = true, clear_previous = true) {
+    if (clear_previous) {
+      if (highlight_connections) {
+        this.clearHighlights();
+      }
+
+      this.clearSelections();
+    }
+
+    item = get_id(item);
+    item = this.get(item, false);
+
+    if (item === null) { return; }
+
+    item.setSelected(true);
+
+    if (highlight_connections) {
+      this.getConnections(true).highlightConnections(item, this);
+    }
+
+    this.clearCache();
+  }
+
   setHighlighted(item, highlight_connections = true, clear_previous = true) {
     if (clear_previous) {
       this.clearHighlights();
@@ -593,6 +622,26 @@ class Social {
     }
 
     this.clearCache();
+  }
+
+  isSelected(item) {
+    if (item.getID) {
+      item = item.getID();
+    }
+
+    item = this.get(item, false);
+
+    console.log(item);
+
+    if (item === null) {
+      return false;
+    }
+    else if (item.getSelected) {
+      return item.getSelected();
+    }
+    else {
+      return false;
+    }
   }
 
   isHighlighted(item) {

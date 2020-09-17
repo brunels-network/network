@@ -42,8 +42,6 @@ class ForceGraphD3 extends React.Component {
       width: null,
       height: null,
       social: null,
-      selected: null,
-      highlighted: null,
       signalClicked: _null_function,
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
@@ -268,11 +266,14 @@ class ForceGraphD3 extends React.Component {
         return 3.0 * d.size;
       })
       .attr("class", (d) => {
-        if (d.highlighted) {
-          return `node ${styles.node_highlight} highlighted`
+        if (d.selected) {
+          return `node ${styles.node_select} selected`;
+        }
+        else if (d.highlighted) {
+          return `node ${styles.node_highlight} highlighted`;
         }
         else {
-          return `node ${styles.node}`
+          return `node ${styles.node}`;
         }
       })
       .attr("id", (d) => {return d.id;})
@@ -294,19 +295,18 @@ class ForceGraphD3 extends React.Component {
         (enter) => enter.append("text"),
       )
       .text((d) => {
-        if (d.highlighted) {
+        if (d.highlighted || d.selected) {
           return d.label;
         }
         else {
           return "";
         }
       })
-      .style("font-size", () => {
-        return "1.5vh";
-        // return Math.max(1.2, 2 * Math.log10(this.getWeight(d))) + "vh";
-      })
       .attr("class", (d) => {
-        if (d.highlighted) {
+        if (d.selected) {
+          return `node_text ${styles.node_text_select} selected`;
+        }
+        else if (d.highlighted) {
           return `node_text ${styles.node_text_highlight} highlighted`;
         }
         else {
