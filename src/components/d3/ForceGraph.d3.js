@@ -18,6 +18,26 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
+function getTextSize(d) {
+  if (!(d.selected || d.highlighted)) { return [0, 0] }
+
+  let canvas = getTextSize._canvas || (getTextSize._canvas = document.createElement("canvas"));
+  let context = canvas.getContext("2d");
+
+  let height = 14;
+
+  if (d.selected) {
+    context.font = "14pt Bookman";
+  } else {
+    context.font = "12pt Bookman";
+    height = 12;
+  }
+
+  let metrics = context.measureText(d.label);
+
+  return [metrics.width, height];
+}
+
 /* eslint-disable react/no-direct-mutation-state */
 class ForceGraphD3 extends React.Component {
   constructor(parent, props) {
@@ -259,7 +279,6 @@ class ForceGraphD3 extends React.Component {
         d3.event.stopPropagation()
 
         if (d.selected) {
-          console.log(d);
           this.emitPopProps(d);
         }
         else {
@@ -306,6 +325,20 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("dy", (d) => {
         return -1 * (3 + sizeScale * d.radius) + "px";
+      })
+      .attr("textSize", (d) => {
+        return getTextSize(d);
+      })
+      .on("mousedown", () => d3.event.stopPropagation())
+      .on("click", (d) => {
+        d3.event.stopPropagation()
+
+        if (d.selected) {
+          this.emitPopProps(d);
+        }
+        else {
+          this.state.signalClicked(d.id);
+        }
       })
       .attr("text-anchor", "start")
       .attr("id", (d) => { return d.id; });
@@ -424,9 +457,36 @@ class ForceGraphD3 extends React.Component {
 
         this._label
           .attr("x", (d) => {
-            if (this.getLabelXOffset(d)) return this.getLabelXOffset(d);
+            if (!(d.selected || d.highlighted)) return 0;
+
+            if (!d.textSize) {
+              d.textSize = getTextSize(d);
+            }
+
+            let width = 1.1 * d.textSize[0];
+            let delta = 0.5 * width;
+
+            if (d.x + width > window.innerWidth) {
+              return window.innerWidth - width;
+            }
+            else if (d.x - delta < 10) {
+              return 10;
+            }
+            else {
+              return d.x - delta;
+            }
           })
-          .attr("y", (d) => d.y);
+          .attr("y", (d) => {
+            if (!(d.selected || d.highlighted)) return 0;
+
+            if (!d.textSize) {
+              d.textSize = getTextSize(d);
+            }
+
+            let height = d.textSize[1];
+
+            return d.y + (0.5 * (height + d.radius));
+          });
       })
       .on("end", () => {
         this.restartSimulation();
@@ -436,29 +496,6 @@ class ForceGraphD3 extends React.Component {
 
     // Save the simulation so that we can update it later...
     this._simulation = simulation;
-  }
-
-  getTextWidth(text, font) {
-    // https://stackoverflow.com/a/21015393
-    // If given, use cached canvas for better performance
-    // else, create new canvas
-    let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
-    let context = canvas.getContext("2d");
-    context.font = font;
-    let metrics = context.measureText(text);
-    return metrics.width;
-  }
-
-  getLabelXOffset(d) {
-    const swapSection = 0.2 * window.innerWidth;
-    const textWidth = this.getTextWidth(d.label, "Playfair Display SemiBold");
-
-    if (d.x > window.innerWidth - swapSection) {
-      const maxOffset = 0.2 * window.innerWidth;
-      return d.x - Math.min(1.5 * textWidth + d.radius, maxOffset);
-    } else {
-      return d.x;
-    }
   }
 
   restartSimulation() {
