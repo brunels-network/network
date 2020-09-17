@@ -36,6 +36,7 @@ class ForceGraph extends React.Component {
   }
 
   componentDidUpdate() {
+    this.graph.emitPopProps = this.emitPopProps;
     this.graph.draw();
   }
 
@@ -87,7 +88,6 @@ class ForceGraph extends React.Component {
             togglePopover={this.emitPopProps}
             node={node}
             social={this.props.social}
-            selectedShipID={this.props.selectedShipID}
             clearPopups={this.clearPopups}
             emitSetCenter={this.props.emitSetCenter}
           />
@@ -108,7 +108,6 @@ class ForceGraph extends React.Component {
 
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
-  selectedShipID: PropTypes.string,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   emitSetCenter: PropTypes.func.isRequired,
 };

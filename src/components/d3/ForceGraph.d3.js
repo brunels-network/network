@@ -44,7 +44,6 @@ class ForceGraphD3 extends React.Component {
       signalClicked: _null_function,
       indirectConnectionsVisible: false,
       hideUnconnectedNodes: false,
-      selectedShipID: null,
       uid: uid.slice(uid.length - 8),
     };
 
@@ -54,10 +53,6 @@ class ForceGraphD3 extends React.Component {
     this._is_drawn = false;
 
     this.update(props);
-  }
-
-  getSelectedShipID() {
-    return this.props.selectedShipID;
   }
 
   getNodeBio(id) {
@@ -200,11 +195,6 @@ class ForceGraphD3 extends React.Component {
     if (hasSocial) {
       this.updateGraph(props.social);
     }
-
-    if (this.props.selectedShipID !== this.state.selectedShipID) {
-      this.state.selectedShipID = this.props.selectedShipID;
-      this._graph_changed = true;
-    }
   }
 
   className() {
@@ -265,7 +255,17 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("id", (d) => { return d.id; })
       .on("mousedown", () => d3.event.stopPropagation())
-      .on("click", (d) => { this.state.signalClicked(d.id); d3.event.stopPropagation() });
+      .on("click", (d) => {
+        d3.event.stopPropagation()
+
+        if (d.selected) {
+          console.log(d);
+          this.emitPopProps(d);
+        }
+        else {
+          this.state.signalClicked(d.id);
+        }
+      });
       //.call(this.drag());
 
     return node;
@@ -375,11 +375,6 @@ class ForceGraphD3 extends React.Component {
 
     // We don't want a force applied to null edges
     let edges = graph.edges.filter((v) => v["type"]);
-
-    // Node layout
-    const maxWeight = d3.max(graph.nodes, (d) => {
-      return d["weight"][this.props.selectedShipID];
-    });
 
     let simulation = d3
       .forceSimulation(graph.nodes)
@@ -573,7 +568,6 @@ class ForceGraphD3 extends React.Component {
 }
 
 ForceGraphD3.propTypes = {
-  selectedShipID: PropTypes.string,
-};
+}
 
 export default ForceGraphD3;

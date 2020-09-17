@@ -171,10 +171,12 @@ class Person {
     let nprojects = Object.keys(project).length;
 
     let seen = {};
+    let new_projects = {};
 
     Object.keys(this.state.projects).forEach((key) => {
       if (key in project) {
         seen[key] = 1;
+        new_projects[key] = this.state.projects[key];
       }
     });
 
@@ -195,6 +197,7 @@ class Person {
       person.state.positions = positions;
       person.state.weight = weight;
       person.state.edge_count = edge_count;
+      person.state.projects = new_projects;
       person._getHook = this._getHook;
       return person;
     } else {
@@ -397,6 +400,11 @@ class Person {
     return this.state.weight[project_id];
   }
 
+  getProjectID() {
+    // return the first matching project ID
+    return Object.keys(this.state.projects)[0];
+  }
+
   getProjectWeight(projectKey) {
     const weight = this.state.weight[projectKey];
 
@@ -444,6 +452,7 @@ class Person {
       type: "person",
       highlighted: this.getHighlighted(),
       selected: this.getSelected(),
+      project: this.getProjectID(),
     };
 
     return node;

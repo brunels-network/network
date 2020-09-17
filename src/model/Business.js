@@ -168,10 +168,12 @@ class Business {
     let nprojects = Object.keys(project).length;
 
     let seen = {};
+    let new_projects = {};
 
     Object.keys(this.state.projects).forEach((key) => {
       if (key in project) {
         seen[key] = 1;
+        new_projects[key] = this.state.projects[key];
       }
     });
 
@@ -192,6 +194,7 @@ class Business {
       business.state.positions = positions;
       business.state.weight = weight;
       business.state.edge_count = edge_count;
+      business.state.projects = new_projects;
       business._getHook = this._getHook;
       return business;
     } else {
@@ -246,6 +249,11 @@ class Business {
 
   merge() {
     return this;
+  }
+
+  getProjectID() {
+    // return the first matching project ID
+    return Object.keys(this.state.projects)[0];
   }
 
   getWeight(project_id = null) {
