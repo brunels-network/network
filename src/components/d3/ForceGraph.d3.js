@@ -31,7 +31,6 @@ class ForceGraphD3 extends React.Component {
     this.updateGraph = this.updateGraph.bind(this);
 
     this.drag = this.drag.bind(this);
-    this.getWeight = this.getWeight.bind(this);
     this.parent = parent;
 
     // Generate a UID for this graph so that we don't clash
@@ -238,19 +237,6 @@ class ForceGraphD3 extends React.Component {
       });
   }
 
-  getWeight(item) {
-    const shipID = this.getSelectedShipID();
-    // Big weights make the size of circles too large
-    const sizeScale = 0.5;
-
-    // let weight = sizeScale * item["weight"][shipID];
-    let weight = sizeScale * item["weight"][shipID];
-
-    if (!weight) weight = 2;
-
-    return weight;
-  }
-
   updateNode(data) {
     let node = this._mainGroup.select(".node-group").selectAll(".node");
 
@@ -263,7 +249,8 @@ class ForceGraphD3 extends React.Component {
       .attr("r", (d) => {
         // If no project selected keep previous weight
         // Otherwise update using the selected project code
-        return 3.0 * d.size;
+        d.radius = 3.0 * d.size;
+        return d.radius;
       })
       .attr("class", (d) => {
         if (d.selected) {
@@ -276,9 +263,10 @@ class ForceGraphD3 extends React.Component {
           return `node ${styles.node}`;
         }
       })
-      .attr("id", (d) => {return d.id;})
-      .on("click", (d) => { this.state.signalClicked(d.id) })
-      .call(this.drag());
+      .attr("id", (d) => { return d.id; })
+      .on("mousedown", () => d3.event.stopPropagation())
+      .on("click", (d) => { this.state.signalClicked(d.id); d3.event.stopPropagation() });
+      //.call(this.drag());
 
     return node;
   }
@@ -314,15 +302,14 @@ class ForceGraphD3 extends React.Component {
         }
       })
       .attr("dx", (d) => {
-        return this.getWeight(d) + "px";
+        return d.radius + "px";
       })
       .attr("dy", (d) => {
-        return -1 * (3 + sizeScale * this.getWeight(d)) + "px";
+        return -1 * (3 + sizeScale * d.radius) + "px";
       })
       .attr("text-anchor", "start")
-      .attr("id", (d) => { return d.id; })
-      .on("click", (d) => { this.state.signalClicked(d.id) })
-      .call(this.drag());
+      .attr("id", (d) => { return d.id; });
+      //.call(this.drag());
 
     return text;
   }
@@ -394,8 +381,6 @@ class ForceGraphD3 extends React.Component {
       return d["weight"][this.props.selectedShipID];
     });
 
-    let radiusScale = d3.scaleLinear().domain([0, maxWeight]).range([1, 80]);
-
     let simulation = d3
       .forceSimulation(graph.nodes)
       .alpha(1.0)
@@ -412,11 +397,11 @@ class ForceGraphD3 extends React.Component {
         "collide",
         d3
         .forceCollide()
-        .strength(0.1)
-        .radius((d) => radiusScale(d["weight"][this.props.selectedShipID]))
-        .iterations(30)
+        .strength(0.3)
+        .radius((d) => 5 + d.radius)
+        .iterations(2)
       )
-      .force("link", d3.forceLink().strength(0).links(edges).iterations(80))
+      .force("link", d3.forceLink().strength(0).links(edges).iterations(5))
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
 
@@ -471,12 +456,11 @@ class ForceGraphD3 extends React.Component {
 
   getLabelXOffset(d) {
     const swapSection = 0.2 * window.innerWidth;
-    const radius = this.getWeight(d);
-    const textWidth = this.getTextWidth(d["label"], "Playfair Display SemiBold");
+    const textWidth = this.getTextWidth(d.label, "Playfair Display SemiBold");
 
     if (d.x > window.innerWidth - swapSection) {
       const maxOffset = 0.2 * window.innerWidth;
-      return d.x - Math.min(radius + 1.5 * textWidth, maxOffset);
+      return d.x - Math.min(1.5 * textWidth + d.radius, maxOffset);
     } else {
       return d.x;
     }

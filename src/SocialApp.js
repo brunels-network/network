@@ -212,13 +212,16 @@ class SocialApp extends React.Component {
   }
 
   slotClicked(id) {
-    if (!id) {
-      return;
-    }
 
     let social = this.state.social;
 
-    if (social.isSelected(id)) {
+    if (!id) {
+      console.log("NULL CLICKED");
+      social.clearSelections();
+      social.clearHighlights();
+      this.setState({ social: social });
+    }
+    else if (social.isSelected(id)) {
       console.log(`POP UP THE SHORT BIO FOR ${id}`);
     }
     else {
