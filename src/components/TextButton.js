@@ -6,9 +6,6 @@ import styles from "./TextButton.module.css";
 
 
 class TextButton extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
 

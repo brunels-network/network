@@ -18,16 +18,6 @@ function constrain(x, w, r = 20) {
   return Math.max(3 * r, Math.min(w - r, x));
 }
 
-function _resolve(item) {
-  if (!item) {
-    return null;
-  } else if (item.getID) {
-    return item.getID();
-  } else {
-    return item;
-  }
-}
-
 /* eslint-disable react/no-direct-mutation-state */
 class ForceGraphD3 extends React.Component {
   constructor(parent, props) {
@@ -95,30 +85,30 @@ class ForceGraphD3 extends React.Component {
       return;
     }
 
-    let graph = null;
+    let new_graph = null;
 
     if (social) {
-      graph = social.getGraph();
+      new_graph = social.getGraph();
     }
 
     // The social object will cache the 'getGraph' result, meaning
     // that any change in this object signals that the graph needs
     // to be redrawn
-    if (graph !== this.state.graph) {
+    if (new_graph !== this.state.graph) {
       //save the cached graph
-      this.state.graph = graph;
+      this.state.graph = new_graph;
 
       // This view needs to clone its own copy of the graph, as
       // D3 will update the graph object. We need to clone in case
       // two ForceGraph.d3 views are viewing the same Social graph
-      graph = lodash.cloneDeep(this.state.graph);
+      new_graph = lodash.cloneDeep(this.state.graph);
 
       // need to update IDs so that the edges refer to the index
       // of the node in the nodes array - this could be optimised!
-      for (let l in graph.edges) {
-        let edge = graph.edges[l];
-        for (let n in graph.nodes) {
-          let node = graph.nodes[n];
+      for (let l in new_graph.edges) {
+        let edge = new_graph.edges[l];
+        for (let n in new_graph.nodes) {
+          let node = new_graph.nodes[n];
           if (edge.source === node.id) {
             edge.source = n;
             edge.source_id = node.id;
@@ -129,14 +119,39 @@ class ForceGraphD3 extends React.Component {
         }
       }
 
-      for (let n in graph.nodes) {
-        let node = graph.nodes[n];
+      // does this node already have coordinates? If not then they
+      // will need to be random
+      let old_graph = this._graph;
 
-        node.x = w * Math.random();
-        node.y = h * Math.random();
+      if (!old_graph) {
+        old_graph = { nodes: [] };
       }
 
-      this._graph = graph;
+      for (let n in new_graph.nodes) {
+        let new_node = new_graph.nodes[n];
+        let found = false;
+
+        for (let m in old_graph.nodes) {
+          let old_node = old_graph.nodes[m];
+          if (old_node.id === new_node.id) {
+            new_node.x = old_node.x;
+            new_node.y = old_node.y;
+            new_node.vx = old_node.vx;
+            new_node.vy = old_node.vy;
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
+          new_node.x = w * Math.random();
+          new_node.y = h * Math.random();
+          new_node.vx = 0.0;
+          new_node.vy = 0.0;
+        }
+      }
+
+      this._graph = new_graph;
       this._graph_changed = true;
     }
   }

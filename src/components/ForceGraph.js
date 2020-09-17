@@ -4,8 +4,6 @@ import React from "react";
 import Popover from "./Popover";
 import ForceGraphD3 from "./d3/ForceGraph.d3.js";
 
-import lodash from "lodash";
-
 import styles from "./ForceGraph.module.css";
 
 

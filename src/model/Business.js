@@ -3,8 +3,6 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
-import fixedNodes from "../data/fixedNodes.json";
-
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {

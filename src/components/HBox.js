@@ -8,7 +8,7 @@ import styles from "./HBox.module.css";
 
 
 function _wrap(child, i) {
-    if (child.type == BigBox) {
+    if (child.type === BigBox) {
         return child;
     }
     else {
