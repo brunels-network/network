@@ -779,7 +779,23 @@ class Social {
     this.clearCache();
   }
 
+  isAnchor(node) {
+    let id = get_id(node);
+
+    return id === get_id(this.state.anchor);
+  }
+
   setAnchor(anchor) {
+    if (anchor === null) {
+      if (this.state.anchor === null) {
+        return false;
+      } else {
+        this.state.anchor = null;
+        this.clearCache();
+        return true;
+      }
+    }
+
     let got_anchor = null;
 
     if (isString(anchor)) {

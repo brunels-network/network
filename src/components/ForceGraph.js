@@ -12,13 +12,12 @@ class ForceGraph extends React.Component {
     super(props);
 
     this.state = {
-      popoversVisible: false,
-      popups: {},
+      popup: null,
     };
 
     this.updateSize = this.updateSize.bind(this);
-    this.emitPopProps = this.emitPopProps.bind(this);
-    this.clearPopups = this.clearPopups.bind(this);
+    this.emitPopup = this.emitPopup.bind(this);
+    this.clearPopup = this.clearPopup.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
     this.containerRef = React.createRef();
@@ -36,7 +35,8 @@ class ForceGraph extends React.Component {
   }
 
   componentDidUpdate() {
-    this.graph.emitPopProps = this.emitPopProps;
+    this.graph.emitPopup = this.emitPopup;
+    this.graph.clearPopup = this.clearPopup;
     this.graph.draw();
   }
 
@@ -55,51 +55,35 @@ class ForceGraph extends React.Component {
     }
   }
 
-  // Used for multiple popups
-  updatePopupState(id, node) {
-    this.setState((prevState) => {
-      let popups = Object.assign({}, prevState.popups);
-      popups[id] = node;
-      return { popups: popups };
-    });
+  emitPopup(node) {
+    this.setState({ popup: node });
   }
 
-  emitPopProps(node) {
-    // this.clearPopups();
-    this.setState({ popups: { id: node } });
-  }
-
-  clearPopups() {
-    this.setState({ popups: {} });
+  clearPopup() {
+    this.setState({ popup: null });
   }
 
   render() {
-    let s = this.graph.className();
-
     this.graph.update(this.props);
 
-    let popups = [];
+    let popup = null;
 
-    for (let [id, node] of Object.entries(this.state.popups)) {
-      if (node !== false) {
-        let p = (
-          <Popover
-            key={id}
-            togglePopover={this.emitPopProps}
-            node={node}
-            social={this.props.social}
-            clearPopups={this.clearPopups}
-            emitSetCenter={this.props.emitSetCenter}
-          />
-        );
-        popups.push(p);
-      }
+    if (this.state.popup) {
+      let node = this.state.popup;
+
+      popup = <Popover
+        node={node}
+        social={this.props.social}
+        clearPopup={this.clearPopup}
+        emitSetCenter={this.props.emitSetCenter}
+        emitReadMore={this.props.emitReadMore}
+      />;
     }
 
     return (
       <div ref={this.containerRef} className={styles.container}>
-        <div className={s}>
-          {popups}
+        <div className={this.graph.className()}>
+          {popup}
         </div>
       </div>
     );
@@ -110,6 +94,7 @@ ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
   indirectConnectionsVisible: PropTypes.bool.isRequired,
   emitSetCenter: PropTypes.func.isRequired,
+  emitReadMore: PropTypes.func.isRequired,
 };
 
 export default ForceGraph;

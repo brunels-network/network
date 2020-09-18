@@ -163,6 +163,10 @@ class SocialApp extends React.Component {
     }
   }
 
+  slotReadMore(item) {
+    console.log(`PLEASE READ MORE ABOUT ${item}`);
+  }
+
   slotSetShip(item) {
     if (!item._isAProjectObject) {
       console.error("Cannot set item that is not a project.");
@@ -544,6 +548,7 @@ class SocialApp extends React.Component {
       signalClicked={(id) => this.slotClicked(id)}
       indirectConnectionsVisible={this.state.indirectConnectionsVisible}
       emitSetCenter={(id) => { this.slotSetAnchor(id) }}
+      emitReadMore={(id) => { this.slotReadMore(id) }}
     />;
 
     let spiral = (

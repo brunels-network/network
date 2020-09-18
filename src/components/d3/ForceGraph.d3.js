@@ -279,9 +279,10 @@ class ForceGraphD3 extends React.Component {
         d3.event.stopPropagation()
 
         if (d.selected) {
-          this.emitPopProps(d);
+          this.emitPopup(d);
         }
         else {
+          this.clearPopup();
           this.state.signalClicked(d.id);
         }
       });
@@ -334,9 +335,10 @@ class ForceGraphD3 extends React.Component {
         d3.event.stopPropagation()
 
         if (d.selected) {
-          this.emitPopProps(d);
+          this.emitPopup(d);
         }
         else {
+          this.clearPopup();
           this.state.signalClicked(d.id);
         }
       })
@@ -562,6 +564,7 @@ class ForceGraphD3 extends React.Component {
       .attr("id", "svg-viz")
       .attr("align", "center")
       .on("click", () => {
+        this.clearPopup();
         this.state.signalClicked(null);
       });
 

@@ -8,7 +8,10 @@ import styles from "./HBox.module.css";
 
 
 function _wrap(child, i) {
-    if (child.type === BigBox) {
+    if (!child) {
+        return null;
+    }
+    else if (child.type === BigBox) {
         return child;
     }
     else {
@@ -24,7 +27,9 @@ class HBox extends React.Component {
         let parts = [];
 
         for (let i = 0; i < this.props.children.length; ++i) {
-            parts.push(_wrap(this.props.children[i], i));
+            if (this.props.children[i] !== null) {
+                parts.push(_wrap(this.props.children[i], i));
+            }
         }
 
         return (
