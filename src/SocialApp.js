@@ -201,6 +201,12 @@ class SocialApp extends React.Component {
 
     social.toggleFilter(item);
 
+    if (this.state.searchText.length > 0) {
+      social.selectSearchMatching(this.state.searchText,
+        this.state.searchIncludeBios,
+        this.state.searchHighlightLinks);
+    }
+
     this.setState({ social: social });
   }
 
