@@ -582,7 +582,7 @@ class Social {
     this.clearCache();
   }
 
-  selectSearchMatching(text, include_bios = false) {
+  selectSearchMatching(text, include_bios = false, highlight_links = false) {
     this.clearSelections();
     this.clearHighlights();
 
@@ -597,24 +597,28 @@ class Social {
       let items = this.getPeople(true).find(text);
       _push(items, result);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
 
     try {
       let items = this.getBusinesses(true).find(text);
       _push(items, result);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
 
-    try {
-      let items = this.getBiographies().search(text);
-      _push(items, result);
-    } catch (error) {
-      console.error(error);
+    if (include_bios) {
+      try {
+        let items = this.getBiographies().search(text);
+        _push(items, result);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
-    let connections = this.getConnections(true);
+    let connections = null;
+
+    if (highlight_links) connections = this.getConnections(true);
 
     result.forEach((item) => {
       item = get_id(item);
@@ -622,7 +626,8 @@ class Social {
 
       try {
         item.setSelected(true);
-        connections.highlightConnections(item, this);
+        if (highlight_links) connections.highlightConnections(item, this);
+
       } catch (error) {
         console.log(error);
       }

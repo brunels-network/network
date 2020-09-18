@@ -10,6 +10,7 @@ import LabelButton from "./components/LabelButton";
 import HowDoIOverlay from "./components/HowDoIOverlay";
 import Overlay from "./components/Overlay";
 import SearchBar from "./components/SearchBar";
+import ToggleButton from "./components/ToggleButton";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -69,6 +70,9 @@ class SocialApp extends React.Component {
       selectedShip: null,
       selectedShipID: null,
       isOverlayOpen: false,
+      searchText: "",
+      searchIncludeBios: false,
+      searchHighlightLinks: true,
       height: 0,
       width: 0,
     };
@@ -461,12 +465,32 @@ class SocialApp extends React.Component {
     });
   }
 
-  slotUpdateSearch(text) {
+  performSearch(text, include_bios, highlight_links) {
     let social = this.state.social;
 
-    social.selectSearchMatching(text);
+    social.selectSearchMatching(text, include_bios, highlight_links);
 
-    this.setState({ social: social });
+    this.setState({
+      social: social,
+      searchIncludeBios: include_bios,
+      searchHighlightLinks: highlight_links,
+      searchText: text,
+    });
+  }
+
+  slotUpdateSearch(text) {
+    this.performSearch(text, this.state.searchIncludeBios,
+                       this.state.searchHighlightLinks);
+  }
+
+  slotSearchBiosToggled(toggled) {
+    this.performSearch(this.state.searchText,
+                       toggled, this.state.searchHighlightLinks);
+  }
+
+  slotSearchHighlightToggled(toggled) {
+    this.performSearch(this.state.searchText,
+                       this.state.searchIncludeBios, toggled);
   }
 
   toggleOverlay() {
@@ -483,8 +507,21 @@ class SocialApp extends React.Component {
 
     let menu = <TextButton>Menu</TextButton>;
 
-    let search = <SearchBar emitUpdate={
-      (text) => { this.slotUpdateSearch(text) }} />;
+    let search = (
+      <HBox>
+        <BigBox>
+          <SearchBar emitUpdate={
+            (text) => { this.slotUpdateSearch(text) }} />
+        </BigBox>
+        <ToggleButton emitToggled={(v) => this.slotSearchBiosToggled(v)}
+          toggled={this.state.searchIncludeBios}>
+          BIOS
+        </ToggleButton>
+        <ToggleButton emitToggled={(v) => this.slotSearchHighlightToggled(v)}
+          toggled={this.state.searchHighlightLinks}>
+          LINKS
+        </ToggleButton>
+      </HBox>);
 
     let help = (
       <TextButton
