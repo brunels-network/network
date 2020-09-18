@@ -9,6 +9,7 @@ import TextButton from "./components/TextButton";
 import LabelButton from "./components/LabelButton";
 import HowDoIOverlay from "./components/HowDoIOverlay";
 import Overlay from "./components/Overlay";
+import SearchBar from "./components/SearchBar";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -460,6 +461,10 @@ class SocialApp extends React.Component {
     });
   }
 
+  slotUpdateSearch(text) {
+    console.log(`SEARCH TEXT = ${text}`);
+  }
+
   toggleOverlay() {
     this.setState({ isOverlayOpen: !this.state.isOverlayOpen });
   }
@@ -473,7 +478,10 @@ class SocialApp extends React.Component {
     console.log("RENDER");
 
     let menu = <TextButton>Menu</TextButton>;
-    let search = <TextButton>Search</TextButton>;
+
+    let search = <SearchBar emitUpdate={
+      (text) => { this.slotUpdateSearch(text) }} />;
+
     let help = (
       <TextButton
         onClick={() => {
