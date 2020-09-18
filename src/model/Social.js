@@ -582,6 +582,55 @@ class Social {
     this.clearCache();
   }
 
+  selectSearchMatching(text, include_bios = false) {
+    this.clearSelections();
+    this.clearHighlights();
+
+    if (text.length === 0) {
+      this.clearCache();
+      return;
+    }
+
+    let result = [];
+
+    try {
+      let items = this.getPeople(true).find(text);
+      _push(items, result);
+    } catch (error) {
+      console.error(error);
+    }
+
+    try {
+      let items = this.getBusinesses(true).find(text);
+      _push(items, result);
+    } catch (error) {
+      console.error(error);
+    }
+
+    try {
+      let items = this.getBiographies().search(text);
+      _push(items, result);
+    } catch (error) {
+      console.error(error);
+    }
+
+    let connections = this.getConnections(true);
+
+    result.forEach((item) => {
+      item = get_id(item);
+      item = this.get(item, false);
+
+      try {
+        item.setSelected(true);
+        connections.highlightConnections(item, this);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+    this.clearCache();
+  }
+
   setSelected(item, highlight_connections = true, clear_previous = true) {
     if (clear_previous) {
       if (highlight_connections) {
@@ -608,6 +657,7 @@ class Social {
   setHighlighted(item, highlight_connections = true, clear_previous = true) {
     if (clear_previous) {
       this.clearHighlights();
+      this.clearSelections();
     }
 
     item = get_id(item);

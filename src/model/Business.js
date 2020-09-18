@@ -4,7 +4,6 @@ import lodash from "lodash";
 import DateRange from "./DateRange";
 
 import { ValueError } from "./Errors";
-import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
 
 function setState(val, def = null) {
   if (val) {

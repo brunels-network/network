@@ -462,7 +462,11 @@ class SocialApp extends React.Component {
   }
 
   slotUpdateSearch(text) {
-    console.log(`SEARCH TEXT = ${text}`);
+    let social = this.state.social;
+
+    social.selectSearchMatching(text);
+
+    this.setState({ social: social });
   }
 
   toggleOverlay() {
