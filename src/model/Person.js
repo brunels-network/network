@@ -186,15 +186,22 @@ class Person {
 
     let affiliations = _filterProject(this.state.affiliations, project);
     let positions = _filterProject(this.state.positions, project);
+    let sources = _filterProject(this.state.sources, project);
     let weight = _filterProject(this.state.weight, project);
     let edge_count = _filterProject(this.state.edge_count, project);
 
-    if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
-        weight !== this.state.weight || edge_count !== this.state.edge_count) {
+    if (
+      affiliations !== this.state.affiliations ||
+      positions !== this.state.positions ||
+      weight !== this.state.weight ||
+      edge_count !== this.state.edge_count ||
+      sources !== this.state.sources
+    ) {
       let person = new Person();
       person.state = { ...this.state };
       person.state.affiliations = affiliations;
       person.state.positions = positions;
+      person.state.sources = sources;
       person.state.weight = weight;
       person.state.edge_count = edge_count;
       person.state.projects = new_projects;
@@ -419,8 +426,7 @@ class Person {
   setSelected(val) {
     if (val) {
       this.state.is_selected = true;
-    }
-    else {
+    } else {
       this.state.is_selected = false;
     }
   }
@@ -432,8 +438,7 @@ class Person {
   setHighlighted(val) {
     if (val) {
       this.state.is_highlighted = true;
-    }
-    else {
+    } else {
       this.state.is_highlighted = false;
     }
   }

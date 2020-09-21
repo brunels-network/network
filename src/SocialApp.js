@@ -11,6 +11,7 @@ import HowDoIOverlay from "./components/HowDoIOverlay";
 import Overlay from "./components/Overlay";
 import SearchBar from "./components/SearchBar";
 import ToggleButton from "./components/ToggleButton";
+import BioOverlay from "./components/BioOverlay";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -164,7 +165,14 @@ class SocialApp extends React.Component {
   }
 
   slotReadMore(item) {
-    console.log(`PLEASE READ MORE ABOUT ${item}`);
+    this.setOverlay(<BioOverlay close={() => { this.closeOverlay() }}
+      social={this.state.social}
+      person={item}
+      emitShowSource={(item) => { this.slotShowSource(item) }} />);
+  }
+
+  slotShowSource(item) {
+    console.log(`SHOW SOURCES FOR ${item}`);
   }
 
   slotSetShip(item) {

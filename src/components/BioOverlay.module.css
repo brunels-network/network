@@ -1,21 +1,13 @@
 .container {
   position: absolute;
   background: white;
-  font-family: "Playfair Display Medium";
-  width: 75%;
-  height: 75%;
-  left: 12.5%;
-  top: 12.5%;
+  width: 95%;
+  height: 95%;
+  left: 2.5%;
+  top: 2.5%;
   opacity: 1;
   background-color: white;
   z-index: 11;
-  padding: 1.5vh 0.5vw 0.5vh 0.75vw;
-  display: grid;
-  grid-template-columns: 50% 2% 46%;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-
-  font-size: 1.5vh;
-  color: #222222;
 }
 
 .closeButton {
@@ -23,93 +15,10 @@
   right: 0.01vw;
 }
 
-.divider {
-  background: linear-gradient(lightgrey, lightgrey) no-repeat center/1px 100%;
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 6;
-}
-
-.textSection {
-  padding-top: 2vh;
-  padding-left: 2vh;
-  width: 50%;
-  height: 100%;
-}
-
-.header {
-  font-size: 2vh;
-  color: #003366;
-  height: 10%;
-}
-
-.nameHeader {
-  grid-column-start: 1;
-  grid-column-end: 1;
-  grid-row-start: 1;
-  grid-row-end: 1;
-  font-size: 3vh;
-  color: #003366;
-  height: 10%;
-}
-
-.positions {
-  grid-column-start: 1;
-  grid-column-end: 1;
-  grid-row-start: 2;
-  grid-row-end: 2;
-  font-size: 2vh;
-  color: #003366;
-  height: 10%;
+.name {
+  font-size: large;
 }
 
 .bio {
-  grid-column-start: 1;
-  grid-column-end: 1;
-  grid-row-start: 2;
-  grid-row-end: 7;
-  font-size: 1.8vh;
   overflow: auto;
-}
-
-.sourcesHeader {
-  padding-top: 2vh;
-  padding-bottom: 2vh;
-  font-size: 2vh;
-  color: #003366;
-  height: 10%;
-}
-
-.sources {
-  font-size: 2vh;
-  color: #003366;
-  grid-column-start: 1;
-  grid-column-end: 1;
-  grid-row-start: 7;
-  grid-row-end: 7;
-}
-
-.imageSection {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  grid-column-start: 3;
-  grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 7;
-  font-style: italic;
-}
-
-.imageSection img {
-  max-width: 99%;
-  object-fit: contain;
-  display: block;
-}
-
-.imageDescription {
-  padding-top: 2vh;
 }
