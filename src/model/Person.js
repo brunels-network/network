@@ -81,7 +81,6 @@ class Person {
       notes: [],
       orig_name: null,
       weight: {},
-      edge_count: {},
     };
 
     this.setState(props);
@@ -188,22 +187,15 @@ class Person {
     let positions = _filterProject(this.state.positions, project);
     let sources = _filterProject(this.state.sources, project);
     let weight = _filterProject(this.state.weight, project);
-    let edge_count = _filterProject(this.state.edge_count, project);
 
-    if (
-      affiliations !== this.state.affiliations ||
-      positions !== this.state.positions ||
-      weight !== this.state.weight ||
-      edge_count !== this.state.edge_count ||
-      sources !== this.state.sources
-    ) {
+    if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
+      weight !== this.state.weight || sources !== this.state.sources) {
       let person = new Person();
       person.state = { ...this.state };
       person.state.affiliations = affiliations;
       person.state.positions = positions;
       person.state.sources = sources;
       person.state.weight = weight;
-      person.state.edge_count = edge_count;
       person.state.projects = new_projects;
       person._getHook = this._getHook;
       return person;
@@ -256,7 +248,6 @@ class Person {
       this.state.orig_name = setState(state.orig_name);
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
-      this.state.edge_count = setState(state.edge_count);
       this.state.is_highlighted = false;
       this.state.is_selected = false;
 
@@ -426,7 +417,8 @@ class Person {
   setSelected(val) {
     if (val) {
       this.state.is_selected = true;
-    } else {
+    }
+    else {
       this.state.is_selected = false;
     }
   }
@@ -438,7 +430,8 @@ class Person {
   setHighlighted(val) {
     if (val) {
       this.state.is_highlighted = true;
-    } else {
+    }
+    else {
       this.state.is_highlighted = false;
     }
   }

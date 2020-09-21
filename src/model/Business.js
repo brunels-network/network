@@ -75,7 +75,6 @@ class Business {
       affiliations: {},
       notes: [],
       weight: {},
-      edge_count: {},
       is_highlighted: false,
       is_selected: false,
     };
@@ -183,16 +182,16 @@ class Business {
     let affiliations = _filterProject(this.state.affiliations, project);
     let positions = _filterProject(this.state.positions, project);
     let weight = _filterProject(this.state.weight, project);
-    let edge_count = _filterProject(this.state.edge_count, project);
+    let sources = _filterProject(this.state.sources, project);
 
     if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
-        weight !== this.state.weight || edge_count !== this.state.edge_count) {
+        weight !== this.state.weight || sources !== this.state.sources) {
       let business = new Business();
       business.state = { ...this.state };
       business.state.affiliations = affiliations;
       business.state.positions = positions;
+      business.state.sources = sources;
       business.state.weight = weight;
-      business.state.edge_count = edge_count;
       business.state.projects = new_projects;
       business._getHook = this._getHook;
       return business;
@@ -234,7 +233,6 @@ class Business {
       this.state.sources = setState(state.sources, {});
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
-      this.state.edge_count = setState(state.edge_count);
 
       if (!this.state.name) {
         throw new ValueError("You cannot have an Business without a name");

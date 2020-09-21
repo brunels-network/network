@@ -240,7 +240,6 @@ def importPerson(node, project, importers=None):
         state["notes"] = {pid: importNotes(node, importers=importers)}
         state["projects"] = {pid: importProjectDates(node, importers=importers)}
         state["weight"] = {pid: importWeights(node, importers=importers)}
-        state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
 
         return _Person(state)
     except Exception as e:
@@ -297,7 +296,6 @@ def importBusiness(node, project, importers=None):
         state["notes"] = {pid: importNotes(node, importers=importers)}
         state["weight"] = {pid: importWeights(node, importers=importers)}
         state["positions"] = {pid: importPositions(node, importers=importers)}
-        state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
         state["projects"] = {pid: _DateRange.null()}
 
         from ._business import Business as _Business
@@ -730,4 +728,3 @@ def getDefaultImporters():
         "importWeights": importWeights,
         "importEdgeCount": importEdgeCount,
     }
-

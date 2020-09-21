@@ -154,6 +154,17 @@ class Connections {
     return !(this.find(id).length === 0);
   }
 
+  nConnections(id) {
+    let c = this.find(id);
+
+    if (c.length) {
+      return c.length;
+    }
+    else {
+      return 0;
+    }
+  }
+
   get(id) {
     let connection = this.state.registry[id];
 

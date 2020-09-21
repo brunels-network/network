@@ -15,7 +15,7 @@ function score_by_influence(nodes, edges, social) {
 
   for (let i in nodes) {
     let node = nodes[i];
-    let score = node.weight;
+    let score = node.weight + node.edge_count / 1000000.0
 
     if (anchor_id) {
       if (node.id === anchor_id) {
@@ -53,7 +53,7 @@ function score_by_connections(nodes, edges, social) {
 
   for (let i in nodes) {
     let node = nodes[i];
-    let score = node.edge_count;
+    let score = node.edge_count + node.weight / 1000000.0
 
     if (anchor_id) {
       if (node.id === anchor_id) {

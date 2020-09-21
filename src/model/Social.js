@@ -1030,7 +1030,7 @@ class Social {
     nodes.forEach((node) => {
       let count = counts[node.id];
 
-      if (count === null) { count = 0; }
+      if (!count) { count = 0; }
       node.edge_count = count;
     });
 
