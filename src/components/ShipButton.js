@@ -12,12 +12,12 @@ function ShipButton(props) {
         <VBox>
             <button
                 href="#" className={styles.button}
-                onClick={() => props.setShip(props.ship)}>
+                onClick={() => props.emitSetShip(props.ship)}>
                 {props.ship.getName()}
             </button>
             <button
                 href="#" className={styles.info_button}
-                onClick={() => { console.log("SHOW INFO") }}>
+                onClick={() => { props.emitShowShip(props.ship) }}>
                 View Info
             </button>
         </VBox>
@@ -25,8 +25,9 @@ function ShipButton(props) {
 }
 
 ShipButton.propTypes = {
-    ship: PropTypes.any,
-    setShip: PropTypes.func,
+    ship: PropTypes.any.isRequired,
+    emitSetShip: PropTypes.func.isRequired,
+    emitShowShip: PropTypes.func.isRequired,
   };
 
 

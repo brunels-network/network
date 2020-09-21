@@ -113,7 +113,6 @@ BioOverlay.propTypes = {
   social: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
   person: PropTypes.string.isRequired,
-  emitShowSource: PropTypes.func.isRequired,
 };
 
 export default BioOverlay;

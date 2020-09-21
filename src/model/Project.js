@@ -19,6 +19,7 @@ class Project {
       id: null,
       url: null,
       duration: new DateRange(),
+      description: null,
       notes: {},
     };
 
@@ -75,6 +76,10 @@ class Project {
 
   getDuration() {
     return this.state.duration;
+  }
+
+  getDescription() {
+    return this.state.description;
   }
 
   getTimeLine() {

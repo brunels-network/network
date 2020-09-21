@@ -12,6 +12,7 @@ import Overlay from "./components/Overlay";
 import SearchBar from "./components/SearchBar";
 import ToggleButton from "./components/ToggleButton";
 import BioOverlay from "./components/BioOverlay";
+import ShipOverlay from "./components/ShipOverlay";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -27,17 +28,9 @@ import positionGroups from "./data/positionGroups.json";
 // Styling for the app
 import styles from "./SocialApp.module.css";
 
-import {
-  score_by_connections,
-  score_by_influence
-} from "./model/ScoringFunctions";
+import { score_by_connections, score_by_influence } from "./model/ScoringFunctions";
 
-import {
-  size_by_connections,
-  size_by_influence
-} from "./model/SizingFunctions";
-
-
+import { size_by_connections, size_by_influence } from "./model/SizingFunctions";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -86,14 +79,14 @@ class SocialApp extends React.Component {
     this.state.social.toggleFilter(ssGW);
 
     this.spiralOrders = Object.freeze({
-      "Connections": score_by_connections,
-      "Influence": score_by_influence
+      Connections: score_by_connections,
+      Influence: score_by_influence,
     });
 
     this.nodeSizes = Object.freeze({
-      "Influence": size_by_influence,
-      "Connections": size_by_connections,
-    })
+      Influence: size_by_influence,
+      Connections: size_by_connections,
+    });
 
     this.state.social.setSizingFunction(size_by_influence);
 
@@ -105,10 +98,8 @@ class SocialApp extends React.Component {
     this.findConnectedNodes();
 
     // Hide the unconnected nodes
-    this.state.social.toggleFilter(
-      this.state.connectedNodes[this.state.selectedShipID]);
-    this.state.social.setScoringFunction(
-      this.spiralOrders[this.state.spiralOrder]);
+    this.state.social.toggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
+    this.state.social.setScoringFunction(this.spiralOrders[this.state.spiralOrder]);
     this.state.unconnectedNodesVisible = false;
 
     this.socialGraph = null;
@@ -126,7 +117,7 @@ class SocialApp extends React.Component {
   updateSize() {
     this.setState({
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     });
 
     console.log(`WINDOW ${this.state.width}x${this.state.height}`);
@@ -165,14 +156,27 @@ class SocialApp extends React.Component {
   }
 
   slotReadMore(item) {
-    this.setOverlay(<BioOverlay close={() => { this.closeOverlay() }}
-      social={this.state.social}
-      person={item}
-      emitShowSource={(item) => { this.slotShowSource(item) }} />);
+    this.setOverlay(
+      <BioOverlay
+        close={() => {
+          this.closeOverlay();
+        }}
+        social={this.state.social}
+        person={item}
+      />
+    );
   }
 
-  slotShowSource(item) {
-    console.log(`SHOW SOURCES FOR ${item}`);
+  slotShowShip(item) {
+    this.setOverlay(
+      <ShipOverlay
+        close={() => {
+          this.closeOverlay();
+        }}
+        social={this.state.social}
+        ship={item}
+      />
+    );
   }
 
   slotSetShip(item) {
@@ -214,9 +218,7 @@ class SocialApp extends React.Component {
     social.toggleFilter(item);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      social.selectSearchMatching(this.state.searchText, this.state.searchIncludeBios, this.state.searchHighlightLinks);
     }
 
     this.setState({ social: social });
@@ -235,7 +237,6 @@ class SocialApp extends React.Component {
   }
 
   slotClicked(id) {
-
     let social = this.state.social;
 
     if (!id) {
@@ -243,11 +244,9 @@ class SocialApp extends React.Component {
       social.clearSelections();
       social.clearHighlights();
       this.setState({ social: social });
-    }
-    else if (social.isSelected(id)) {
+    } else if (social.isSelected(id)) {
       console.log(`POP UP THE SHORT BIO FOR ${id}`);
-    }
-    else {
+    } else {
       social.setSelected(id, true, true);
       this.setState({ social: social });
     }
@@ -364,8 +363,7 @@ class SocialApp extends React.Component {
   toggleUnconnectedNodesVisible() {
     this.slotToggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
     this.setState({
-      unconnectedNodesVisible:
-        !this.state.unconnectedNodesVisible
+      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
     });
   }
 
@@ -386,12 +384,11 @@ class SocialApp extends React.Component {
         social.setScoringFunction(this.spiralOrders[order]);
         this.setState({
           social: social,
-          spiralOrder: order
+          spiralOrder: order,
         });
       }
     } else {
-      console.error("Invalid spiral order, valid orders are ",
-        Object.keys(this.spiralOrders));
+      console.error("Invalid spiral order, valid orders are ", Object.keys(this.spiralOrders));
     }
   }
 
@@ -416,8 +413,7 @@ class SocialApp extends React.Component {
         });
       }
     } else {
-      console.error("Invalid sizing function, valid functions are ",
-        Object.keys(this.nodeSizes));
+      console.error("Invalid sizing function, valid functions are ", Object.keys(this.nodeSizes));
     }
   }
 
@@ -464,8 +460,7 @@ class SocialApp extends React.Component {
 
   toggleindirectConnectionsVisible() {
     this.setState({
-      indirectConnectionsVisible:
-        !this.state.indirectConnectionsVisible
+      indirectConnectionsVisible: !this.state.indirectConnectionsVisible,
     });
   }
 
@@ -497,18 +492,15 @@ class SocialApp extends React.Component {
   }
 
   slotUpdateSearch(text) {
-    this.performSearch(text, this.state.searchIncludeBios,
-                       this.state.searchHighlightLinks);
+    this.performSearch(text, this.state.searchIncludeBios, this.state.searchHighlightLinks);
   }
 
   slotSearchBiosToggled(toggled) {
-    this.performSearch(this.state.searchText,
-                       toggled, this.state.searchHighlightLinks);
+    this.performSearch(this.state.searchText, toggled, this.state.searchHighlightLinks);
   }
 
   slotSearchHighlightToggled(toggled) {
-    this.performSearch(this.state.searchText,
-                       this.state.searchIncludeBios, toggled);
+    this.performSearch(this.state.searchText, this.state.searchIncludeBios, toggled);
   }
 
   toggleOverlay() {
@@ -520,7 +512,6 @@ class SocialApp extends React.Component {
   }
 
   render() {
-
     console.log("RENDER");
 
     let menu = <TextButton>Menu</TextButton>;
@@ -528,61 +519,92 @@ class SocialApp extends React.Component {
     let search = (
       <HBox>
         <BigBox>
-          <SearchBar emitUpdate={
-            (text) => { this.slotUpdateSearch(text) }} />
+          <SearchBar
+            emitUpdate={(text) => {
+              this.slotUpdateSearch(text);
+            }}
+          />
         </BigBox>
-        <ToggleButton emitToggled={(v) => this.slotSearchBiosToggled(v)}
-          toggled={this.state.searchIncludeBios}>
+        <ToggleButton emitToggled={(v) => this.slotSearchBiosToggled(v)} toggled={this.state.searchIncludeBios}>
           BIOS
         </ToggleButton>
-        <ToggleButton emitToggled={(v) => this.slotSearchHighlightToggled(v)}
-          toggled={this.state.searchHighlightLinks}>
+        <ToggleButton emitToggled={(v) => this.slotSearchHighlightToggled(v)} toggled={this.state.searchHighlightLinks}>
           LINKS
         </ToggleButton>
-      </HBox>);
+      </HBox>
+    );
 
     let help = (
       <TextButton
         onClick={() => {
-          this.setOverlay(<HowDoIOverlay close={() => { this.closeOverlay() }} />);
-        }}>
+          this.setOverlay(
+            <HowDoIOverlay
+              close={() => {
+                this.closeOverlay();
+              }}
+            />
+          );
+        }}
+      >
         Help
-      </TextButton>);
+      </TextButton>
+    );
 
-    let graph = <ForceGraph
-      social={this.state.social}
-      selected={this.state.selected_item}
-      highlighted={this.state.highlighted_item}
-      signalClicked={(id) => this.slotClicked(id)}
-      indirectConnectionsVisible={this.state.indirectConnectionsVisible}
-      emitSetCenter={(id) => { this.slotSetAnchor(id) }}
-      emitReadMore={(id) => { this.slotReadMore(id) }}
-    />;
+    let graph = (
+      <ForceGraph
+        social={this.state.social}
+        selected={this.state.selected_item}
+        highlighted={this.state.highlighted_item}
+        signalClicked={(id) => this.slotClicked(id)}
+        indirectConnectionsVisible={this.state.indirectConnectionsVisible}
+        emitSetCenter={(id) => {
+          this.slotSetAnchor(id);
+        }}
+        emitReadMore={(id) => {
+          this.slotReadMore(id);
+        }}
+      />
+    );
 
     let spiral = (
       <LabelButton
         label="Spiral Order"
         button={this.state.spiralOrder}
-        onClick={()=>{this.toggleSpiralOrder()}}
-      />);
+        onClick={() => {
+          this.toggleSpiralOrder();
+        }}
+      />
+    );
 
     let ship = (
       <ShipSelector
         projects={this.state.social.getProjects()}
-        shipFilter={(item) => this.slotSetShip(item)} />);
+        emitSetShip={(item) => this.slotSetShip(item)}
+        emitShowShip={(item) => this.slotShowShip(item)}
+      />
+    );
 
     let size = (
       <LabelButton
         label="Node Size"
         button={this.state.nodeSize}
-        onClick={()=>{this.toggleNodeSize()}}
-      />);
-
+        onClick={() => {
+          this.toggleNodeSize();
+        }}
+      />
+    );
 
     let overlay = null;
     if (this.state.isOverlayOpen) {
-      overlay = <Overlay toggleOverlay={() => {this.toggleOverlay()}}>
-                    {this.state.overlayItem}</Overlay>;
+      overlay = (
+        <Overlay
+          toggleOverlay={() => {
+            this.toggleOverlay();
+          }}
+        >
+          {this.state.overlayItem}
+        </Overlay>
+      );
     }
 
     return (
@@ -596,9 +618,7 @@ class SocialApp extends React.Component {
             </HBox>
 
             <BigBox>
-              <div className={styles.fullscreen}>
-                {graph}
-              </div>
+              <div className={styles.fullscreen}>{graph}</div>
             </BigBox>
 
             <HBox>
@@ -610,7 +630,6 @@ class SocialApp extends React.Component {
         </div>
 
         {overlay}
-
       </div>
     );
   }
