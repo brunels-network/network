@@ -865,6 +865,22 @@ class Social {
     this.clearCache();
   }
 
+  setFilter(category, items) {
+    if (!Array.isArray(items)) {
+      items = [items];
+    }
+
+    let filter = {};
+
+    for (let item of items) {
+      let id = get_id(item);
+      filter[id] = 1;
+    }
+
+    this.state.filter[category] = filter;
+    this.clearCache();
+  }
+
   setFilters(...args) {
     for (let items of args) {
       if (!Array.isArray(items)) {

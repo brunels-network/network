@@ -88,7 +88,11 @@ export default function force_spiral(width, height) {
 
     // what is the maximum index - will need to know this to generate
     // all of the points
-    let max_index = Math.max(...indexes);
+    let max_index = 0;
+
+    if (n > 0) {
+      max_index = Math.max(...indexes);
+    }
 
     // now calculate all of the points
     points_x = new Array(max_index + 1);

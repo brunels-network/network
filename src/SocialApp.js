@@ -39,8 +39,6 @@ class SocialApp extends React.Component {
   constructor(props) {
     super(props);
 
-    this.resetAllFilters = this.resetAllFilters.bind(this);
-
     // Load in the Dried graph data from JSON
     let social = Dry.parse(graphData);
 
@@ -127,30 +125,6 @@ class SocialApp extends React.Component {
     console.log(`WINDOW ${this.state.width}x${this.state.height}`);
   }
 
-  resetAllFilters() {
-    // This resets all filters including the ship filter
-    let social = this.state.social;
-    social.resetAllFilters();
-    this.setState({
-      social: social,
-      engineersFiltered: false,
-      commercialFiltered: false,
-      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
-    });
-  }
-
-  slotResetFiltersNotShip() {
-    // This resets all filters except the ship filter
-    let social = this.state.social;
-    social.resetFiltersNotShip();
-    this.setState({
-      social: social,
-      engineersFiltered: false,
-      commercialFiltered: false,
-      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
-    });
-  }
-
   slotSetAnchor(item) {
     let social = this.state.social;
 
@@ -189,54 +163,99 @@ class SocialApp extends React.Component {
       return;
     }
 
-    this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
-    this.slotToggleFilter(item);
-  }
-
-  slotSetFilterbyID(id, name) {
-    // this.resetAllFilterss();
-    this.setState({ selectedShip: name, selectedShipID: id });
-    this.slotToggleFilter(id);
-  }
-
-  slotToggleProjectFilter(project) {
     let social = this.state.social;
-    social.toggleProjectFilter(project);
+    social.setFilter("project", item);
 
+    if (this.state.searchText.length > 0) {
+      social.selectSearchMatching(this.state.searchText,
+        this.state.searchIncludeBios,
+        this.state.searchHighlightLinks);
+    }
+
+    this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
     this.setState({ social: social });
+  }
+
+  slotClearFilters() {
+    // This resets all filters including the ship filter
+    let social = this.state.social;
+    social.resetAllFilters();
+    social.setFilter("project", this.state.selectedShipID)
+
+    if (this.state.searchText.length > 0) {
+      social.selectSearchMatching(this.state.searchText,
+        this.state.searchIncludeBios,
+        this.state.searchHighlightLinks);
+    }
+
+    this.setState({
+      social: social,
+      engineersFiltered: false,
+      commercialFiltered: false,
+      unconnectedNodesVisible: false,
+      indirectConnectionsVisible: false,
+    });
+  }
+
+  slotToggleUnconnectedNodes() {
+    this.slotToggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
+    this.setState({
+      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
+    });
+  }
+
+  // If unconnected nodes are enabled add them to the filter, if they're not remove them
+  slotToggleFilterEngineer() {
+    this.slotClearFilters();
+
+    if (!this.state.engineersFiltered) {
+      this.slotToggleFilter(this.state.engineersFiltered);
+    }
+
+    this.setState({
+      engineersFiltered: !this.state.engineersFiltered,
+      commercialFiltered: false});
+  }
+
+  slotToggleFilterCommercial() {
+    this.slotClearFilters();
+
+    if (!this.state.commercialFiltered) {
+      this.slotToggleFilter(this.state.commercialFiltered);
+    }
+
+    this.setState({
+      commercialFiltered: !this.state.commercialFiltered,
+      engineersFiltered: false});
+  }
+
+  slotToggleIndirectConnections() {
+    this.setState({
+      indirectConnectionsVisible: !this.state.indirectConnectionsVisible,
+    });
   }
 
   slotToggleFilter(item) {
     if (!item) {
       return;
     }
-
-    let social = this.state.social;
-
     // This feels clunky, is there a cleaner way of doing this?
     // Currently we only want one ship selectable at a time
-    if (item._isAProjectObject) {
-      social.clearProjectFilter();
+    else if (item._isAProjectObject) {
+      // we don't toggle ship filters
+      return;
     }
+
+    let social = this.state.social;
 
     social.toggleFilter(item);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText, this.state.searchIncludeBios, this.state.searchHighlightLinks);
+      social.selectSearchMatching(this.state.searchText,
+        this.state.searchIncludeBios,
+        this.state.searchHighlightLinks);
     }
 
-    this.setState({ social: social });
-  }
-
-  slotSetFilters(...args) {
-    let social = this.state.social;
-    social.setFilters(...args);
-    this.setState({ social: social });
-  }
-
-  slotClearFilters(...args) {
-    let social = this.state.social;
-    social.clearFilters(...args);
     this.setState({ social: social });
   }
 
@@ -326,14 +345,19 @@ class SocialApp extends React.Component {
     let connectedNodes = {};
     let unconnectedNodes = {};
 
+    let social = this.state.social;
+
     // This should be updated to properly count the number of unconnected nodes per ship
     const shipIDs = this.state.social.getProjects().projects();
 
     for (const shipID of Object.values(shipIDs)) {
+      // we must filter connections for each ship individually
+      social.setFilter("project", shipID);
+
       let connected = [];
       let unconnected = [];
 
-      const people = this.state.social.getPeople(false).getNodes();
+      const people = this.state.social.getPeople(true).getNodes();
 
       for (const p of people) {
         if (this.hasConnections(p)) {
@@ -343,7 +367,7 @@ class SocialApp extends React.Component {
         }
       }
 
-      const businesses = this.state.social.getBusinesses(false).getNodes();
+      const businesses = this.state.social.getBusinesses(true).getNodes();
 
       for (const b of businesses) {
         if (this.hasConnections(b)) {
@@ -362,13 +386,6 @@ class SocialApp extends React.Component {
     this.state.connectedNodes = connectedNodes;
     this.state.unconnectedNodes = unconnectedNodes;
     /* eslint-enable react/no-direct-mutation-state */
-  }
-
-  slotToggleUnconnectedNodes() {
-    this.slotToggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
-    this.setState({
-      unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
-    });
   }
 
   toggleSpiralOrder() {
@@ -419,53 +436,6 @@ class SocialApp extends React.Component {
     } else {
       console.error("Invalid sizing function, valid functions are ", Object.keys(this.nodeSizes));
     }
-  }
-
-  // If unconnected nodes are enabled add them to the filter, if they're not remove them
-  slotToggleFilterEngineer() {
-    if (this.state.commercialFiltered) {
-      this.slotToggleFilterCommercial();
-    }
-
-    if (this.state.engineersFiltered) {
-      this.slotResetFiltersNotShip();
-      this.slotToggleUnconnectedNodes();
-    } else {
-      this.slotResetFiltersNotShip();
-      // If we have unconnected nodes as part of this filter set, get rid of them
-      const nodesToFilter = this.state.engineerNodeFilter.filter(
-        (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
-      );
-      this.slotToggleFilter(nodesToFilter);
-    }
-
-    this.setState({ engineersFiltered: !this.state.engineersFiltered });
-  }
-
-  slotToggleFilterCommercial() {
-    if (this.state.engineersFiltered) {
-      this.slotToggleFilterEngineer();
-    }
-
-    if (this.state.commercialFiltered) {
-      this.slotResetFiltersNotShip();
-      this.slotToggleUnconnectedNodes();
-    } else {
-      this.slotResetFiltersNotShip();
-      // If we have unconnected nodes as part of this filter set, get rid of them
-      const nodesToFilter = this.state.commericalNodeFilter.filter(
-        (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
-      );
-      this.slotToggleFilter(nodesToFilter);
-    }
-
-    this.setState({ commercialFiltered: !this.state.commercialFiltered });
-  }
-
-  slotToggleIndirectConnections() {
-    this.setState({
-      indirectConnectionsVisible: !this.state.indirectConnectionsVisible,
-    });
   }
 
   setOverlay(item) {
@@ -632,7 +602,7 @@ class SocialApp extends React.Component {
           unconnectedNodesVisible = {this.state.unconnectedNodesVisible}
           engineersFiltered = {this.state.engineersFiltered}
           commercialFiltered = {this.state.commercialFiltered}
-          emitResetFilters = {()=>{this.slotResetFiltersNotShip()}}
+          emitResetFilters = {()=>{this.slotClearFilters()}}
           emitToggleFilterCommercial = {()=>this.slotToggleFilterCommercial()}
           emitToggleFilterEngineering = {()=>this.slotToggleFilterEngineer()}
           emitToggleIndirectConnectionsVisible = {()=>this.slotToggleIndirectConnections()}
