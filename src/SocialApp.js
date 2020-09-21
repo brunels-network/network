@@ -13,6 +13,8 @@ import SearchBar from "./components/SearchBar";
 import ToggleButton from "./components/ToggleButton";
 import BioOverlay from "./components/BioOverlay";
 import ShipOverlay from "./components/ShipOverlay";
+import SlidingPanel from "./components/SlidingPanel";
+import MainMenu from "./components/MainMenu";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -31,6 +33,7 @@ import styles from "./SocialApp.module.css";
 import { score_by_connections, score_by_influence } from "./model/ScoringFunctions";
 
 import { size_by_connections, size_by_influence } from "./model/SizingFunctions";
+import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -67,6 +70,7 @@ class SocialApp extends React.Component {
       searchText: "",
       searchIncludeBios: false,
       searchHighlightLinks: true,
+      menuVisible: false,
       height: 0,
       width: 0,
     };
@@ -135,7 +139,7 @@ class SocialApp extends React.Component {
     });
   }
 
-  resetFiltersNotShip() {
+  slotResetFiltersNotShip() {
     // This resets all filters except the ship filter
     let social = this.state.social;
     social.resetFiltersNotShip();
@@ -360,7 +364,7 @@ class SocialApp extends React.Component {
     /* eslint-enable react/no-direct-mutation-state */
   }
 
-  toggleUnconnectedNodesVisible() {
+  slotToggleUnconnectedNodes() {
     this.slotToggleFilter(this.state.connectedNodes[this.state.selectedShipID]);
     this.setState({
       unconnectedNodesVisible: !this.state.unconnectedNodesVisible,
@@ -418,16 +422,16 @@ class SocialApp extends React.Component {
   }
 
   // If unconnected nodes are enabled add them to the filter, if they're not remove them
-  filterEngineeringNodes() {
+  slotToggleFilterEngineer() {
     if (this.state.commercialFiltered) {
-      this.filterCommercialNodes();
+      this.slotToggleFilterCommercial();
     }
 
     if (this.state.engineersFiltered) {
-      this.resetFiltersNotShip();
-      this.toggleUnconnectedNodesVisible();
+      this.slotResetFiltersNotShip();
+      this.slotToggleUnconnectedNodes();
     } else {
-      this.resetFiltersNotShip();
+      this.slotResetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
       const nodesToFilter = this.state.engineerNodeFilter.filter(
         (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
@@ -438,16 +442,16 @@ class SocialApp extends React.Component {
     this.setState({ engineersFiltered: !this.state.engineersFiltered });
   }
 
-  filterCommercialNodes() {
+  slotToggleFilterCommercial() {
     if (this.state.engineersFiltered) {
-      this.filterEngineeringNodes();
+      this.slotToggleFilterEngineer();
     }
 
     if (this.state.commercialFiltered) {
-      this.resetFiltersNotShip();
-      this.toggleUnconnectedNodesVisible();
+      this.slotResetFiltersNotShip();
+      this.slotToggleUnconnectedNodes();
     } else {
-      this.resetFiltersNotShip();
+      this.slotResetFiltersNotShip();
       // If we have unconnected nodes as part of this filter set, get rid of them
       const nodesToFilter = this.state.commericalNodeFilter.filter(
         (v) => !this.state.unconnectedNodes[this.state.selectedShipID].includes(v)
@@ -458,7 +462,7 @@ class SocialApp extends React.Component {
     this.setState({ commercialFiltered: !this.state.commercialFiltered });
   }
 
-  toggleindirectConnectionsVisible() {
+  slotToggleIndirectConnections() {
     this.setState({
       indirectConnectionsVisible: !this.state.indirectConnectionsVisible,
     });
@@ -491,6 +495,14 @@ class SocialApp extends React.Component {
     });
   }
 
+  slotShowMenu() {
+    this.setState({ menuVisible: true });
+  }
+
+  slotCloseMenu() {
+    this.setState({ menuVisible: false });
+  }
+
   slotUpdateSearch(text) {
     this.performSearch(text, this.state.searchIncludeBios, this.state.searchHighlightLinks);
   }
@@ -514,7 +526,7 @@ class SocialApp extends React.Component {
   render() {
     console.log("RENDER");
 
-    let menu = <TextButton>Menu</TextButton>;
+    let menu = <TextButton onClick={()=>{this.slotShowMenu()}}>Menu</TextButton>;
 
     let search = (
       <HBox>
@@ -607,8 +619,31 @@ class SocialApp extends React.Component {
       );
     }
 
+    let mainmenu = (
+      <SlidingPanel
+        isOpen={this.state.menuVisible}
+        position="left"
+        height="100%"
+        width="50%"
+      >
+        <MainMenu
+          close={() => { this.slotCloseMenu() }}
+          indirectConnectionsVisible = {this.state.indirectConnectionsVisible}
+          unconnectedNodesVisible = {this.state.unconnectedNodesVisible}
+          engineersFiltered = {this.state.engineersFiltered}
+          commercialFiltered = {this.state.commercialFiltered}
+          emitResetFilters = {()=>{this.slotResetFiltersNotShip()}}
+          emitToggleFilterCommercial = {()=>this.slotToggleFilterCommercial()}
+          emitToggleFilterEngineering = {()=>this.slotToggleFilterEngineer()}
+          emitToggleIndirectConnectionsVisible = {()=>this.slotToggleIndirectConnections()}
+          emitToggleUnconnectedNodesVisible = {()=>this.slotToggleUnconnectedNodes()}
+        />
+      </SlidingPanel>
+    );
+
     return (
       <div>
+        {mainmenu}
         <div className={styles.ui_main}>
           <VBox>
             <HBox>
