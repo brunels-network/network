@@ -59,7 +59,7 @@ class SocialApp extends React.Component {
       engineersFiltered: false,
       spiralOrder: "Influence",
       nodeSize: "Influence",
-      commericalNodeFilter: [],
+      commercialNodeFilter: [],
       engineerNodeFilter: [],
       connectedNodes: null,
       selectedShip: null,
@@ -204,12 +204,11 @@ class SocialApp extends React.Component {
     });
   }
 
-  // If unconnected nodes are enabled add them to the filter, if they're not remove them
   slotToggleFilterEngineer() {
     this.slotClearFilters();
 
     if (!this.state.engineersFiltered) {
-      this.slotToggleFilter(this.state.engineersFiltered);
+      this.slotToggleFilter(this.state.engineerNodeFilter);
     }
 
     this.setState({
@@ -220,8 +219,11 @@ class SocialApp extends React.Component {
   slotToggleFilterCommercial() {
     this.slotClearFilters();
 
+    console.log(this.state.engineerNodeFilter);
+    console.log(this.state.commercialNodeFilter);
+
     if (!this.state.commercialFiltered) {
-      this.slotToggleFilter(this.state.commercialFiltered);
+      this.slotToggleFilter(this.state.commercialNodeFilter);
     }
 
     this.setState({
@@ -288,56 +290,38 @@ class SocialApp extends React.Component {
   }
 
   findInvestorsAndEngineers() {
-    // Creates a list of the IDs of all the nodes that belong to the commercial
-    // side of the projects
-    const people = this.state.social.getPeople(false).getRegistry();
-    const businesses = this.state.social.getBusinesses(false).getRegistry();
-
-    this.findAndGroupNodes(people);
-    this.findAndGroupNodes(businesses);
-  }
-
-  findAndGroupNodes(entities) {
     // Add nodes to the commercial or engineering groups
-    let commericalNodeFilter = this.state.commericalNodeFilter;
+    let commercialNodeFilter = this.state.commercialNodeFilter;
     let engineerNodeFilter = this.state.engineerNodeFilter;
 
     const social = this.state.social;
 
-    for (const [id, entity] of Object.entries(entities)) {
-      // Should do this for each ship
-      for (const shipID of social.getProjects().getIDs()) {
-        // Lookup named position, here we'll only use the first position
-        // As each person may not have a role in every ship catch the error here
-        let positionID;
-        try {
-          positionID = entity.getPosition(shipID)[0];
-        } catch (error) {
-          continue;
-        }
+    let positions = social.getPositions(false).items();
 
-        // Trim any extra characters or whitespace from the position string
-        const namedPosition = social
-          .getPositions()
-          .getNameByID(positionID)
-          .toLowerCase()
-          .replace(/\s/g, "")
-          .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+    Object.keys(positions).forEach((name) => {
+      // Trim any extra characters or whitespace from the position string
+      const namedPosition = name
+        .toLowerCase()
+        .replace(/\s/g, "")
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
-        // Here we need to check if they've already been saved to stop double counting
-        if (positionGroups["commercial"]["members"].includes(namedPosition)) {
-          if (!commericalNodeFilter.includes(id)) {
-            commericalNodeFilter.push(id);
-          }
-        }
-
-        if (positionGroups["engineering"]["members"].includes(namedPosition)) {
-          if (!engineerNodeFilter.includes(id)) {
-            engineerNodeFilter.push(id);
-          }
+      // Here we need to check if they've already been saved to stop double counting
+      if (positionGroups["commercial"]["members"].includes(namedPosition)) {
+        const positionID = positions[name];
+        if (!commercialNodeFilter.includes(positionID)) {
+          commercialNodeFilter.push(positionID);
         }
       }
-    }
+
+      if (positionGroups["engineering"]["members"].includes(namedPosition)) {
+        const positionID = positions[name];
+        if (!engineerNodeFilter.includes(positionID)) {
+          engineerNodeFilter.push(positionID);
+        }
+      }
+    });
+
+    console.log(engineerNodeFilter);
   }
 
   findConnectedNodes() {

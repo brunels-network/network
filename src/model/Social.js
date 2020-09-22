@@ -203,6 +203,9 @@ class Social {
         ...node_filter
       };
 
+      // this filter is returning matching people and the nodes
+      // that are connected to these people
+
       for (let connection in connections) {
         let node = connections[connection];
         filter[get_id(node)] = 1;
@@ -222,7 +225,9 @@ class Social {
     if (group_filter) {
       this.state.cache.node_filters.push((item) => {
         try {
-          if (item.inGroup(group_filter)) {
+          // use an "OR" match at the moment as this is more
+          // appropriate for the current use of the gui
+          if (item.inGroup(group_filter, false)) {
             return item;
           } else {
             return null;

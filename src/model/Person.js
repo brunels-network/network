@@ -100,7 +100,7 @@ class Person {
     return true;
   }
 
-  inGroup(group) {
+  inGroup(group, match_and=true) {
     if (group.getID) {
       let ids = {};
       ids[group.getID()] = 1;
@@ -125,7 +125,12 @@ class Person {
       }
     });
 
-    return Object.keys(seen).length === Object.keys(group).length;
+    if (match_and) {
+      return Object.keys(seen).length === Object.keys(group).length;
+    }
+    else {
+      return Object.keys(seen).length > 0;
+    }
   }
 
   getID() {
