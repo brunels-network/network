@@ -148,6 +148,26 @@ class People {
     // throw new MissingError(`No Person matches '${name}. Available People are '${keys}'`);
   }
 
+  filterUnconnected(connections) {
+    let registry = {};
+    let names = {};
+
+    Object.keys(this.state.registry).forEach((key) => {
+      if (connections.nConnections(key) > 0) {
+        let person = this.state.registry[key];
+        registry[key] = person;
+        names[person.getName()] = key;
+      }
+    });
+
+    let people = new People();
+    people.state.registry = registry;
+    people._names = names;
+    people._updateHooks(this._getHook);
+
+    return people;
+  }
+
   filter(funcs = []) {
     if (funcs.length === 0) {
       return this;

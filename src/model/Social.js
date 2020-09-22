@@ -58,6 +58,7 @@ class Social {
     this.state.max_window = new DateRange();
     this.state.scoring_function = score_by_connections;
     this.state.sizing_function = size_by_influence;
+    this.state.filter_unconnected = true;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -141,6 +142,21 @@ class Social {
         // console.error("For key : ", key, "\nError: ", error);
       }
     }
+  }
+
+  filterUnconnectedNodes(filter = true) {
+    if (this.state.filter_unconnected === filter) {
+      return;
+    }
+
+    if (filter) {
+      this.state.filter_unconnected = true;
+    }
+    else {
+      this.state.filter_unconnected = false;
+    }
+
+    this.clearCache();
   }
 
   clearCache() {
@@ -380,6 +396,12 @@ class Social {
         this._rebuilding -= 1;
       }
 
+      if (this.state.filter_unconnected) {
+        console.log("FILTER UNCONNECTED");
+        this.state.cache.people =
+          this.state.cache.people.filterUnconnected(this.getConnections(true));
+      }
+
       return this.state.cache.people;
     } else {
       return this.state.people;
@@ -397,6 +419,11 @@ class Social {
         this._rebuilding += 1;
         this.state.cache.businesses = this.state.businesses.filter(this.getNodeFilters());
         this._rebuilding -= 1;
+      }
+
+      if (this.state.filter_unconnected) {
+        this.state.cache.businesses =
+          this.state.cache.businesses.filterUnconnected(this.getConnections(true));
       }
 
       return this.state.cache.businesses;
