@@ -3,6 +3,8 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
+import get_id from "./get_id";
+
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -332,8 +334,8 @@ class Connection {
 
     let edge = {
       id: this.getID(),
-      source: this.state.n0,
-      target: this.state.n1,
+      source: get_id(this.state.n0),
+      target: get_id(this.state.n1),
       value: weight,
       type: this.state.type,
       color: color,

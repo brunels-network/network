@@ -151,17 +151,17 @@ class Connections {
   }
 
   gotConnections(id) {
-    return !(this.find(id).length === 0);
+    return this.nConnections(id) > 0;
   }
 
   nConnections(id) {
-    let c = this.find(id);
+    let c = this._connections[id];
 
-    if (c.length) {
-      return c.length;
+    if (!c) {
+      return 0;
     }
     else {
-      return 0;
+      return Object.keys(c).length;
     }
   }
 

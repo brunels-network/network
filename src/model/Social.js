@@ -397,7 +397,6 @@ class Social {
       }
 
       if (this.state.filter_unconnected) {
-        console.log("FILTER UNCONNECTED");
         this.state.cache.people =
           this.state.cache.people.filterUnconnected(this.getConnections(true));
       }

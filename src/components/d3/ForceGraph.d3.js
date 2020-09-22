@@ -19,7 +19,9 @@ function constrain(x, w, r = 20) {
     return 0.5 * w;
   }
   else {
-    return x;
+    if (x < r) { return r; }
+    else if (x > w - r) { return w - r }
+    else { return x; }
   }
 }
 
@@ -124,15 +126,23 @@ class ForceGraphD3 extends React.Component {
       // of the node in the nodes array - this could be optimised!
       for (let l in new_graph.edges) {
         let edge = new_graph.edges[l];
+
+        let found_source = false;
+        let found_target = false;
+
         for (let n in new_graph.nodes) {
           let node = new_graph.nodes[n];
           if (edge.source === node.id) {
-            edge.source = n;
+            edge.source = node;
             edge.source_id = node.id;
+            found_source = true;
           } else if (edge.target === node.id) {
-            edge.target = n;
+            edge.target = node;
             edge.target_id = node.id;
+            found_target = true;
           }
+
+          if (found_source && found_target) { break; }
         }
       }
 
@@ -357,29 +367,11 @@ class ForceGraphD3 extends React.Component {
   updateLink(data) {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
-    // Add prop here
-    let indirectStyle = this.state.indirectConnectionsVisible ? styles.linkIndirect : styles.linkInvisible;
-
-    const weightCutoff = 4;
-
     link = link
       .data(data, (d) => d.id)
       .join(
         (enter) => enter.append("path"),
       )
-      .attr("class", (d) => {
-        // Here we're using the weight of the edges between
-        // nodes to  change the properties of the line drawn
-        if (d.type === "direct") {
-          if (d.value > weightCutoff) {
-            return `link ${styles.link}`;
-          } else {
-            return `link ${styles.linkWeak}`;
-          }
-        } else {
-          return `link ${indirectStyle}`;
-        }
-      })
       .attr("class", (d) => {
         if (d.highlighted) {
           return `link ${styles.link_highlight} highlighted`;
