@@ -72,6 +72,7 @@ class Person:
             "affiliations": {},
             "projects": {},
             "sources": {},
+            "highlighted": {},
             "alive": None,
             "gender": None,
             "notes": [],
@@ -99,6 +100,7 @@ class Person:
         _mergeProjects(state, other.state, "positions")
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
+        _mergeProjects(state, other.state, "highlighted")
 
         _mergeStateItems(state, other.state, "projects")
         _mergeStateItems(state, other.state, "weight")
@@ -250,6 +252,7 @@ class Person:
         self.state["id"] = _setState(state, "id")
         self.state["positions"] = _setState(state, "positions", {})
         self.state["affiliations"] = _setState(state, "affiliations", {})
+        self.state["highlighted"] = _setState(state, "highlighted", {})
         self.state["projects"] = _setState(state, "projects", {})
         self.state["sources"] = _setState(state, "sources", {})
         self.state["alive"] = _setState(state, "alive")

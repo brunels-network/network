@@ -57,6 +57,7 @@ class Business:
             "scores": {},
             "positions": {},
             "affiliations": {},
+            "highlighted": {},
             "notes": [],
             "weight": {},
         }
@@ -106,6 +107,7 @@ class Business:
         self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["scores"] = _setState(state, "scores", {})
         self.state["sources"] = _setState(state, "sources", [])
+        self.state["highlighted"] = _setState(state, "highlighted", {})
         self.state["notes"] = _setState(state, "notes", [])
         self.state["weight"] = _setState(state, "weight")
         self.state["positions"] = _setState(state, "positions", {})
@@ -129,6 +131,7 @@ class Business:
         _mergeProjects(state, other.state, "positions")
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
+        _mergeProjects(state, other.state, "highlighted")
 
         # for project, dates in other.state["projects"].items():
         #     state["projects"][project] = dates
