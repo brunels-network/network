@@ -76,6 +76,10 @@ class Position {
     return this.state.name;
   }
 
+  getCanonical() {
+    return this.state.canonical;
+  }
+
   toDry() {
     return { value: this.state };
   }
