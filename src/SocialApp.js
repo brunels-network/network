@@ -33,7 +33,6 @@ import styles from "./SocialApp.module.css";
 import { score_by_connections, score_by_influence } from "./model/ScoringFunctions";
 
 import { size_by_connections, size_by_influence } from "./model/SizingFunctions";
-import { faSearchLocation } from "@fortawesome/free-solid-svg-icons";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -54,6 +53,7 @@ class SocialApp extends React.Component {
       highlighted_item: null,
       selected_item: null,
       filterUnconnectedNodes: true,
+      filterNCEngineers: true,
       commercialFiltered: false,
       engineersFiltered: false,
       spiralOrder: "Influence",
@@ -175,6 +175,7 @@ class SocialApp extends React.Component {
     social.setFilter("project", this.state.selectedShipID)
 
     social.filterUnconnectedNodes(true);
+    social.filterNonContributingEngineers(true);
 
     if (this.state.searchText.length > 0) {
       social.selectSearchMatching(this.state.searchText,
@@ -187,6 +188,35 @@ class SocialApp extends React.Component {
       engineersFiltered: false,
       commercialFiltered: false,
       filterUnconnectedNodes: true,
+      filterNCEngineers: true,
+    });
+  }
+
+  slotToggleNonContributingEngineers() {
+    let social = this.state.social;
+
+    social.resetAllFilters();
+    social.setFilter("project", this.state.selectedShipID)
+
+    if (this.state.engineersFiltered) {
+      social.toggleFilter(this.state.engineerNodeFilter);
+    }
+    else if (this.state.commercialFiltered) {
+      social.toggleFilter(this.state.commercialNodeFilter);
+    }
+
+    social.filterUnconnectedNodes(this.state.filterUnconnectedNodes);
+    social.filterNonContributingEngineers(!this.state.filterNCEngineers);
+
+    if (this.state.searchText.length > 0) {
+      social.selectSearchMatching(this.state.searchText,
+        this.state.searchIncludeBios,
+        this.state.searchHighlightLinks);
+    }
+
+    this.setState({
+      social: social,
+      filterNCEngineers: !this.state.filterNCEngineers
     });
   }
 
@@ -204,6 +234,7 @@ class SocialApp extends React.Component {
     }
 
     social.filterUnconnectedNodes(!this.state.filterUnconnectedNodes);
+    social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
       social.selectSearchMatching(this.state.searchText,
@@ -228,6 +259,7 @@ class SocialApp extends React.Component {
     }
 
     social.filterUnconnectedNodes(this.state.filterUnconnectedNodes);
+    social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
       social.selectSearchMatching(this.state.searchText,
@@ -252,6 +284,7 @@ class SocialApp extends React.Component {
     }
 
     social.filterUnconnectedNodes(this.state.filterUnconnectedNodes);
+    social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
       social.selectSearchMatching(this.state.searchText,
@@ -536,13 +569,15 @@ class SocialApp extends React.Component {
       >
         <MainMenu
           close={() => { this.slotCloseMenu() }}
-          unconnectedNodesVisible = {!this.state.filterUnconnectedNodes}
+          unconnectedNodesVisible={!this.state.filterUnconnectedNodes}
+          ncEngineersVisible={!this.state.filterNCEngineers}
           engineersFiltered = {this.state.engineersFiltered}
           commercialFiltered = {this.state.commercialFiltered}
           emitResetFilters = {()=>{this.slotClearFilters()}}
           emitToggleFilterCommercial = {()=>this.slotToggleFilterCommercial()}
           emitToggleFilterEngineering = {()=>this.slotToggleFilterEngineer()}
-          emitToggleUnconnectedNodesVisible = {()=>this.slotToggleUnconnectedNodes()}
+          emitToggleUnconnectedNodesVisible={() => this.slotToggleUnconnectedNodes()}
+          emitToggleNCEngineersVisible={() => this.slotToggleNonContributingEngineers()}
         />
       </SlidingPanel>
     );

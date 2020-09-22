@@ -59,6 +59,7 @@ class Social {
     this.state.scoring_function = score_by_connections;
     this.state.sizing_function = size_by_influence;
     this.state.filter_unconnected = true;
+    this.state.filter_nc_engineers = true;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -142,6 +143,21 @@ class Social {
         // console.error("For key : ", key, "\nError: ", error);
       }
     }
+  }
+
+  filterNonContributingEngineers(filter = true) {
+    if (this.state.filter_nc_engineers === filter) {
+      return;
+    }
+
+    if (filter) {
+      this.state.filter_nc_engineers = true;
+    }
+    else {
+      this.state.filter_nc_engineers = false;
+    }
+
+    this.clearCache();
   }
 
   filterUnconnectedNodes(filter = true) {
@@ -394,6 +410,11 @@ class Social {
         this._rebuilding += 1;
         this.state.cache.people = this.state.people.filter(this.getNodeFilters());
         this._rebuilding -= 1;
+      }
+
+      if (this.state.filter_nc_engineers) {
+        this.state.cache.people =
+          this.state.cache.people.filterNonContributingEngineers();
       }
 
       if (this.state.filter_unconnected) {

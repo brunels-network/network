@@ -39,6 +39,7 @@ class MainMenu extends React.Component {
 
   render() {
     let unconnectedNodesText = this.props.unconnectedNodesVisible ? "Hide" : "Show";
+    let ncEngineersText = this.props.ncEngineersVisible ? "Hide" : "Show";
     let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
     let filterCommercialText = this.props.commercialFiltered ? "Remove commercial filter" : "Filter by commercial";
 
@@ -66,6 +67,13 @@ class MainMenu extends React.Component {
             }}
           >
             {unconnectedNodesText + " unconnected nodes"}
+          </TextButton>
+          <TextButton
+            onClick={() => {
+              this.props.emitToggleNCEngineersVisible();
+            }}
+          >
+            {ncEngineersText + " non-contributing engineers"}
           </TextButton>
           <TextButton
             onClick={() => {
@@ -106,12 +114,14 @@ class MainMenu extends React.Component {
 MainMenu.propTypes = {
   close: PropTypes.func.isRequired,
   unconnectedNodesVisible: PropTypes.bool.isRequired,
+  ncEngineersVisible: PropTypes.bool.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
   commercialFiltered: PropTypes.bool.isRequired,
   emitResetFilters: PropTypes.func.isRequired,
   emitToggleFilterCommercial: PropTypes.func.isRequired,
   emitToggleFilterEngineering: PropTypes.func.isRequired,
   emitToggleUnconnectedNodesVisible: PropTypes.func.isRequired,
+  emitToggleNCEngineersVisible: PropTypes.func.isRequired,
 };
 
 export default MainMenu;

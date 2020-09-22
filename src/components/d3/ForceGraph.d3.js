@@ -285,6 +285,9 @@ class ForceGraphD3 extends React.Component {
         else if (d.highlighted) {
           return `node ${styles.node_highlight} highlighted`;
         }
+        else if (d.is_nc_engineer) {
+          return `node ${styles.node_nc_engineer}`;
+        }
         else {
           return `node ${styles.node}`;
         }

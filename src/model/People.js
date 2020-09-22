@@ -148,6 +148,26 @@ class People {
     // throw new MissingError(`No Person matches '${name}. Available People are '${keys}'`);
   }
 
+  filterNonContributingEngineers() {
+    let registry = {};
+    let names = {};
+
+    Object.keys(this.state.registry).forEach((key) => {
+      let person = this.state.registry[key];
+      if (!person.isNonContributingEngineer()){
+        registry[key] = person;
+        names[person.getName()] = key;
+      }
+    });
+
+    let people = new People();
+    people.state.registry = registry;
+    people._names = names;
+    people._updateHooks(this._getHook);
+
+    return people;
+  }
+
   filterUnconnected(connections) {
     let registry = {};
     let names = {};

@@ -6,7 +6,7 @@
 
 .node {
     stroke: grey;
-    stroke-width: 1px;
+    stroke-width: 2px;
 }
 
 .node_highlight {
