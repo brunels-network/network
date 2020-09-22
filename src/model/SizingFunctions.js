@@ -23,11 +23,18 @@ function size_by_influence(nodes, edges, social) {
     node.size = size;
   });
 
-  //scale between 1 and 10
-  nodes.forEach((node) => {
-    let size = 1.0 + (9.0 * (node.size - min_size) / (max_size - min_size));
-    node.size = size;
-  });
+  if (max_size === min_size) {
+    nodes.forEach((node) => {
+      nodes.size = 10.0;
+    });
+  }
+  else {
+    //scale between 1 and 10
+    nodes.forEach((node) => {
+      let size = 1.0 + (9.0 * (node.size - min_size) / (max_size - min_size));
+      node.size = size;
+    });
+  }
 }
 
 /** Size each node by the number of connections only */
@@ -52,11 +59,18 @@ function size_by_connections(nodes, edges, social) {
     node.size = size;
   });
 
-  //scale between 1 and 10
-  nodes.forEach((node) => {
-    let size = 1.0 + (9.0 * (node.size - min_size) / (max_size - min_size));
-    node.size = size;
-  });
+  if (max_size === min_size) {
+    nodes.forEach((node) => {
+      nodes.size = 10.0;
+    });
+  }
+  else {
+    //scale between 1 and 10
+    nodes.forEach((node) => {
+      let size = 1.0 + (9.0 * (node.size - min_size) / (max_size - min_size));
+      node.size = size;
+    });
+  }
 }
 
 export {

@@ -15,7 +15,12 @@ import styles from "../ForceGraph.module.css";
 function _null_function() {}
 
 function constrain(x, w, r = 20) {
-  return Math.max(3 * r, Math.min(w - r, x));
+  if (isNaN(x)) {
+    return 0.5 * w;
+  }
+  else {
+    return x;
+  }
 }
 
 function getTextSize(d) {
