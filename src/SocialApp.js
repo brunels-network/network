@@ -53,7 +53,6 @@ class SocialApp extends React.Component {
       social: social,
       highlighted_item: null,
       selected_item: null,
-      indirectConnectionsVisible: false,
       filterUnconnectedNodes: true,
       commercialFiltered: false,
       engineersFiltered: false,
@@ -188,7 +187,6 @@ class SocialApp extends React.Component {
       engineersFiltered: false,
       commercialFiltered: false,
       filterUnconnectedNodes: true,
-      indirectConnectionsVisible: false,
     });
   }
 
@@ -265,12 +263,6 @@ class SocialApp extends React.Component {
       social: social,
       commercialFiltered: !this.state.commercialFiltered,
       engineersFiltered: false});
-  }
-
-  slotToggleIndirectConnections() {
-    this.setState({
-      indirectConnectionsVisible: !this.state.indirectConnectionsVisible,
-    });
   }
 
   slotClicked(id) {
@@ -485,7 +477,6 @@ class SocialApp extends React.Component {
         selected={this.state.selected_item}
         highlighted={this.state.highlighted_item}
         signalClicked={(id) => this.slotClicked(id)}
-        indirectConnectionsVisible={this.state.indirectConnectionsVisible}
         emitSetCenter={(id) => {
           this.slotSetAnchor(id);
         }}
@@ -545,14 +536,12 @@ class SocialApp extends React.Component {
       >
         <MainMenu
           close={() => { this.slotCloseMenu() }}
-          indirectConnectionsVisible = {this.state.indirectConnectionsVisible}
           unconnectedNodesVisible = {!this.state.filterUnconnectedNodes}
           engineersFiltered = {this.state.engineersFiltered}
           commercialFiltered = {this.state.commercialFiltered}
           emitResetFilters = {()=>{this.slotClearFilters()}}
           emitToggleFilterCommercial = {()=>this.slotToggleFilterCommercial()}
           emitToggleFilterEngineering = {()=>this.slotToggleFilterEngineer()}
-          emitToggleIndirectConnectionsVisible = {()=>this.slotToggleIndirectConnections()}
           emitToggleUnconnectedNodesVisible = {()=>this.slotToggleUnconnectedNodes()}
         />
       </SlidingPanel>

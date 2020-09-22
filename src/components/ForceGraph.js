@@ -92,7 +92,6 @@ class ForceGraph extends React.Component {
 
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
-  indirectConnectionsVisible: PropTypes.bool.isRequired,
   emitSetCenter: PropTypes.func.isRequired,
   emitReadMore: PropTypes.func.isRequired,
 };

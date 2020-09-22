@@ -11,6 +11,7 @@ import {
 import force_spiral from "./force_spiral.js";
 
 import styles from "../ForceGraph.module.css";
+import { faBreadSlice } from "@fortawesome/free-solid-svg-icons";
 
 function _null_function() {}
 
@@ -367,6 +368,14 @@ class ForceGraphD3 extends React.Component {
   updateLink(data) {
     let link = this._mainGroup.select(".link-group").selectAll(".link");
 
+    let any_highlighted = false;
+
+    data.forEach((item) => {
+      if (item.highlighted) {
+        any_highlighted = true;
+      }
+    });
+
     link = link
       .data(data, (d) => d.id)
       .join(
@@ -377,7 +386,12 @@ class ForceGraphD3 extends React.Component {
           return `link ${styles.link_highlight} highlighted`;
         }
         else {
-          return `link ${styles.link}`;
+          if (any_highlighted) {
+            return `link ${styles.linkInvisible}`;
+          }
+          else {
+            return `link ${styles.link}`;
+          }
         }
       })
       .attr("id", (d) => {

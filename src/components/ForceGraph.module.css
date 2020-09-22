@@ -5,7 +5,7 @@
 }
 
 .node {
-    stroke: white;
+    stroke: grey;
     stroke-width: 1px;
 }
 
@@ -26,7 +26,7 @@
 .link {
     /* Was white */
     stroke: #456991;
-    stroke-width: 0.05vw;
+    stroke-width: 0.10vw;
     stroke-opacity: 60%;
     fill: none;
 }
@@ -67,7 +67,7 @@
 .link_highlight {
     stroke: red;
     stroke-width: 0.15vw;
-    stroke-opacity: 75%;
+    stroke-opacity: 100%;
     fill: none;
 }
 
