@@ -3,8 +3,8 @@
     background-color: #222222;
     color: red;
     font-weight: bold;
-    font-size: 10pt;
-    min-width: 7em;
+    font-size: 8pt;
+    min-width: 6.5em;
     width: 100%;
     height: 2em;
     display: flex;
@@ -16,8 +16,8 @@
     border: none;
     background-color: #222222;
     color: #f1f1f1;
-    font-size: 14pt;
-    min-width: 7em;
+    font-size: 12pt;
+    min-width: 6.5em;
     width: 100%;
     height: 2em;
     display: flex;

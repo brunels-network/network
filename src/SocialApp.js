@@ -192,6 +192,18 @@ class SocialApp extends React.Component {
     });
   }
 
+  toggleEngCommFilter() {
+    if (this.state.engineersFiltered) {
+      this.slotToggleFilterCommercial();
+    }
+    else if (this.state.commercialFiltered) {
+      this.slotToggleFilterCommercial();
+    }
+    else {
+      this.slotToggleFilterEngineer();
+    }
+  }
+
   slotToggleNonContributingEngineers() {
     let social = this.state.social;
 
@@ -304,12 +316,21 @@ class SocialApp extends React.Component {
     if (!id) {
       social.clearSelections();
       social.clearHighlights();
-      this.setState({ social: social });
+      this.setState({
+        social: social,
+        searchText: ""
+      });
     } else if (social.isSelected(id)) {
       console.log(`POP UP THE SHORT BIO FOR ${id}`);
     } else {
+      let item = social.get(id)
+
       social.setSelected(id, true, true);
-      this.setState({ social: social });
+      this.setState({
+        social: social,
+        searchText: item.getName(),
+        searchIncludeBios: false,
+      });
     }
   }
 
@@ -477,6 +498,7 @@ class SocialApp extends React.Component {
         emitUpdate={(text) => {
           this.slotUpdateSearch(text);
         }}
+        searchText={this.state.searchText}
       />
     );
 
@@ -554,6 +576,59 @@ class SocialApp extends React.Component {
       />
     );
 
+    let filter_text = "None";
+
+    if (this.state.commercialFiltered) {
+      filter_text = "Commercial";
+    }
+    else if (this.state.engineersFiltered) {
+      filter_text = "Engineers";
+    }
+
+    let filter_button = (
+      <LabelButton
+        label="Filter"
+        mobileView={mobile_view}
+        button={filter_text}
+        onClick={() => {
+          this.toggleEngCommFilter();
+        }}
+      />
+    );
+
+    let unconnected_button = (
+      <LabelButton
+        label="Unconnected"
+        mobileView={mobile_view}
+        button={this.state.filterUnconnectedNodes ? "Invisible" : "Visible"}
+        onClick={() => {
+          this.slotToggleUnconnectedNodes();
+        }}
+      />
+    )
+
+    let noncontrib_button = (
+      <LabelButton
+        label="Non-contributers"
+        mobileView={mobile_view}
+        button={this.state.filterNCEngineers ? "Invisible" : "Visible"}
+        onClick={() => {
+          this.slotToggleNonContributingEngineers();
+        }}
+      />
+    );
+
+    let search_button = (
+      <LabelButton
+        label="Search"
+        mobileView={mobile_view}
+        button={this.state.searchIncludeBios ? "Biographies" : "Names"}
+        onClick={() => {
+          this.slotSearchBiosToggled(!this.state.searchIncludeBios)
+        }}
+      />
+    )
+
     let overlay = null;
     if (this.state.isOverlayOpen) {
       overlay = (
@@ -601,7 +676,6 @@ class SocialApp extends React.Component {
               <HBox>
                 {menu}
                 <BigBox>{search}</BigBox>
-                {search_options}
                 {help}
               </HBox>
               <BigBox>
@@ -622,7 +696,6 @@ class SocialApp extends React.Component {
               <HBox>
                 {menu}
                 <BigBox>{search}</BigBox>
-                {search_options}
                 {help}
               </HBox>
 
@@ -632,7 +705,11 @@ class SocialApp extends React.Component {
 
               <HBox>
                 {spiral}
+                {filter_button}
+                {search_button}
                 <BigBox>{ship}</BigBox>
+                {unconnected_button}
+                {noncontrib_button}
                 {size}
               </HBox>
             </VBox>

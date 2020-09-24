@@ -19,7 +19,10 @@ function LabelButton(props) {
 
     return (
         <VBox>
-            <button className={styles.label}>
+            <button
+              className={styles.label}
+              onClick={onClick}
+            >
               {props.label}
             </button>
             <button

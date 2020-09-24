@@ -9,8 +9,6 @@ class SearchBar extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = { text: null };
   }
 
   onChangeHandler(event) {
@@ -19,31 +17,33 @@ class SearchBar extends React.Component {
     if (this.props.emitUpdate) {
       this.props.emitUpdate(text);
     }
-
-    this.setState({ text: text });
   }
 
   onSubmitHandler(event) {
     event.preventDefault();
-
-    if (this.props.emitUpdate) {
-      this.props.emitUpdate(this.state.text);
-    }
   }
 
   render() {
+    let search_text = "";
+
+    if (this.props.searchText) {
+      search_text = this.props.searchText;
+    }
+
     return (
       <form className={styles.form}
         onSubmit={(e) => this.onSubmitHandler(e)} >
         <input className={styles.input} type="search"
           onChange={(e) => this.onChangeHandler(e)}
-          placeholder="Search..."/>
+          value={search_text}
+          placeholder="Search..." />
       </form>);
   }
 }
 
 SearchBar.propTypes = {
   emitUpdate: PropTypes.func.isRequired,
+  searchText: PropTypes.string,
 };
 
 

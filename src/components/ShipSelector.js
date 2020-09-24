@@ -29,7 +29,7 @@ class ShipSelector extends React.Component {
     let current = this.state.current;
     let ships = this.state.ships;
 
-    if (current == ships.length - 1) {
+    if (current === ships.length - 1) {
       current = 0;
     }
     else {
@@ -44,7 +44,7 @@ class ShipSelector extends React.Component {
     let current = this.state.current;
     let ships = this.state.ships;
 
-    if (current == 0) {
+    if (current === 0) {
       current = ships.length - 1;
     }
     else {
