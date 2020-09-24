@@ -3,6 +3,7 @@
     overflow: hidden;
     align-content: stretch;
     background-color: #00000000;
+    justify-content: center;
 }
 
 .fill {

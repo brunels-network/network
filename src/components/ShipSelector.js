@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import ShipButton from "./ShipButton";
-
 import HBox from "./HBox";
 
 import styles from "./ShipSelector.module.css";
@@ -13,40 +11,78 @@ class ShipSelector extends React.Component {
 
     const projects = this.props.projects;
 
-    // We want the graph to start with the GW selected
+    /// There are three ships, get their IDs and put in chronological order
     const ssGW = projects.getByName("SS Great Western");
-    this.props.emitSetShip(ssGW);
+    const ssGB = projects.getByName("SS Great Britain");
+    const ssGE = projects.getByName("SS Great Eastern");
 
-    this.state = { lastShip: ssGW.getName() };
+    this.state = {
+      ships: [ssGW, ssGB, ssGE ],
+      current: 0
+    }
+
+    // We want the graph to start with the GW selected
+    this.props.emitSetShip(ssGW);
   }
 
-  setFilter(item) {
-    const shipName = item.getName();
+  slotNextShip() {
+    let current = this.state.current;
+    let ships = this.state.ships;
 
-    if (shipName === this.state.lastShip) {
+    if (current == ships.length - 1) {
       return;
     }
 
-    this.setState({ lastShip: shipName });
-    this.props.emitSetShip(item);
+    current += 1;
+    this.setState({ current: current });
+    this.props.emitSetShip(ships[current]);
+  }
+
+  slotPreviousShip() {
+    let current = this.state.current;
+    let ships = this.state.ships;
+
+    if (current == 0) {
+      return;
+    }
+
+    current -= 1;
+    this.setState({ current: current });
+    this.props.emitSetShip(ships[current]);
   }
 
   render() {
-    let projects = this.props.projects;
 
-    let output = projects.values().map((item) => {
-      return (
-        <ShipButton
-          key={item.getName()}
-          ship={item}
-          emitSetShip={(item) => { this.setFilter(item) }}
-          emitShowShip={this.props.emitShowShip}
-        />
-      );
-    });
+    let current = this.state.current;
+    let ship = this.state.ships[current];
+
+    let next_enabled = current < this.state.ships.length - 1;
+    let prev_enabled = current > 0;
 
     return (
-      <HBox>{output}</HBox>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <HBox>
+            <button
+              className={styles.arrow_button}
+              disabled={!prev_enabled}
+              onClick={()=>{this.slotPreviousShip()}}>
+             &laquo;&nbsp;
+            </button>
+            <button
+              className={styles.ship_button}
+              onClick={() => { this.props.emitShowShip(ship) }}>
+              {ship.getName()}
+            </button>
+            <button
+              className={styles.arrow_button}
+              disabled={!next_enabled}
+              onClick={() => { this.slotNextShip() }}>
+                &nbsp;&raquo;
+            </button>
+          </HBox>
+        </div>
+      </div>
     );
   }
 }

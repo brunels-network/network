@@ -1,0 +1,44 @@
+@font-face {
+    font-family: "Playfair Display SC";
+    src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Playfair Display";
+    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {}
+
+.arrow_button {
+    background-color: #9b1c31;
+    font-family: "Playfair Display SC";
+    height: 40px;
+    color: white;
+    border-top: solid 1px white;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+.ship_button {
+    background-color: #9b1c31;
+    font-family: "Playfair Display SC";
+    /* font-family: "Cinzel"; */
+    /* font-size: 2vw; */
+    font-size: 3.2vh;
+    color: white;
+    width: 11em;
+    height: 40px;
+    border-top: solid 1px white;
+    border-left: solid 1px grey;
+    border-right: solid 1px grey;
+    border-bottom: none;
+}

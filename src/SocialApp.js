@@ -468,7 +468,9 @@ class SocialApp extends React.Component {
   render() {
     console.log("RENDER");
 
-    let menu = <TextButton onClick={()=>{this.slotShowMenu()}}>Menu</TextButton>;
+    let mobile_view = (this.state.width < 600);
+
+    let menu = <TextButton onClick={() => { this.slotShowMenu() }}>Menu</TextButton>;
 
     let search = (
       <HBox>
@@ -477,6 +479,7 @@ class SocialApp extends React.Component {
             emitUpdate={(text) => {
               this.slotUpdateSearch(text);
             }}
+            mobileView={mobile_view}
           />
         </BigBox>
         <ToggleButton emitToggled={(v) => this.slotSearchBiosToggled(v)} toggled={this.state.searchIncludeBios}>
@@ -496,6 +499,7 @@ class SocialApp extends React.Component {
               close={() => {
                 this.closeOverlay();
               }}
+              mobileView={mobile_view}
             />
           );
         }}
@@ -506,6 +510,7 @@ class SocialApp extends React.Component {
 
     let graph = (
       <ForceGraph
+        mobileView={mobile_view}
         social={this.state.social}
         selected={this.state.selected_item}
         highlighted={this.state.highlighted_item}
@@ -522,6 +527,7 @@ class SocialApp extends React.Component {
     let spiral = (
       <LabelButton
         label="Spiral Order"
+        mobileView={mobile_view}
         button={this.state.spiralOrder}
         onClick={() => {
           this.toggleSpiralOrder();
@@ -531,6 +537,7 @@ class SocialApp extends React.Component {
 
     let ship = (
       <ShipSelector
+        mobileView={mobile_view}
         projects={this.state.social.getProjects()}
         emitSetShip={(item) => this.slotSetShip(item)}
         emitShowShip={(item) => this.slotShowShip(item)}
@@ -540,6 +547,7 @@ class SocialApp extends React.Component {
     let size = (
       <LabelButton
         label="Node Size"
+        mobileView={mobile_view}
         button={this.state.nodeSize}
         onClick={() => {
           this.toggleNodeSize();
@@ -551,6 +559,7 @@ class SocialApp extends React.Component {
     if (this.state.isOverlayOpen) {
       overlay = (
         <Overlay
+          mobileView={mobile_view}
           toggleOverlay={() => {
             this.toggleOverlay();
           }}
@@ -566,48 +575,67 @@ class SocialApp extends React.Component {
         position="left"
         height="100%"
         width="20%"
+        mobileView={mobile_view}
       >
         <MainMenu
           close={() => { this.slotCloseMenu() }}
+          mobileView={mobile_view}
           unconnectedNodesVisible={!this.state.filterUnconnectedNodes}
           ncEngineersVisible={!this.state.filterNCEngineers}
-          engineersFiltered = {this.state.engineersFiltered}
-          commercialFiltered = {this.state.commercialFiltered}
-          emitResetFilters = {()=>{this.slotClearFilters()}}
-          emitToggleFilterCommercial = {()=>this.slotToggleFilterCommercial()}
-          emitToggleFilterEngineering = {()=>this.slotToggleFilterEngineer()}
+          engineersFiltered={this.state.engineersFiltered}
+          commercialFiltered={this.state.commercialFiltered}
+          emitResetFilters={() => { this.slotClearFilters() }}
+          emitToggleFilterCommercial={() => this.slotToggleFilterCommercial()}
+          emitToggleFilterEngineering={() => this.slotToggleFilterEngineer()}
           emitToggleUnconnectedNodesVisible={() => this.slotToggleUnconnectedNodes()}
           emitToggleNCEngineersVisible={() => this.slotToggleNonContributingEngineers()}
         />
       </SlidingPanel>
     );
 
-    return (
-      <div>
-        {mainmenu}
-        <div className={styles.ui_main}>
-          <VBox>
-            <HBox>
-              {menu}
-              <BigBox>{search}</BigBox>
-              {help}
-            </HBox>
-
-            <BigBox>
-              <div className={styles.fullscreen}>{graph}</div>
-            </BigBox>
-
-            <HBox>
-              {spiral}
-              <BigBox>{ship}</BigBox>
-              {size}
-            </HBox>
-          </VBox>
+    if (mobile_view) {
+      return (
+        <div>
+          {mainmenu}
+          <div className={styles.ui_main}>
+            <VBox>
+              {search}
+              <BigBox>
+                <div className={styles.fullscreen}>{graph}</div>
+              </BigBox>
+              {ship}
+            </VBox>
+          </div>
+          {overlay}
         </div>
+      );
+    } else {
+      return (
+        <div>
+          {mainmenu}
+          <div className={styles.ui_main}>
+            <VBox>
+              <HBox>
+                {menu}
+                <BigBox>{search}</BigBox>
+                {help}
+              </HBox>
 
-        {overlay}
-      </div>
-    );
+              <BigBox>
+                <div className={styles.fullscreen}>{graph}</div>
+              </BigBox>
+
+              <HBox>
+                {spiral}
+                <BigBox>{ship}</BigBox>
+                {size}
+              </HBox>
+            </VBox>
+          </div>
+          {overlay}
+        </div>
+      );
+    }
   }
 }
 
