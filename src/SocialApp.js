@@ -470,25 +470,24 @@ class SocialApp extends React.Component {
 
     let mobile_view = (this.state.width < 600);
 
-    let menu = <TextButton onClick={() => { this.slotShowMenu() }}>Menu</TextButton>;
+    let menu = <TextButton onClick={() => { this.slotShowMenu() }}>☰</TextButton>;
 
     let search = (
-      <HBox>
-        <BigBox>
-          <SearchBar
-            emitUpdate={(text) => {
-              this.slotUpdateSearch(text);
-            }}
-            mobileView={mobile_view}
-          />
-        </BigBox>
-        <ToggleButton emitToggled={(v) => this.slotSearchBiosToggled(v)} toggled={this.state.searchIncludeBios}>
-          BIOS
-        </ToggleButton>
-        <ToggleButton emitToggled={(v) => this.slotSearchHighlightToggled(v)} toggled={this.state.searchHighlightLinks}>
-          LINKS
-        </ToggleButton>
-      </HBox>
+      <SearchBar
+        emitUpdate={(text) => {
+          this.slotUpdateSearch(text);
+        }}
+      />
+    );
+
+    let search_options = (
+      <TextButton
+        onClick={() => {
+          this.slotSearchOptions()
+        }}
+      >
+        +
+      </TextButton>
     );
 
     let help = (
@@ -504,7 +503,7 @@ class SocialApp extends React.Component {
           );
         }}
       >
-        Help
+        ?
       </TextButton>
     );
 
@@ -599,7 +598,12 @@ class SocialApp extends React.Component {
           {mainmenu}
           <div className={styles.ui_main}>
             <VBox>
-              {search}
+              <HBox>
+                {menu}
+                <BigBox>{search}</BigBox>
+                {search_options}
+                {help}
+              </HBox>
               <BigBox>
                 <div className={styles.fullscreen}>{graph}</div>
               </BigBox>
@@ -618,6 +622,7 @@ class SocialApp extends React.Component {
               <HBox>
                 {menu}
                 <BigBox>{search}</BigBox>
+                {search_options}
                 {help}
               </HBox>
 

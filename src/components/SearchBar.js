@@ -36,7 +36,8 @@ class SearchBar extends React.Component {
       <form className={styles.form}
         onSubmit={(e) => this.onSubmitHandler(e)} >
         <input className={styles.input} type="search"
-          onChange={(e) => this.onChangeHandler(e)} />
+          onChange={(e) => this.onChangeHandler(e)}
+          placeholder="Search..."/>
       </form>);
   }
 }

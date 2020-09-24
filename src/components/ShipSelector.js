@@ -30,10 +30,12 @@ class ShipSelector extends React.Component {
     let ships = this.state.ships;
 
     if (current == ships.length - 1) {
-      return;
+      current = 0;
+    }
+    else {
+      current += 1;
     }
 
-    current += 1;
     this.setState({ current: current });
     this.props.emitSetShip(ships[current]);
   }
@@ -43,10 +45,12 @@ class ShipSelector extends React.Component {
     let ships = this.state.ships;
 
     if (current == 0) {
-      return;
+      current = ships.length - 1;
+    }
+    else {
+      current -= 1;
     }
 
-    current -= 1;
     this.setState({ current: current });
     this.props.emitSetShip(ships[current]);
   }
@@ -56,16 +60,12 @@ class ShipSelector extends React.Component {
     let current = this.state.current;
     let ship = this.state.ships[current];
 
-    let next_enabled = current < this.state.ships.length - 1;
-    let prev_enabled = current > 0;
-
     return (
       <div className={styles.container}>
         <div className={styles.content}>
           <HBox>
             <button
               className={styles.arrow_button}
-              disabled={!prev_enabled}
               onClick={()=>{this.slotPreviousShip()}}>
              &laquo;&nbsp;
             </button>
@@ -76,7 +76,6 @@ class ShipSelector extends React.Component {
             </button>
             <button
               className={styles.arrow_button}
-              disabled={!next_enabled}
               onClick={() => { this.slotNextShip() }}>
                 &nbsp;&raquo;
             </button>
