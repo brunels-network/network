@@ -487,10 +487,6 @@ class SocialApp extends React.Component {
   }
 
   render() {
-    console.log("RENDER");
-
-    let mobile_view = (this.state.width < 600);
-
     let menu = <TextButton onClick={() => { this.slotShowMenu() }}>☰</TextButton>;
 
     let search = (
@@ -520,7 +516,6 @@ class SocialApp extends React.Component {
               close={() => {
                 this.closeOverlay();
               }}
-              mobileView={mobile_view}
             />
           );
         }}
@@ -531,7 +526,6 @@ class SocialApp extends React.Component {
 
     let graph = (
       <ForceGraph
-        mobileView={mobile_view}
         social={this.state.social}
         selected={this.state.selected_item}
         highlighted={this.state.highlighted_item}
@@ -545,10 +539,9 @@ class SocialApp extends React.Component {
       />
     );
 
-    let spiral = (
+    let spiral_button = (
       <LabelButton
         label="Spiral Order"
-        mobileView={mobile_view}
         button={this.state.spiralOrder}
         onClick={() => {
           this.toggleSpiralOrder();
@@ -556,19 +549,17 @@ class SocialApp extends React.Component {
       />
     );
 
-    let ship = (
+    let ship_button = (
       <ShipSelector
-        mobileView={mobile_view}
         projects={this.state.social.getProjects()}
         emitSetShip={(item) => this.slotSetShip(item)}
         emitShowShip={(item) => this.slotShowShip(item)}
       />
     );
 
-    let size = (
+    let size_button = (
       <LabelButton
         label="Node Size"
-        mobileView={mobile_view}
         button={this.state.nodeSize}
         onClick={() => {
           this.toggleNodeSize();
@@ -588,7 +579,6 @@ class SocialApp extends React.Component {
     let filter_button = (
       <LabelButton
         label="Filter"
-        mobileView={mobile_view}
         button={filter_text}
         onClick={() => {
           this.toggleEngCommFilter();
@@ -599,7 +589,6 @@ class SocialApp extends React.Component {
     let unconnected_button = (
       <LabelButton
         label="Unconnected"
-        mobileView={mobile_view}
         button={this.state.filterUnconnectedNodes ? "Invisible" : "Visible"}
         onClick={() => {
           this.slotToggleUnconnectedNodes();
@@ -610,7 +599,6 @@ class SocialApp extends React.Component {
     let noncontrib_button = (
       <LabelButton
         label="Non-contributers"
-        mobileView={mobile_view}
         button={this.state.filterNCEngineers ? "Invisible" : "Visible"}
         onClick={() => {
           this.slotToggleNonContributingEngineers();
@@ -621,7 +609,6 @@ class SocialApp extends React.Component {
     let search_button = (
       <LabelButton
         label="Search"
-        mobileView={mobile_view}
         button={this.state.searchIncludeBios ? "Biographies" : "Names"}
         onClick={() => {
           this.slotSearchBiosToggled(!this.state.searchIncludeBios)
@@ -633,7 +620,6 @@ class SocialApp extends React.Component {
     if (this.state.isOverlayOpen) {
       overlay = (
         <Overlay
-          mobileView={mobile_view}
           toggleOverlay={() => {
             this.toggleOverlay();
           }}
@@ -643,17 +629,154 @@ class SocialApp extends React.Component {
       );
     }
 
+    let drawer = null;
+
+    let left_side = null;
+    let right_side = null;
+
+    if (this.state.width > 1024 || this.state.width === 812) { // iphone X landscape
+      left_side = (
+        <HBox>
+          { spiral_button}
+          { filter_button}
+          { search_button}
+        </HBox>);
+
+      right_side = (
+        <HBox>
+          {unconnected_button}
+          {noncontrib_button}
+          {size_button}
+        </HBox>
+      );
+    }
+    else if (this.state.width > 768) {
+      left_side = (
+        <HBox>
+          { spiral_button}
+          { filter_button}
+        </HBox>);
+
+      right_side = (
+        <HBox>
+          {noncontrib_button}
+          {size_button}
+        </HBox>
+      );
+
+      drawer = (
+        <VBox>
+          <HBox>
+            <BigBox/>
+            {spiral_button}
+            {size_button}
+            <BigBox/>
+          </HBox>
+          <HBox>
+            <BigBox/>
+            {search_button}
+            {unconnected_button}
+            <BigBox/>
+          </HBox>
+          <HBox>
+            <BigBox/>
+            {filter_button}
+            {noncontrib_button}
+            <BigBox/>
+          </HBox>
+        </VBox>
+      );
+    }
+    else if (this.state.width > 550) {
+      left_side = spiral_button
+      right_side = size_button
+
+      drawer = (
+        <VBox>
+          <HBox>
+            <BigBox />
+            {spiral_button}
+            {size_button}
+            <BigBox />
+          </HBox>
+          <HBox>
+            <BigBox />
+            {search_button}
+            {unconnected_button}
+            <BigBox />
+          </HBox>
+          <HBox>
+            <BigBox />
+            {filter_button}
+            {noncontrib_button}
+            <BigBox />
+          </HBox>
+        </VBox>);
+    }
+    else {
+      drawer = (
+        <VBox>
+          <HBox>
+            <BigBox/>
+            {spiral_button}
+            {size_button}
+            <BigBox/>
+          </HBox>
+          <HBox>
+            <BigBox/>
+            {search_button}
+            {unconnected_button}
+            <BigBox/>
+          </HBox>
+          <HBox>
+            <BigBox/>
+            {filter_button}
+            {noncontrib_button}
+            <BigBox/>
+          </HBox>
+        </VBox>
+      );
+    }
+
+    let drawer_button = null;
+
+    if (drawer !== null) {
+      drawer_button = (
+        <button
+          className={styles.drawerButton}
+          onClick={()=>{this.setState({drawerVisible: !this.state.drawerVisible})}}>
+          ⤊ Options ⤊
+        </button>);
+      drawer = (
+        <SlidingPanel
+          isOpen={this.state.drawerVisible}
+          position="bottom"
+          width="100%"
+          height="40%"
+        >
+          <VBox>
+            <button
+              className={styles.drawerButton}
+              onClick={() => { this.setState({ drawerVisible: !this.state.drawerVisible }) }}>
+              ⟱ Close ⟱
+            </button>
+            <BigBox>
+              {drawer}
+            </BigBox>
+          </VBox>
+        </SlidingPanel>
+      );
+    }
+
     let mainmenu = (
       <SlidingPanel
         isOpen={this.state.menuVisible}
         position="left"
         height="100%"
         width="20%"
-        mobileView={mobile_view}
       >
         <MainMenu
           close={() => { this.slotCloseMenu() }}
-          mobileView={mobile_view}
           unconnectedNodesVisible={!this.state.filterUnconnectedNodes}
           ncEngineersVisible={!this.state.filterNCEngineers}
           engineersFiltered={this.state.engineersFiltered}
@@ -667,58 +790,35 @@ class SocialApp extends React.Component {
       </SlidingPanel>
     );
 
-    if (mobile_view) {
-      return (
-        <div>
-          {mainmenu}
-          <div className={styles.ui_main}>
-            <VBox>
-              <HBox>
-                {menu}
-                <BigBox>{search}</BigBox>
-                {help}
-              </HBox>
-              <BigBox>
-                <div className={styles.fullscreen}>{graph}</div>
-              </BigBox>
-              {ship}
-            </VBox>
-          </div>
-          {overlay}
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          {mainmenu}
-          <div className={styles.ui_main}>
-            <VBox>
-              <HBox>
-                {menu}
-                <BigBox>{search}</BigBox>
-                {help}
-              </HBox>
+    return (
+      <div>
+        {mainmenu}
+        <div className={styles.ui_main}>
+          <VBox>
+            <HBox>
+              {menu}
+              <BigBox>{search}</BigBox>
+              {help}
+            </HBox>
 
-              <BigBox>
-                <div className={styles.fullscreen}>{graph}</div>
-              </BigBox>
+            <BigBox>
+              <div className={styles.fullscreen}>{graph}</div>
+            </BigBox>
 
-              <HBox>
-                {spiral}
-                {filter_button}
-                {search_button}
-                <BigBox>{ship}</BigBox>
-                {unconnected_button}
-                {noncontrib_button}
-                {size}
-              </HBox>
-            </VBox>
-          </div>
-          {overlay}
+            <HBox>
+              {left_side}
+              <BigBox>{ship_button}</BigBox>
+              {right_side}
+            </HBox>
+            {drawer_button}
+          </VBox>
         </div>
-      );
-    }
+        {drawer}
+        {overlay}
+      </div>
+    );
   }
 }
+
 
 export default SocialApp;

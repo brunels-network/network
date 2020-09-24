@@ -11,6 +11,13 @@
   background-color: #222222;
 }
 
+.drawerButton {
+  width: 100%;
+  color: white;
+  border: none;
+  background-color: #222222;
+}
+
 .fullscreen {
   background-color: orange;
   height: 100%;
