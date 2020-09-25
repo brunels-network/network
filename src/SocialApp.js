@@ -33,6 +33,7 @@ import styles from "./SocialApp.module.css";
 import { score_by_connections, score_by_influence } from "./model/ScoringFunctions";
 
 import { size_by_connections, size_by_influence } from "./model/SizingFunctions";
+import { faSlash } from "@fortawesome/free-solid-svg-icons";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -314,19 +315,33 @@ class SocialApp extends React.Component {
     let social = this.state.social;
 
     if (!id) {
-      social.clearSelections();
-      social.clearHighlights();
-      this.setState({
-        social: social,
-        searchText: ""
-      });
+      let last_search = this.state.cachedSearch;
+
+      console.log(`${last_search} : ${this.state.searchText}`);
+
+      if (last_search === "") {
+        social.clearSelections();
+        social.clearHighlights();
+        this.setState({
+          social: social,
+          searchText: "",
+          cachedSearch: "",
+          searchWasItem: false,
+        });
+      }
+      else {
+        this.performSearch(this.state.cachedSearch,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks);
+      }
     } else {
       let item = social.get(id)
 
       social.setSelected(id, true, true);
       this.setState({
         social: social,
-        searchText: item.getName()
+        searchText: item.getName(),
+        searchWasItem: true,
       });
     }
   }
@@ -452,6 +467,8 @@ class SocialApp extends React.Component {
       searchIncludeBios: include_bios,
       searchHighlightLinks: highlight_links,
       searchText: text,
+      searchWasItem: false,
+      cachedSearch: text,
     });
   }
 
@@ -468,11 +485,20 @@ class SocialApp extends React.Component {
   }
 
   slotSearchBiosToggled(toggled) {
-    this.performSearch(this.state.searchText, toggled, this.state.searchHighlightLinks);
+    if (this.state.searchWasItem) {
+    }
+    else {
+      this.performSearch(this.state.searchText, toggled, this.state.searchHighlightLinks);
+    }
   }
 
   slotSearchHighlightToggled(toggled) {
-    this.performSearch(this.state.searchText, this.state.searchIncludeBios, toggled);
+    if (this.state.searchWasItem) {
+
+    }
+    else {
+      this.performSearch(this.state.searchText, this.state.searchIncludeBios, toggled);
+    }
   }
 
   toggleOverlay() {
@@ -496,6 +522,7 @@ class SocialApp extends React.Component {
         }}
         searchText={this.state.searchText}
         searchHighlightToggled={this.state.searchHighlightLinks}
+        searchHighlightAvailable={!this.state.searchWasItem}
       />
     );
 

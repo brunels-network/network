@@ -44,20 +44,22 @@ class SearchBar extends React.Component {
           &nbsp;X&nbsp;
         </div>);
 
-      let highlight = this.props.searchHighlightToggled;
+      if (this.props.searchHighlightAvailable) {
+        let highlight = this.props.searchHighlightToggled;
 
-      let link_style = styles.linkButton;
+        let link_style = styles.linkButton;
 
-      if (highlight) {
-        link_style = styles.linkButtonHighlighted;
+        if (highlight) {
+          link_style = styles.linkButtonHighlighted;
+        }
+
+        link_button = (
+          <div className={link_style}
+            onClick={() => { this.props.emitSearchHighlightToggled(!highlight) }}
+          >
+            &nbsp;✺&nbsp;
+          </div>);
       }
-
-      link_button = (
-        <div className={link_style}
-             onClick={()=>{this.props.emitSearchHighlightToggled(!highlight)}}
-        >
-          &nbsp;✺&nbsp;
-        </div>);
     }
 
     return (
@@ -82,6 +84,7 @@ SearchBar.propTypes = {
   emitUpdate: PropTypes.func.isRequired,
   emitSearchHighlightToggled: PropTypes.func.isRequired,
   searchText: PropTypes.string,
+  searchHighlightAvailable: PropTypes.bool,
 };
 
 

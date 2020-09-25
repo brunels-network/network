@@ -638,7 +638,13 @@ class Social {
     this.clearSelections();
     this.clearHighlights();
 
-    if (text.length === 0) {
+    try {
+      if (text.length === 0) {
+        this.clearCache();
+        return;
+      }
+    }
+    catch (error) {
       this.clearCache();
       return;
     }
