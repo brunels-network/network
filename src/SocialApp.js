@@ -161,9 +161,15 @@ class SocialApp extends React.Component {
     social.setFilter("project", item);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      if (this.state.searchWasItem) {
+        social.selectSearchMatching(this.state.searchText, false, true);
+      } else {
+        social.selectSearchMatching(
+          this.state.searchText,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks
+        );
+      }
     }
 
     this.setState({ selectedShip: item.getName(), selectedShipID: item.getID() });
@@ -173,15 +179,21 @@ class SocialApp extends React.Component {
   slotClearFilters() {
     let social = this.state.social;
     social.resetAllFilters();
-    social.setFilter("project", this.state.selectedShipID)
+    social.setFilter("project", this.state.selectedShipID);
 
     social.filterUnconnectedNodes(true);
     social.filterNonContributingEngineers(true);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      if (this.state.searchWasItem) {
+        social.selectSearchMatching(this.state.searchText, false, true);
+      } else {
+        social.selectSearchMatching(
+          this.state.searchText,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks
+        );
+      }
     }
 
     this.setState({
@@ -196,11 +208,9 @@ class SocialApp extends React.Component {
   toggleEngCommFilter() {
     if (this.state.engineersFiltered) {
       this.slotToggleFilterCommercial();
-    }
-    else if (this.state.commercialFiltered) {
+    } else if (this.state.commercialFiltered) {
       this.slotToggleFilterCommercial();
-    }
-    else {
+    } else {
       this.slotToggleFilterEngineer();
     }
   }
@@ -209,12 +219,11 @@ class SocialApp extends React.Component {
     let social = this.state.social;
 
     social.resetAllFilters();
-    social.setFilter("project", this.state.selectedShipID)
+    social.setFilter("project", this.state.selectedShipID);
 
     if (this.state.engineersFiltered) {
       social.toggleFilter(this.state.engineerNodeFilter);
-    }
-    else if (this.state.commercialFiltered) {
+    } else if (this.state.commercialFiltered) {
       social.toggleFilter(this.state.commercialNodeFilter);
     }
 
@@ -222,14 +231,20 @@ class SocialApp extends React.Component {
     social.filterNonContributingEngineers(!this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      if (this.state.searchWasItem) {
+        social.selectSearchMatching(this.state.searchText, false, true);
+      } else {
+        social.selectSearchMatching(
+          this.state.searchText,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks
+        );
+      }
     }
 
     this.setState({
       social: social,
-      filterNCEngineers: !this.state.filterNCEngineers
+      filterNCEngineers: !this.state.filterNCEngineers,
     });
   }
 
@@ -237,12 +252,11 @@ class SocialApp extends React.Component {
     let social = this.state.social;
 
     social.resetAllFilters();
-    social.setFilter("project", this.state.selectedShipID)
+    social.setFilter("project", this.state.selectedShipID);
 
     if (this.state.engineersFiltered) {
       social.toggleFilter(this.state.engineerNodeFilter);
-    }
-    else if (this.state.commercialFiltered) {
+    } else if (this.state.commercialFiltered) {
       social.toggleFilter(this.state.commercialNodeFilter);
     }
 
@@ -250,14 +264,20 @@ class SocialApp extends React.Component {
     social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      if (this.state.searchWasItem) {
+        social.selectSearchMatching(this.state.searchText, false, true);
+      } else {
+        social.selectSearchMatching(
+          this.state.searchText,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks
+        );
+      }
     }
 
     this.setState({
       social: social,
-      filterUnconnectedNodes: !this.state.filterUnconnectedNodes
+      filterUnconnectedNodes: !this.state.filterUnconnectedNodes,
     });
   }
 
@@ -265,7 +285,7 @@ class SocialApp extends React.Component {
     let social = this.state.social;
 
     social.resetAllFilters();
-    social.setFilter("project", this.state.selectedShipID)
+    social.setFilter("project", this.state.selectedShipID);
 
     if (!this.state.engineersFiltered) {
       social.toggleFilter(this.state.engineerNodeFilter);
@@ -275,22 +295,29 @@ class SocialApp extends React.Component {
     social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      if (this.state.searchWasItem) {
+        social.selectSearchMatching(this.state.searchText, false, true);
+      } else {
+        social.selectSearchMatching(
+          this.state.searchText,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks
+        );
+      }
     }
 
     this.setState({
       social: social,
       engineersFiltered: !this.state.engineersFiltered,
-      commercialFiltered: false});
+      commercialFiltered: false,
+    });
   }
 
   slotToggleFilterCommercial() {
     let social = this.state.social;
 
     social.resetAllFilters();
-    social.setFilter("project", this.state.selectedShipID)
+    social.setFilter("project", this.state.selectedShipID);
 
     if (!this.state.commercialFiltered) {
       social.toggleFilter(this.state.commercialNodeFilter);
@@ -300,15 +327,22 @@ class SocialApp extends React.Component {
     social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
     if (this.state.searchText.length > 0) {
-      social.selectSearchMatching(this.state.searchText,
-        this.state.searchIncludeBios,
-        this.state.searchHighlightLinks);
+      if (this.state.searchWasItem) {
+        social.selectSearchMatching(this.state.searchText, false, true);
+      } else {
+        social.selectSearchMatching(
+          this.state.searchText,
+          this.state.searchIncludeBios,
+          this.state.searchHighlightLinks
+        );
+      }
     }
 
     this.setState({
       social: social,
       commercialFiltered: !this.state.commercialFiltered,
-      engineersFiltered: false});
+      engineersFiltered: false,
+    });
   }
 
   slotClicked(id) {
@@ -328,14 +362,11 @@ class SocialApp extends React.Component {
           cachedSearch: "",
           searchWasItem: false,
         });
-      }
-      else {
-        this.performSearch(this.state.cachedSearch,
-          this.state.searchIncludeBios,
-          this.state.searchHighlightLinks);
+      } else {
+        this.performSearch(this.state.cachedSearch, this.state.searchIncludeBios, this.state.searchHighlightLinks);
       }
     } else {
-      let item = social.get(id)
+      let item = social.get(id);
 
       social.setSelected(id, true, true);
       this.setState({
@@ -486,17 +517,14 @@ class SocialApp extends React.Component {
 
   slotSearchBiosToggled(toggled) {
     if (this.state.searchWasItem) {
-    }
-    else {
+    } else {
       this.performSearch(this.state.searchText, toggled, this.state.searchHighlightLinks);
     }
   }
 
   slotSearchHighlightToggled(toggled) {
     if (this.state.searchWasItem) {
-
-    }
-    else {
+    } else {
       this.performSearch(this.state.searchText, this.state.searchIncludeBios, toggled);
     }
   }
@@ -510,7 +538,15 @@ class SocialApp extends React.Component {
   }
 
   render() {
-    let menu = <TextButton onClick={() => { this.slotShowMenu() }}>Menu</TextButton>;
+    let menu = (
+      <TextButton
+        onClick={() => {
+          this.slotShowMenu();
+        }}
+      >
+        Menu
+      </TextButton>
+    );
 
     let search = (
       <SearchBar
@@ -589,8 +625,7 @@ class SocialApp extends React.Component {
 
     if (this.state.commercialFiltered) {
       filter_text = "Commercial";
-    }
-    else if (this.state.engineersFiltered) {
+    } else if (this.state.engineersFiltered) {
       filter_text = "Engineers";
     }
 
@@ -612,7 +647,7 @@ class SocialApp extends React.Component {
           this.slotToggleUnconnectedNodes();
         }}
       />
-    )
+    );
 
     let noncontrib_button = (
       <LabelButton
@@ -629,10 +664,10 @@ class SocialApp extends React.Component {
         label="Search"
         button={this.state.searchIncludeBios ? "Biographies" : "Names"}
         onClick={() => {
-          this.slotSearchBiosToggled(!this.state.searchIncludeBios)
+          this.slotSearchBiosToggled(!this.state.searchIncludeBios);
         }}
       />
-    )
+    );
 
     let overlay = null;
     if (this.state.isOverlayOpen) {
@@ -652,13 +687,15 @@ class SocialApp extends React.Component {
     let left_side = null;
     let right_side = null;
 
-    if (this.state.width > 1024 || this.state.width === 812) { // iphone X landscape
+    if (this.state.width > 1024 || this.state.width === 812) {
+      // iphone X landscape
       left_side = (
         <HBox>
-          { spiral_button}
-          { filter_button}
-          { search_button}
-        </HBox>);
+          {spiral_button}
+          {filter_button}
+          {search_button}
+        </HBox>
+      );
 
       right_side = (
         <HBox>
@@ -667,13 +704,13 @@ class SocialApp extends React.Component {
           {size_button}
         </HBox>
       );
-    }
-    else if (this.state.width > 768) {
+    } else if (this.state.width > 768) {
       left_side = (
         <HBox>
-          { spiral_button}
-          { filter_button}
-        </HBox>);
+          {spiral_button}
+          {filter_button}
+        </HBox>
+      );
 
       right_side = (
         <HBox>
@@ -685,29 +722,28 @@ class SocialApp extends React.Component {
       drawer = (
         <VBox>
           <HBox>
-            <BigBox/>
+            <BigBox />
             {spiral_button}
             {size_button}
-            <BigBox/>
+            <BigBox />
           </HBox>
           <HBox>
-            <BigBox/>
+            <BigBox />
             {search_button}
             {unconnected_button}
-            <BigBox/>
+            <BigBox />
           </HBox>
           <HBox>
-            <BigBox/>
+            <BigBox />
             {filter_button}
             {noncontrib_button}
-            <BigBox/>
+            <BigBox />
           </HBox>
         </VBox>
       );
-    }
-    else if (this.state.width > 550) {
-      left_side = spiral_button
-      right_side = size_button
+    } else if (this.state.width > 550) {
+      left_side = spiral_button;
+      right_side = size_button;
 
       drawer = (
         <VBox>
@@ -729,28 +765,28 @@ class SocialApp extends React.Component {
             {noncontrib_button}
             <BigBox />
           </HBox>
-        </VBox>);
-    }
-    else {
+        </VBox>
+      );
+    } else {
       drawer = (
         <VBox>
           <HBox>
-            <BigBox/>
+            <BigBox />
             {spiral_button}
             {size_button}
-            <BigBox/>
+            <BigBox />
           </HBox>
           <HBox>
-            <BigBox/>
+            <BigBox />
             {search_button}
             {unconnected_button}
-            <BigBox/>
+            <BigBox />
           </HBox>
           <HBox>
-            <BigBox/>
+            <BigBox />
             {filter_button}
             {noncontrib_button}
-            <BigBox/>
+            <BigBox />
           </HBox>
         </VBox>
       );
@@ -762,56 +798,51 @@ class SocialApp extends React.Component {
       drawer_button = (
         <button
           className={styles.drawerButton}
-          onClick={()=>{this.setState({drawerVisible: !this.state.drawerVisible})}}>
-          ⤊ Options ⤊
-        </button>);
-      drawer = (
-        <SlidingPanel
-          isOpen={this.state.drawerVisible}
-          position="bottom"
-          width="100%"
-          height="14em"
+          onClick={() => {
+            this.setState({ drawerVisible: !this.state.drawerVisible });
+          }}
         >
+          ⤊ Options ⤊
+        </button>
+      );
+      drawer = (
+        <SlidingPanel isOpen={this.state.drawerVisible} position="bottom" width="100%" height="14em">
           <VBox>
             <button
               className={styles.drawerButton}
-              onClick={() => { this.setState({ drawerVisible: !this.state.drawerVisible }) }}>
+              onClick={() => {
+                this.setState({ drawerVisible: !this.state.drawerVisible });
+              }}
+            >
               ⟱ Close ⟱
             </button>
-            <BigBox>
-              {drawer}
-            </BigBox>
+            <BigBox>{drawer}</BigBox>
           </VBox>
         </SlidingPanel>
       );
     }
 
     let mainmenu = (
-      <SlidingPanel
-        isOpen={this.state.menuVisible}
-        position="left"
-        height="24em"
-        width="18em"
-      >
+      <SlidingPanel isOpen={this.state.menuVisible} position="left" height="24em" width="18em">
         <MainMenu
-          close={() => { this.slotCloseMenu() }}
+          close={() => {
+            this.slotCloseMenu();
+          }}
           unconnectedNodesVisible={!this.state.filterUnconnectedNodes}
           ncEngineersVisible={!this.state.filterNCEngineers}
           engineersFiltered={this.state.engineersFiltered}
           commercialFiltered={this.state.commercialFiltered}
           searchHighlight={this.state.searchHighlightLinks}
           searchBios={this.state.searchIncludeBios}
-          emitResetFilters={() => { this.slotClearFilters() }}
+          emitResetFilters={() => {
+            this.slotClearFilters();
+          }}
           emitToggleFilterCommercial={() => this.slotToggleFilterCommercial()}
           emitToggleFilterEngineering={() => this.slotToggleFilterEngineer()}
           emitToggleUnconnectedNodesVisible={() => this.slotToggleUnconnectedNodes()}
           emitToggleNCEngineersVisible={() => this.slotToggleNonContributingEngineers()}
-          emitSearchHighlightToggled={
-            () => this.slotSearchHighlightToggled(!this.state.searchHighlightLinks)
-          }
-          emitSearchBiosToggled={
-            () => this.slotSearchBiosToggled(!this.state.searchIncludeBios)
-          }
+          emitSearchHighlightToggled={() => this.slotSearchHighlightToggled(!this.state.searchHighlightLinks)}
+          emitSearchBiosToggled={() => this.slotSearchBiosToggled(!this.state.searchIncludeBios)}
         />
       </SlidingPanel>
     );
@@ -845,6 +876,5 @@ class SocialApp extends React.Component {
     );
   }
 }
-
 
 export default SocialApp;
