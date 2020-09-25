@@ -7,25 +7,17 @@
 .popOver {
   background-color: white;
   color: black;
-  /* border: 1mm solid #808080; */
-  padding: 0.5vh 0.5vw 0.5vh 0.5vw;
+  border: 1px solid grey;
   position: absolute;
   z-index: 10;
 }
 
 .header {
-  padding-top: 0.7vh;
-  padding-bottom: 2.5vh;
-  font-size: 1.9vh;
-  height: 5%;
+  font-size: 12pt;
   color: #003366;
 }
 
-.bioSection {
-  padding-bottom: 1vh;
-  font-size: 1.5vh;
-  height: 90%;
-  width: 100%;
-  white-space: wrap;
-  overflow: auto;
+.bio {
+  font-size: 10pt;
+  color: black;
 }

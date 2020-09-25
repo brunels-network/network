@@ -9,6 +9,22 @@ import BigBox from "./BigBox";
 
 import styles from "./Popover.module.css";
 
+
+function _truncate(str, max = 10) {
+  const array = str.trim().split(" ");
+
+  let ellipsis;
+  if (array.length > max) {
+    ellipsis = "...";
+    //   this.setState({ readMoreEnabled: true });
+  } else {
+    ellipsis = "";
+  }
+
+  return array.slice(0, max).join(" ") + ellipsis;
+}
+
+
 function Popover(props) {
   const node = props.node;
 
@@ -66,6 +82,7 @@ function Popover(props) {
     bio = "No biography found.";
   } else {
     bio = bio.replace(name + ".  ", "");
+    bio = _truncate(bio, 30);
   }
 
   // Get the location of the click within the viewport so we can open the popover
@@ -73,22 +90,24 @@ function Popover(props) {
   const innerWidth = window.innerWidth; // px
   const innerHeight = window.innerHeight; // px
 
-  const popoverHeightVH = 30; // vh
-  const popoverWidthVW = 15; // vw
-
-  const popoverHeight = innerHeight * (popoverHeightVH / 100); // px
-  const popoverWidth = innerWidth * (popoverWidthVW / 100); // px
+  const popoverHeight = 250;
+  const popoverWidth = 150;
 
   let left;
   if (node.x > innerWidth - popoverWidth) {
-    left = node.x - 20 - popoverWidth + "px";
+    left = node.x - popoverWidth + "px";
   } else {
-    left = node.x + 10 + "px";
+    left = node.x + "px";
   }
 
   let top;
   if (node.y > innerHeight - popoverHeight) {
-    top = node.y - 10 - popoverHeight + "px";
+    top = node.y - popoverHeight + 50;
+
+    if (top < 50) { top = 50; }
+
+    top = top + "px";
+
   } else {
     top = node.y + "px";
   }
@@ -98,19 +117,19 @@ function Popover(props) {
       className={styles.popOver}
       style={{
         top: top, left: left,
-        height: popoverHeightVH + "vh", width: popoverWidthVW + "vw"
+        height: popoverHeight + "px", width: popoverWidth + "px"
         }}
     >
       <div className={styles.closeButton}>
         <button onClick={props.clearPopup}
-          style={{ background: "none", border: "none", fontSize: "2vh" }}>
+          style={{ background: "none", border: "none" }}>
               x
         </button>
       </div>
       <VBox>
         <div className={styles.header}>{name}</div>
         <BigBox>
-          <div className={styles.bioSection}>{bio}</div>
+          <div className={styles.bio}>{bio}</div>
         </BigBox>
         <HBox>
           {readMoreButton}
