@@ -6,41 +6,42 @@
 
 .node {
     stroke: grey;
+    fill: #00264e;
     stroke-width: 2px;
 }
 
 .node_highlight {
     /* fill: #c7e8f3; */
     fill: #3a6ea5;
-    stroke: #95c8ff;
-    stroke-width: 2px;
+    stroke: #add5ff;
+    stroke-width: 3px;
 }
 
 .node_select {
     /* fill: #c7e8f3; */
     fill: #f82bdd;
-    stroke: #ff68eb;
+    stroke: #fd94ef;
     stroke-width: 3px;
 }
 
 .link {
     /* Was white */
     stroke: #456991;
-    stroke-width: 0.10vw;
+    stroke-width: 1px;
     stroke-opacity: 60%;
     fill: none;
 }
 
 .linkWeak {
     stroke: #324f6e;
-    stroke-width: 0.05vw;
+    stroke-width: 1px;
     stroke-opacity: 20%;
     fill: none;
 }
 
 .linkIndirect {
     stroke: #b4b0b0;
-    stroke-width: 0.15vw;
+    stroke-width: 1px;
     stroke-opacity: 50%;
     fill: none;
 }
@@ -52,21 +53,21 @@
 
 .linkWeak.highlight {
     stroke: red;
-    stroke-width: 0.15vw;
+    stroke-width: 1px;
     stroke-opacity: 50%;
     fill: none;
 }
 
 .linkIndirect.highlight {
     stroke: red;
-    stroke-width: 0.15vw;
+    stroke-width: 1px;
     stroke-opacity: 50%;
     fill: none;
 }
 
 .link_highlight {
     stroke: red;
-    stroke-width: 0.15vw;
+    stroke-width: 2px;
     stroke-opacity: 100%;
     fill: none;
 }

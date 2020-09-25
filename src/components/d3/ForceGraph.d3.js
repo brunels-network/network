@@ -429,7 +429,7 @@ class ForceGraphD3 extends React.Component {
       .forceSimulation(graph.nodes)
       .alpha(1.0)
       .alphaTarget(0)
-      .alphaDecay(0.01)
+      .alphaDecay(0.075)
       .force("spiral",
         force_spiral(w, h)
         .strength(0.3)
@@ -437,15 +437,15 @@ class ForceGraphD3 extends React.Component {
           return d.sort_index;
         })
       )
-      .force(
+      /*.force(
         "collide",
         d3
         .forceCollide()
         .strength(0.3)
         .radius((d) => 5 + d.radius)
         .iterations(2)
-      )
-      .force("link", d3.forceLink().strength(0).links(edges).iterations(5))
+      )*/
+      /*.force("link", d3.forceLink().strength(0).links(edges).iterations(2))*/
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
 

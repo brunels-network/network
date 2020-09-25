@@ -160,7 +160,7 @@ class SocialApp extends React.Component {
     let social = this.state.social;
     social.setFilter("project", item);
 
-    if (this.state.searchText.length > 0) {
+    if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {
         social.selectSearchMatching(this.state.searchText, false, true);
       } else {
@@ -184,7 +184,7 @@ class SocialApp extends React.Component {
     social.filterUnconnectedNodes(true);
     social.filterNonContributingEngineers(true);
 
-    if (this.state.searchText.length > 0) {
+    if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {
         social.selectSearchMatching(this.state.searchText, false, true);
       } else {
@@ -230,7 +230,7 @@ class SocialApp extends React.Component {
     social.filterUnconnectedNodes(this.state.filterUnconnectedNodes);
     social.filterNonContributingEngineers(!this.state.filterNCEngineers);
 
-    if (this.state.searchText.length > 0) {
+    if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {
         social.selectSearchMatching(this.state.searchText, false, true);
       } else {
@@ -263,7 +263,7 @@ class SocialApp extends React.Component {
     social.filterUnconnectedNodes(!this.state.filterUnconnectedNodes);
     social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
-    if (this.state.searchText.length > 0) {
+    if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {
         social.selectSearchMatching(this.state.searchText, false, true);
       } else {
@@ -294,7 +294,7 @@ class SocialApp extends React.Component {
     social.filterUnconnectedNodes(this.state.filterUnconnectedNodes);
     social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
-    if (this.state.searchText.length > 0) {
+    if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {
         social.selectSearchMatching(this.state.searchText, false, true);
       } else {
@@ -326,7 +326,7 @@ class SocialApp extends React.Component {
     social.filterUnconnectedNodes(this.state.filterUnconnectedNodes);
     social.filterNonContributingEngineers(this.state.filterNCEngineers);
 
-    if (this.state.searchText.length > 0) {
+    if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {
         social.selectSearchMatching(this.state.searchText, false, true);
       } else {
@@ -350,8 +350,6 @@ class SocialApp extends React.Component {
 
     if (!id) {
       let last_search = this.state.cachedSearch;
-
-      console.log(`${last_search} : ${this.state.searchText}`);
 
       if (last_search === "") {
         social.clearSelections();
