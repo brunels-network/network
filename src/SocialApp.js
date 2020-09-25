@@ -65,8 +65,8 @@ class SocialApp extends React.Component {
       selectedShipID: null,
       isOverlayOpen: false,
       searchText: "",
-      searchIncludeBios: false,
-      searchHighlightLinks: true,
+      searchIncludeBios: true,
+      searchHighlightLinks: false,
       menuVisible: false,
       height: 0,
       width: 0,
@@ -320,16 +320,13 @@ class SocialApp extends React.Component {
         social: social,
         searchText: ""
       });
-    } else if (social.isSelected(id)) {
-      console.log(`POP UP THE SHORT BIO FOR ${id}`);
     } else {
       let item = social.get(id)
 
       social.setSelected(id, true, true);
       this.setState({
         social: social,
-        searchText: item.getName(),
-        searchIncludeBios: false,
+        searchText: item.getName()
       });
     }
   }

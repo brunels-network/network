@@ -30,13 +30,27 @@ class SearchBar extends React.Component {
       search_text = this.props.searchText;
     }
 
+    let clear_button = null;
+
+    if (search_text) {
+      clear_button = (
+        <div className={styles.clearButton}
+             onClick={()=>{this.props.emitUpdate("")}}
+        >
+          &nbsp;X&nbsp;
+        </div>);
+    }
+
     return (
       <form className={styles.form}
         onSubmit={(e) => this.onSubmitHandler(e)} >
-        <input className={styles.input} type="search"
-          onChange={(e) => this.onChangeHandler(e)}
-          value={search_text}
-          placeholder="Search..." />
+        <div className={styles.searchBar}>
+          <input className={styles.input} type="search"
+            onChange={(e) => this.onChangeHandler(e)}
+            value={search_text}
+            placeholder="Search..." />
+          {clear_button}
+        </div>
       </form>);
   }
 }

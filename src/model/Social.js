@@ -677,8 +677,13 @@ class Social {
       item = this.get(item, false);
 
       try {
-        item.setSelected(true);
-        if (highlight_links) connections.highlightConnections(item, this);
+        if (highlight_links) {
+          item.setSelected(true);
+          connections.highlightConnections(item, this);
+        }
+        else {
+          item.setHighlighted(true);
+        }
 
       } catch (error) {
         console.log(error);
