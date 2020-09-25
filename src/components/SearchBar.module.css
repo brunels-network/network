@@ -16,6 +16,8 @@
   text-align: center;
   font-size: 10pt;
   background-color: #222222;
+  border: none;
+  border-radius: 0px;
   color: white;
 }
 
