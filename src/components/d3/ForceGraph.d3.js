@@ -503,9 +503,10 @@ class ForceGraphD3 extends React.Component {
 
             return d.y + (0.5 * (height + d.radius));
           });
+
       })
       .on("end", () => {
-        this.restartSimulation();
+        console.log("END");
       });
 
     this._is_running = true;
