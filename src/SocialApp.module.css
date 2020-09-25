@@ -2,210 +2,23 @@
   all: unset;
 }
 
-.mainContainer {
-  background: #222222;
+.ui_main {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.graphContainer {
-  display: inline-block;
-  position: fixed;
-  z-index: 0;
-  width: 92%;
-  height: 88%;
-  left: 2.5%;
-  top: 5%;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
   background-color: #222222;
 }
 
-.shipNameContainer {
-  position: fixed;
-  top: 2%;
-  left: 45%;
-  width: 8%;
-}
-
-.resetButtonContainer {
-  position: fixed;
-  top: 94vh;
-  left: 14vw;
-}
-
-.spiralOrderButtonContainer {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 81vh;
-  left: 1vw;
-}
-
-.simulationTypeButtonContainer {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 91vh;
-  left: 1vw;
-}
-
-.whatIsButtonContainer {
-  position: fixed;
-  top: 2vh;
-  left: 2vw;
-}
-
-.howDoIButtonContainer {
-  position: fixed;
-  top: 2vh;
-  left: 73vw;
-}
-
-.commercialNodeLabel {
-  position: fixed;
-  top: 40vh;
-  left: -6vw;
-  z-index: 101;
-  transform: rotate(-90deg);
-}
-
-.engineeringNodeLabel {
-  position: fixed;
-  top: 40vh;
-  left: 90vw;
-  transform: rotate(90deg);
-  height: 10%;
-}
-
-.controlButton {
-  background-color: white;
-  border-radius: 8px;
-  color: black;
-  border: 2px solid #008cba;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  opacity: 0.8;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
-}
-
-.controlButton:active {
-  box-shadow: 0 2px rgba(0, 0, 0, 0.2);
-  transform: translateY(2px);
-}
-
-.bottomContainer {
-  position: fixed;
-  bottom: 3vh;
-  width: 75%;
-  left: 25%;
-  /* margin-left: -25%;
-  text-align: center; */
-}
-
-.acknowledgeContainer {
-  font-family: "Playfair Display";
-  position: fixed;
-  bottom: 1vh;
+.drawerButton {
   width: 100%;
   color: white;
-  font-size: 2vh;
-  text-align: center;
+  border: none;
+  background-color: #222222;
 }
 
-.analysisButtonPanel {
-  position: fixed;
-  top: 90vh;
-  left: 87vw;
-  height: 10vh;
-  z-index: 5;
-  /* padding: 8px 0; */
-}
-
-.filterText {
-  color: darkgreen;
-  font-size: small;
-}
-
-.citationText {
-  color: darkred;
-  font-size: smaller;
-}
-
-.closePanelButton {
-  position: absolute;
-  background-color: transparent;
-  color: black;
-  font-size: large;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 10%;
-  z-index: 300;
-  top: 0px;
-  right: 0px;
-  padding: 2px 5px;
-}
-
-.closeOverlayButton {
-  position: absolute;
-  background-color: white;
-  color: black;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 50%;
-  z-index: 300;
-  top: -10px;
-  right: -10px;
-  padding: 2px 5px;
-}
-
-.modal {
-  position: absolute;
-  z-index: 201;
-  width: 66%;
-  height: 66%;
-  top: 17%;
-  left: 17%;
-  right: 20px;
-  bottom: 20px;
-  background-color: white;
-}
-
-.modalOverlay {
-  position: fixed;
-  z-index: 200;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-}
-
-.modalOverlayAfterOpen {
-  opacity: 1;
-}
-
-.modalOverlayBeforeClose {
-  opacity: 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .controlButton:hover {
-    background-color: #008cba;
-    opacity: 1;
-    color: white;
-  }
-
-  .closeOverlayButton:hover {
-    padding: 2px 5px;
-    background-color: red;
-    color: white;
-  }
-
-  .closePanelButton:hover {
-    padding: 2px 5px;
-    color: white;
-  }
+.fullscreen {
+  background-color: orange;
+  height: 100%;
 }

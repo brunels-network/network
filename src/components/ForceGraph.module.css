@@ -1,57 +1,46 @@
-@font-face {
-    font-family: "Playfair Display";
-    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
-}
-
-@font-face {
-    font-family: "Playfair Display SemiBold";
-    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-SemiBold.ttf) format("truetype");
-}
-
 .container {
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.graph {
-    position: relative;
-    height: 100%;
     width: 100%;
-    border: black;
+    height: 100%;
+    background-color: #222222;
 }
 
 .node {
-    stroke: white;
-    stroke-width: 1px;
+    stroke: grey;
+    stroke-width: 2px;
 }
 
-.node.highlight {
+.node_highlight {
     /* fill: #c7e8f3; */
     fill: #3a6ea5;
-    stroke: white;
+    stroke: #95c8ff;
     stroke-width: 2px;
+}
+
+.node_select {
+    /* fill: #c7e8f3; */
+    fill: #f82bdd;
+    stroke: #ff68eb;
+    stroke-width: 3px;
 }
 
 .link {
     /* Was white */
-    stroke: #659dd8;
+    stroke: #456991;
     stroke-width: 0.10vw;
     stroke-opacity: 60%;
     fill: none;
 }
 
 .linkWeak {
-    stroke: #659dd8;
-    stroke-width: 0.10vw;
+    stroke: #324f6e;
+    stroke-width: 0.05vw;
     stroke-opacity: 20%;
     fill: none;
 }
 
 .linkIndirect {
-    stroke: #808080;
-    stroke-width: 0.10vw;
+    stroke: #b4b0b0;
+    stroke-width: 0.15vw;
     stroke-opacity: 50%;
     fill: none;
 }
@@ -63,21 +52,22 @@
 
 .linkWeak.highlight {
     stroke: red;
-    stroke-width: 0.30vw;
+    stroke-width: 0.15vw;
     stroke-opacity: 50%;
     fill: none;
 }
 
 .linkIndirect.highlight {
     stroke: red;
-    stroke-width: 0.30vw;
+    stroke-width: 0.15vw;
     stroke-opacity: 50%;
     fill: none;
 }
 
-.link.highlight {
+.link_highlight {
     stroke: red;
-    stroke-width: 0.35vw;
+    stroke-width: 0.15vw;
+    stroke-opacity: 100%;
     fill: none;
 }
 
@@ -95,20 +85,19 @@
     user-select: none;
     /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
-    font-family: "Playfair Display SemiBold";
-    /* padding-left: 1cm; */
     font-size: 14px;
     stroke-width: 0;
     fill: white;
-    /* justify-content: right; */
 }
 
-.node_text.highlight {
-    /* fill: #738566; */
-    /* fill: #07899d; */
+.node_text_highlight {
     fill: #ffd28b;
+    font-size: 10pt;
+}
 
-    font-size: medium;
+.node_text_select {
+    fill: #ffffff;
+    font-size: 14pt;
 }
 
 .tooltip {
@@ -117,7 +106,6 @@
     z-index: 10;
     width: 15vw;
     height: 20vh;
-    font-family: "Playfair Display SemiBold";
     font-size: max(12px, 0.8vw);
     background-color: #808080;
     color: white;

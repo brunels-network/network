@@ -1,0 +1,13 @@
+.vbox {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    height: 100%;
+    width: 100%;
+}
+
+.child {
+    flex: 0 1 auto;
+    overflow: auto;
+}

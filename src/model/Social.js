@@ -1,5 +1,5 @@
 import Dry from "json-dry";
-import lodash from "lodash";
+import lodash, { isString } from "lodash";
 
 import People from "./People";
 import Businesses from "./Businesses";
@@ -14,20 +14,11 @@ import DateRange from "./DateRange";
 import get_id from "./get_id";
 
 import score_by_connections from "./ScoringFunctions";
+import size_by_influence from "./SizingFunctions";
 
 import {
   ValueError
 } from "./Errors";
-
-const fast_physics = {
-  enabled: true,
-  timestep: 0.5,
-};
-
-const slow_physics = {
-  ...fast_physics
-};
-slow_physics.timestep = 0.1;
 
 function _push(values, list) {
   if (!list || !values) {
@@ -66,6 +57,9 @@ class Social {
     this.state.window = new DateRange();
     this.state.max_window = new DateRange();
     this.state.scoring_function = score_by_connections;
+    this.state.sizing_function = size_by_influence;
+    this.state.filter_unconnected = true;
+    this.state.filter_nc_engineers = true;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -151,6 +145,36 @@ class Social {
     }
   }
 
+  filterNonContributingEngineers(filter = true) {
+    if (this.state.filter_nc_engineers === filter) {
+      return;
+    }
+
+    if (filter) {
+      this.state.filter_nc_engineers = true;
+    }
+    else {
+      this.state.filter_nc_engineers = false;
+    }
+
+    this.clearCache();
+  }
+
+  filterUnconnectedNodes(filter = true) {
+    if (this.state.filter_unconnected === filter) {
+      return;
+    }
+
+    if (filter) {
+      this.state.filter_unconnected = true;
+    }
+    else {
+      this.state.filter_unconnected = false;
+    }
+
+    this.clearCache();
+  }
+
   clearCache() {
     this.state.cache = {
       graph: null,
@@ -211,6 +235,9 @@ class Social {
         ...node_filter
       };
 
+      // this filter is returning matching people and the nodes
+      // that are connected to these people
+
       for (let connection in connections) {
         let node = connections[connection];
         filter[get_id(node)] = 1;
@@ -230,7 +257,9 @@ class Social {
     if (group_filter) {
       this.state.cache.node_filters.push((item) => {
         try {
-          if (item.inGroup(group_filter)) {
+          // use an "OR" match at the moment as this is more
+          // appropriate for the current use of the gui
+          if (item.inGroup(group_filter, false)) {
             return item;
           } else {
             return null;
@@ -383,6 +412,16 @@ class Social {
         this._rebuilding -= 1;
       }
 
+      if (this.state.filter_nc_engineers) {
+        this.state.cache.people =
+          this.state.cache.people.filterNonContributingEngineers();
+      }
+
+      if (this.state.filter_unconnected) {
+        this.state.cache.people =
+          this.state.cache.people.filterUnconnected(this.getConnections(true));
+      }
+
       return this.state.cache.people;
     } else {
       return this.state.people;
@@ -400,6 +439,11 @@ class Social {
         this._rebuilding += 1;
         this.state.cache.businesses = this.state.businesses.filter(this.getNodeFilters());
         this._rebuilding -= 1;
+      }
+
+      if (this.state.filter_unconnected) {
+        this.state.cache.businesses =
+          this.state.cache.businesses.filterUnconnected(this.getConnections(true));
       }
 
       return this.state.cache.businesses;
@@ -577,6 +621,167 @@ class Social {
     }
   }
 
+  clearHighlights() {
+    this.getPeople(false).clearHighlights();
+    this.getBusinesses(false).clearHighlights();
+    this.getConnections(false).clearHighlights();
+    this.clearCache();
+  }
+
+  clearSelections() {
+    this.getPeople(false).clearSelections();
+    this.getBusinesses(false).clearSelections();
+    this.clearCache();
+  }
+
+  selectSearchMatching(text, include_bios = false, highlight_links = false) {
+    this.clearSelections();
+    this.clearHighlights();
+
+    try {
+      if (text.length === 0) {
+        this.clearCache();
+        return;
+      }
+    }
+    catch (error) {
+      this.clearCache();
+      return;
+    }
+
+    let result = [];
+
+    try {
+      let items = this.getPeople(true).find(text);
+      _push(items, result);
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      let items = this.getBusinesses(true).find(text);
+      _push(items, result);
+    } catch (error) {
+      console.log(error);
+    }
+
+    if (include_bios) {
+      try {
+        let items = this.getBiographies().search(text);
+        _push(items, result);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    let connections = null;
+
+    if (highlight_links) connections = this.getConnections(true);
+
+    result.forEach((item) => {
+      item = get_id(item);
+      item = this.get(item, false);
+
+      try {
+        if (highlight_links) {
+          item.setSelected(true);
+          connections.highlightConnections(item, this);
+        }
+        else {
+          item.setHighlighted(true);
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+    this.clearCache();
+  }
+
+  setSelected(item, highlight_connections = true, clear_previous = true) {
+    if (clear_previous) {
+      if (highlight_connections) {
+        this.clearHighlights();
+      }
+
+      this.clearSelections();
+    }
+
+    item = get_id(item);
+    item = this.get(item, false);
+
+    if (item === null) { return; }
+
+    item.setSelected(true);
+
+    if (highlight_connections) {
+      this.getConnections(true).highlightConnections(item, this);
+    }
+
+    this.clearCache();
+  }
+
+  setHighlighted(item, highlight_connections = true, clear_previous = true) {
+    if (clear_previous) {
+      this.clearHighlights();
+      this.clearSelections();
+    }
+
+    item = get_id(item);
+    item = this.get(item, false);
+
+    if (item === null) { return; }
+
+    item.setHighlighted(true);
+
+    if (highlight_connections) {
+      this.getConnections(true).highlightConnections(item, this);
+    }
+
+    this.clearCache();
+  }
+
+  isSelected(item) {
+    if (item.getID) {
+      item = item.getID();
+    }
+
+    item = this.get(item, false);
+
+    console.log(item);
+
+    if (item === null) {
+      return false;
+    }
+    else if (item.getSelected) {
+      return item.getSelected();
+    }
+    else {
+      return false;
+    }
+  }
+
+  isHighlighted(item) {
+    if (item.getID) {
+      item = item.getID();
+    }
+
+    item = this.get(item, false);
+
+    console.log(item);
+
+    if (item === null) {
+      return false;
+    }
+    else if (item.getHighlighted) {
+      return item.getHighlighted();
+    }
+    else {
+      return false;
+    }
+  }
+
   find(text) {
     let result = [];
 
@@ -637,13 +842,62 @@ class Social {
     this.clearCache();
   }
 
+  isAnchor(node) {
+    let id = get_id(node);
+
+    return id === get_id(this.state.anchor);
+  }
+
   setAnchor(anchor) {
+    if (anchor === null) {
+      if (this.state.anchor === null) {
+        return false;
+      } else {
+        this.state.anchor = null;
+        this.clearCache();
+        return true;
+      }
+    }
+
+    let got_anchor = null;
+
+    if (isString(anchor)) {
+      got_anchor = this.get(anchor);
+    }
+
+    if (got_anchor) {
+      if (got_anchor === this.state.anchor) {
+        return false;
+      }
+      else {
+        this.state.anchor = got_anchor;
+        this.clearCache();
+        return true;
+      }
+    }
+
     if (anchor) {
-      anchor = this.getPeople().find(anchor);
+      got_anchor = this.getPeople().find(anchor);
+    }
+
+    if (!got_anchor) {
+      got_anchor = this.getBusinesses().find(anchor);
+    }
+
+    if (!got_anchor) {
+      console.log(`CANNOT FIND ANCHOR ${anchor}: ${got_anchor}`);
+      return false;
+    }
+
+    anchor = got_anchor;
+
+    if (anchor === this.state.anchor) {
+      return false;
     }
 
     this.state.anchor = anchor;
     this.clearCache();
+    return true;
   }
 
   toggleFilter(items) {
@@ -671,6 +925,22 @@ class Social {
       }
     }
 
+    this.clearCache();
+  }
+
+  setFilter(category, items) {
+    if (!Array.isArray(items)) {
+      items = [items];
+    }
+
+    let filter = {};
+
+    for (let item of items) {
+      let id = get_id(item);
+      filter[id] = 1;
+    }
+
+    this.state.filter[category] = filter;
     this.clearCache();
   }
 
@@ -786,6 +1056,19 @@ class Social {
     return this.state.scoring_function;
   }
 
+  /** Set the sizing function used to size the nodes */
+  setSizingFunction(func) {
+    if (func !== this.state.sizing_function) {
+      this.state.sizing_function = func;
+      this.clearCache();
+    }
+  }
+
+/** Return the sizing function that should be used to size the nodes */
+  getSizingFunction() {
+    return this.state.sizing_function;
+  }
+
   /** Return the graph of nodes and edges that will be displayed by
    *  the app. This should apply all of the filters and only return
    *  the nodes and edges that should be visible. It should also
@@ -797,18 +1080,38 @@ class Social {
       return this.state.cache.graph;
     }
 
-    const anchor = this.state.anchor;
-    let nodes = this.getPeople().getNodes({
-      anchor: anchor
-    });
+    let nodes = this.getPeople().getNodes();
     nodes = nodes.concat(this.getBusinesses().getNodes());
 
+    // create a dictionary so we know which nodes are selected
     let n = {};
     for (let i in nodes) {
       n[get_id(nodes[i])] = 1;
     }
 
+    // get only the edges that involve these nodes
     let edges = this.getConnections().getEdges(n);
+
+    // let each node know how many connections it has got
+    let counts = {};
+
+    let add_count = (id) => {
+      // ensures x == 1 if id doesn't exist in counts
+      let x = (counts[id] || 0) + 1;
+      counts[id] = x;
+    };
+
+    for (let i in edges) {
+      add_count(edges[i].source);
+      add_count(edges[i].target);
+    }
+
+    nodes.forEach((node) => {
+      let count = counts[node.id];
+
+      if (!count) { count = 0; }
+      node.edge_count = count;
+    });
 
     let scoring_function = this.getScoringFunction();
 
@@ -817,6 +1120,14 @@ class Social {
     }
 
     scoring_function(nodes, edges, this);
+
+    let sizing_function = this.getSizingFunction();
+
+    if (!sizing_function) {
+      sizing_function = size_by_influence;
+    }
+
+    sizing_function(nodes, edges, this);
 
     this.state.cache.graph = {
       nodes: nodes,

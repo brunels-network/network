@@ -1,12 +1,13 @@
 html,
 body {
-  font-family: sans-serif;
+  font-family: Bookman, sans-serif;
   overflow: hidden;
   position: absolute;
 }
 
 .brunel-center-container {
-  position: fixed; /* or absolute */
+  position: fixed;
+  /* or absolute */
   text-align: center;
   padding: 50px;
   width: 25%;
@@ -30,6 +31,7 @@ body {
 .vis-time-axis .vis-grid.vis-sunday {
   background: gray;
 }
+
 .vis-time-axis .vis-text.vis-saturday,
 .vis-time-axis .vis-text.vis-sunday {
   color: white;

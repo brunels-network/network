@@ -5,7 +5,9 @@
  * itself
  */
 export default function get_id(node) {
-  if (node.getID) {
+  if (node === null) {
+    return null;
+  } else if (node.getID) {
     return node.getID();
   } else if (node.id) {
     return node.id;

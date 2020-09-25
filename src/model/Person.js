@@ -3,8 +3,6 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
-import fixedNodes from "../data/fixedNodes.json";
-
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -78,12 +76,12 @@ class Person {
       affiliations: {},
       projects: {},
       sources: {},
+      highlighted: {},
       alive: null,
       gender: null,
       notes: [],
       orig_name: null,
       weight: {},
-      edge_count: {},
     };
 
     this.setState(props);
@@ -103,7 +101,7 @@ class Person {
     return true;
   }
 
-  inGroup(group) {
+  inGroup(group, match_and=true) {
     if (group.getID) {
       let ids = {};
       ids[group.getID()] = 1;
@@ -128,7 +126,12 @@ class Person {
       }
     });
 
-    return Object.keys(seen).length === Object.keys(group).length;
+    if (match_and) {
+      return Object.keys(seen).length === Object.keys(group).length;
+    }
+    else {
+      return Object.keys(seen).length > 0;
+    }
   }
 
   getID() {
@@ -173,10 +176,12 @@ class Person {
     let nprojects = Object.keys(project).length;
 
     let seen = {};
+    let new_projects = {};
 
     Object.keys(this.state.projects).forEach((key) => {
       if (key in project) {
         seen[key] = 1;
+        new_projects[key] = this.state.projects[key];
       }
     });
 
@@ -186,17 +191,18 @@ class Person {
 
     let affiliations = _filterProject(this.state.affiliations, project);
     let positions = _filterProject(this.state.positions, project);
+    let sources = _filterProject(this.state.sources, project);
     let weight = _filterProject(this.state.weight, project);
-    let edge_count = _filterProject(this.state.edge_count, project);
 
     if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
-        weight !== this.state.weight || edge_count !== this.state.edge_count) {
+      weight !== this.state.weight || sources !== this.state.sources) {
       let person = new Person();
       person.state = { ...this.state };
       person.state.affiliations = affiliations;
       person.state.positions = positions;
+      person.state.sources = sources;
       person.state.weight = weight;
-      person.state.edge_count = edge_count;
+      person.state.projects = new_projects;
       person._getHook = this._getHook;
       return person;
     } else {
@@ -248,7 +254,8 @@ class Person {
       this.state.orig_name = setState(state.orig_name);
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
-      this.state.edge_count = setState(state.edge_count);
+      this.state.is_highlighted = false;
+      this.state.is_selected = false;
 
       if (!this.state.orig_name || this.state.orig_name === "None") {
         throw new ValueError(`No name for ${this}`);
@@ -388,12 +395,18 @@ class Person {
     }
   }
 
-  getWeight() {
-    return this.state.weight;
+  getWeight(project_id = null) {
+    if (project_id === null) {
+      // return the first project weight
+      project_id = Object.keys(this.state.weight)[0];
+    }
+
+    return this.state.weight[project_id];
   }
 
-  getedge_count() {
-    return this.state.edge_count;
+  getProjectID() {
+    // return the first matching project ID
+    return Object.keys(this.state.projects)[0];
   }
 
   getProjectWeight(projectKey) {
@@ -407,43 +420,74 @@ class Person {
     return weight;
   }
 
-  getNode(isAnchor = false) {
+  setSelected(val) {
+    if (val) {
+      this.state.is_selected = true;
+    }
+    else {
+      this.state.is_selected = false;
+    }
+  }
+
+  getSelected() {
+    return this.state.is_selected;
+  }
+
+  setHighlighted(val) {
+    if (val) {
+      this.state.is_highlighted = true;
+    }
+    else {
+      this.state.is_highlighted = false;
+    }
+  }
+
+  getHighlighted() {
+    return this.state.is_highlighted;
+  }
+
+
+  getWeight(project_id = null) {
+    if (project_id === null) {
+      // return the first project weight
+      project_id = Object.keys(this.state.weight)[0];
+    }
+
+    return this.state.weight[project_id];
+  }
+
+  isNonContributingEngineer(project_id = null) {
+    if (project_id === null) {
+      // return this status with the first project
+      project_id = Object.keys(this.state.positions)[0];
+    }
+
+    const positions = this.state.positions[project_id];
+
+    for (let i = 0; i < positions.length; ++i){
+      const position = this._getHook(positions[i]);
+      const name = position.getCanonical();
+      if (name.includes("non-cont")) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  getNode() {
     let node = {
       id: this.getID(),
       label: this.getName(),
       title: this.getName(),
-      fixed: false,
       shape: "circle",
+      weight: this.getWeight(),
+      type: "person",
+      highlighted: this.getHighlighted(),
+      selected: this.getSelected(),
+      project: this.getProjectID(),
+      is_nc_engineer: this.isNonContributingEngineer(),
     };
-
-    const name = this.getName();
-
-    node["weight"] = this.getWeight();
-    node["type"] = "person";
-
-    // Position will be used to set the colour used
-    // for the node representing this person
-    node["positions"] = this.getPositions();
-    node["edge_count"] = this.getedge_count();
-
-    let keys = Object.keys(this.state.projects);
-
-    if (keys.length > 0) {
-      node["group"] = keys.sort().join(":");
-    } else {
-      node["group"] = "unknown";
-    }
-
-    if (isAnchor) {
-      node["shape"] = "rect";
-      node["fixed"] = true;
-      node["group"] = "anchor";
-    }
-
-    if (name in fixedNodes) {
-      node["fixed"] = true;
-      node["fixedLocation"] = fixedNodes[name];
-    }
 
     return node;
   }

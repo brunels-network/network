@@ -9,6 +9,7 @@ __all__ = [
     "importPositions",
     "importAffiliations",
     "importSources",
+    "importHighlights",
     "importType",
     "importNotes",
     "importProject",
@@ -214,6 +215,11 @@ def importPerson(node, project, importers=None):
         importAffiliations = importAffiliations
 
     try:
+        importHighlights = importers["importHighlights"]
+    except KeyError:
+        importHighlights = importHighlights
+
+    try:
         importSources = importers["importSources"]
     except KeyError:
         importSources = importSources
@@ -240,7 +246,7 @@ def importPerson(node, project, importers=None):
         state["notes"] = {pid: importNotes(node, importers=importers)}
         state["projects"] = {pid: importProjectDates(node, importers=importers)}
         state["weight"] = {pid: importWeights(node, importers=importers)}
-        state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
+        state["highlight"] = {pid: importHighlights(node, importers=importers)}
 
         return _Person(state)
     except Exception as e:
@@ -275,6 +281,11 @@ def importBusiness(node, project, importers=None):
         importNotes = importNotes
 
     try:
+        importHighlights = importers["importHighlights"]
+    except KeyError:
+        importHighlights = importHighlights
+
+    try:
         importWeights = importers["importWeights"]
     except KeyError:
         importWeights = importWeights
@@ -297,8 +308,8 @@ def importBusiness(node, project, importers=None):
         state["notes"] = {pid: importNotes(node, importers=importers)}
         state["weight"] = {pid: importWeights(node, importers=importers)}
         state["positions"] = {pid: importPositions(node, importers=importers)}
-        state["edge_count"] = {pid: importEdgeCount(node, importers=importers)}
         state["projects"] = {pid: _DateRange.null()}
+        state["highlight"] = {pid: importHighlights(node, importers=importers)}
 
         from ._business import Business as _Business
 
@@ -546,6 +557,21 @@ def importAffiliations(node, importers=None):
     return result
 
 
+def importHighlights(node, importers=None):
+    try:
+        highlight = node["Highlight"]
+
+        if highlight:
+            highlight = True
+        else:
+            highlight = False
+
+    except Exception:
+        highlight = False
+
+    return highlight
+
+
 def extractSourceName(source):
     source = source.lstrip().rstrip()
 
@@ -729,5 +755,5 @@ def getDefaultImporters():
         "importProjectDates": importProjectDates,
         "importWeights": importWeights,
         "importEdgeCount": importEdgeCount,
+        "importHighlights": importHighlights
     }
-

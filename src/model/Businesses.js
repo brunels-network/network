@@ -49,6 +49,18 @@ class Businesses {
     return output;
   }
 
+  clearSelections() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setSelected(false);
+    });
+  }
+
+  clearHighlights() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setHighlighted(false);
+    });
+  }
+
   canAdd(item) {
     return item instanceof Business || item._isABusinessObject;
   }
@@ -134,6 +146,26 @@ class Businesses {
     // let keys = Object.keys(this._names).join("', '");
 
     // throw new MissingError(`No Business matches '${name}. Available Businesses are '${keys}'`);
+  }
+
+  filterUnconnected(connections) {
+    let registry = {};
+    let names = {};
+
+    Object.keys(this.state.registry).forEach((key) => {
+      if (connections.nConnections(key) > 0) {
+        let business = this.state.registry[key];
+        registry[key] = business;
+        names[business.getName()] = key;
+      }
+    });
+
+    let businesses = new Businesses();
+    businesses.state.registry = registry;
+    businesses._names = names;
+    businesses._updateHooks(this._getHook);
+
+    return businesses;
   }
 
   filter(funcs = []) {

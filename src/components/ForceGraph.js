@@ -4,23 +4,25 @@ import React from "react";
 import Popover from "./Popover";
 import ForceGraphD3 from "./d3/ForceGraph.d3.js";
 
-import lodash from "lodash";
+import styles from "./ForceGraph.module.css";
+
 
 class ForceGraph extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      popoversVisible: false,
-      popups: {},
+      popup: null,
     };
 
     this.updateSize = this.updateSize.bind(this);
-    this.emitPopProps = this.emitPopProps.bind(this);
-    this.clearPopups = this.clearPopups.bind(this);
+    this.emitPopup = this.emitPopup.bind(this);
+    this.clearPopup = this.clearPopup.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
-    this.graph = new ForceGraphD3(props);
+    this.containerRef = React.createRef();
+
+    this.graph = new ForceGraphD3(this, props);
   }
 
   componentDidMount() {
@@ -33,75 +35,55 @@ class ForceGraph extends React.Component {
   }
 
   componentDidUpdate() {
-    // TODO - look up better way of doing this
-    // This feels very clunky
-    let localProps = lodash.cloneDeep(this.props);
-    localProps["emitPopProps"] = this.emitPopProps;
-    this.graph.props = localProps;
-    this.graph.update(this.props);
+    this.graph.emitPopup = this.emitPopup;
+    this.graph.clearPopup = this.clearPopup;
     this.graph.draw();
   }
 
   updateSize() {
-    if (this.container && this.graph) {
+    const containerRect = this.containerRef.current.getBoundingClientRect();
+
+    if (this.containerRef && this.graph) {
+      let width = containerRect.width;
+      let height = containerRect.height;
+
       this.graph.update({
-        width: this.container.offsetWidth,
-        height: this.container.offsetHeight,
+        width: width,
+        height: height
       });
-      this.graph.draw();
+      this.graph.drawFromScratch();
     }
   }
 
-  // Used for multiple popups
-  updatePopupState(id, node) {
-    this.setState((prevState) => {
-      let popups = Object.assign({}, prevState.popups);
-      popups[id] = node;
-      return { popups: popups };
-    });
+  emitPopup(node) {
+    this.setState({ popup: node });
   }
 
-  emitPopProps(node) {
-    // this.clearPopups();
-    this.setState({ popups: { id: node } });
-
-    // Keep code for multiple popups
-    // if (this.state.popups[id]) {
-    //   this.updatePopupState(id, false);
-    // } else {
-    //   this.updatePopupState(id, node);
-    // }
-  }
-
-  clearPopups() {
-    this.setState({ popups: {} });
+  clearPopup() {
+    this.setState({ popup: null });
   }
 
   render() {
-    let s = this.graph.className();
+    this.graph.update(this.props);
 
-    let popups = [];
+    let popup = null;
 
-    for (let [id, node] of Object.entries(this.state.popups)) {
-      if (node !== false) {
-        let p = (
-          <Popover
-            key={id}
-            togglePopover={this.emitPopProps}
-            node={node}
-            social={this.props.social}
-            selectedShipID={this.props.selectedShipID}
-            clearPopups={this.clearPopups}
-          />
-        );
-        popups.push(p);
-      }
+    if (this.state.popup) {
+      let node = this.state.popup;
+
+      popup = <Popover
+        node={node}
+        social={this.props.social}
+        clearPopup={this.clearPopup}
+        emitSetCenter={this.props.emitSetCenter}
+        emitReadMore={this.props.emitReadMore}
+      />;
     }
 
     return (
-      <div ref={(el) => (this.container = el)} style={{ width: "100%", height: "100%" }}>
-        <div id={s} className={s}>
-          {popups}
+      <div ref={this.containerRef} className={styles.container}>
+        <div className={this.graph.className()}>
+          {popup}
         </div>
       </div>
     );
@@ -110,8 +92,8 @@ class ForceGraph extends React.Component {
 
 ForceGraph.propTypes = {
   social: PropTypes.object.isRequired,
-  selectedShipID: PropTypes.string,
-  indirectConnectionsVisible: PropTypes.bool.isRequired,
+  emitSetCenter: PropTypes.func.isRequired,
+  emitReadMore: PropTypes.func.isRequired,
 };
 
 export default ForceGraph;

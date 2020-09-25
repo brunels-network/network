@@ -16,11 +16,10 @@
 .container {
   position: fixed;
   background: white;
-  font-family: "Playfair Display Medium";
-  width: 75%;
-  height: 75%;
-  left: 12.5%;
-  top: 12.5%;
+  width: 95%;
+  height: 95%;
+  left: 2.5%;
+  top: 2.5%;
   opacity: 1;
   background-color: white;
   z-index: 11;

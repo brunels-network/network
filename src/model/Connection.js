@@ -3,6 +3,8 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
+import get_id from "./get_id";
+
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -43,6 +45,7 @@ class Connection {
       correspondances: null,
       projects: null,
       notes: null,
+      is_highlighted: false,
     };
 
     this.setState(props);
@@ -311,6 +314,19 @@ class Connection {
     }
   }
 
+  setHighlighted(val) {
+    if (val) {
+      this.state.is_highlighted = true;
+    }
+    else {
+      this.state.is_highlighted = false;
+    }
+  }
+
+  getHighlighted() {
+    return this.state.is_highlighted;
+  }
+
   toEdge() {
     let color = this.getColorFromType();
     // let weight = this.getWeightFromType();
@@ -318,11 +334,12 @@ class Connection {
 
     let edge = {
       id: this.getID(),
-      source: this.state.n0,
-      target: this.state.n1,
+      source: get_id(this.state.n0),
+      target: get_id(this.state.n1),
       value: weight,
       type: this.state.type,
       color: color,
+      highlighted: this.getHighlighted(),
     };
 
     return edge;

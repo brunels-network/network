@@ -49,6 +49,18 @@ class People {
     return output;
   }
 
+  clearSelections() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setSelected(false);
+    });
+  }
+
+  clearHighlights() {
+    Object.keys(this._names).forEach((key) => {
+      this.get(this._names[key]).setHighlighted(false);
+    });
+  }
+
   canAdd(item) {
     return item instanceof Person || item._isAPersonObject;
   }
@@ -136,6 +148,46 @@ class People {
     // throw new MissingError(`No Person matches '${name}. Available People are '${keys}'`);
   }
 
+  filterNonContributingEngineers() {
+    let registry = {};
+    let names = {};
+
+    Object.keys(this.state.registry).forEach((key) => {
+      let person = this.state.registry[key];
+      if (!person.isNonContributingEngineer()){
+        registry[key] = person;
+        names[person.getName()] = key;
+      }
+    });
+
+    let people = new People();
+    people.state.registry = registry;
+    people._names = names;
+    people._updateHooks(this._getHook);
+
+    return people;
+  }
+
+  filterUnconnected(connections) {
+    let registry = {};
+    let names = {};
+
+    Object.keys(this.state.registry).forEach((key) => {
+      if (connections.nConnections(key) > 0) {
+        let person = this.state.registry[key];
+        registry[key] = person;
+        names[person.getName()] = key;
+      }
+    });
+
+    let people = new People();
+    people.state.registry = registry;
+    people._names = names;
+    people._updateHooks(this._getHook);
+
+    return people;
+  }
+
   filter(funcs = []) {
     if (funcs.length === 0) {
       return this;
@@ -189,7 +241,7 @@ class People {
   getNodes({ anchor = null } = {}) {
     let nodes = [];
 
-    if (anchor.getID) {
+    if (anchor && anchor.getID) {
       anchor = anchor.getID();
     }
 

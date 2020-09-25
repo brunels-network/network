@@ -3,8 +3,6 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
-import fixedNodes from "../data/fixedNodes.json";
-
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -77,7 +75,8 @@ class Business {
       affiliations: {},
       notes: [],
       weight: {},
-      edge_count: {},
+      is_highlighted: false,
+      is_selected: false,
     };
 
     this.setState(props);
@@ -167,10 +166,12 @@ class Business {
     let nprojects = Object.keys(project).length;
 
     let seen = {};
+    let new_projects = {};
 
     Object.keys(this.state.projects).forEach((key) => {
       if (key in project) {
         seen[key] = 1;
+        new_projects[key] = this.state.projects[key];
       }
     });
 
@@ -181,16 +182,17 @@ class Business {
     let affiliations = _filterProject(this.state.affiliations, project);
     let positions = _filterProject(this.state.positions, project);
     let weight = _filterProject(this.state.weight, project);
-    let edge_count = _filterProject(this.state.edge_count, project);
+    let sources = _filterProject(this.state.sources, project);
 
     if (affiliations !== this.state.affiliations || positions !== this.state.positions ||
-        weight !== this.state.weight || edge_count !== this.state.edge_count) {
+        weight !== this.state.weight || sources !== this.state.sources) {
       let business = new Business();
       business.state = { ...this.state };
       business.state.affiliations = affiliations;
       business.state.positions = positions;
+      business.state.sources = sources;
       business.state.weight = weight;
-      business.state.edge_count = edge_count;
+      business.state.projects = new_projects;
       business._getHook = this._getHook;
       return business;
     } else {
@@ -231,7 +233,6 @@ class Business {
       this.state.sources = setState(state.sources, {});
       this.state.notes = setState(state.notes, []);
       this.state.weight = setState(state.weight);
-      this.state.edge_count = setState(state.edge_count);
 
       if (!this.state.name) {
         throw new ValueError("You cannot have an Business without a name");
@@ -247,8 +248,17 @@ class Business {
     return this;
   }
 
-  getWeight() {
-    return this.state.weight;
+  getProjectID() {
+    // return the first matching project ID
+    return Object.keys(this.state.projects)[0];
+  }
+
+  getWeight(project_id = null) {
+    if (project_id === null) {
+      // use the first project's weight
+      project_id = Object.keys(this.state.weight)[0];
+    }
+    return this.state.weight[project_id];
   }
 
   toString() {
@@ -283,43 +293,44 @@ class Business {
     return this.state.scores;
   }
 
-  getedge_count() {
-    return this.state.edge_count;
+  setSelected(val) {
+    if (val) {
+      this.state.is_selected = true;
+    }
+    else {
+      this.state.is_selected = false;
+    }
   }
 
-  getNode(is_anchor = false) {
-    let node = { id: this.getID(), label: this.getName(), title: this.getName(), shape: "circle" };
+  getSelected() {
+    return this.state.is_selected;
+  }
 
-    const weight = this.getWeight();
-
-    node["size"] = 0.5 * weight;
-    node["weight"] = weight;
-    node["type"] = "business";
-
-    node["edge_count"] = this.getedge_count();
-
-    // Position will be used to set the colour used
-    // for the node representing this person
-    node["positions"] = this.getPositions();
-
-    let keys = Object.keys(this.state.projects);
-
-    if (keys.length > 0) {
-      node["group"] = keys.sort().join(":");
-    } else {
-      node["group"] = "unknown";
+  setHighlighted(val) {
+    if (val) {
+      this.state.is_highlighted = true;
     }
-
-    if (is_anchor) {
-      node["shape"] = "rect";
-      node["physics"] = false;
-      node["group"] = "anchor";
-      node["size"] = 20.0;
+    else {
+      this.state.is_highlighted = false;
     }
+  }
 
-    if (this.getName() in fixedNodes) {
-      node["fixed"] = true;
-    }
+  getHighlighted() {
+    return this.state.is_highlighted;
+  }
+
+  getNode() {
+    let node = {
+      id: this.getID(),
+      label: this.getName(),
+      title: this.getName(),
+      shape: "square",
+      highlighted: this.getHighlighted(),
+      selected: this.getSelected(),
+      weight: this.getWeight(),
+      type: "business",
+    };
+
     return node;
   }
 

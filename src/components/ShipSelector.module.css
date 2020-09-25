@@ -1,53 +1,44 @@
 @font-face {
-  font-family: "Playfair Display SC";
-  src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Regular.ttf) format("truetype");
+    font-family: "Playfair Display SC";
+    src: local("Playfair Display SC"), url(../fonts/PlayfairDisplaySC-Regular.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: "Playfair Display";
-  src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
+    font-family: "Playfair Display";
+    src: local("Playfair Display"), url(../fonts/PlayfairDisplay-Regular.ttf) format("truetype");
 }
 
-.button {
-  display: inline-block;
-  background-color: #9b1c31;
-  font-family: "Playfair Display SC";
-  /* font-family: "Cinzel"; */
-  /* font-size: 2vw; */
-  font-size: 3.2vh;
-  border-radius: 0px;
-  color: white;
-  border: 1px solid white;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
-  margin: 10px;
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.disabledButton {
-  display: inline-block;
-  background-color: grey;
-  font-family: "Playfair Display SC";
-  /* font-family: "Cinzel"; */
-  /* font-size: 2vw; */
-  font-size: 3.2vh;
-  border-radius: 0px;
-  color: white;
-  border: 1px solid white;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.19);
-  margin: 10px;
+.content {}
+
+.arrow_button {
+    background-color: #9b1c31;
+    font-family: "Playfair Display SC";
+    height: 40px;
+    color: white;
+    border-top: solid 1px white;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
 }
 
-.button:active {
-  box-shadow: 0 2px rgba(0, 0, 0, 0.2);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .button:hover {
-    background-color: white;
-    opacity: 1;
-    color: #444444;
-  }
+.ship_button {
+    background-color: #9b1c31;
+    font-family: "Playfair Display SC";
+    /* font-family: "Cinzel"; */
+    /* font-size: 2vw; */
+    font-size: 3.2vh;
+    color: white;
+    width: 11em;
+    height: 40px;
+    border-top: solid 1px white;
+    border-left: solid 1px grey;
+    border-right: solid 1px grey;
+    border-bottom: none;
 }

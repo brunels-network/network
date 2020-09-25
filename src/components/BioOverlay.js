@@ -1,88 +1,118 @@
 import PropTypes from "prop-types";
 import React from "react";
 
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+
 import imageFilenames from "../data/entityImageFilenames.json";
 
 import TextButton from "./TextButton";
-import Linkify from "react-linkify";
+
+//import HBox from "./HBox";
+import VBox from "./VBox";
+//import BigBox from "./BigBox";
 
 import styles from "./BioOverlay.module.css";
 
-class BioOverlay extends React.Component {
-  constructor(props) {
-    super(props);
+function BioOverlay(props) {
+  let social = props.social;
 
-    this.state = { isVisible: false };
+  const person = social.get(props.person);
+  const id = person.getID();
+  const name = person.getName();
+  const biographies = props.social.getBiographies();
+
+  // Get biography and strip name
+  let bio = biographies.getByID(id);
+
+  if (!bio) {
+    bio = "No biography found.";
   }
 
-  render() {
-    const person = this.props.person;
-    const id = person.getID();
-    const name = person.getName();
-    const biographies = this.props.social.getBiographies();
+  bio = bio.replace(name + ". ", "");
 
-    // Get biography and strip name
-    let bio = biographies.getByID(id);
+  let sources = [];
 
-    if (!bio) {
-      bio = "No biography found.";
-    }
+  Object.keys(person.getSources()).forEach((key) => {
+    person.getSources()[key].forEach((item) => {
+      let source = social.get(item);
 
-    bio = bio.replace(name + ". ", "");
+      if (source) {
+        sources.push(source);
+      }
+    });
+  });
 
-    const filename = imageFilenames[id]["filename"];
+  let source_tab = null;
 
-    let sourceButton = (
-      <TextButton
-        textColor="black"
-        hoverColor="#808080"
-        fontSize="1.8vh"
-        padding="0px 4px 4px 4px"
-        onClick={this.props.toggleSourceOverlay}
-      >
-        {this.props.sourceButtonText}
-      </TextButton>
+  if (sources.length > 0) {
+    let tab_titles = [];
+    let tab_panels = [];
+
+    sources.forEach((source) => {
+      tab_titles.push(<Tab>{source.getName()}</Tab>);
+      tab_panels.push(
+        <TabPanel>
+          <div>{source.getDescription()}</div>
+        </TabPanel>
+      );
+    });
+
+    source_tab = (
+      <Tabs>
+        <TabList>{tab_titles}</TabList>
+        {tab_panels}
+      </Tabs>
     );
+  } else {
+    source_tab = <div>No sources</div>;
+  }
 
-    return (
-      <div data-testid="bioOverlay" className={styles.container}>
-        <div className={styles.closeButton}>
-          <button onClick={this.props.toggleOverlay} style={{ background: "none", border: "none", fontSize: "2vh" }}>
-            x
-          </button>
-        </div>
-        <div className={styles.nameHeader}>{person.getName()}</div>
-        <div className={styles.positions}>{}</div>
-        <div className={styles.bio}>
-          <Linkify>{bio}</Linkify>
-        </div>
-        <div className={styles.sources}>
-          <div className={styles.sourcesHeader}>
-            Sources
-            <br />
-            <br />
-            <br />
-          </div>
-          <div>{sourceButton}</div>
-        </div>
-        <div className={styles.divider} />
-        <div className={styles.imageSection}>
-          <div>
-            <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="A ship" />
-          </div>
-          <div className={styles.imageDescription}>Image description</div>
-        </div>
+  //console.log(person.getPositions());
+  //console.log(person.getAffiliations());
+
+  const filename = imageFilenames[id]["filename"];
+  let image = (
+    <VBox>
+      <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="A ship" />
+      <div>Image description</div>
+    </VBox>
+  );
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.closeButton}>
+        <button onClick={props.close} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+          x
+        </button>
       </div>
-    );
-  }
+      <VBox>
+        <div class={styles.name}>{person.getName()}</div>
+
+        <Tabs>
+          <TabList>
+            <Tab>Biography</Tab>
+            <Tab>Image</Tab>
+            <Tab>Sources</Tab>
+          </TabList>
+
+          <TabPanel>
+            <div class={styles.bio}>{bio}</div>
+          </TabPanel>
+
+          <TabPanel>{image}</TabPanel>
+
+          <TabPanel>{source_tab}</TabPanel>
+        </Tabs>
+      </VBox>
+    </div>
+  );
 }
 
 BioOverlay.propTypes = {
   social: PropTypes.object.isRequired,
-  toggleOverlay: PropTypes.func.isRequired,
-  person: PropTypes.object.isRequired,
-  toggleSourceOverlay: PropTypes.func.isRequired,
-  sourceButtonText: PropTypes.string.isRequired,
+  close: PropTypes.func.isRequired,
+  person: PropTypes.string.isRequired,
 };
 
 export default BioOverlay;

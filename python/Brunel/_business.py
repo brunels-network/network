@@ -29,7 +29,7 @@ def _mergeProjects(old, new, key):
 def _mergeStateItems(old, new, key):
     """ Merge two state items, adds items from new to old state
 
-        Args:   
+        Args:
             old (dict): Old object's state
             new (dict): New object's state
             key (str): Key to acccess dictionary values
@@ -45,6 +45,7 @@ def _mergeStateItems(old, new, key):
 
 class Business:
     """Holds information about a Business or Institution in the network"""
+
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
@@ -56,9 +57,9 @@ class Business:
             "scores": {},
             "positions": {},
             "affiliations": {},
+            "highlighted": {},
             "notes": [],
             "weight": {},
-            "edge_count": {}
         }
 
         self.setState(props)
@@ -82,14 +83,6 @@ class Business:
 
         return result
 
-    def getEdgeCount(self):
-        """ Get the number of edges for this business
-
-            Returns:
-                int: Number of edges
-        """
-        return self.state["edge_count"]
-    
     def getPositions(self):
         result = {}
 
@@ -114,8 +107,8 @@ class Business:
         self.state["affiliations"] = _setState(state, "affiliations", {})
         self.state["scores"] = _setState(state, "scores", {})
         self.state["sources"] = _setState(state, "sources", [])
+        self.state["highlighted"] = _setState(state, "highlighted", {})
         self.state["notes"] = _setState(state, "notes", [])
-        self.state["edge_count"] = _setState(state, "edge_count", {})
         self.state["weight"] = _setState(state, "weight")
         self.state["positions"] = _setState(state, "positions", {})
 
@@ -138,6 +131,7 @@ class Business:
         _mergeProjects(state, other.state, "positions")
         _mergeProjects(state, other.state, "affiliations")
         _mergeProjects(state, other.state, "sources")
+        _mergeProjects(state, other.state, "highlighted")
 
         # for project, dates in other.state["projects"].items():
         #     state["projects"][project] = dates
@@ -147,16 +141,12 @@ class Business:
 
         _mergeStateItems(state, other.state, "projects")
         _mergeStateItems(state, other.state, "weight")
-        _mergeStateItems(state, other.state, "edge_count")
 
         # for id, dates in other.state["projects"].items():
         #     state["projects"][id] = dates
 
         # for id, weight in other.state["weight"].items():
         #     state["weight"][id] = weight
-
-        # for id, edge_count in other.state["edge_count"].items():
-        #     state["edge_count"][id] = edge_count
 
         b = Business()
         b.state = state

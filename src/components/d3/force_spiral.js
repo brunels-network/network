@@ -88,7 +88,11 @@ export default function force_spiral(width, height) {
 
     // what is the maximum index - will need to know this to generate
     // all of the points
-    let max_index = Math.max(...indexes);
+    let max_index = 0;
+
+    if (n > 0) {
+      max_index = Math.max(...indexes);
+    }
 
     // now calculate all of the points
     points_x = new Array(max_index + 1);
@@ -120,8 +124,8 @@ export default function force_spiral(width, height) {
     let center_x = width / 2;
     let center_y = height / 2;
 
-    let scale_x = 0.80 * width / (max_x - min_x);
-    let scale_y = 0.80 * height / (max_y - min_y);
+    let scale_x = 0.95 * width / (max_x - min_x);
+    let scale_y = 0.85 * height / (max_y - min_y);
 
     // offset the center slightly as the spiral biases slightly
     center_x -= 0.5 * scale_x * (max_x + min_x);
