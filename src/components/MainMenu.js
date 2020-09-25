@@ -46,7 +46,13 @@ class MainMenu extends React.Component {
     return (
       <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.panel}>
         <VBox>
-          <div className={styles.titleText}>Menu</div>
+          <TextButton
+              onClick={() => {
+                this.props.close();
+              }}
+          >
+            ⤆ Close ⤆
+          </TextButton>
           <TextButton
             onClick={() => {
               this.props.emitToggleFilterEngineering();
@@ -77,6 +83,20 @@ class MainMenu extends React.Component {
           </TextButton>
           <TextButton
             onClick={() => {
+              this.props.emitSearchHighlightToggled()
+            }}
+          >
+            {this.props.searchHighlight ? "Search highlights links" : "Search results only"}
+          </TextButton>
+          <TextButton
+            onClick={() => {
+              this.props.emitSearchBiosToggled()
+            }}
+          >
+            {this.props.searchBios ? "Search biographies" : "Search names"}
+          </TextButton>
+          <TextButton
+            onClick={() => {
               this.props.emitResetFilters();
             }}
           >
@@ -97,13 +117,6 @@ class MainMenu extends React.Component {
             }}
           >
             Save as image
-          </TextButton>
-          <TextButton
-            onClick={() => {
-              this.props.close();
-            }}
-          >
-            Close
           </TextButton>
         </VBox>
       </div>

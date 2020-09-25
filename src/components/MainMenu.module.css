@@ -1,9 +1,11 @@
 .titleText {
   font-size: 3.5vh;
   text-align: center;
+  color: white;
 }
 
 .panel {
-  background: #9cb6a4;
+  background: #222222;
   height: 100%;
+  width: 100%;
 }

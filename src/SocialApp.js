@@ -487,7 +487,7 @@ class SocialApp extends React.Component {
   }
 
   render() {
-    let menu = <TextButton onClick={() => { this.slotShowMenu() }}>☰</TextButton>;
+    let menu = <TextButton onClick={() => { this.slotShowMenu() }}>Menu</TextButton>;
 
     let search = (
       <SearchBar
@@ -496,16 +496,6 @@ class SocialApp extends React.Component {
         }}
         searchText={this.state.searchText}
       />
-    );
-
-    let search_options = (
-      <TextButton
-        onClick={() => {
-          this.slotSearchOptions()
-        }}
-      >
-        +
-      </TextButton>
     );
 
     let help = (
@@ -520,7 +510,7 @@ class SocialApp extends React.Component {
           );
         }}
       >
-        ?
+        Help
       </TextButton>
     );
 
@@ -752,7 +742,7 @@ class SocialApp extends React.Component {
           isOpen={this.state.drawerVisible}
           position="bottom"
           width="100%"
-          height="40%"
+          height="14em"
         >
           <VBox>
             <button
@@ -772,8 +762,8 @@ class SocialApp extends React.Component {
       <SlidingPanel
         isOpen={this.state.menuVisible}
         position="left"
-        height="100%"
-        width="20%"
+        height="24em"
+        width="18em"
       >
         <MainMenu
           close={() => { this.slotCloseMenu() }}
@@ -781,11 +771,19 @@ class SocialApp extends React.Component {
           ncEngineersVisible={!this.state.filterNCEngineers}
           engineersFiltered={this.state.engineersFiltered}
           commercialFiltered={this.state.commercialFiltered}
+          searchHighlight={this.state.searchHighlightLinks}
+          searchBios={this.state.searchIncludeBios}
           emitResetFilters={() => { this.slotClearFilters() }}
           emitToggleFilterCommercial={() => this.slotToggleFilterCommercial()}
           emitToggleFilterEngineering={() => this.slotToggleFilterEngineer()}
           emitToggleUnconnectedNodesVisible={() => this.slotToggleUnconnectedNodes()}
           emitToggleNCEngineersVisible={() => this.slotToggleNonContributingEngineers()}
+          emitSearchHighlightToggled={
+            () => this.slotSearchHighlightToggled(!this.state.searchHighlightLinks)
+          }
+          emitSearchBiosToggled={
+            () => this.slotSearchBiosToggled(!this.state.searchIncludeBios)
+          }
         />
       </SlidingPanel>
     );
