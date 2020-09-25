@@ -491,7 +491,11 @@ class SocialApp extends React.Component {
         emitUpdate={(text) => {
           this.slotUpdateSearch(text);
         }}
+        emitSearchHighlightToggled={(toggled) => {
+          this.slotSearchHighlightToggled(toggled);
+        }}
         searchText={this.state.searchText}
+        searchHighlightToggled={this.state.searchHighlightLinks}
       />
     );
 
