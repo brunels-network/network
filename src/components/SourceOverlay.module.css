@@ -1,7 +1,7 @@
 .container {
   position: absolute;
   background: white;
-  font-family: "Playfair Display Medium";
+  font-family: "Domine";
   width: 75%;
   height: 75%;
   left: 12.5%;
@@ -18,7 +18,7 @@
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
 
   font-size: 1.5vh;
-  color: #222222;
+  color: #000000;
 }
 
 /* img {

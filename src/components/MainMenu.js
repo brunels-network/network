@@ -108,7 +108,7 @@ class MainMenu extends React.Component {
               const imageOptions = {
                 scale: 1,
                 encoderOptions: 1,
-                backgroundColor: "#222222",
+                backgroundColor: "#000000",
               };
 
               const filename = "BrunelsNetwork-" + moment().format("YYYYMMDD-hhmmss") + ".png";

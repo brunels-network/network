@@ -2,6 +2,7 @@
     border: none;
     background-color: #000000;
     color: #E63309;
+    font-family: "Domine";
     font-weight: bold;
     font-size: 8pt;
     min-width: 6.5em;
@@ -16,6 +17,7 @@
     border: none;
     background-color: #000000;
     color: #ffffff;
+    font-family: "Domine";
     font-size: 12pt;
     min-width: 6.5em;
     width: 100%;

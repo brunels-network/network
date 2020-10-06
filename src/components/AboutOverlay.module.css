@@ -1,17 +1,15 @@
 @font-face {
-  font-family: "Montserrat";
-  src: local("Montserrat"), url(../fonts/Montserrat-Regular.ttf) format("truetype");
+  font-family: "Domine";
 }
 
 @font-face {
-  font-family: "Playfair Display Bold";
-  src: local("Montserrat"), url(../fonts/PlayfairDisplay-Bold.ttf) format("truetype");
+  font-family: "Domine";
 }
 
 .container {
   position: absolute;
   background: white;
-  font-family: "Playfair Display Medium";
+  font-family: "Domine";
   width: 50%;
   height: 75%;
   left: 25%;
@@ -28,7 +26,7 @@
   grid-template-rows: 1fr;
 
   font-size: 1.5vh;
-  color: #222222;
+  color: #000000;
   overflow: auto;
 }
 
@@ -69,7 +67,7 @@
 }
 
 .sectionHeader {
-  font-family: "Playfair Display Bold";
+  font-family: "Domine";
   font-size: 2.2vh;
   padding: 1vh 0vw 1vh 0vw;
   grid-column-start: 1;
