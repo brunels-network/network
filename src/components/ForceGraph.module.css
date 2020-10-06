@@ -5,23 +5,57 @@
 }
 
 .node {
-    stroke: grey;
-    fill: #00264e;
-    stroke-width: 2px;
+    stroke: #373935;
+    fill: #248033;
+    stroke-width: 1px;
 }
 
-.node_highlight {
-    /* fill: #c7e8f3; */
-    fill: #3a6ea5;
-    stroke: #add5ff;
-    stroke-width: 3px;
+.node_highlighted {
+    stroke: #D2CFCD;
+    fill: #3cd456;
+    stroke-width: 1px;
 }
 
-.node_select {
-    /* fill: #c7e8f3; */
+.node_engineer {
+    stroke: #373935;
+    fill: #D7B874;
+    stroke-width: 1px;
+}
+
+.node_engineer_highlighted {
+    stroke: #D2CFCD;
+    fill: #faeac7;
+    stroke-width: 1px;
+}
+
+.node_business {
+    stroke: #373935;
+    fill: blue;
+    stroke-width: 1px;
+}
+
+.node_business_highlighted {
+    stroke: #D2CFCD;
+    fill: cyan;
+    stroke-width: 1px;
+}
+
+.node_nc_engineer {
+    fill: #373935;
+    stroke: #373935;
+    stroke-width: 1px;
+}
+
+.node_nc_engineer_highlighted {
+    fill: #AEA198;
+    stroke: #D2CFCD;
+    stroke-width: 1px;
+}
+
+.node_selected {
     fill: #E63309;
-    stroke: #E63309;
-    stroke-width: 3px;
+    stroke: #D2CFCD;
+    stroke-width: 1px;
 }
 
 .link {
@@ -73,19 +107,6 @@
 }
 
 .node_text {
-    -webkit-touch-callout: none;
-    /* iOS Safari */
-    -webkit-user-select: none;
-    /* Safari */
-    -khtml-user-select: none;
-    /* Konqueror HTML */
-    -moz-user-select: none;
-    /* Old versions of Firefox */
-    -ms-user-select: none;
-    /* Internet Explorer/Edge */
-    user-select: none;
-    /* Non-prefixed version, currently
-                                  supported by Chrome, Opera and Firefox */
     font-size: 14px;
     stroke-width: 0;
     fill: white;
@@ -93,11 +114,13 @@
 
 .node_text_highlight {
     fill: #D7B874;
+    stroke-width: 0;
     font-size: 10pt;
 }
 
 .node_text_select {
     fill: #ffffff;
+    stroke-width: 0;
     font-size: 14pt;
 }
 

@@ -3,6 +3,8 @@ import lodash from "lodash";
 
 import DateRange from "./DateRange";
 
+import positionGroups from "../data/positionGroups.json";
+
 import { ValueError } from "./Errors";
 
 function setState(val, def = null) {
@@ -456,6 +458,26 @@ class Person {
     return this.state.weight[project_id];
   }
 
+  isEngineer(project_id = null) {
+    if (project_id === null) {
+      project_id = Object.keys(this.state.positions)[0];
+    }
+
+    const positions = this.state.positions[project_id];
+
+    for (let i = 0; i < positions.length; ++i){
+      const position = this._getHook(positions[i]);
+      const name = position.getCanonical().toLowerCase()
+                           .replace(/\s/g, "")
+                           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+      if (positionGroups["engineering"]["members"].includes(name)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   isNonContributingEngineer(project_id = null) {
     if (project_id === null) {
       // return this status with the first project
@@ -487,6 +509,7 @@ class Person {
       selected: this.getSelected(),
       project: this.getProjectID(),
       is_nc_engineer: this.isNonContributingEngineer(),
+      is_engineer: this.isEngineer(),
     };
 
     return node;

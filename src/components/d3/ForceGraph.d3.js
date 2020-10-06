@@ -280,16 +280,35 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("class", (d) => {
         if (d.selected) {
-          return `node ${styles.node_select} selected`;
+          return `node ${styles.node_selected} selected`;
         }
-        else if (d.highlighted) {
-          return `node ${styles.node_highlight} highlighted`;
+        else if (d.type === "business") {
+          if (d.highlighted) {
+            return `node ${styles.node_business_highlighted} highlighted`;
+          } else {
+            return `node ${styles.node_business}`;
+          }
         }
         else if (d.is_nc_engineer) {
-          return `node ${styles.node_nc_engineer}`;
+          if (d.highlighted) {
+            return `node ${styles.node_nc_engineer_highlighted} highlighted`;
+          } else {
+            return `node ${styles.node_nc_engineer}`;
+          }
+        }
+        else if (d.is_engineer) {
+          if (d.highlighted) {
+            return `node ${styles.node_engineer_highlighted} highlighted`;
+          } else {
+            return `node ${styles.node_engineer}`;
+          }
         }
         else {
-          return `node ${styles.node}`;
+          if (d.highlighted) {
+            return `node ${styles.node_highlighted} highlighted`;
+          } else {
+            return `node ${styles.node}`;
+          }
         }
       })
       .attr("id", (d) => { return d.id; })
