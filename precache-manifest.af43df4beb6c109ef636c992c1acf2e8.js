@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4dbc148b5c0bfa8ab563052571bb75e9",
+    "revision": "2ed4d9d65304495aea5fc7bb1f4c2348",
     "url": "/network/index.html"
   },
   {
-    "revision": "fb61a2515d05477bc15c",
-    "url": "/network/static/css/2.d6fa5b9a.chunk.css"
+    "revision": "9be16d2bcca33ac1e182",
+    "url": "/network/static/css/2.395da8f3.chunk.css"
   },
   {
     "revision": "10d82050a3bf4ae81249",
     "url": "/network/static/css/3.80ca4c0b.chunk.css"
   },
   {
-    "revision": "77d850877eaa3f0bee89",
+    "revision": "3a483a4335b6fe4edce6",
     "url": "/network/static/css/4.5c17b9f1.chunk.css"
   },
   {
-    "revision": "2e2755020c18dba7b201",
-    "url": "/network/static/css/main.d34dc097.chunk.css"
+    "revision": "930f6f3d5979ec147f68",
+    "url": "/network/static/css/main.096f6135.chunk.css"
   },
   {
-    "revision": "fb61a2515d05477bc15c",
-    "url": "/network/static/js/2.7d0d5722.chunk.js"
+    "revision": "9be16d2bcca33ac1e182",
+    "url": "/network/static/js/2.7b23584f.chunk.js"
   },
   {
     "revision": "10d82050a3bf4ae81249",
@@ -32,20 +32,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/network/static/js/3.80686867.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "77d850877eaa3f0bee89",
-    "url": "/network/static/js/4.0dbd3d80.chunk.js"
+    "revision": "3a483a4335b6fe4edce6",
+    "url": "/network/static/js/4.c9077145.chunk.js"
   },
   {
     "revision": "275fe79abee3b697f1673c8bd9c58856",
-    "url": "/network/static/js/4.0dbd3d80.chunk.js.LICENSE.txt"
+    "url": "/network/static/js/4.c9077145.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "2e2755020c18dba7b201",
+    "revision": "930f6f3d5979ec147f68",
     "url": "/network/static/js/main.2a2e1bf1.chunk.js"
   },
   {
-    "revision": "2d19ceac1762e4a069bd",
-    "url": "/network/static/js/runtime-main.6941b4b3.js"
+    "revision": "cb3ff163ca723a24e812",
+    "url": "/network/static/js/runtime-main.8cd0bfff.js"
   },
   {
     "revision": "898c32f62d6dc1f8b9267cc34a635ce3",
@@ -74,14 +74,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "946104e0f266e57a765a51eead7e4548",
     "url": "/network/static/media/IllustriteZeitung_SS_GreatBritain.946104e0.png"
-  },
-  {
-    "revision": "b3721ba3bde34e5b38b0e1523cccfd7f",
-    "url": "/network/static/media/PlayfairDisplay-Regular.b3721ba3.ttf"
-  },
-  {
-    "revision": "c3ec04838a1e59cd69bbeb803a6dfa61",
-    "url": "/network/static/media/PlayfairDisplaySC-Regular.c3ec0483.ttf"
   },
   {
     "revision": "68e88d10b7f57e3ab523ee80b778cd1b",
