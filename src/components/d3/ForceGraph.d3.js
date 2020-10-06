@@ -11,7 +11,6 @@ import {
 import force_spiral from "./force_spiral.js";
 
 import styles from "../ForceGraph.module.css";
-import { faBreadSlice } from "@fortawesome/free-solid-svg-icons";
 
 function _null_function() {}
 
@@ -27,21 +26,25 @@ function constrain(x, w, r = 20) {
 }
 
 function getTextSize(d) {
-  if (!(d.selected || d.highlighted)) { return [0, 0] }
-
   let canvas = getTextSize._canvas || (getTextSize._canvas = document.createElement("canvas"));
   let context = canvas.getContext("2d");
 
-  let height = 14;
+  let height = 12;
 
   if (d.selected) {
-    context.font = "14pt Bookman";
+    context.font = "12pt Domine";
   } else {
-    context.font = "12pt Bookman";
-    height = 12;
+    context.font = "8pt Domine";
+    height = 8;
   }
 
-  let metrics = context.measureText(d.label);
+  let text = d.initials;
+
+  if (d.highlighted || d.selected) {
+    text = d.label;
+  }
+
+  let metrics = context.measureText(text);
 
   return [metrics.width, height];
 }
@@ -275,7 +278,7 @@ class ForceGraphD3 extends React.Component {
       .attr("r", (d) => {
         // If no project selected keep previous weight
         // Otherwise update using the selected project code
-        d.radius = 3.0 * d.size;
+        d.radius = 10 + 2 * d.size;
         return d.radius;
       })
       .attr("class", (d) => {
@@ -345,7 +348,7 @@ class ForceGraphD3 extends React.Component {
           return d.label;
         }
         else {
-          return "";
+          return d.initials;
         }
       })
       .attr("class", (d) => {
@@ -441,9 +444,6 @@ class ForceGraphD3 extends React.Component {
 
     let graph = this._graph;
 
-    // We don't want a force applied to null edges
-    let edges = graph.edges.filter((v) => v["type"]);
-
     let simulation = d3
       .forceSimulation(graph.nodes)
       .alpha(1.0)
@@ -464,7 +464,6 @@ class ForceGraphD3 extends React.Component {
         .radius((d) => 5 + d.radius)
         .iterations(2)
       )*/
-      /*.force("link", d3.forceLink().strength(0).links(edges).iterations(2))*/
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
 
@@ -492,35 +491,31 @@ class ForceGraphD3 extends React.Component {
 
         this._label
           .attr("x", (d) => {
-            if (!(d.selected || d.highlighted)) return 0;
-
             if (!d.textSize) {
               d.textSize = getTextSize(d);
             }
 
-            let width = 1.1 * d.textSize[0];
+            let width = d.textSize[0];
             let delta = 0.5 * width;
 
-            if (d.x + width > window.innerWidth) {
-              return window.innerWidth - width;
+            if (d.x + delta > window.innerWidth) {
+              return window.innerWidth - width - 20;
             }
-            else if (d.x - delta < 10) {
-              return 10;
+            else if (d.x - delta < 5) {
+              return 5;
             }
             else {
-              return d.x - delta;
+              return d.x - d.radius - delta;
             }
           })
           .attr("y", (d) => {
-            if (!(d.selected || d.highlighted)) return 0;
-
             if (!d.textSize) {
               d.textSize = getTextSize(d);
             }
 
             let height = d.textSize[1];
 
-            return d.y + (0.5 * (height + d.radius));
+            return d.y + (0.55 * (height + d.radius));
           });
 
       })

@@ -269,6 +269,20 @@ class Business {
     return this.state.name;
   }
 
+  getInitials() {
+    var parts = [];
+
+    this.state.name.split(" ").forEach((n) => {
+      parts.push(n[0]);
+    });
+
+    if (parts.length > 0) {
+      return parts.join("");
+    } else {
+      return "??";
+    }
+  }
+
   getAffiliations() {
     return this.state.affiliations;
   }
@@ -324,6 +338,7 @@ class Business {
       id: this.getID(),
       label: this.getName(),
       title: this.getName(),
+      initials: this.getInitials(),
       shape: "square",
       highlighted: this.getHighlighted(),
       selected: this.getSelected(),

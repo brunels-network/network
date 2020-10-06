@@ -18,13 +18,13 @@
 
 .node_engineer {
     stroke: #373935;
-    fill: #D7B874;
+    fill: #665736;
     stroke-width: 1px;
 }
 
 .node_engineer_highlighted {
     stroke: #D2CFCD;
-    fill: #faeac7;
+    fill: #C3A86A;
     stroke-width: 1px;
 }
 
@@ -107,34 +107,19 @@
 }
 
 .node_text {
-    font-size: 14px;
+    fill: #D2CFCD;
+    font-size: 8pt;
     stroke-width: 0;
-    fill: white;
 }
 
 .node_text_highlight {
-    fill: #D7B874;
+    fill: #D2CFCD;
     stroke-width: 0;
-    font-size: 10pt;
+    font-size: 8pt;
 }
 
 .node_text_select {
     fill: #ffffff;
     stroke-width: 0;
-    font-size: 14pt;
-}
-
-.tooltip {
-    position: absolute;
-    padding: 10px;
-    z-index: 10;
-    width: 15vw;
-    height: 20vh;
-    font-size: max(12px, 0.8vw);
-    background-color: #808080;
-    color: white;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-radius: 1px;
-    visibility: visible;
+    font-size: 12pt;
 }

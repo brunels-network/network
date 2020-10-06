@@ -343,6 +343,24 @@ class Person {
     }
   }
 
+  getInitials() {
+    var parts = [];
+
+    this.state.firstnames.forEach((n) => {
+      parts.push(n[0]);
+    });
+
+    this.state.surnames.forEach((n) => {
+      parts.push(n[0]);
+    });
+
+    if (parts.length > 0) {
+      return parts.join("");
+    } else {
+      return "??";
+    }
+  }
+
   getAffiliations() {
     return this.state.affiliations;
   }
@@ -502,6 +520,7 @@ class Person {
       id: this.getID(),
       label: this.getName(),
       title: this.getName(),
+      initials: this.getInitials(),
       shape: "circle",
       weight: this.getWeight(),
       type: "person",
