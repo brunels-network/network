@@ -8,17 +8,16 @@
   right: 0px;
   top: 0px;
   bottom: 0px;
-  background-color: #222222;
+  background-color: #000000;
 }
 
 .drawerButton {
   width: 100%;
   color: white;
   border: none;
-  background-color: #222222;
+  background-color: #000000;
 }
 
 .fullscreen {
-  background-color: orange;
   height: 100%;
 }

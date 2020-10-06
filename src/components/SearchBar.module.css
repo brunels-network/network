@@ -15,7 +15,7 @@
   height: 100%;
   text-align: center;
   font-size: 10pt;
-  background-color: #222222;
+  background-color: #000000;
   border: none;
   border-radius: 0px;
   color: white;
@@ -28,7 +28,7 @@
   border-radius: 16px;
   height: 100%;
   color: white;
-  background-color: #444444;
+  background-color: #373935;
   z-index: 2;
   border: none;
 }
@@ -40,7 +40,7 @@
   border-radius: 16px;
   height: 100%;
   color: white;
-  background-color: #444444;
+  background-color: #373935;
   z-index: 2;
   border: none;
 }
@@ -52,7 +52,7 @@
   border-radius: 16px;
   height: 100%;
   color: white;
-  background-color: blue;
+  background-color: #E63309;
   z-index: 2;
   border: none;
 }

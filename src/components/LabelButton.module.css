@@ -1,7 +1,7 @@
 .label {
     border: none;
-    background-color: #222222;
-    color: red;
+    background-color: #000000;
+    color: #E63309;
     font-weight: bold;
     font-size: 8pt;
     min-width: 6.5em;
@@ -14,8 +14,8 @@
 
 .button {
     border: none;
-    background-color: #222222;
-    color: #f1f1f1;
+    background-color: #000000;
+    color: #ffffff;
     font-size: 12pt;
     min-width: 6.5em;
     width: 100%;
