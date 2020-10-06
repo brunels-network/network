@@ -30,13 +30,13 @@
 
 .node_business {
     stroke: #373935;
-    fill: blue;
+    fill: #0000ff;
     stroke-width: 1px;
 }
 
 .node_business_highlighted {
     stroke: #D2CFCD;
-    fill: cyan;
+    fill: #0055ff;
     stroke-width: 1px;
 }
 
@@ -107,19 +107,23 @@
 }
 
 .node_text {
-    fill: #D2CFCD;
+    fill: #eeeeee;
     font-size: 8pt;
     stroke-width: 0;
+    font-weight: bold;
 }
 
 .node_text_highlight {
-    fill: #D2CFCD;
+    fill: #eeeeee;
     stroke-width: 0;
     font-size: 8pt;
+    font-weight: 900;
 }
 
 .node_text_select {
     fill: #ffffff;
     stroke-width: 0;
     font-size: 12pt;
+    font-style: italic;
+    font-weight: 900;
 }

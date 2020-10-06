@@ -38,10 +38,10 @@ function getTextSize(d) {
     height = 8;
   }
 
-  let text = d.initials;
+  let text = d.label;
 
-  if (d.highlighted || d.selected) {
-    text = d.label;
+  if (d.use_initials) {
+    text = d.initials;
   }
 
   let metrics = context.measureText(text);
@@ -338,17 +338,40 @@ class ForceGraphD3 extends React.Component {
     // Big weights make the size of circles too large
     const sizeScale = 0.5;
 
+    let use_initials = true;
+
+    if (data.length < 10) {
+      use_initials = false;
+    }
+    else if (data.length < 25 && this.state.width > 500) {
+      use_initials = false;
+    }
+    else if (data.length < 50 && this.state.width > 768) {
+      use_initials = false;
+    }
+    else if (this.state.width > 1200) {
+      use_initials = false;
+    }
+
     text = text
       .data(data, (d) => d.id)
       .join(
         (enter) => enter.append("text"),
       )
       .text((d) => {
+        d.use_initials = false;
+
         if (d.highlighted || d.selected) {
           return d.label;
         }
         else {
-          return d.initials;
+          if (use_initials) {
+            d.use_initials = true;
+            return d.initials;
+          }
+          else {
+            return d.label;
+          }
         }
       })
       .attr("class", (d) => {
@@ -460,9 +483,9 @@ class ForceGraphD3 extends React.Component {
         "collide",
         d3
         .forceCollide()
-        .strength(0.3)
-        .radius((d) => 5 + d.radius)
-        .iterations(2)
+        .strength(5.0)
+        .radius((d) => d.radius)
+        .iterations(20)
       )*/
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
