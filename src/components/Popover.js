@@ -82,7 +82,7 @@ function Popover(props) {
     bio = "No biography found.";
   } else {
     bio = bio.replace(name + ".  ", "");
-    bio = _truncate(bio, 30);
+    bio = _truncate(bio, 20);
   }
 
   // Get the location of the click within the viewport so we can open the popover
@@ -120,19 +120,22 @@ function Popover(props) {
         height: popoverHeight + "px", width: popoverWidth + "px"
         }}
     >
-      <div className={styles.closeButton}>
-        <button onClick={props.clearPopup}
-          style={{ background: "none", border: "none" }}>
-              x
-        </button>
-      </div>
       <VBox>
-        <div className={styles.header}>{name}</div>
+        <HBox>
+          <BigBox><div className={styles.header}>{name}</div></BigBox>
+          <div className={styles.closeButton}>
+            <button onClick={props.clearPopup}
+                    style={{ background: "none", border: "none" }}>
+              x
+            </button>
+          </div>
+        </HBox>
         <BigBox>
           <div className={styles.bio}>{bio}</div>
         </BigBox>
         <HBox>
           {readMoreButton}
+          <div>&nbsp;</div>
           {centerButton}
         </HBox>
       </VBox>

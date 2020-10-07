@@ -340,16 +340,21 @@ class ForceGraphD3 extends React.Component {
 
     let use_initials = true;
 
+    console.log(`${this.state.width} : ${data.length}`);
+
     if (data.length < 10) {
       use_initials = false;
     }
     else if (data.length < 25 && this.state.width > 500) {
       use_initials = false;
     }
-    else if (data.length < 50 && this.state.width > 768) {
+    else if (data.length < 40 && this.state.width > 768) {
       use_initials = false;
     }
-    else if (this.state.width > 1200) {
+    else if (data.length < 45 && this.state.width > 1000) {
+      use_initials = false;
+    }
+    else if (data.length < 50 && this.state.width > 1200) {
       use_initials = false;
     }
 

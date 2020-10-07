@@ -1,8 +1,4 @@
-.closeButton {
-  position: absolute;
-  top: 0.01vh;
-  right: 0.01vw;
-}
+.closeButton {}
 
 .popOver {
   background-color: white;
@@ -10,14 +6,23 @@
   border: 1px solid grey;
   position: absolute;
   z-index: 10;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: 10px;
 }
 
 .header {
   font-size: 12pt;
-  color: #003366;
+  font-family: "Domine";
+  color: #373935;
+  box-sizing: border-box;
+  padding: 5px;
 }
 
 .bio {
-  font-size: 10pt;
+  font-size: 9pt;
+  font-family: "Domine";
   color: black;
+  box-sizing: border-box;
+  padding: 5px;
 }
