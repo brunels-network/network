@@ -51,7 +51,7 @@ function BioOverlay(props) {
       tab_titles.push(<Tab>{source.getName()}</Tab>);
       tab_panels.push(
         <TabPanel>
-          <div>{source.getDescription()}</div>
+          <div className={styles.source}>{source.getDescription()}</div>
         </TabPanel>
       );
     });
@@ -71,18 +71,19 @@ function BioOverlay(props) {
 
   const filename = imageFilenames[id]["filename"];
 
-  return (
-    <div className={styles.container}>
-      <div>
-        <div>
-          <HBox>
-            <BigBox><div className={styles.name}>{person.getName()}</div></BigBox>
-            <div className={styles.closeButton}>
-              <button onClick={props.close} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+  /*
+              <div className={styles.closeButton}>
+              <button onClick={props.close} style={{ background: "none", border: "none" }}>
                 x
               </button>
             </div>
-            </HBox>
+  */
+
+  return (
+    <div className={styles.container}>
+      <div onClick={props.close}>
+        <div>
+            <BigBox><div className={styles.name}>{person.getName()}</div></BigBox>
         </div>
         <img className={styles.image} data-testid="bioImage" key={id}
              src={require(`../images/${filename}`)} alt="A ship" />

@@ -1,12 +1,11 @@
 .container {
   position: absolute;
-  background: white;
   width: 98%;
   height: 98%;
   left: 1%;
   top: 1%;
   opacity: 1;
-  background-color: white;
+  background-color: black;
   z-index: 11;
   display: flex;
   flex-direction: column;
@@ -16,23 +15,39 @@
   border-radius: 10px;
 }
 
-.closeButton {}
+.closeButton {
+  height: 100%;
+  align-content: center;
+  vertical-align: center;
+  font-size: 16pt;
+  color: white;
+}
 
 .image {
   max-height: 200px;
-  max-width: 80%;
+  max-width: 280px;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
   border-radius: 10px;
 }
 
 .caption {
   font-size: 8pt;
   font-family: "Domine";
+  max-width: 280px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2px;
   box-sizing: border-box;
   padding: 5px;
   text-align: center;
+  border-radius: 10px;
+  background-image: linear-gradient(to right, #D7B874, #998554);
+  color: #000000;
 }
 
 .content {
@@ -41,6 +56,8 @@
   align-content: stretch;
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: white;
+  border-radius: 10px;
 }
 
 .panel {}
@@ -51,6 +68,10 @@
   box-sizing: border-box;
   padding: 10px;
   text-align: center;
+  background-color: #E63309;
+  color: white;
+  border-radius: 10px;
+  font-weight: 900;
 }
 
 .bio {
@@ -58,4 +79,11 @@
   line-height: 1.5;
   column-count: 2;
   column-width: 400px;
+  background-color: white;
+}
+
+.source {
+  font-family: "Domine";
+  line-height: 1.5;
+  background-color: white;
 }
