@@ -130,11 +130,15 @@ MainMenu.propTypes = {
   ncEngineersVisible: PropTypes.bool.isRequired,
   engineersFiltered: PropTypes.bool.isRequired,
   commercialFiltered: PropTypes.bool.isRequired,
+  searchBios: PropTypes.bool.isRequired,
+  searchHighlight: PropTypes.bool.isRequired,
   emitResetFilters: PropTypes.func.isRequired,
   emitToggleFilterCommercial: PropTypes.func.isRequired,
   emitToggleFilterEngineering: PropTypes.func.isRequired,
   emitToggleUnconnectedNodesVisible: PropTypes.func.isRequired,
   emitToggleNCEngineersVisible: PropTypes.func.isRequired,
+  emitSearchHighlightToggled: PropTypes.func.isRequired,
+  emitSearchBiosToggled: PropTypes.func.isRequired,
 };
 
 export default MainMenu;

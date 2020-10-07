@@ -6,6 +6,7 @@
   height: 99%;
   left: 0.5%;
   top: 0.5%;
+  border-radius: 10px;
 }
 
 .overlayNoBackground {
@@ -16,14 +17,15 @@
 .container {
   position: fixed;
   background: white;
-  width: 95%;
-  height: 95%;
-  left: 2.5%;
-  top: 2.5%;
+  width: 98%;
+  height: 98%;
+  left: 1.0%;
+  top: 1.0%;
   opacity: 1;
   background-color: white;
   z-index: 11;
-  padding: 0.5vh 0.5vw 0.5vh 0.5vw;
+  box-sizing: border-box;
+  padding: 10px;
   display: flex;
   flex-direction: row;
 }

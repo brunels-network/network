@@ -1,24 +1,61 @@
 .container {
   position: absolute;
   background: white;
-  width: 95%;
-  height: 95%;
-  left: 2.5%;
-  top: 2.5%;
+  width: 98%;
+  height: 98%;
+  left: 1%;
+  top: 1%;
   opacity: 1;
   background-color: white;
   z-index: 11;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: 10px;
 }
 
-.closeButton {
-  position: absolute;
-  right: 0.01vw;
+.closeButton {}
+
+.image {
+  max-height: 200px;
+  max-width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
 }
+
+.caption {
+  font-size: 8pt;
+  font-family: "Domine";
+  box-sizing: border-box;
+  padding: 5px;
+  text-align: center;
+}
+
+.content {
+  box-sizing: border-box;
+  padding: 10px;
+  align-content: stretch;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.panel {}
 
 .name {
   font-size: large;
+  font-family: "Domine";
+  box-sizing: border-box;
+  padding: 10px;
+  text-align: center;
 }
 
 .bio {
-  overflow: auto;
+  font-family: "Domine";
+  line-height: 1.5;
+  column-count: 2;
+  column-width: 400px;
 }

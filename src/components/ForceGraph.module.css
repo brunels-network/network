@@ -13,7 +13,7 @@
 .node_highlighted {
     stroke: #D2CFCD;
     fill: #3cd456;
-    stroke-width: 1px;
+    stroke-width: 2px;
 }
 
 .node_engineer {
@@ -25,7 +25,7 @@
 .node_engineer_highlighted {
     stroke: #D2CFCD;
     fill: #C3A86A;
-    stroke-width: 1px;
+    stroke-width: 2px;
 }
 
 .node_business {
@@ -37,7 +37,7 @@
 .node_business_highlighted {
     stroke: #D2CFCD;
     fill: #0055ff;
-    stroke-width: 1px;
+    stroke-width: 2px;
 }
 
 .node_nc_engineer {
@@ -47,15 +47,15 @@
 }
 
 .node_nc_engineer_highlighted {
-    fill: #AEA198;
+    fill: #111111;
     stroke: #D2CFCD;
-    stroke-width: 1px;
+    stroke-width: 2px;
 }
 
 .node_selected {
     fill: #E63309;
     stroke: #D2CFCD;
-    stroke-width: 1px;
+    stroke-width: 2px;
 }
 
 .link {

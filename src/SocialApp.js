@@ -685,8 +685,7 @@ class SocialApp extends React.Component {
     let left_side = null;
     let right_side = null;
 
-    if (this.state.width > 1024 || this.state.width === 812) {
-      // iphone X landscape
+    if (this.state.width > 1024) {
       left_side = (
         <HBox>
           {spiral_button}
@@ -821,7 +820,7 @@ class SocialApp extends React.Component {
     }
 
     let mainmenu = (
-      <SlidingPanel isOpen={this.state.menuVisible} position="left" height="24em" width="18em">
+      <SlidingPanel isOpen={this.state.menuVisible} position="left" height="28em" width="18em">
         <MainMenu
           close={() => {
             this.slotCloseMenu();

@@ -6,11 +6,9 @@ import "react-tabs/style/react-tabs.css";
 
 import imageFilenames from "../data/entityImageFilenames.json";
 
-import TextButton from "./TextButton";
-
-//import HBox from "./HBox";
+import HBox from "./HBox";
 import VBox from "./VBox";
-//import BigBox from "./BigBox";
+import BigBox from "./BigBox";
 
 import styles from "./BioOverlay.module.css";
 
@@ -72,39 +70,40 @@ function BioOverlay(props) {
   //console.log(person.getAffiliations());
 
   const filename = imageFilenames[id]["filename"];
-  let image = (
-    <VBox>
-      <img data-testid="bioImage" key={id} src={require(`../images/${filename}`)} alt="A ship" />
-      <div>Image description</div>
-    </VBox>
-  );
 
   return (
     <div className={styles.container}>
-      <div className={styles.closeButton}>
-        <button onClick={props.close} style={{ background: "none", border: "none", fontSize: "2vh" }}>
-          x
-        </button>
+      <div>
+        <div>
+          <HBox>
+            <BigBox><div className={styles.name}>{person.getName()}</div></BigBox>
+            <div className={styles.closeButton}>
+              <button onClick={props.close} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+                x
+              </button>
+            </div>
+            </HBox>
+        </div>
+        <img className={styles.image} data-testid="bioImage" key={id}
+             src={require(`../images/${filename}`)} alt="A ship" />
+        <div className={styles.caption}>(C) This will be the copyright info / link</div>
       </div>
-      <VBox>
-        <div class={styles.name}>{person.getName()}</div>
+      <div className={styles.content}>
+        <div>
+          <Tabs>
+            <TabList>
+             <Tab>Biography</Tab>
+             <Tab>Sources</Tab>
+            </TabList>
 
-        <Tabs>
-          <TabList>
-            <Tab>Biography</Tab>
-            <Tab>Image</Tab>
-            <Tab>Sources</Tab>
-          </TabList>
+            <TabPanel className={styles.panel}>
+             <div className={styles.bio}>{bio}</div>
+            </TabPanel>
 
-          <TabPanel>
-            <div class={styles.bio}>{bio}</div>
-          </TabPanel>
-
-          <TabPanel>{image}</TabPanel>
-
-          <TabPanel>{source_tab}</TabPanel>
-        </Tabs>
-      </VBox>
+            <TabPanel>{source_tab}</TabPanel>
+          </Tabs>
+        </div>
+      </div>
     </div>
   );
 }
