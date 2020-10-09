@@ -41,68 +41,42 @@ function BioOverlay(props) {
     });
   });
 
-  let source_tab = null;
+  let source_parts = [];
 
   if (sources.length > 0) {
-    let tab_titles = [];
-    let tab_panels = [];
-
     sources.forEach((source) => {
-      tab_titles.push(<Tab>{source.getName()}</Tab>);
-      tab_panels.push(
-        <TabPanel>
-          <div className={styles.source}>{source.getDescription()}</div>
-        </TabPanel>
+      console.log(source);
+      source_parts.push(
+        <li key={source.getID()}
+          className={styles.source_item}>
+          <span className={styles.source_name}>{source.getName()}</span>&nbsp;
+          {source.getDescription()}
+        </li>
       );
-    });
-
-    source_tab = (
-      <Tabs>
-        <TabList>{tab_titles}</TabList>
-        {tab_panels}
-      </Tabs>
-    );
+    })
   } else {
-    source_tab = <div>No sources</div>;
+    source_parts.push(<li key="source"
+                          className={styles.source_item}>No sources</li>);
   }
-
-  //console.log(person.getPositions());
-  //console.log(person.getAffiliations());
 
   const filename = imageFilenames[id]["filename"];
 
-  /*
-              <div className={styles.closeButton}>
-              <button onClick={props.close} style={{ background: "none", border: "none" }}>
-                x
-              </button>
-            </div>
-  */
-
   return (
-    <div className={styles.container}>
-      <div onClick={props.close}>
+    <div className={styles.container} onClick={props.close}>
+      <div>
         <div>
             <BigBox><div className={styles.name}>{person.getName()}</div></BigBox>
         </div>
+      </div>
+      <div className={styles.content}>
         <img className={styles.image} data-testid="bioImage" key={id}
              src={require(`../images/${filename}`)} alt="A ship" />
         <div className={styles.caption}>(C) This will be the copyright info / link</div>
-      </div>
-      <div className={styles.content}>
         <div>
-          <Tabs>
-            <TabList>
-             <Tab>Biography</Tab>
-             <Tab>Sources</Tab>
-            </TabList>
-
-            <TabPanel className={styles.panel}>
-             <div className={styles.bio}>{bio}</div>
-            </TabPanel>
-
-            <TabPanel>{source_tab}</TabPanel>
-          </Tabs>
+          <div className={styles.bio_heading}>Biography</div>
+          <div className={styles.bio}>{bio}</div>
+          <div className={styles.source_heading}>Sources</div>
+          <ul className={styles.source}>{source_parts}</ul>
         </div>
       </div>
     </div>

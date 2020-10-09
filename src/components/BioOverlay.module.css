@@ -45,7 +45,7 @@
   box-sizing: border-box;
   padding: 5px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 5px;
   background-image: linear-gradient(to right, #D7B874, #998554);
   color: #000000;
 }
@@ -57,6 +57,11 @@
   overflow-y: auto;
   overflow-x: hidden;
   background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  max-width: 600px;
   border-radius: 10px;
 }
 
@@ -70,20 +75,77 @@
   text-align: center;
   background-color: #E63309;
   color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  max-width: 600px;
   border-radius: 10px;
   font-weight: 900;
 }
 
+.bio_heading {
+  font-family: "Domine";
+  max-width: 600px;
+  line-height: 1.5;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 14pt;
+  font-weight: 900;
+  text-align: center;
+  background-color: #E63309;
+  color: white;
+  border-radius: 5px;
+}
+
+.source_heading {
+  font-family: "Domine";
+  max-width: 600px;
+  line-height: 1.5;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 14pt;
+  font-weight: 900;
+  text-align: center;
+  background-color: #E63309;
+  color: white;
+  border-radius: 5px;
+}
+
 .bio {
   font-family: "Domine";
+  max-width: 600px;
   line-height: 1.5;
-  column-count: 2;
-  column-width: 400px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
   background-color: white;
+  word-break: break-word;
 }
 
 .source {
   font-family: "Domine";
   line-height: 1.5;
-  background-color: white;
+  word-break: break-word;
+  display: list-item;
+}
+
+.source_name {
+  font-family: "Domine";
+  line-height: 1.5;
+  font-weight: bolder;
+  color: #998554;
+}
+
+.source_item {
+  display: list-item;
+  list-style-position: inside;
 }
