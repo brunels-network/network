@@ -1,18 +1,18 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9376373b9e2ef4717645cde347ec0d46",
+    "revision": "5db0a36526cb53640a92ab0456e66893",
     "url": "/network/index.html"
   },
   {
-    "revision": "281c9cf94c6b92ec6613",
-    "url": "/network/static/css/2.bfe0f06c.chunk.css"
+    "revision": "305c8f2da890bf957378",
+    "url": "/network/static/css/2.2ece5c76.chunk.css"
   },
   {
     "revision": "10d82050a3bf4ae81249",
     "url": "/network/static/css/3.80ca4c0b.chunk.css"
   },
   {
-    "revision": "bcc8c359041f0353acb7",
+    "revision": "917e0d1a7f3d9c42ccd1",
     "url": "/network/static/css/4.5c17b9f1.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/network/static/css/main.d24d8079.chunk.css"
   },
   {
-    "revision": "281c9cf94c6b92ec6613",
-    "url": "/network/static/js/2.415bb6fa.chunk.js"
+    "revision": "305c8f2da890bf957378",
+    "url": "/network/static/js/2.e2e294c7.chunk.js"
   },
   {
     "revision": "10d82050a3bf4ae81249",
@@ -32,20 +32,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/network/static/js/3.80686867.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "bcc8c359041f0353acb7",
-    "url": "/network/static/js/4.fb667181.chunk.js"
+    "revision": "917e0d1a7f3d9c42ccd1",
+    "url": "/network/static/js/4.7ea1e80f.chunk.js"
   },
   {
     "revision": "275fe79abee3b697f1673c8bd9c58856",
-    "url": "/network/static/js/4.fb667181.chunk.js.LICENSE.txt"
+    "url": "/network/static/js/4.7ea1e80f.chunk.js.LICENSE.txt"
   },
   {
     "revision": "93d781808d4980b3a20c",
     "url": "/network/static/js/main.2a2e1bf1.chunk.js"
   },
   {
-    "revision": "ca99c7894caab051e028",
-    "url": "/network/static/js/runtime-main.ee303b0f.js"
+    "revision": "71605fed2af61c7315f0",
+    "url": "/network/static/js/runtime-main.e04d1555.js"
   },
   {
     "revision": "898c32f62d6dc1f8b9267cc34a635ce3",
@@ -96,6 +96,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/network/static/media/backIcon.dd0baa69.png"
   },
   {
+    "revision": "60f3dcf3bb6029545e32db2f96280722",
+    "url": "/network/static/media/bi_logo.60f3dcf3.png"
+  },
+  {
     "revision": "d5267b8db2498e44bd567bd12e07576b",
     "url": "/network/static/media/connectIcon.d5267b8d.png"
   },
@@ -114,5 +118,9 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "ee48e16dfc01a21f57c5ef24cad1be3e",
     "url": "/network/static/media/ssgb_logo.ee48e16d.png"
+  },
+  {
+    "revision": "69d10a8d748f2bd5c4ef10b67a51475f",
+    "url": "/network/static/media/uob_logo.69d10a8d.png"
   }
 ]);
