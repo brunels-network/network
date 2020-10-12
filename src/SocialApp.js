@@ -542,7 +542,7 @@ class SocialApp extends React.Component {
           this.slotShowMenu();
         }}
       >
-        Menu
+        Options
       </TextButton>
     );
 
@@ -572,7 +572,7 @@ class SocialApp extends React.Component {
           );
         }}
       >
-        Help
+        Info
       </TextButton>
     );
 

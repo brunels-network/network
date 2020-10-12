@@ -4,39 +4,66 @@
     background-color: #000000;
 }
 
+.uob_logo_image {
+    max-width: 85px;
+}
+
+.bi_logo_image {
+    max-width: 75px;
+}
+
+.right_logo {
+    position: absolute;
+    bottom: 75px;
+    right: 10px;
+    z-index: 0;
+}
+
+.left_logo {
+    position: absolute;
+    bottom: 85px;
+    left: 10px;
+    z-index: 0;
+}
+
+.svg_view {
+    z-index: 5;
+    position: absolute;
+}
+
 .node {
     stroke: #373935;
-    fill: #248033;
+    fill: #998554;
     stroke-width: 1px;
 }
 
 .node_highlighted {
     stroke: #D2CFCD;
-    fill: #3cd456;
+    fill: #D7B874;
     stroke-width: 2px;
 }
 
 .node_engineer {
     stroke: #373935;
-    fill: #665736;
+    fill: #E63309;
     stroke-width: 1px;
 }
 
 .node_engineer_highlighted {
     stroke: #D2CFCD;
-    fill: #C3A86A;
+    fill: #f85a36;
     stroke-width: 2px;
 }
 
 .node_business {
     stroke: #373935;
-    fill: #0000ff;
+    fill: #373935;
     stroke-width: 1px;
 }
 
 .node_business_highlighted {
     stroke: #D2CFCD;
-    fill: #0055ff;
+    fill: #B3B1B1;
     stroke-width: 2px;
 }
 
@@ -53,8 +80,8 @@
 }
 
 .node_selected {
-    fill: #E63309;
-    stroke: #D2CFCD;
+    fill: #000000;
+    stroke: #f85a36;
     stroke-width: 2px;
 }
 

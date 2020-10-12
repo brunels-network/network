@@ -327,7 +327,7 @@ class ForceGraphD3 extends React.Component {
           this.state.signalClicked(d.id);
         }
       });
-      //.call(this.drag());
+    //.call(this.drag());
 
     return node;
   }
@@ -413,7 +413,7 @@ class ForceGraphD3 extends React.Component {
       })
       .attr("text-anchor", "start")
       .attr("id", (d) => { return d.id; });
-      //.call(this.drag());
+    //.call(this.drag());
 
     return text;
   }
@@ -479,10 +479,10 @@ class ForceGraphD3 extends React.Component {
       .alphaDecay(0.075)
       .force("spiral",
         force_spiral(w, h)
-        .strength(0.3)
-        .index((d) => {
-          return d.sort_index;
-        })
+          .strength(0.3)
+          .index((d) => {
+            return d.sort_index;
+          })
       )
       /*.force(
         "collide",
@@ -620,6 +620,7 @@ class ForceGraphD3 extends React.Component {
       .attr("width", width)
       .attr("id", "svg-viz")
       .attr("align", "center")
+      .attr("class", styles.svg_view)
       .on("click", () => {
         this.clearPopup();
         this.state.signalClicked(null);

@@ -17,9 +17,11 @@
   font-family: "Domine";
   font-size: 10pt;
   background-color: #000000;
+  padding: 0;
   border: none;
   border-radius: 0px;
   color: white;
+  z-index: 0;
 }
 
 .clearButton {
