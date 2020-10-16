@@ -244,6 +244,28 @@ class Connections {
     }
   }
 
+  getConnectionsInvolving(item) {
+    if (item.getID) {
+      let id = item.getID();
+      item = {};
+      item[id] = 1;
+    }
+
+    let connections = [];
+
+    for (let key in this.state.registry) {
+      let connection = this.state.registry[key];
+
+      if (connection.getNode0ID() in item) {
+        connections.push(connection);
+      } else if (connection.getNode1ID() in item) {
+        connections.push(connection);
+      }
+    }
+
+    return connections;
+  }
+
   getConnectionsTo(item) {
     if (item.getID) {
       let id = item.getID();

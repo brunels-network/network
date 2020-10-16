@@ -1,13 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 
 import imageFilenames from "../data/entityImageFilenames.json";
 
-import HBox from "./HBox";
-import VBox from "./VBox";
 import BigBox from "./BigBox";
 
 import styles from "./BioOverlay.module.css";
@@ -41,11 +38,30 @@ function BioOverlay(props) {
     });
   });
 
+  let connections = social.getConnections().getConnectionsInvolving(person);
+
+  connections.forEach((connection) => {
+    Object.keys(connection.getAffiliationSources()).forEach((key) => {
+      let source = social.get(key);
+
+      if (source && !(source in sources)) {
+        sources.push(source);
+      }
+    });
+
+    Object.keys(connection.getCorrespondanceSources()).forEach((key) => {
+      let source = social.get(key);
+
+      if (source && !(source in sources)) {
+        sources.push(source);
+      }
+    });
+  })
+
   let source_parts = [];
 
   if (sources.length > 0) {
     sources.forEach((source) => {
-      console.log(source);
       source_parts.push(
         <li key={source.getID()}
           className={styles.source_item}>
