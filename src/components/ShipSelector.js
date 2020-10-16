@@ -4,6 +4,30 @@ import PropTypes from "prop-types";
 import HBox from "./HBox";
 
 import styles from "./ShipSelector.module.css";
+import { startsWith } from "lodash";
+
+function ShipButton(props) {
+  let name = props.ship.getName();
+
+  name = name.replace("SS ", "");
+
+  let style = styles.ship_button;
+  let func = props.emitSetShip;
+
+  if (props.selected) {
+    style = styles.ship_button_selected;
+    func = props.emitShowShip;
+  }
+
+  return (
+    <button
+      className={style}
+      href="#"
+      onClick={()=>{func(props.ship)}}
+    >
+      {name}
+    </button>);
+}
 
 class ShipSelector extends React.Component {
   constructor(props) {
@@ -18,73 +42,52 @@ class ShipSelector extends React.Component {
 
     this.state = {
       ships: [ssGW, ssGB, ssGE ],
-      current: 0
+      current: ssGW,
     }
 
     // We want the graph to start with the GW selected
     this.props.emitSetShip(ssGW);
   }
 
-  slotNextShip() {
-    let current = this.state.current;
-    let ships = this.state.ships;
-
-    if (current === ships.length - 1) {
-      current = 0;
-    }
-    else {
-      current += 1;
-    }
-
-    this.setState({ current: current });
-    this.props.emitSetShip(ships[current]);
-  }
-
-  slotPreviousShip() {
-    let current = this.state.current;
-    let ships = this.state.ships;
-
-    if (current === 0) {
-      current = ships.length - 1;
-    }
-    else {
-      current -= 1;
-    }
-
-    this.setState({ current: current });
-    this.props.emitSetShip(ships[current]);
+  slotSetShip(ship) {
+    this.setState({ current: ship });
+    this.props.emitSetShip(ship);
   }
 
   render() {
 
-    let current = this.state.current;
-    let ship = this.state.ships[current];
+    let buttons = [];
+
+    this.state.ships.forEach((ship) => {
+      buttons.push(
+        <ShipButton
+          key={ship}
+          ship={ship}
+          emitSetShip={(s) => { this.slotSetShip(s) }}
+          emitShowShip={this.props.emitShowShip}
+          selected={ship === this.state.current}
+        />);
+    });
+
 
     return (
       <div className={styles.container}>
         <div className={styles.content}>
           <HBox>
-            <button
-              className={styles.arrow_button}
-              onClick={()=>{this.slotPreviousShip()}}>
-             &laquo;&nbsp;
-            </button>
-            <button
-              className={styles.ship_button}
-              onClick={() => { this.props.emitShowShip(ship) }}>
-              {ship.getName()}
-            </button>
-            <button
-              className={styles.arrow_button}
-              onClick={() => { this.slotNextShip() }}>
-                &nbsp;&raquo;
-            </button>
+            {buttons}
           </HBox>
         </div>
       </div>
     );
   }
 }
+
+ShipButton.propTypes = {
+  ship: PropTypes.object.isRequired,
+  selected: PropTypes.bool.isRequired,
+  emitSetShip: PropTypes.func.isRequired,
+  emitShowShip: PropTypes.func.isRequired,
+};
 
 ShipSelector.propTypes = {
   projects: PropTypes.object.isRequired,

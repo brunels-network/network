@@ -50,6 +50,16 @@
   color: #000000;
 }
 
+@media (max-width: 280px) {
+  .image {
+    max-width: 95%;
+  }
+
+  .caption {
+    max-width: 95%;
+  }
+}
+
 .content {
   box-sizing: border-box;
   padding: 10px;

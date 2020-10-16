@@ -19,14 +19,27 @@
 }
 
 .ship_button {
-  background-color: #E63309;
+  background-color: black;
+  border-color: #E63309;
+  border-width: 1px;
   font-family: "Domine";
-  font-size: 16pt;
+  font-size: 12pt;
+  color: #E63309;
+  width: 80px;
+  height: 50px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.ship_button_selected {
+  background-color: #E63309;
+  border-color: white;
+  border-width: 1px;
+  font-family: "Domine";
+  font-size: 12pt;
   color: white;
-  width: 240px;
-  height: 40px;
-  border-top: solid 1px white;
-  border-left: solid 1px grey;
-  border-right: solid 1px grey;
-  border-bottom: none;
+  width: 80px;
+  height: 50px;
+  border-radius: 10px;
+  margin: 5px;
 }

@@ -680,12 +680,10 @@ class SocialApp extends React.Component {
       );
     }
 
-    let drawer = null;
-
     let left_side = null;
     let right_side = null;
 
-    if (this.state.width > 1024) {
+    if (this.state.width > 900) {
       left_side = (
         <HBox>
           {spiral_button}
@@ -701,7 +699,7 @@ class SocialApp extends React.Component {
           {size_button}
         </HBox>
       );
-    } else if (this.state.width > 768) {
+    } else if (this.state.width > 700) {
       left_side = (
         <HBox>
           {spiral_button}
@@ -715,108 +713,9 @@ class SocialApp extends React.Component {
           {size_button}
         </HBox>
       );
-
-      drawer = (
-        <VBox>
-          <HBox>
-            <BigBox />
-            {spiral_button}
-            {size_button}
-            <BigBox />
-          </HBox>
-          <HBox>
-            <BigBox />
-            {search_button}
-            {unconnected_button}
-            <BigBox />
-          </HBox>
-          <HBox>
-            <BigBox />
-            {filter_button}
-            {noncontrib_button}
-            <BigBox />
-          </HBox>
-        </VBox>
-      );
     } else if (this.state.width > 550) {
       left_side = spiral_button;
       right_side = size_button;
-
-      drawer = (
-        <VBox>
-          <HBox>
-            <BigBox />
-            {spiral_button}
-            {size_button}
-            <BigBox />
-          </HBox>
-          <HBox>
-            <BigBox />
-            {search_button}
-            {unconnected_button}
-            <BigBox />
-          </HBox>
-          <HBox>
-            <BigBox />
-            {filter_button}
-            {noncontrib_button}
-            <BigBox />
-          </HBox>
-        </VBox>
-      );
-    } else {
-      drawer = (
-        <VBox>
-          <HBox>
-            <BigBox />
-            {spiral_button}
-            {size_button}
-            <BigBox />
-          </HBox>
-          <HBox>
-            <BigBox />
-            {search_button}
-            {unconnected_button}
-            <BigBox />
-          </HBox>
-          <HBox>
-            <BigBox />
-            {filter_button}
-            {noncontrib_button}
-            <BigBox />
-          </HBox>
-        </VBox>
-      );
-    }
-
-    let drawer_button = null;
-
-    if (drawer !== null) {
-      drawer_button = (
-        <button
-          className={styles.drawerButton}
-          onClick={() => {
-            this.setState({ drawerVisible: !this.state.drawerVisible });
-          }}
-        >
-          ⤊ Options ⤊
-        </button>
-      );
-      drawer = (
-        <SlidingPanel isOpen={this.state.drawerVisible} position="bottom" width="100%" height="14em">
-          <VBox>
-            <button
-              className={styles.drawerButton}
-              onClick={() => {
-                this.setState({ drawerVisible: !this.state.drawerVisible });
-              }}
-            >
-              ⟱ Close ⟱
-            </button>
-            <BigBox>{drawer}</BigBox>
-          </VBox>
-        </SlidingPanel>
-      );
     }
 
     let mainmenu = (
@@ -864,10 +763,8 @@ class SocialApp extends React.Component {
               <BigBox>{ship_button}</BigBox>
               {right_side}
             </HBox>
-            {drawer_button}
           </VBox>
         </div>
-        {drawer}
         {overlay}
       </div>
     );
