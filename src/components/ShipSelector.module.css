@@ -29,6 +29,8 @@
   height: 50px;
   border-radius: 10px;
   margin: 5px;
+  padding: 0px;
+  text-align: center;
 }
 
 .ship_button_selected {
@@ -42,4 +44,6 @@
   height: 50px;
   border-radius: 10px;
   margin: 5px;
+  padding: 0px;
+  text-align: center;
 }
