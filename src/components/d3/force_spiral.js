@@ -124,12 +124,12 @@ export default function force_spiral(width, height) {
     let center_x = width / 2;
     let center_y = height / 2;
 
-    let scale_x = 0.85 * width / (max_x - min_x);
-    let scale_y = 0.85 * height / (max_y - min_y);
+    let scale_x = 0.80 * width / (max_x - min_x);
+    let scale_y = 0.80 * height / (max_y - min_y);
 
     // offset the center slightly as the spiral biases slightly
-    center_x -= 0.5 * scale_x * (max_x + min_x);
-    center_y -= 0.5 * scale_y * (max_y + min_y);
+    center_x -= 0.4 * scale_x * (max_x + min_x);
+    center_y -= 0.4 * scale_y * (max_y + min_y);
 
     points_x[0] = center_x;
     points_y[0] = center_y;
