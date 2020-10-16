@@ -657,13 +657,17 @@ class SocialApp extends React.Component {
       />
     );
 
+    let search_text = this.state.searchIncludeBios ? "Biographies" : "Names";
+
+    let toggle_search = () => {
+      this.slotSearchBiosToggled(!this.state.searchIncludeBios);
+    };
+
     let search_button = (
       <LabelButton
         label="Search"
-        button={this.state.searchIncludeBios ? "Biographies" : "Names"}
-        onClick={() => {
-          this.slotSearchBiosToggled(!this.state.searchIncludeBios);
-        }}
+        button={search_text}
+        onClick={toggle_search}
       />
     );
 
@@ -719,11 +723,17 @@ class SocialApp extends React.Component {
     }
 
     let mainmenu = (
-      <SlidingPanel isOpen={this.state.menuVisible} position="left" height="28em" width="18em">
+      <SlidingPanel isOpen={this.state.menuVisible}
+        position="left" height="100%" width="10em">
         <MainMenu
           close={() => {
             this.slotCloseMenu();
           }}
+          spiralOrder={this.state.spiralOrder}
+          filterText={filter_text}
+          sizeText={this.state.nodeSize}
+          searchText={search_text}
+
           unconnectedNodesVisible={!this.state.filterUnconnectedNodes}
           ncEngineersVisible={!this.state.filterNCEngineers}
           engineersFiltered={this.state.engineersFiltered}
@@ -733,6 +743,11 @@ class SocialApp extends React.Component {
           emitResetFilters={() => {
             this.slotClearFilters();
           }}
+          emitToggleSpiralOrder={() => this.toggleSpiralOrder()}
+          emitToggleFilter={() => this.toggleEngCommFilter()}
+          emitToggleNodeSize={() => this.toggleNodeSize()}
+          emitToggleSearch={toggle_search}
+
           emitToggleFilterCommercial={() => this.slotToggleFilterCommercial()}
           emitToggleFilterEngineering={() => this.slotToggleFilterEngineer()}
           emitToggleUnconnectedNodesVisible={() => this.slotToggleUnconnectedNodes()}

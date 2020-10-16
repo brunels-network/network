@@ -1,13 +1,40 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import TextButton from "./TextButton";
 import VBox from "./VBox";
 import moment from "moment";
 
 import styles from "./MainMenu.module.css";
 
 const saveSvgAsPng = require("save-svg-as-png");
+
+
+function MenuLabel(props) {
+  return (
+    <div className={styles.menu_label}
+         onClick={props.onClick}>
+      {props.children}
+    </div>
+  )
+}
+
+
+function MenuButton(props) {
+  let onClick = null;
+
+  if (props.onClick) {
+    onClick = props.onClick;
+  } else {
+    onClick = () => null;
+  }
+
+  return (
+    <button className={styles.menu_button} onClick={onClick}>
+      {props.children}
+    </button>
+  );
+}
+
 
 class MainMenu extends React.Component {
   constructor(props) {
@@ -38,72 +65,120 @@ class MainMenu extends React.Component {
   }
 
   render() {
-    let unconnectedNodesText = this.props.unconnectedNodesVisible ? "Hide" : "Show";
-    let ncEngineersText = this.props.ncEngineersVisible ? "Hide" : "Show";
-    let filterEngineersText = this.props.engineersFiltered ? "Remove engineer filter" : "Filter by engineers";
-    let filterCommercialText = this.props.commercialFiltered ? "Remove commercial filter" : "Filter by commercial";
+    let unconnectedNodesText = this.props.unconnectedNodesVisible ? "Visible" : "Invisible";
+    let ncEngineersText = this.props.ncEngineersVisible ? "Visible" : "Invisible";
 
     return (
       <div data-testid="AnalysisPanel" ref={this.setWrapperRef} className={styles.panel}>
         <VBox>
-          <TextButton
+          <MenuButton
               onClick={() => {
                 this.props.close();
               }}
           >
             ⤆ Close ⤆
-          </TextButton>
-          <TextButton
+          </MenuButton>
+
+          <MenuLabel
             onClick={() => {
-              this.props.emitToggleFilterEngineering();
+              this.props.emitToggleSpiralOrder();
+            }}>
+            Spiral Order
+          </MenuLabel>
+          <MenuButton
+            onClick={() => {
+              this.props.emitToggleSpiralOrder();
             }}
           >
-            {filterEngineersText}
-          </TextButton>
-          <TextButton
+            {this.props.spiralOrder}
+          </MenuButton>
+
+          <MenuLabel
             onClick={() => {
-              this.props.emitToggleFilterCommercial();
+              this.props.emitToggleNodeSize();
+            }}>
+            Node Size
+          </MenuLabel>
+          <MenuButton
+            onClick={() => {
+              this.props.emitToggleNodeSize();
             }}
           >
-            {filterCommercialText}
-          </TextButton>
-          <TextButton
+            {this.props.sizeText}
+          </MenuButton>
+
+          <MenuLabel
+            onClick={() => {
+              this.props.emitToggleFilter();
+            }}
+          >
+            Filter
+          </MenuLabel>
+          <MenuButton
+            onClick={() => {
+              this.props.emitToggleFilter();
+            }}
+          >
+            {this.props.filterText}
+          </MenuButton>
+
+          <MenuLabel
             onClick={() => {
               this.props.emitToggleUnconnectedNodesVisible();
             }}
           >
-            {unconnectedNodesText + " unconnected nodes"}
-          </TextButton>
-          <TextButton
+            Unconnected
+          </MenuLabel>
+          <MenuButton
+            onClick={() => {
+              this.props.emitToggleUnconnectedNodesVisible();
+            }}
+          >
+            {unconnectedNodesText}
+          </MenuButton>
+
+          <MenuLabel
             onClick={() => {
               this.props.emitToggleNCEngineersVisible();
             }}
           >
-            {ncEngineersText + " non-contributing engineers"}
-          </TextButton>
-          <TextButton
+            Non-contributers
+          </MenuLabel>
+          <MenuButton
             onClick={() => {
-              this.props.emitSearchHighlightToggled()
+              this.props.emitToggleNCEngineersVisible();
             }}
           >
-            {this.props.searchHighlight ? "Search highlights links" : "Search results only"}
-          </TextButton>
-          <TextButton
+            {ncEngineersText}
+          </MenuButton>
+
+          <MenuLabel
             onClick={() => {
-              this.props.emitSearchBiosToggled()
+              this.props.emitToggleSearch();
             }}
           >
-            {this.props.searchBios ? "Search biographies" : "Search names"}
-          </TextButton>
-          <TextButton
+            Search
+          </MenuLabel>
+          <MenuButton
+            onClick={() => {
+              this.props.emitToggleSearch();
+            }}
+          >
+            {this.props.searchText}
+          </MenuButton>
+
+          <MenuLabel>
+            Further Options
+          </MenuLabel>
+          <MenuButton
             onClick={() => {
               this.props.emitResetFilters();
             }}
           >
-            Reset filters
-          </TextButton>
+            Reset / Reload
+          </MenuButton>
 
-          <TextButton
+          <MenuButton
             onClick={() => {
               const imageOptions = {
                 scale: 1,
@@ -117,11 +192,20 @@ class MainMenu extends React.Component {
             }}
           >
             Save as image
-          </TextButton>
+          </MenuButton>
         </VBox>
       </div>
     );
   }
+}
+
+MenuButton.propTypes = {
+  children: PropTypes.object.isRequired,
+  onClick: PropTypes.func.isRequired,
+}
+
+MenuLabel.propTypes = {
+  children: PropTypes.object.isRequired,
 }
 
 MainMenu.propTypes = {
