@@ -10,18 +10,9 @@ import BigBox from "./BigBox";
 import styles from "./Popover.module.css";
 
 
-function _truncate(str, max = 10) {
-  const array = str.trim().split(" ");
-
-  let ellipsis;
-  if (array.length > max) {
-    ellipsis = "...";
-    //   this.setState({ readMoreEnabled: true });
-  } else {
-    ellipsis = "";
-  }
-
-  return array.slice(0, max).join(" ") + ellipsis;
+function _truncate(str) {
+  const array = str.trim().split(".");
+  return array[0] + "...";
 }
 
 
@@ -82,7 +73,7 @@ function Popover(props) {
     bio = "No biography found.";
   } else {
     bio = bio.replace(name + ".  ", "");
-    bio = _truncate(bio, 20);
+    bio = _truncate(bio);
   }
 
   // Get the location of the click within the viewport so we can open the popover
@@ -90,7 +81,7 @@ function Popover(props) {
   const innerWidth = window.innerWidth; // px
   const innerHeight = window.innerHeight; // px
 
-  const popoverHeight = 250;
+  const popoverHeight = 170;
   const popoverWidth = 150;
 
   let left;
@@ -117,7 +108,7 @@ function Popover(props) {
       className={styles.popOver}
       style={{
         top: top, left: left,
-        height: popoverHeight + "px", width: popoverWidth + "px"
+        width: popoverWidth + "px"
         }}
     >
       <VBox>
