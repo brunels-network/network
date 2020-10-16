@@ -27,13 +27,18 @@ function BioOverlay(props) {
   bio = bio.replace(name + ". ", "");
 
   let sources = [];
+  let seen = {};
 
   Object.keys(person.getSources()).forEach((key) => {
     person.getSources()[key].forEach((item) => {
-      let source = social.get(item);
+      if (!seen[item]) {
+        let source = social.get(item);
 
-      if (source) {
-        sources.push(source);
+        if (source) {
+          sources.push(source);
+        }
+
+        seen[item] = 1;
       }
     });
   });
@@ -42,18 +47,26 @@ function BioOverlay(props) {
 
   connections.forEach((connection) => {
     Object.keys(connection.getAffiliationSources()).forEach((key) => {
-      let source = social.get(key);
+      if (!seen[key]) {
+        let source = social.get(key);
 
-      if (source && !(source in sources)) {
-        sources.push(source);
+        if (source) {
+          sources.push(source);
+        }
+
+        seen[key] = 1;
       }
     });
 
     Object.keys(connection.getCorrespondanceSources()).forEach((key) => {
-      let source = social.get(key);
+      if (!seen[key]) {
+        let source = social.get(key);
 
-      if (source && !(source in sources)) {
-        sources.push(source);
+        if (source) {
+          sources.push(source);
+        }
+
+        seen[key] = 1;
       }
     });
   })
