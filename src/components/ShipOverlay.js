@@ -1,16 +1,9 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+import ReactMarkdown from 'react-markdown'
 
-import imageFilenames from "../data/entityImageFilenames.json";
-
-import TextButton from "./TextButton";
-
-//import HBox from "./HBox";
 import VBox from "./VBox";
-//import BigBox from "./BigBox";
 
 import styles from "./ShipOverlay.module.css";
 
@@ -19,17 +12,30 @@ function ShipOverlay(props) {
 
   const ship = social.get(props.ship);
 
+  let markdown = social.getProjectText(ship);
+
+  if (!markdown) {
+    markdown = "Not available";
+  }
+
+  let filename = social.getImage(ship);
+
+  if (!filename) {
+    filename = "images/Great_Western_maiden_voyage.jpg";
+  }
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={props.close}>
       <div className={styles.closeButton}>
         <button onClick={props.close} style={{ background: "none", border: "none", fontSize: "2vh" }}>
           x
         </button>
       </div>
-      <VBox>
-        <div className={styles.name}>{ship.getName()}</div>
-        <div>{ship.getDescription()}</div>
-      </VBox>
+      <div className={styles.content}>
+        <img className={styles.image} data-testid="bioImage"
+               src={require(`../${filename}`)} alt="A ship" />
+        <div className={styles.markdown}><ReactMarkdown source={markdown} /></div>
+      </div>
     </div>
   );
 }

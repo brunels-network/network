@@ -27,6 +27,8 @@ import graphData from "./socialNetwork.json";
 import positionGroups from "./data/positionGroups.json";
 import imageData from "./images.json";
 
+import gw_text from "./gw_text.md";
+
 // Styling for the app
 import styles from "./SocialApp.module.css";
 
@@ -72,6 +74,7 @@ class SocialApp extends React.Component {
       width: 0,
     };
 
+
     Object.keys(imageData).forEach((key) => {
       social.setImage(key, imageData[key]);
     });
@@ -79,6 +82,13 @@ class SocialApp extends React.Component {
     const ssGW = social.getProjects().getByName("SS Great Western");
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
+
+    fetch(gw_text)
+      .then(r => r.text())
+      .then(text => {
+        social.setProjectText(ssGW, text)
+    });
+
 
     // make sure that we start showing only the Great Western
     this.state.social.toggleFilter(ssGW);

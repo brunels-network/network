@@ -62,6 +62,7 @@ class Social {
     this.state.filter_nc_engineers = true;
     this.state.images = {};
     this.state.default_image = null;
+    this.state.project_text = {};
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -165,6 +166,16 @@ class Social {
     } else {
       return this.state.default_image;
     }
+  }
+
+  setProjectText(id, text) {
+    id = get_id(id);
+    this.state.project_text[id] = text;
+  }
+
+  getProjectText(id) {
+    id = get_id(id);
+    return this.state.project_text[id];
   }
 
   filterNonContributingEngineers(filter = true) {
