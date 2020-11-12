@@ -10,7 +10,6 @@ import LabelButton from "./components/LabelButton";
 import HowDoIOverlay from "./components/HowDoIOverlay";
 import Overlay from "./components/Overlay";
 import SearchBar from "./components/SearchBar";
-import ToggleButton from "./components/ToggleButton";
 import BioOverlay from "./components/BioOverlay";
 import ShipOverlay from "./components/ShipOverlay";
 import SlidingPanel from "./components/SlidingPanel";
@@ -26,6 +25,7 @@ import Social from "./model/Social";
 // Data for import
 import graphData from "./socialNetwork.json";
 import positionGroups from "./data/positionGroups.json";
+import imageData from "./images.json";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
@@ -33,7 +33,6 @@ import styles from "./SocialApp.module.css";
 import { score_by_connections, score_by_influence } from "./model/ScoringFunctions";
 
 import { size_by_connections, size_by_influence } from "./model/SizingFunctions";
-import { faSlash } from "@fortawesome/free-solid-svg-icons";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -72,6 +71,10 @@ class SocialApp extends React.Component {
       height: 0,
       width: 0,
     };
+
+    Object.keys(imageData).forEach((key) => {
+      social.setImage(key, imageData[key]);
+    });
 
     const ssGW = social.getProjects().getByName("SS Great Western");
     this.state.selectedShip = ssGW.getName();
@@ -159,6 +162,8 @@ class SocialApp extends React.Component {
 
     let social = this.state.social;
     social.setFilter("project", item);
+
+    social.setDefaultImage(social.getImage(item));
 
     if (this.state.searchText && this.state.searchText.length > 0) {
       if (this.state.searchWasItem) {

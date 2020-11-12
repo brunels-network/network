@@ -60,6 +60,8 @@ class Social {
     this.state.sizing_function = size_by_influence;
     this.state.filter_unconnected = true;
     this.state.filter_nc_engineers = true;
+    this.state.images = {};
+    this.state.default_image = null;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -142,6 +144,26 @@ class Social {
       } catch (error) {
         // console.error("For key : ", key, "\nError: ", error);
       }
+    }
+  }
+
+  setImage(id, filename) {
+    id = get_id(id);
+    this.state.images[id] = filename;
+  }
+
+  setDefaultImage(filename) {
+    this.state.default_image = filename;
+  }
+
+  getImage(id) {
+    id = get_id(id);
+    let image = this.state.images[id];
+
+    if (image) {
+      return image;
+    } else {
+      return this.state.default_image;
     }
   }
 

@@ -3,8 +3,6 @@ import React from "react";
 
 import "react-tabs/style/react-tabs.css";
 
-import imageFilenames from "../data/entityImageFilenames.json";
-
 import BigBox from "./BigBox";
 
 import styles from "./BioOverlay.module.css";
@@ -88,7 +86,11 @@ function BioOverlay(props) {
                           className={styles.source_item}>No sources</li>);
   }
 
-  const filename = imageFilenames[id]["filename"];
+  let filename = social.getImage(person);
+
+  if (!filename) {
+    filename = "images/Great_Western_maiden_voyage.jpg";
+  }
 
   return (
     <div className={styles.container} onClick={props.close}>
@@ -99,8 +101,7 @@ function BioOverlay(props) {
       </div>
       <div className={styles.content}>
         <img className={styles.image} data-testid="bioImage" key={id}
-             src={require(`../images/${filename}`)} alt="A ship" />
-        <div className={styles.caption}>(C) This will be the copyright info / link</div>
+             src={require(`../${filename}`)} alt="A ship" />
         <div>
           <div className={styles.bio_heading}>Biography</div>
           <div className={styles.bio}>{bio}</div>
@@ -110,6 +111,8 @@ function BioOverlay(props) {
       </div>
     </div>
   );
+
+  //<div className={styles.caption}>(C) This will be the copyright info / link</div>
 }
 
 BioOverlay.propTypes = {
