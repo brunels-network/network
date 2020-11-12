@@ -30,6 +30,7 @@ import imageData from "./images.json";
 import gw_text from "./gw_text.md";
 import gb_text from "./gb_text.md";
 import ge_text from "./ge_text.md";
+import help_text from "./help_text.md";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
@@ -104,6 +105,12 @@ class SocialApp extends React.Component {
       .then(r => r.text())
       .then(text => {
         social.setProjectText(ssGE, text)
+    });
+
+    fetch(help_text)
+      .then(r => r.text())
+      .then(text => {
+        social.setHelpText(text)
     });
 
     // make sure that we start showing only the Great Western
@@ -596,6 +603,7 @@ class SocialApp extends React.Component {
         onClick={() => {
           this.setOverlay(
             <HowDoIOverlay
+              social={this.state.social}
               close={() => {
                 this.closeOverlay();
               }}

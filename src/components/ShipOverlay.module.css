@@ -34,7 +34,7 @@
 
 .content {
   box-sizing: border-box;
-  padding: 10px;
+  padding: 20px;
   align-content: stretch;
   overflow-y: auto;
   overflow-x: hidden;

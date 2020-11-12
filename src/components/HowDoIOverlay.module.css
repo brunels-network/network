@@ -1,36 +1,103 @@
 .container {
   position: absolute;
-  background: white;
-  width: 90%;
-  height: 90%;
-  left: 5%;
-  top: 5%;
+  width: 98%;
+  height: 98%;
+  left: 1%;
+  top: 1%;
   opacity: 1;
-  background-color: white;
-  z-index: 12;
-  color: #000000;
-  overflow: auto;
+  background-color: black;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: 10px;
 }
 
 .closeButton {
   position: absolute;
-  top: 0.01vh;
   right: 0.01vw;
 }
 
-.textContainer {}
 
-.header {
-  font-size: 18pt;
-  color: #003366;
+.image {
+  max-height: 200px;
+  max-width: 280px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border-radius: 10px;
 }
 
-.intro {
-  font-size: 16pt;
+.content {
+  box-sizing: border-box;
+  padding: 20px;
+  align-content: stretch;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  max-width: 900px;
+  border-radius: 10px;
 }
 
-.sectionHeader {}
+.name {
+  font-size: large;
+}
 
-.body {
+.bio {
+  overflow: auto;
+}
+
+.markdown h1 {
+  font-size: 28pt;
+  line-height: 1.2;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 8pt;
+  font-family: "Domine";
+}
+
+.markdown h2 {
   font-size: 12pt;
+  line-height: 1.2;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8pt;
+  font-family: "Domine";
+}
+
+.markdown p {
+  font-size: 12pt;
+  line-height: 1.5;
+  margin-bottom: 8pt;
+  text-align: justify;
+  font-family: "Domine";
+}
+
+.markdown em {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.markdown ul {
+  list-style-position: inside;
+  font-size: 10pt;
+  line-height: 1.2;
+  margin-bottom: 8pt;
+  line-height: 1.2;
+  list-style-type: none;
+}
+
+.markdown li {
+  list-style-position: inside;
+  font-size: 10pt;
+  line-height: 1.2;
+  margin-bottom: 8pt;
 }

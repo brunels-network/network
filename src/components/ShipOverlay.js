@@ -3,8 +3,6 @@ import React from "react";
 
 import ReactMarkdown from 'react-markdown'
 
-import VBox from "./VBox";
-
 import styles from "./ShipOverlay.module.css";
 
 function ShipOverlay(props) {

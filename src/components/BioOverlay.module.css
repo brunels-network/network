@@ -62,7 +62,7 @@
 
 .content {
   box-sizing: border-box;
-  padding: 10px;
+  padding: 20px;
   align-content: stretch;
   overflow-y: auto;
   overflow-x: hidden;
@@ -139,6 +139,7 @@
   margin-bottom: 2px;
   background-color: white;
   word-break: break-word;
+  text-align: justify;
 }
 
 .source {

@@ -1,40 +1,39 @@
 import PropTypes from "prop-types";
 import React from "react";
 
+import ReactMarkdown from 'react-markdown'
+
 import styles from "./HowDoIOverlay.module.css";
 
-import howDoIText from "../data/howDoIOverlayText.json";
+function HowDoIOverlay(props) {
+  let social = props.social;
 
-class HowDoIOverlay extends React.Component {
-  render() {
-    return (
-      <div className={styles.container}>
-        <div className={styles.closeButton}>
-          <button onClick={this.props.close} style={{ background: "none", border: "none", fontSize: "2.4vh" }}>
-            x
-          </button>
-        </div>
-        <div className={styles.textContainer}>
-          <div className={styles.header}>How do I navigate Brunel&apos;s Network?</div>
-          <div className={styles.intro}>
-            <p>{howDoIText["intro"]}</p>
-          </div>
-          <div className={styles.body}>
-            <p>{howDoIText["paraOne"]}</p>
-            <br />
-            <p>{howDoIText["paraTwo"]}</p>
-            <br />
-            <p>{howDoIText["paraThree"]}</p>
-            <br />
-            <p>{howDoIText["paraFour"]}</p>
-          </div>
-        </div>
-      </div>
-    );
+  let markdown = social.getHelpText();
+
+  if (!markdown) {
+    markdown = "Not available";
   }
+
+  let filename = "images/ships/Great_Britain.jpg";
+
+  return (
+    <div className={styles.container} onClick={props.close}>
+      <div className={styles.closeButton}>
+        <button onClick={props.close} style={{ background: "none", border: "none", fontSize: "2vh" }}>
+          x
+        </button>
+      </div>
+      <div className={styles.content}>
+        <img className={styles.image} data-testid="bioImage"
+               src={require(`../${filename}`)} alt="A ship" />
+        <div className={styles.markdown}><ReactMarkdown source={markdown} /></div>
+      </div>
+    </div>
+  );
 }
 
 HowDoIOverlay.propTypes = {
+  social: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired,
 };
 

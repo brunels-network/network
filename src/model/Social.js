@@ -63,6 +63,7 @@ class Social {
     this.state.images = {};
     this.state.default_image = null;
     this.state.project_text = {};
+    this.state.help_text = null;
     this._rebuilding = 0;
 
     this._isASocialObject = true;
@@ -166,6 +167,14 @@ class Social {
     } else {
       return this.state.default_image;
     }
+  }
+
+  setHelpText(text) {
+    this.state.help_text = text;
+  }
+
+  getHelpText() {
+    return this.state.help_text;
   }
 
   setProjectText(id, text) {
