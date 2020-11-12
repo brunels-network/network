@@ -12,6 +12,7 @@ def _generate_business_uid():
 
 class Businesses:
     """This holds a registry of individual Businesses / Institutions"""
+
     def __init__(self, props=None, getHook=None):
         self._getHook = getHook
 
@@ -39,7 +40,7 @@ class Businesses:
 
         try:
             existing = self.getByName(business.getName())
-            # return 
+            # return
         except Exception:
             existing = None
             # pass
@@ -121,6 +122,20 @@ class Businesses:
 
         raise KeyError(f"No business matches '{value}'. Available businesses "
                        f"are '{keys}'")
+
+    def find_close(self, value):
+
+        def _similar(a, b):
+            from difflib import SequenceMatcher
+            return SequenceMatcher(None, a, b).ratio()
+
+        results = []
+
+        for name in self._names.keys():
+            if _similar(value, name) > 0.9:
+                results.append(self.get(self._names[name]))
+
+        return results
 
     def get(self, id):
         try:

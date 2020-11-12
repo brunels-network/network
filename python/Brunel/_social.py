@@ -5,7 +5,7 @@ import collections
 import json
 
 
-def _read_data(data_filepath):
+def _read_data(data_filepath, sheet_name=0):
     """ Read data from file
         Args:
             data (str): Filepath for data file
@@ -13,6 +13,9 @@ def _read_data(data_filepath):
             pandas.DataFrame
     """
     import pandas as _pd
+
+    if data_filepath.endswith(".xlsx"):
+        return _pd.read_excel(data_filepath, sheet_name=sheet_name)
 
     sep = ","
 
@@ -69,6 +72,7 @@ def _get_modifiers(modifiers, name=None):
 
 class Social:
     """This class holds a complete social network"""
+
     def __init__(self):
         from ._people import People as _People
         from ._connections import Connections as _Connections
@@ -137,7 +141,8 @@ class Social:
         else:
             return id
 
-    def load_projects(self, projects_filepath, importers=None, modifiers=None):
+    def load_projects(self, projects_filepath, importers=None, modifiers=None,
+                      sheet_name=0):
         """ Load in projects from file
 
             Args:
@@ -147,8 +152,8 @@ class Social:
             Returns:
                 None
         """
-        data = _read_data(projects_filepath)
-        
+        data = _read_data(projects_filepath, sheet_name=sheet_name)
+
         importers = _get_importers(importers)
         modifiers = _get_modifiers(modifiers, "project")
 
@@ -164,7 +169,8 @@ class Social:
                 project = modifiers["project"](project)
                 projects.add(project)
 
-    def load_sources(self, sources_filepath, importers=None, modifiers=None):
+    def load_sources(self, sources_filepath, importers=None, modifiers=None,
+                     sheet_name=0):
         """ Load in sources from file
 
             Args:
@@ -174,7 +180,7 @@ class Social:
             Returns:
                 None
         """
-        data = _read_data(sources_filepath)
+        data = _read_data(sources_filepath, sheet_name=sheet_name)
 
         # Get the importer and modifier functions
         importers = _get_importers(importers)
@@ -188,10 +194,11 @@ class Social:
         for _, source in data.iterrows():
             source = import_source(source, importers=importers)
             if source:
-                source = modifiers["source"](source) 
+                source = modifiers["source"](source)
                 sources.add(source)
 
-    def load_biographies(self, bios_filepath, importers=None, modifiers=None):
+    def load_biographies(self, bios_filepath, importers=None, modifiers=None,
+                         sheet_name=0):
         """ Load in biographies from file
 
             Args:
@@ -201,7 +208,7 @@ class Social:
             Returns:
                 None
         """
-        bios = _read_data(bios_filepath)
+        bios = _read_data(bios_filepath, sheet_name=sheet_name)
 
         importers = _get_importers(importers)
         importers["social"] = self
@@ -217,7 +224,9 @@ class Social:
                 biography = modifiers["biography"](biography)
                 biographies.add(node, biography)
 
-    def load_graph(self, project, nodes_filepath, edges_filepath, importers=None, modifiers=None):
+    def load_graph(self, project, nodes_filepath, edges_filepath,
+                   importers=None, modifiers=None,
+                   nodes_sheet_name=0, edges_sheet_name=0):
         """ Load graph data in from file
 
             Args:
@@ -239,8 +248,8 @@ class Social:
         # uid_records = collections.defaultdict(dict)
 
         # Read in the data from file
-        nodes = _read_data(nodes_filepath)
-        edges = _read_data(edges_filepath)
+        nodes = _read_data(nodes_filepath, sheet_name=nodes_sheet_name)
+        edges = _read_data(edges_filepath, sheet_name=edges_sheet_name)
 
         # Get the importer and modifier functions
         importers = _get_importers(importers)

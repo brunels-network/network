@@ -57,6 +57,7 @@ class Date:
        ability to be a vague date, e.g. "March 1840", or "1855". It is used
        as many dates that we need cannot be specified exactly
     """
+
     def __init__(self, date=None):
         if date is None:
             self.state = {}
@@ -107,7 +108,12 @@ class Date:
                     start = _datetime.date(year=y0, month=1, day=1)
                     end = _datetime.date(year=y1, month=12, day=31)
                 else:
-                    year = int(parts[0])
+                    try:
+                        year = int(float(parts[0]))
+                    except Exception as e:
+                        print(f"YEAR {parts[0]} is not an integer {e}")
+                        year = 1850
+
                     start = _datetime.date(year=year, month=1, day=1)
                     end = _datetime.date(year=year, month=12, day=31)
             except Exception as e:
@@ -276,7 +282,7 @@ class DateRange:
 
     def __eq__(self, other):
         return self.getStart() == other.getStart() and \
-               self.getEnd() == other.getEnd()
+            self.getEnd() == other.getEnd()
 
     def __lt__(self, other):
         if self.getStart():

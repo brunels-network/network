@@ -59,7 +59,10 @@ def _get_daterange(s):
 
 def isPerson(node, importers=None):
     try:
-        return str(node.Label).find("&") == -1
+        if importers["isBusiness"](node):
+            return False
+
+        return True
     except Exception:
         return False
 
@@ -256,7 +259,34 @@ def importPerson(node, project, importers=None):
 
 
 def isBusiness(node, importers=None):
-    return str(node.Label).find("&") != -1
+    try:
+        # find things that make this a business
+        name = str(node.Label).lower().lstrip().rstrip()
+
+        if name.endswith(" co."):
+            return True
+        elif name.endswith(" co"):
+            # company
+            return True
+        elif name.find("&") != -1:
+            # company Jon & Something
+            return True
+        elif name.find("steel iron") != -1:
+            # steel iron foundry
+            return True
+        elif name.find("brotherhood") != -1:
+            return False
+        elif name.endswith(" bros"):
+            # Wainwright Bros
+            return True
+        elif name.find(" ironworks") != -1:
+            return True
+        elif name.find(" foundry") != -1:
+            return True
+    except Exception:
+        pass
+
+    return False
 
 
 def importBusiness(node, project, importers=None):
@@ -676,8 +706,8 @@ def importProject(data, importers=None):
 
 
 def importBiography(data, importers=None):
-    name = str(data.Node).lstrip().rstrip()
-    bio = str(data.Biography).lstrip().rstrip()
+    name = str(data.Label).lstrip().rstrip()
+    bio = str(data.Description).lstrip().rstrip()
 
     if importers is None:
         return
@@ -722,8 +752,32 @@ def importBiography(data, importers=None):
     except Exception:
         pass
 
+    if nodes is None:
+        nodes = []
+
+    try:
+        nodes += social.businesses().find_close(name)
+    except Exception:
+        pass
+
     if nodes:
-        print(f"Nearest matches are {nodes}")
+        print(f"\nNo match for {name}. Nearest matches are:")
+
+        for i, node in enumerate(nodes):
+            print(f"{i+1}: {node}")
+
+        if len(nodes) == 1:
+            y = input(f"Is this the right person (y/n)?")
+
+            if y.lower()[0] == "y":
+                return (nodes[0], bio)
+        else:
+            value = input(f"Which one do you want? Type 1-{len(nodes)}: ")
+            try:
+                return (nodes[int(value) - 1], bio)
+            except Exception as e:
+                print(e)
+                pass
 
     if name == "Humphries, Francis":
         data.Node = "Humphrys, Francis"
