@@ -61,6 +61,7 @@
   font-style: italic;
   text-align: center;
   margin-bottom: 8pt;
+  font-family: "Domine";
 }
 
 .markdown h2 {
@@ -69,6 +70,7 @@
   font-weight: bold;
   text-align: center;
   margin-bottom: 8pt;
+  font-family: "Domine";
 }
 
 .markdown p {
@@ -76,6 +78,7 @@
   line-height: 1.5;
   margin-bottom: 8pt;
   text-align: justify;
+  font-family: "Domine";
 }
 
 .markdown em {
@@ -89,6 +92,7 @@
   line-height: 1.2;
   margin-bottom: 8pt;
   line-height: 1.2;
+  list-style-type: none;
 }
 
 .markdown li {

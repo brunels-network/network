@@ -28,6 +28,8 @@ import positionGroups from "./data/positionGroups.json";
 import imageData from "./images.json";
 
 import gw_text from "./gw_text.md";
+import gb_text from "./gb_text.md";
+import ge_text from "./ge_text.md";
 
 // Styling for the app
 import styles from "./SocialApp.module.css";
@@ -83,12 +85,26 @@ class SocialApp extends React.Component {
     this.state.selectedShip = ssGW.getName();
     this.state.selectedShipID = ssGW.getID();
 
+    const ssGB = social.getProjects().getByName("SS Great Britain");
+    const ssGE = social.getProjects().getByName("SS Great Eastern");
+
     fetch(gw_text)
       .then(r => r.text())
       .then(text => {
         social.setProjectText(ssGW, text)
     });
 
+    fetch(gb_text)
+      .then(r => r.text())
+      .then(text => {
+        social.setProjectText(ssGB, text)
+    });
+
+    fetch(ge_text)
+      .then(r => r.text())
+      .then(text => {
+        social.setProjectText(ssGE, text)
+    });
 
     // make sure that we start showing only the Great Western
     this.state.social.toggleFilter(ssGW);
