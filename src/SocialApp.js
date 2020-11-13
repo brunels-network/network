@@ -51,6 +51,22 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
+    let j = social.getPeople().find("Joshua Field");
+    console.log(j);
+
+    let c = social.getConnections().getConnectionsInvolving(j);
+    console.log(c);
+
+    c.forEach((value) => {
+      Object.keys(value.getAffiliationSources()).forEach((k) => {
+        console.log(social.get(k).getName());
+      })
+      Object.keys(value.getCorrespondanceSources()).forEach((k) => {
+        console.log(social.get(k).getName());
+      })
+    });
+
+
     this.updateSize = this.updateSize.bind(this);
 
     this.state = {

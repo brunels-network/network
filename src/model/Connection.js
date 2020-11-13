@@ -225,7 +225,8 @@ class Connection {
       this.state.type = setState(state.type);
       this.state.duration = setState(state.duration);
       this.state.affiliations = setState(state.affiliations, {});
-      this.state.correspondances = setState(state.correspondances, {});
+      // note that correspondences is a typo from the python!
+      this.state.correspondances = setState(state.correspondences, {});
       this.state.notes = setState(state.notes, []);
       this.state.weights = setState(state.weights, {});
       this.state.projects = setState(state.projects, {});
