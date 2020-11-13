@@ -132,10 +132,12 @@ class Connection {
   }
 
   getAffiliationSources() {
+    //console.log(this.state.affiliations);
     return this.state.affiliations;
   }
 
   getCorrespondanceSources() {
+    //console.log(this.state.correspondances);
     return this.state.correspondances;
   }
 

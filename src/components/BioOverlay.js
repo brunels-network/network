@@ -73,6 +73,7 @@ function BioOverlay(props) {
 
   if (sources.length > 0) {
     sources.forEach((source) => {
+      //console.log(source);
       source_parts.push(
         <li key={source.getID()}
           className={styles.source_item}>
