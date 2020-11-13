@@ -276,9 +276,15 @@ class ForceGraphD3 extends React.Component {
       )
       // Here size is the weight given to that entity
       .attr("r", (d) => {
-        // If no project selected keep previous weight
-        // Otherwise update using the selected project code
-        d.radius = 10 + 2 * d.size;
+        console.log(d.size);
+        if (d.size < 1.5) {
+          d.radius = 3;
+        }
+        else if (d.size < 2.0) {
+          d.radius = 6 + d.size;
+        } else {
+          d.radius = 12 + 2 * d.size;
+        }
         return d.radius;
       })
       .attr("class", (d) => {

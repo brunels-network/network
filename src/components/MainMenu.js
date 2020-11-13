@@ -83,7 +83,7 @@ class MainMenu extends React.Component {
             onClick={() => {
               this.props.emitToggleSpiralOrder();
             }}>
-            Spiral Order
+            Current<br/>Spiral Order
           </MenuLabel>
           <MenuButton
             onClick={() => {
@@ -97,7 +97,7 @@ class MainMenu extends React.Component {
             onClick={() => {
               this.props.emitToggleNodeSize();
             }}>
-            Node Size
+            Current<br/>Node Size
           </MenuLabel>
           <MenuButton
             onClick={() => {
@@ -112,7 +112,7 @@ class MainMenu extends React.Component {
               this.props.emitToggleFilter();
             }}
           >
-            Filter
+            Current<br/>Filter
           </MenuLabel>
           <MenuButton
             onClick={() => {
@@ -127,7 +127,7 @@ class MainMenu extends React.Component {
               this.props.emitToggleUnconnectedNodesVisible();
             }}
           >
-            Unconnected
+            Current<br/>Unconnected
           </MenuLabel>
           <MenuButton
             onClick={() => {
@@ -142,7 +142,7 @@ class MainMenu extends React.Component {
               this.props.emitToggleNCEngineersVisible();
             }}
           >
-            Non-contributers
+            Current<br/>Non-contributers
           </MenuLabel>
           <MenuButton
             onClick={() => {
@@ -157,7 +157,7 @@ class MainMenu extends React.Component {
               this.props.emitToggleSearch();
             }}
           >
-            Search
+            Current<br/>Search
           </MenuLabel>
           <MenuButton
             onClick={() => {

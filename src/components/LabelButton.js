@@ -23,7 +23,7 @@ function LabelButton(props) {
               className={styles.label}
               onClick={onClick}
             >
-              {props.label}
+              Current<br/>{props.label}
             </button>
             <button
               className={styles.button}
