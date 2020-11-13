@@ -276,7 +276,6 @@ class ForceGraphD3 extends React.Component {
       )
       // Here size is the weight given to that entity
       .attr("r", (d) => {
-        console.log(d.size);
         if (d.size < 1.5) {
           d.radius = 3;
         }
@@ -346,7 +345,7 @@ class ForceGraphD3 extends React.Component {
 
     let use_initials = true;
 
-    console.log(`${this.state.width} : ${data.length}`);
+    //console.log(`${this.state.width} : ${data.length}`);
 
     if (data.length < 10) {
       use_initials = false;

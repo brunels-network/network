@@ -82,26 +82,38 @@ function Popover(props) {
   const innerHeight = window.innerHeight; // px
 
   const popoverHeight = 170;
-  const popoverWidth = 150;
+  const popoverWidth = 200;
 
   let left;
   if (node.x > innerWidth - popoverWidth) {
-    left = node.x - popoverWidth + "px";
+    left = node.x - popoverWidth;
   } else {
-    left = node.x + "px";
+    left = node.x;
   }
+
+  if (left < 10) {
+    left = 10;
+  }
+
+  left = left + "px";
 
   let top;
   if (node.y > innerHeight - popoverHeight) {
     top = node.y - popoverHeight + 50;
 
     if (top < 50) { top = 50; }
-
-    top = top + "px";
-
   } else {
-    top = node.y + "px";
+    top = node.y;
   }
+
+  if (innerHeight < 350) {
+    top = 20;
+  }
+  else if (top > innerHeight - 50 - popoverHeight) {
+    top = innerHeight - 50 - popoverHeight;
+  }
+
+  top = top + "px";
 
   return (
     <div
