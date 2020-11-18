@@ -14,6 +14,7 @@ import BioOverlay from "./components/BioOverlay";
 import ShipOverlay from "./components/ShipOverlay";
 import SlidingPanel from "./components/SlidingPanel";
 import MainMenu from "./components/MainMenu";
+import WarningOverlay from "./components/WarningOverlay";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -51,22 +52,6 @@ class SocialApp extends React.Component {
       social = new Social();
     }
 
-    let j = social.getPeople().find("Joshua Field");
-    console.log(j);
-
-    let c = social.getConnections().getConnectionsInvolving(j);
-    console.log(c);
-
-    c.forEach((value) => {
-      Object.keys(value.getAffiliationSources()).forEach((k) => {
-        console.log(social.get(k).getName());
-      })
-      Object.keys(value.getCorrespondanceSources()).forEach((k) => {
-        console.log(social.get(k).getName());
-      })
-    });
-
-
     this.updateSize = this.updateSize.bind(this);
 
     this.state = {
@@ -91,6 +76,7 @@ class SocialApp extends React.Component {
       menuVisible: false,
       height: 0,
       width: 0,
+      warningVisible: true,
     };
 
 
@@ -555,6 +541,10 @@ class SocialApp extends React.Component {
     });
   }
 
+  slotCloseWarning() {
+    this.setState({ warningVisible: false });
+  }
+
   slotShowMenu() {
     this.setState({ menuVisible: true });
   }
@@ -813,6 +803,22 @@ class SocialApp extends React.Component {
       </SlidingPanel>
     );
 
+    // make sure that we don't have too many nodes...
+    let nnodes = this.state.social.getGraph().nodes.length;
+
+    let warning_popover = null;
+
+    if (this.state.warningVisible && nnodes > 50) {
+      warning_popover = (
+        <Overlay useBackground={false} toggleOverlay={() => { this.slotCloseWarning() }}>
+        <WarningOverlay close={() => { this.slotCloseWarning() }}>
+            As you can see, this is a busy network. Using filters will allow you
+            to examine the network more closely.
+        </WarningOverlay>
+          </Overlay>
+      );
+    }
+
     return (
       <div>
         {mainmenu}
@@ -836,6 +842,7 @@ class SocialApp extends React.Component {
           </VBox>
         </div>
         {overlay}
+        {warning_popover}
       </div>
     );
   }

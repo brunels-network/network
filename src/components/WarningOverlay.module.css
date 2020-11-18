@@ -1,0 +1,32 @@
+.container {
+  position: absolute;
+  width: 98%;
+  left: 1%;
+  bottom: 50px;
+  opacity: 1;
+  background-color: transparent;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.content {
+  box-sizing: border-box;
+  padding: 20px;
+  align-content: stretch;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #E63309;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  max-width: 300px;
+  border-radius: 10px;
+  text-align: center;
+}

@@ -77,7 +77,7 @@ function BioOverlay(props) {
       source_parts.push(
         <li key={source.getID()}
           className={styles.source_item}>
-          <span className={styles.source_name}>{source.getName()}</span>&nbsp;
+          <span className={styles.source_name}>{source.getName(true)}</span>&nbsp;
           {source.getDescription()}
         </li>
       );

@@ -12,6 +12,12 @@
 .overlayNoBackground {
   position: fixed;
   background: transparent;
+  z-index: 10;
+  width: 99%;
+  height: 99%;
+  left: 0.5%;
+  top: 0.5%;
+  border-radius: 10px;
 }
 
 .container {

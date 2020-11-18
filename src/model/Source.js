@@ -97,8 +97,23 @@ class Source {
     return `Source(${this.getName()})`;
   }
 
-  getName() {
-    return this.state.name;
+  getName(remove_page_numbers = false) {
+    if (remove_page_numbers) {
+      let name = this.state.name;
+
+      if (name.includes("-")) {
+        name = name.split("-")[0];
+      }
+
+      if (name.includes(",")) {
+        name = name.split(",")[0];
+      }
+
+      return name;
+    }
+    else {
+      return this.state.name;
+    }
   }
 
   getDescription() {

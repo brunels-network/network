@@ -276,13 +276,15 @@ class ForceGraphD3 extends React.Component {
       )
       // Here size is the weight given to that entity
       .attr("r", (d) => {
+        d.radius = Math.min(30, 5 + (0.5 * (d.size * d.size)));
+
         if (d.size < 1.5) {
-          d.radius = 3;
+          //d.radius = 3;
         }
         else if (d.size < 2.0) {
-          d.radius = 6 + d.size;
+          //d.radius = 6 + d.size;
         } else {
-          d.radius = 12 + 2 * d.size;
+          //d.radius = 12 + 2 * d.size;
         }
         return d.radius;
       })
