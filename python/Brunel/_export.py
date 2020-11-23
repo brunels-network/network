@@ -64,10 +64,11 @@ def export_object(obj, filepath):
 
 
 def export_all(
-    social,
+    social, images,
     network_filename="socialNetwork.json",
     source_image_json="sourceImageFilenames.json",
     entity_image_json="entityImageFilenames.json",
+    images_filename="images.json"
 ):
     """ Exports the JSON file holding the social network.
 
@@ -89,12 +90,14 @@ def export_all(
     export_object(social, network_filename)
     export_to_json(source_names, source_image_json)
     export_to_json(people_dictionary, entity_image_json)
+    export_to_json(images, images_filename)
 
 
 def copy_all(
     network_filename="socialNetwork.json",
     source_image_json="sourceImageFilenames.json",
     entity_image_json="entityImageFilenames.json",
+    images_filename="images.json"
 ):
     """ Copy all exported files to their correct paths within the Javascript src
         directory
@@ -107,10 +110,12 @@ def copy_all(
             None
     """
     network_filename_path = Path("../src") / network_filename
+    images_filename_path = Path("../src") / images_filename
     source_image_path = Path("../src/data") / source_image_json
     entity_image_path = Path("../src/data") / entity_image_json
 
     copy_with_confirmation(network_filename, network_filename_path)
+    copy_with_confirmation(images_filename, images_filename_path)
     copy_with_confirmation(source_image_json, source_image_path)
     copy_with_confirmation(entity_image_json, entity_image_path)
 

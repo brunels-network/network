@@ -294,11 +294,15 @@ class Social:
 
         # Look over dataframe to import connections between nodes
         for _, edge in edges.iterrows():
-            connection = import_connection(edge, project, mapping=ids, importers=importers)
+            try:
+                connection = import_connection(edge, project, mapping=ids,
+                                               importers=importers)
 
-            if connection:
-                connection = modifiers["connection"](connection)
-                connections.add(connection)
+                if connection:
+                    connection = modifiers["connection"](connection)
+                    connections.add(connection)
+            except Exception as e:
+                print(f"Cannot connect\n{edge}:\n{e}")
 
     def toDry(self):
         """ Return the state of this object

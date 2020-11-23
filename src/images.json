@@ -1,13 +1,58 @@
 {
-  "J2f04a28": "images/ships/Great_Western.jpg",
-  "Jbdf6e91": "images/ships/Great_Eastern.jpg",
-  "J2eae8d3": "images/ships/Great_Britain.jpg",
-  "Pb84d4b1": "images/people/Christopher_Claxton.jpg",
-  "Pb5a5538": "images/people/John_Grantham.jpg",
-  "P1c90777": "images/people/Robert_Bright.jpg",
-  "P61116eb": "images/people/Samuel_Hall.jpg",
-  "Pce177ff": "images/people/William_Fairbairn.jpg",
-  "Pfacd3e6": "images/people/William_Symonds.jpg",
-  "Pcefbbac": "images/people/Bryan_Donkin.jpg",
-  "P5dc5b01": "images/people/Edward_Chappell.jpg"
+    "Pc2baa5a": [
+        "images/people/Bryan_Donkin.jpg",
+        "Letter from Brunel to Bryan Donkin [Brunel Institute DM162/10/1-336, Isambard Kingdom Brunel Letterbooks, 1832-39]"
+    ],
+    "P428de34": [
+        "images/people/Christopher_Claxton.jpg",
+        "Letter from Brunel to Christopher CLaxton [Brunel Institute DM162/10/1-365, Isambard Kingdom Brunel Letterbooks, 1832-39]"
+    ],
+    "P2a9f9b5": [
+        "images/people/Edward_Chappel.jpg",
+        "Letter from Edward Chapell to 'GW steam ship office' [Brunel Institute DM162/10/2b, Isambard Kingdom Brunel Letterbooks, 1839-42]"
+    ],
+    "P83372bf": [
+        "images/people/Brunel.jpg",
+        "Isambard Kingdom Brunel - engraved by D. J. Pound [Brunel Institute BRSGB-2014.03578 from a photograph by Mayall\n Accepted under the Cultural Gifts Scheme by HM Government from Clive Richards OBE DL  and allocated to the ss Great Britain Trust, 2017]"
+    ],
+    "Pf77c8b9": [
+        "images/people/John_Grantham.jpg",
+        "Letter from Brunel to John Grantham [Brunel Institute DM162/10/1-344, Isambard Kingdom Brunel Letterbooks, 1832-9]"
+    ],
+    "P650c480": [
+        "images/people/John_Scott.jpg",
+        "John Scott Russell [Royal Museums Greenwich, PU3693 - J. Scott Rusell, MA FRS MICE]"
+    ],
+    "P6885a76": [
+        "images/people/Robert_Bright.jpg",
+        "Letter from Brunel to Robert Bright [Brunel Institute DM162/10/2b-25, Isambard Kingdom Brunel Letterbooks, 1839-42]"
+    ],
+    "P45791c8": [
+        "images/people/Thomas_Guppy.jpg",
+        "Thomas Guppy [Brunel Institute DM157 Short History of the SS Great Western/1938/Bristol Port Authority]"
+    ],
+    "P34b5b85": [
+        "images/people/William_Fairbairn.jpg",
+        "Letter from Brunel to William Fairbairn [Brunel Institute DM162/10/1-465, Isambard Kingdom Brunel Letterbooks 1832-39]"
+    ],
+    "P30e49f7": [
+        "images/people/William_Patterson.jpg",
+        "William Patterson [Brunel Institute DM157 Short History of the SS Great Western/1938/Bristol Port Authority]"
+    ],
+    "P01827a3": [
+        "images/people/William_Symonds.jpg",
+        "Letter from Brunel to William Symonds [Brunel Institute DM162/10/2b-176, Isambard Kingdom Brunel Letterbooks 1839-42]"
+    ],
+    "J3fb60b4": [
+        "images/ships/Great_Britain.jpg",
+        null
+    ],
+    "J86bbb17": [
+        "images/ships/Great_Western.jpg",
+        null
+    ],
+    "J1d21e99": [
+        "images/ships/Great_Eastern.jpg",
+        null
+    ]
 }

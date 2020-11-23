@@ -18,6 +18,7 @@ from ._projects import *
 from ._social import *
 from ._daterange import *
 from ._dry import *
+from ._load_images import *
 from ._export import export_object, export_to_json, export_all, copy_all
 
 
@@ -28,7 +29,7 @@ try:
             get_ipython().display_formatter.formatters['text/plain'].for_type(
                 C,
                 lambda obj, p, cycle: p.text(str(obj) if not cycle else '...')
-                )
+            )
 
         import sys as _sys
         import inspect as _inspect

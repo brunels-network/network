@@ -577,7 +577,15 @@ def importAffiliations(node, importers=None):
 
     pattern = _re.compile(r":")
 
-    for affiliation in pattern.split(str(node["Other Affiliations"])):
+    key = "Other Affiliations"
+
+    try:
+        node[key]
+    except KeyError:
+        key = "Other affiliations"
+        node[key]
+
+    for affiliation in pattern.split(str(node[key])):
         affiliation = extractAffiliationName(affiliation)
         affiliation = affiliations.add(affiliation)
 
