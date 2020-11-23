@@ -333,6 +333,25 @@ class Business {
     return this.state.is_highlighted;
   }
 
+  isNonContributingEngineer(project_id = null) {
+    if (project_id === null) {
+      // return this status with the first project
+      project_id = Object.keys(this.state.positions)[0];
+    }
+
+    const positions = this.state.positions[project_id];
+
+    for (let i = 0; i < positions.length; ++i){
+      const position = this._getHook(positions[i]);
+      const name = position.getCanonical();
+      if (name.includes("non-cont")) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   getNode() {
     let node = {
       id: this.getID(),

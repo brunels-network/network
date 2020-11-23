@@ -494,6 +494,11 @@ class Social {
         this._rebuilding -= 1;
       }
 
+      if (this.state.filter_nc_engineers) {
+        this.state.cache.businesses =
+          this.state.cache.businesses.filterNonContributingEngineers();
+      }
+
       if (this.state.filter_unconnected) {
         this.state.cache.businesses =
           this.state.cache.businesses.filterUnconnected(this.getConnections(true));

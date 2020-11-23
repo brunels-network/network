@@ -148,6 +148,26 @@ class Businesses {
     // throw new MissingError(`No Business matches '${name}. Available Businesses are '${keys}'`);
   }
 
+  filterNonContributingEngineers() {
+    let registry = {};
+    let names = {};
+
+    Object.keys(this.state.registry).forEach((key) => {
+      let business = this.state.registry[key];
+      if (!business.isNonContributingEngineer()){
+        registry[key] = business;
+        names[business.getName()] = key;
+      }
+    });
+
+    let businesses = new Businesses();
+    businesses.state.registry = registry;
+    businesses._names = names;
+    businesses._updateHooks(this._getHook);
+
+    return businesses;
+  }
+
   filterUnconnected(connections) {
     let registry = {};
     let names = {};
