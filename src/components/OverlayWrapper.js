@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import BioOverlay from "./BioOverlay";
-import SourceOverlay from "./SourceOverlay";
 import Overlay from "./Overlay";
 
 class OverlayWrapper extends React.Component {
@@ -15,19 +14,7 @@ class OverlayWrapper extends React.Component {
     }
 
     let overlay = null;
-    if (this.props.isOverlayOpen && this.props.isSourceOverlayOpen) {
-      overlay = (
-        <Overlay toggleOverlay={this.props.toggleOverlay}>
-          <SourceOverlay
-            sources={socialSources}
-            person={this.props.entity}
-            sourceIDs={this.props.sourceIDs}
-            toggleOverlay={this.props.toggleOverlay}
-            toggleBioOverlay={this.props.toggleBioOverlay}
-          />
-        </Overlay>
-      );
-    } else if (this.props.isOverlayOpen && this.props.isBioOverlayOpen) {
+    if (this.props.isOverlayOpen && this.props.isBioOverlayOpen) {
       overlay = (
         <Overlay toggleOverlay={this.props.toggleOverlay}>
           <BioOverlay
