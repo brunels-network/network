@@ -81,7 +81,7 @@ class SocialApp extends React.Component {
 
 
     Object.keys(imageData).forEach((key) => {
-      social.setImage(key, imageData[key]);
+      social.setImage(key, imageData[key][0], imageData[key][1]);
     });
 
     const ssGW = social.getProjects().getByName("SS Great Western");

@@ -149,9 +149,9 @@ class Social {
     }
   }
 
-  setImage(id, filename) {
+  setImage(id, filename, credit) {
     id = get_id(id);
-    this.state.images[id] = filename;
+    this.state.images[id] = [filename, credit];
   }
 
   setDefaultImage(filename) {
@@ -163,9 +163,20 @@ class Social {
     let image = this.state.images[id];
 
     if (image) {
-      return image;
+      return image[0];
     } else {
       return this.state.default_image;
+    }
+  }
+
+  getImageCredit(id) {
+    id = get_id(id);
+    let credit = this.state.images[id];
+
+    if (credit) {
+      return credit[1];
+    } else {
+      return null;
     }
   }
 

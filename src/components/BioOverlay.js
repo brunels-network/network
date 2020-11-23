@@ -88,9 +88,18 @@ function BioOverlay(props) {
   }
 
   let filename = social.getImage(person);
+  let credit = null;
 
-  if (!filename) {
+  if (filename) {
+    credit = social.getImageCredit(person);
+  } else {
     filename = "images/Great_Western_maiden_voyage.jpg";
+  }
+
+  if (credit) {
+    credit = (
+      <div className={styles.image_credit}>{credit}</div>
+    );
   }
 
   return (
@@ -103,6 +112,7 @@ function BioOverlay(props) {
       <div className={styles.content}>
         <img className={styles.image} data-testid="bioImage" key={id}
              src={require(`../${filename}`)} alt="A ship" />
+        {credit}
         <div>
           <div className={styles.bio_heading}>Biography</div>
           <div className={styles.bio}>{bio}</div>
