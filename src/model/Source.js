@@ -101,6 +101,11 @@ class Source {
     if (remove_page_numbers) {
       let name = this.state.name;
 
+      if (name === "BRSGB-2015.03016") {
+        // this is correct
+        return name;
+      }
+
       if (name.includes("-")) {
         name = name.split("-")[0];
       }
