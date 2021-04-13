@@ -44,7 +44,7 @@
     "save-svg-as-png": "^1.4.17",
     "uuid": "^3.3.3",
     "vis": "^4.21.0-EOL",
-    "vis-timeline": "^6.3.2"
+    "vis-timeline": "^7.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
