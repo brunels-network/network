@@ -12,10 +12,14 @@ class Timeout extends React.Component {
   }
 
   componentDidMount() {
-    setInterval(
+    this.intervalID = setInterval(
       () => this.setState({ now_time: new Date() }),
       1000
     );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   render(){

@@ -197,7 +197,6 @@ MainMenu.propTypes = {
   commercialFiltered: PropTypes.bool.isRequired,
   searchBios: PropTypes.bool.isRequired,
   searchHighlight: PropTypes.bool.isRequired,
-  emitResetFilters: PropTypes.func.isRequired,
   emitToggleFilterCommercial: PropTypes.func.isRequired,
   emitToggleFilterEngineering: PropTypes.func.isRequired,
   emitToggleUnconnectedNodesVisible: PropTypes.func.isRequired,

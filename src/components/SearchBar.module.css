@@ -59,3 +59,18 @@
   z-index: 2;
   border: none;
 }
+
+.keyboardHolder {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 5%;
+  bottom: 25%;
+  z-index: 10;
+  opacity: 90%;
+}
+
+.keyboard {
+  height: 100%;
+  width: 100%;
+}
