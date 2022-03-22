@@ -43,7 +43,7 @@
   margin-right: auto;
   margin-top: 2px;
   margin-bottom: 2px;
-  max-width: 900px;
+  max-width: 60%;
   border-radius: 10px;
 }
 
@@ -56,7 +56,7 @@
 }
 
 .markdown h1 {
-  font-size: 28pt;
+  font-size: 32pt;
   line-height: 1.2;
   font-style: italic;
   text-align: center;
@@ -65,7 +65,7 @@
 }
 
 .markdown h2 {
-  font-size: 12pt;
+  font-size: 28pt;
   line-height: 1.2;
   font-weight: bold;
   text-align: center;
@@ -74,7 +74,7 @@
 }
 
 .markdown p {
-  font-size: 12pt;
+  font-size: 18pt;
   line-height: 1.5;
   margin-bottom: 8pt;
   text-align: justify;
