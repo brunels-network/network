@@ -1,8 +1,7 @@
-[![Build Status](https://dev.azure.com/brunels-network/network/_apis/build/status/brunels-network.network?branchName=devel)](https://dev.azure.com/brunels-network/network/_build/latest?definitionId=1&branchName=devel)
-[![Code Coverage](https://img.shields.io/azure-devops/coverage/brunels-network/network/1/devel)](https://img.shields.io/azure-devops/coverage/brunel-network/brunel/1/devel)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ### A project to visualize the connections between people involved in the construction of Isambard Kingdom Brunel's great steamships, the SS Great Western, SS Great Britain and SS Great Eastern.
+
+This branch is used to build the kiosk display.
 
 This project uses data taken from correspondence between those involveed in the construction of the three great steam ships to create a historical social network with Isambard Kingdom Brunel at its centre. Using a d3-force graph this social network can be visualised and connections between the people involved in the construction can be examined. Biographies of those involved in the construction are available to read along with the sources in which the connections between individuals and companies were found.
 
