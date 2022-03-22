@@ -274,9 +274,15 @@ class ForceGraphD3 extends React.Component {
       .join(
         (enter) => enter.append("circle")
       )
+      .attr("cx", (d) => {
+        return d.x;
+      })
+      .attr("cy", (d) => {
+        return d.y;
+      })
       // Here size is the weight given to that entity
       .attr("r", (d) => {
-        d.radius = Math.min(30, 5 + (0.5 * (d.size * d.size)));
+        d.radius = Math.min(15, 5 + (0.5 * (d.size * d.size)));
 
         if (d.size < 1.5) {
           //d.radius = 3;
@@ -397,6 +403,33 @@ class ForceGraphD3 extends React.Component {
           return `node_text ${styles.node_text}`;
         }
       })
+      .attr("x", (d) => {
+        if (!d.textSize) {
+          d.textSize = getTextSize(d);
+        }
+
+        let width = d.textSize[0];
+        let delta = 0.5 * width;
+
+        if (d.x + delta > window.innerWidth) {
+          return window.innerWidth - width - 20;
+        }
+        else if (d.x - delta < 5) {
+          return 5;
+        }
+        else {
+          return d.x - d.radius - delta;
+        }
+      })
+      .attr("y", (d) => {
+        if (!d.textSize) {
+          d.textSize = getTextSize(d);
+        }
+
+        let height = d.textSize[1];
+
+        return d.y + (0.55 * (height + d.radius));
+      })
       .attr("dx", (d) => {
         return d.radius + "px";
       })
@@ -454,6 +487,19 @@ class ForceGraphD3 extends React.Component {
           }
         }
       })
+      .attr("d", (d) => {
+        if (d.target.x === undefined || d.source.x === undefined) {
+          return null;
+        }
+
+        // The smaller the curve factor the greater the curve
+        const curveFactor = 2;
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.x;
+        const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
+
+        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+      })
       .attr("id", (d) => {
         return d.id;
       })
@@ -479,6 +525,8 @@ class ForceGraphD3 extends React.Component {
 
     let graph = this._graph;
 
+    let last_update = new Date();
+
     let simulation = d3
       .forceSimulation(graph.nodes)
       .alpha(1.0)
@@ -501,6 +549,16 @@ class ForceGraphD3 extends React.Component {
       )*/
       // This function with help from https://stackoverflow.com/a/13456081
       .on("tick", () => {
+
+        let now = new Date();
+
+        let delta = now - last_update;
+
+        if (delta < 50){
+          return;
+        }
+
+        last_update = now;
 
         this._link.attr("d", (d) => {
           if (d.target.x === undefined || d.source.x === undefined) {
@@ -555,7 +613,6 @@ class ForceGraphD3 extends React.Component {
 
       })
       .on("end", () => {
-        console.log("END");
       });
 
     this._is_running = true;
