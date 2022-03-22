@@ -6,9 +6,6 @@ import moment from "moment";
 
 import styles from "./MainMenu.module.css";
 
-const saveSvgAsPng = require("save-svg-as-png");
-
-
 function MenuLabel(props) {
   return (
     <div className={styles.menu_label}
@@ -172,26 +169,10 @@ class MainMenu extends React.Component {
           </MenuLabel>
           <MenuButton
             onClick={() => {
-              this.props.emitResetFilters();
+              this.props.emitReload();
             }}
           >
-            Reset / Reload
-          </MenuButton>
-
-          <MenuButton
-            onClick={() => {
-              const imageOptions = {
-                scale: 1,
-                encoderOptions: 1,
-                backgroundColor: "#000000",
-              };
-
-              const filename = "BrunelsNetwork-" + moment().format("YYYYMMDD-hhmmss") + ".png";
-
-              saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-viz"), filename, imageOptions);
-            }}
-          >
-            Save as image
+            Reload
           </MenuButton>
         </VBox>
       </div>

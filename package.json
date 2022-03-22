@@ -12,8 +12,7 @@
     "react-scripts": "^5.0.0",
     "react-spinkit": "^3.0.0",
     "react-tabs": "^4.0.1",
-    "react-transition-group": "^4.4.2",
-    "save-svg-as-png": "^1.4.17"
+    "react-transition-group": "^4.4.2"
   },
   "scripts": {
     "start": "react-scripts start",

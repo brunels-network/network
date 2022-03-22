@@ -597,8 +597,12 @@ class SocialApp extends React.Component {
 
   render() {
 
+    const timeout = 30;
+
     if (this.state.showWelcomePage){
-      return <WelcomePage emitCloseWelcome={()=>{this.slotCloseWelcome()}}/>
+      return <WelcomePage emitCloseWelcome={()=>{this.slotCloseWelcome()}}
+                          timeout={timeout}
+                          emitReload={()=>{this.resetAll()}}/>
     }
 
     let menu = (
@@ -806,8 +810,8 @@ class SocialApp extends React.Component {
           commercialFiltered={this.state.commercialFiltered}
           searchHighlight={this.state.searchHighlightLinks}
           searchBios={this.state.searchIncludeBios}
-          emitResetFilters={() => {
-            this.slotClearFilters();
+          emitReload={() => {
+            this.resetAll();
           }}
           emitToggleSpiralOrder={() => this.toggleSpiralOrder()}
           emitToggleFilter={() => this.toggleEngCommFilter()}
@@ -865,7 +869,7 @@ class SocialApp extends React.Component {
         {overlay}
         {warning_popover}
         <Timeout last_interaction_time={new Date()}
-                 timeout={5}
+                 timeout={timeout}
                  emitReload={()=>{this.resetAll()}}/>
       </div>
     );
