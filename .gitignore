@@ -1,5 +1,6 @@
 build/
 python/input/
+python/*.json
 node_modules/
 src/version*/data.json
 .vscode

@@ -32,7 +32,7 @@ function ShipOverlay(props) {
       <div className={styles.content}>
         <img className={styles.image} data-testid="bioImage"
                src={require(`../${filename}`)} alt="A ship" />
-        <div className={styles.markdown}><ReactMarkdown source={markdown} /></div>
+        <div className={styles.markdown}><ReactMarkdown>{markdown}</ReactMarkdown></div>
       </div>
     </div>
   );

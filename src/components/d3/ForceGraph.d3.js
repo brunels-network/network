@@ -249,14 +249,14 @@ class ForceGraphD3 extends React.Component {
         d.fx = d.x;
         d.fy = d.y;
       })
-      .on("drag", (d) => {
+      .on("drag", (event, d) => {
         if (!this._is_running) simulation.restart();
 
         let w = this.state.width;
         let h = this.state.height;
 
-        d.fx = constrain(d3.event.x, w, d.r);
-        d.fy = constrain(d3.event.y, h, d.r);
+        d.fx = constrain(event.x, w, d.r);
+        d.fy = constrain(event.y, h, d.r);
       })
       .on("end", (d) => {
         if (!d.fixed) {
@@ -322,9 +322,9 @@ class ForceGraphD3 extends React.Component {
         }
       })
       .attr("id", (d) => { return d.id; })
-      .on("mousedown", () => d3.event.stopPropagation())
-      .on("click", (d) => {
-        d3.event.stopPropagation()
+      .on("mousedown", (event) => event.stopPropagation())
+      .on("click", (event, d) => {
+        event.stopPropagation()
 
         if (d.selected) {
           this.emitPopup(d);
@@ -406,9 +406,9 @@ class ForceGraphD3 extends React.Component {
       .attr("textSize", (d) => {
         return getTextSize(d);
       })
-      .on("mousedown", () => d3.event.stopPropagation())
-      .on("click", (d) => {
-        d3.event.stopPropagation()
+      .on("mousedown", (event) => event.stopPropagation())
+      .on("click", (event, d) => {
+        event.stopPropagation()
 
         if (d.selected) {
           this.emitPopup(d);
