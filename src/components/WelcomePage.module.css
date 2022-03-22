@@ -1,0 +1,17 @@
+
+.ui_main {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background-color: #000000;
+}
+
+.welcome {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: white;
+  margin-top: auto;
+}

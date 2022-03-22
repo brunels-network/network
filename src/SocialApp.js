@@ -15,6 +15,8 @@ import ShipOverlay from "./components/ShipOverlay";
 import SlidingPanel from "./components/SlidingPanel";
 import MainMenu from "./components/MainMenu";
 import WarningOverlay from "./components/WarningOverlay";
+import Timeout from "./components/Timeout";
+import WelcomePage from "./components/WelcomePage";
 
 import HBox from "./components/HBox";
 import VBox from "./components/VBox";
@@ -39,6 +41,7 @@ import styles from "./SocialApp.module.css";
 import { score_by_connections, score_by_influence } from "./model/ScoringFunctions";
 
 import { size_by_connections, size_by_influence } from "./model/SizingFunctions";
+import last from "lodash/last";
 
 class SocialApp extends React.Component {
   constructor(props) {
@@ -77,8 +80,8 @@ class SocialApp extends React.Component {
       height: 0,
       width: 0,
       warningVisible: true,
+      showWelcomePage: true
     };
-
 
     Object.keys(imageData).forEach((key) => {
       social.setImage(key, imageData[key][0], imageData[key][1]);
@@ -155,6 +158,14 @@ class SocialApp extends React.Component {
     });
 
     console.log(`WINDOW ${this.state.width}x${this.state.height}`);
+  }
+
+  slotShowWelcome(){
+    this.setState({showWelcomePage: true});
+  }
+
+  slotCloseWelcome(){
+    this.setState({showWelcomePage: false});
   }
 
   slotSetAnchor(item) {
@@ -310,7 +321,7 @@ class SocialApp extends React.Component {
         social.selectSearchMatching(
           this.state.searchText,
           this.state.searchIncludeBios,
-          this.state.searchHighlightLinks
+          this.state.searchHighlightLinks,
         );
       }
     }
@@ -349,7 +360,12 @@ class SocialApp extends React.Component {
     this.setState({
       social: social,
       engineersFiltered: !this.state.engineersFiltered,
-      commercialFiltered: false,
+      commercialFiltered: false,componentDidMount() {
+        setInterval(
+          () => this.setState({ date: new Date() }),
+          1000
+        );
+      }
     });
   }
 
@@ -580,6 +596,11 @@ class SocialApp extends React.Component {
   }
 
   render() {
+
+    if (this.state.showWelcomePage){
+      return <WelcomePage emitCloseWelcome={()=>{this.slotCloseWelcome()}}/>
+    }
+
     let menu = (
       <TextButton
         onClick={() => {
@@ -843,6 +864,9 @@ class SocialApp extends React.Component {
         </div>
         {overlay}
         {warning_popover}
+        <Timeout last_interaction_time={new Date()}
+                 timeout={5}
+                 emitReload={()=>{this.resetAll()}}/>
       </div>
     );
   }
