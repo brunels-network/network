@@ -81,8 +81,8 @@ function Popover(props) {
   const innerWidth = window.innerWidth; // px
   const innerHeight = window.innerHeight; // px
 
-  const popoverHeight = 170;
-  const popoverWidth = 200;
+  const popoverHeight = 340;
+  const popoverWidth = 400;
 
   let left;
   if (node.x > innerWidth - popoverWidth) {

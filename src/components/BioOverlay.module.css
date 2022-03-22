@@ -24,8 +24,8 @@
 }
 
 .image {
-  max-height: 200px;
-  max-width: 280px;
+  max-height: 40%;
+  max-width: 70%;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -35,7 +35,7 @@
 }
 
 .image_credit {
-  font-size: 8pt;
+  font-size: 16pt;
   font-family: "Domine";
   display: block;
   margin-left: auto;
@@ -47,6 +47,7 @@
   border-radius: 5px;
   background-image: linear-gradient(to right, #D7B874, #998554);
   color: #000000;
+  width: 100%;
 }
 
 @media (max-width: 280px) {
@@ -70,7 +71,7 @@
   margin-right: auto;
   margin-top: 2px;
   margin-bottom: 2px;
-  max-width: 600px;
+  max-width: 90%;
   border-radius: 10px;
 }
 
@@ -88,48 +89,49 @@
   margin-right: auto;
   margin-top: 2px;
   margin-bottom: 2px;
-  max-width: 600px;
+  width: 90%;
   border-radius: 10px;
   font-weight: 900;
+  font-size: 48pt;
 }
 
 .bio_heading {
   font-family: "Domine";
-  max-width: 600px;
   line-height: 1.5;
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-top: 2px;
   margin-bottom: 2px;
-  font-size: 14pt;
+  font-size: 32pt;
   font-weight: 900;
   text-align: center;
   background-color: #E63309;
   color: white;
   border-radius: 5px;
+  width: 100%;
 }
 
 .source_heading {
   font-family: "Domine";
-  max-width: 600px;
   line-height: 1.5;
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-top: 2px;
   margin-bottom: 2px;
-  font-size: 14pt;
+  font-size: 32pt;
   font-weight: 900;
   text-align: center;
   background-color: #E63309;
   color: white;
   border-radius: 5px;
+  width: 100%;
 }
 
 .bio {
   font-family: "Domine";
-  max-width: 600px;
+  width: 90%;
   line-height: 1.5;
   display: block;
   margin-left: auto;
@@ -139,12 +141,15 @@
   background-color: white;
   word-break: break-word;
   text-align: justify;
+  font-size: 24pt;
+  width: 100%;
 }
 
 .source {
   font-family: "Domine";
   line-height: 1.5;
   word-break: break-word;
+  font-size: 16pt;
 }
 
 .source_name {

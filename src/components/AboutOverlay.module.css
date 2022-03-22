@@ -25,7 +25,7 @@
   grid-template-columns: 100%;
   grid-template-rows: 1fr;
 
-  font-size: 1.5vh;
+  font-size: 26pt;
   color: #000000;
   overflow: auto;
 }

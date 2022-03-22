@@ -82,18 +82,6 @@ class ForceGraph extends React.Component {
 
     return (
       <div ref={this.containerRef} className={styles.container}>
-        <div className={styles.left_logo}>
-          <img src={require("../images/uob_logo.png")}
-            alt="University of Bristol Logo"
-            className={styles.uob_logo_image}
-          />
-        </div>
-        <div className={styles.right_logo}>
-          <img src={require("../images/bi_logo.png")}
-            alt="Bristol Institute Logo"
-            className={styles.bi_logo_image}
-          />
-        </div>
         <div className={this.graph.className()}>
           {popup}
         </div>

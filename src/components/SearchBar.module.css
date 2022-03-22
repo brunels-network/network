@@ -15,7 +15,7 @@
   height: 100%;
   text-align: center;
   font-family: "Domine";
-  font-size: 10pt;
+  font-size: 28pt;
   background-color: #000000;
   padding: 0;
   border: none;
@@ -32,6 +32,7 @@
   height: 100%;
   color: white;
   background-color: #373935;
+  font-size: 28pt;
   z-index: 2;
   border: none;
 }
@@ -42,6 +43,7 @@
   justify-content: center;
   border-radius: 16px;
   height: 100%;
+  font-size: 28pt;
   color: white;
   background-color: #373935;
   z-index: 2;
@@ -55,6 +57,7 @@
   border-radius: 16px;
   height: 100%;
   color: white;
+  font-size: 28pt;
   background-color: #E63309;
   z-index: 2;
   border: none;

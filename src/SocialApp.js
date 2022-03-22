@@ -794,7 +794,7 @@ class SocialApp extends React.Component {
 
     let mainmenu = (
       <SlidingPanel isOpen={this.state.menuVisible}
-        position="left" height="100%" width="10em">
+        position="left" height="100%" width="25%">
         <MainMenu
           close={() => {
             this.slotCloseMenu();
